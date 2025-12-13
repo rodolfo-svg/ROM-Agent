@@ -15,6 +15,12 @@ import {
   pesquisarDatajud,
   pesquisarSumulas
 } from './jurisprudencia.js';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // ============================================================
 // DEFINIÇÃO DAS TOOLS
@@ -112,6 +118,29 @@ export const BEDROCK_TOOLS = [
             }
           },
           required: ['tema']
+        }
+      }
+    }
+  },
+  {
+    toolSpec: {
+      name: 'consultar_kb',
+      description: 'Consulta documentos já processados na Knowledge Base do usuário. Use quando o usuário mencionar "o documento que enviei", "o contrato", "a petição anterior" ou qualquer referência a arquivos enviados. Os documentos foram extraídos automaticamente (33 ferramentas, $0.00) e estão prontos para consulta.',
+      inputSchema: {
+        json: {
+          type: 'object',
+          properties: {
+            query: {
+              type: 'string',
+              description: 'Termo de busca ou contexto do documento (ex: "contrato", "petição anterior", "procuração")'
+            },
+            limite: {
+              type: 'number',
+              description: 'Número máximo de documentos a retornar (padrão: 3)',
+              default: 3
+            }
+          },
+          required: ['query']
         }
       }
     }
@@ -340,6 +369,99 @@ export async function executeTool(toolName, toolInput) {
         };
       }
 
+      case 'consultar_kb': {
+        const { query, limite = 3 } = toolInput;
+
+        console.log(`📚 [KB] Consultando documentos: "${query}"`);
+
+        try {
+          // Ler documentos da KB
+          const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+
+          if (!fs.existsSync(kbDocsPath)) {
+            return {
+              success: false,
+              content: 'Nenhum documento encontrado na Knowledge Base. Faça upload de documentos primeiro.'
+            };
+          }
+
+          const data = fs.readFileSync(kbDocsPath, 'utf8');
+          const allDocs = JSON.parse(data);
+
+          if (allDocs.length === 0) {
+            return {
+              success: false,
+              content: 'Knowledge Base vazia. Faça upload de documentos primeiro.'
+            };
+          }
+
+          // Buscar documentos relevantes (busca simples por texto)
+          const queryLower = query.toLowerCase();
+          const relevantDocs = allDocs
+            .filter(doc => {
+              const nameMatch = doc.name.toLowerCase().includes(queryLower);
+              const textMatch = doc.extractedText?.toLowerCase().includes(queryLower);
+              const typeMatch = doc.metadata?.documentType?.toLowerCase().includes(queryLower);
+              return nameMatch || textMatch || typeMatch;
+            })
+            .slice(0, limite);
+
+          if (relevantDocs.length === 0) {
+            return {
+              success: false,
+              content: `Nenhum documento encontrado para "${query}". Documentos disponíveis: ${allDocs.length}`
+            };
+          }
+
+          // Formatar resultado
+          let respostaFormatada = `\n📚 **Knowledge Base - "${query}"** (${relevantDocs.length} documento(s) encontrado(s))\n\n`;
+
+          relevantDocs.forEach((doc, idx) => {
+            respostaFormatada += `**[${idx + 1}] ${doc.name}**\n`;
+            respostaFormatada += `Tipo: ${doc.metadata?.documentType || 'Não identificado'}\n`;
+            respostaFormatada += `Tamanho: ${Math.round(doc.textLength / 1000)}k caracteres\n`;
+            respostaFormatada += `Upload: ${new Date(doc.uploadedAt).toLocaleDateString('pt-BR')}\n`;
+
+            // Extrair trecho relevante (primeiros 500 caracteres)
+            if (doc.extractedText) {
+              const trecho = doc.extractedText.substring(0, 500).trim();
+              respostaFormatada += `\nTrecho:\n${trecho}...\n`;
+            }
+
+            if (doc.metadata?.processNumber) {
+              respostaFormatada += `\nProcesso: ${doc.metadata.processNumber}\n`;
+            }
+            if (doc.metadata?.parties) {
+              respostaFormatada += `Partes: ${doc.metadata.parties}\n`;
+            }
+
+            respostaFormatada += '\n---\n\n';
+          });
+
+          respostaFormatada += `✅ **Total de documentos na KB**: ${allDocs.length}\n`;
+
+          console.log(`✅ [KB] ${relevantDocs.length} documento(s) encontrado(s)`);
+
+          return {
+            success: true,
+            content: respostaFormatada,
+            metadata: {
+              query,
+              totalEncontrados: relevantDocs.length,
+              totalNaKB: allDocs.length
+            }
+          };
+
+        } catch (error) {
+          console.error(`❌ [KB] Erro:`, error);
+          return {
+            success: false,
+            error: error.message,
+            content: `Erro ao consultar Knowledge Base: ${error.message}`
+          };
+        }
+      }
+
       default:
         throw new Error(`Tool não implementada: ${toolName}`);
     }
@@ -414,6 +536,18 @@ FERRAMENTAS DISPONÍVEIS (FONTES OFICIAIS E VERIFICÁVEIS):
    - tema (obrigatório): string - tema ou palavras-chave
    - tribunal (opcional): "STF" | "STJ" | "TST" | "TSE"
 
+5. **consultar_kb**: Consulta documentos já processados na Knowledge Base do usuário
+   Parâmetros:
+   - query (obrigatório): string - termo de busca ou contexto do documento
+   - limite (opcional): número (padrão: 3)
+
+   Use quando o usuário mencionar:
+   - "o documento que enviei"
+   - "o contrato"
+   - "a petição anterior"
+   - "os arquivos que enviei"
+   - qualquer referência a documentos enviados
+
 IMPORTANTE: Quando precisar usar uma ferramenta, responda EXATAMENTE no formato:
 <tool_use>
 <tool>nome_da_ferramenta</tool>
@@ -425,6 +559,7 @@ Escolha a ferramenta mais apropriada para cada necessidade:
 - Busca ampla (doutrina, artigos) → pesquisar_jusbrasil
 - Consultar processo específico → consultar_cnj_datajud
 - Súmulas e orientações consolidadas → pesquisar_sumulas
+- Documentos enviados pelo usuário → consultar_kb
 
 Depois de receber os resultados, continue sua resposta normalmente incorporando as informações.`;
 
