@@ -651,7 +651,7 @@
                         <span>🔍</span> Busca Semântica
                     </div>
                     <div class="nav-item" onclick="showView('templates')">
-                        <span>📋</span> Templates
+                        <span>📋</span> Modelos
                     </div>
                     <div class="nav-item" onclick="showView('versions')">
                         <span>🕒</span> Versionamento
@@ -725,7 +725,7 @@
                     <div class="upload-area" onclick="document.getElementById('extractFileInput').click()" ondrop="handleExtractDrop(event)" ondragover="handleKBDragOver(event)" ondragleave="handleKBDragLeave(event)">
                         <div class="upload-icon">🔧</div>
                         <div class="upload-text">
-                            <strong>Upload para Extração</strong><br>
+                            <strong>Enviar para Extração</strong><br>
                             <small>33 ferramentas processarão seu documento automaticamente</small>
                         </div>
                     </div>
@@ -746,9 +746,9 @@
 
                 <!-- Templates View -->
                 <div id="templatesView" class="messages hidden">
-                    <h1 style="margin-bottom: 20px;">📋 Gerenciar Templates</h1>
-                    <p style="color: var(--text-secondary); margin-bottom: 20px;">Sistema de templates com variáveis {{var}}</p>
-                    <button class="btn btn-primary" onclick="loadTemplates()">Carregar Templates</button>
+                    <h1 style="margin-bottom: 20px;">📋 Gerenciar Modelos</h1>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">Sistema de modelos com variáveis {{var}}</p>
+                    <button class="btn btn-primary" onclick="loadTemplates()">Carregar Modelos</button>
                     <div id="templatesList" style="margin-top: 24px;"></div>
                 </div>
 
@@ -1202,7 +1202,7 @@
             }
         }
 
-        // Templates
+        // Modelos de Documentos
         async function loadTemplates() {
             const listDiv = document.getElementById('templatesList');
             listDiv.innerHTML = '<p style="color: var(--text-secondary);">Carregando...</p>';
@@ -1212,7 +1212,7 @@
                 const templates = await response.json();
 
                 if (templates.length === 0) {
-                    listDiv.innerHTML = '<p style="color: var(--text-secondary);">Nenhum template disponível.</p>';
+                    listDiv.innerHTML = '<p style="color: var(--text-secondary);">Nenhum modelo disponível.</p>';
                     return;
                 }
 
@@ -1220,7 +1220,7 @@
                     <div style="background: var(--bg-2); padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);">
                         <h3 style="margin-bottom: 8px;">${t.name}</h3>
                         <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">${t.description || 'Sem descrição'}</p>
-                        <button class="btn btn-secondary" onclick="renderTemplate('${t.id}')">Usar Template</button>
+                        <button class="btn btn-secondary" onclick="renderTemplate('${t.id}')">Usar Modelo</button>
                     </div>
                 `).join('');
             } catch (error) {
@@ -1229,7 +1229,7 @@
         }
 
         function renderTemplate(templateId) {
-            alert('Função renderTemplate ainda em desenvolvimento para: ' + templateId);
+            alert('Função de renderização de modelo ainda em desenvolvimento para: ' + templateId);
         }
 
         // Versioning
@@ -1307,7 +1307,7 @@
                                     ${formatSize(b.size)} - ${new Date(b.timestamp).toLocaleString('pt-BR')}
                                 </p>
                             </div>
-                            <button class="btn btn-secondary" onclick="downloadBackup('${b.filename}')">Download</button>
+                            <button class="btn btn-secondary" onclick="downloadBackup('${b.filename}')">Baixar</button>
                         </div>
                     </div>
                 `).join('');
