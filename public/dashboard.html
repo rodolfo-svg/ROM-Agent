@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Master - ROM Agent</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #2D3648;
+      --accent: #10B981;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+      --info: #3B82F6;
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F9FAFB;
+      --bg-tertiary: #F3F4F6;
+      --text-primary: #111827;
+      --text-secondary: #6B7280;
+      --border: #E5E7EB;
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 260px;
+      background: var(--primary);
+      padding: 1.5rem;
+      overflow-y: auto;
+      z-index: 100;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 1.5rem;
+    }
+
+    .logo-area img {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+    }
+
+    .logo-text {
+      color: white;
+      font-weight: 600;
+      font-size: 1.125rem;
+    }
+
+    .nav-section {
+      margin-bottom: 2rem;
+    }
+
+    .nav-title {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      border-radius: 8px;
+      color: rgba(255,255,255,0.7);
+      text-decoration: none;
+      transition: all 0.2s;
+      margin-bottom: 0.25rem;
+      cursor: pointer;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+
+    .nav-item.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 260px;
+      padding: 2rem;
+    }
+
+    /* Header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .page-title {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      padding: 0.625rem 1.25rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #059669;
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    /* Stats Cards */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+    }
+
+    .stat-icon.green { background: #D1FAE5; }
+    .stat-icon.blue { background: #DBEAFE; }
+    .stat-icon.yellow { background: #FEF3C7; }
+    .stat-icon.red { background: #FEE2E2; }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-change {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .stat-change.positive { color: var(--accent); }
+    .stat-change.negative { color: var(--danger); }
+
+    /* Content Grid */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: var(--bg-primary);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .card-action {
+      color: var(--accent);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    /* Table */
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table th {
+      text-align: left;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table td {
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+    }
+
+    .table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .badge-success {
+      background: #D1FAE5;
+      color: #065F46;
+    }
+
+    .badge-warning {
+      background: #FEF3C7;
+      color: #92400E;
+    }
+
+    .badge-danger {
+      background: #FEE2E2;
+      color: #991B1B;
+    }
+
+    .badge-info {
+      background: #DBEAFE;
+      color: #1E40AF;
+    }
+
+    /* Avatar */
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--info));
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+
+    /* Chart Container */
+    .chart-container {
+      position: relative;
+      height: 300px;
+    }
+
+    /* Activity List */
+    .activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .activity-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .activity-content {
+      flex: 1;
+    }
+
+    .activity-text {
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .activity-time {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+    }
+
+    /* Loading */
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem;
+      color: var(--text-secondary);
+    }
+
+    /* Hidden */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .main-content {
+        margin-left: 0;
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo-area">
+      <img src="/img/logo_rom.png" alt="ROM" onerror="this.style.display='none'">
+      <span class="logo-text">ROM Agent</span>
+    </div>
+
+    <nav>
+      <div class="nav-section">
+        <div class="nav-title">Menu Principal</div>
+        <a class="nav-item active" data-view="overview">
+          <span>📊</span>
+          <span>Visão Geral</span>
+        </a>
+        <a class="nav-item" data-view="partners">
+          <span>🏢</span>
+          <span>Parceiros</span>
+        </a>
+        <a class="nav-item" data-view="users">
+          <span>👥</span>
+          <span>Usuários</span>
+        </a>
+        <a class="nav-item" data-view="documents">
+          <span>📄</span>
+          <span>Documentos</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-title">Analytics</div>
+        <a class="nav-item" data-view="usage">
+          <span>📈</span>
+          <span>Uso & Performance</span>
+        </a>
+        <a class="nav-item" data-view="billing">
+          <span>💰</span>
+          <span>Faturamento</span>
+        </a>
+        <a class="nav-item" data-view="quality">
+          <span>⭐</span>
+          <span>Qualidade</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-title">Ferramentas</div>
+        <a class="nav-item" data-view="extractor">
+          <span>🔧</span>
+          <span>Extração</span>
+        </a>
+        <a class="nav-item" href="/admin-partners.html">
+          <span>⚙️</span>
+          <span>Config. Parceiros</span>
+        </a>
+        <a class="nav-item" href="/admin-formatting.html">
+          <span>🎨</span>
+          <span>Formatação</span>
+        </a>
+        <a class="nav-item" href="/prompts-editor.html">
+          <span>📝</span>
+          <span>Editor de Prompts</span>
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-title">Sistema</div>
+        <a class="nav-item" data-view="logs">
+          <span>📋</span>
+          <span>Logs</span>
+        </a>
+        <a class="nav-item" href="/">
+          <span>🏠</span>
+          <span>Voltar ao Chat</span>
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Overview View -->
+    <div id="view-overview" class="view">
+      <div class="page-header">
+        <h1 class="page-title">Dashboard Master</h1>
+        <div class="header-actions">
+          <button class="btn btn-secondary" onclick="refreshData()">
+            🔄 Atualizar
+          </button>
+          <button class="btn btn-primary" onclick="exportData()">
+            📥 Exportar Dados
+          </button>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Total de Parceiros</div>
+              <div class="stat-value" id="stat-partners">0</div>
+              <div class="stat-change positive" id="stat-partners-change">+0 este mês</div>
+            </div>
+            <div class="stat-icon green">🏢</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Usuários Ativos</div>
+              <div class="stat-value" id="stat-users">0</div>
+              <div class="stat-change positive" id="stat-users-change">+0 hoje</div>
+            </div>
+            <div class="stat-icon blue">👥</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Peças Geradas</div>
+              <div class="stat-value" id="stat-pieces">0</div>
+              <div class="stat-change positive" id="stat-pieces-change">+0 hoje</div>
+            </div>
+            <div class="stat-icon yellow">📄</div>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-header">
+            <div>
+              <div class="stat-label">Custo Total (API)</div>
+              <div class="stat-value" id="stat-cost">R$ 0</div>
+              <div class="stat-change positive" id="stat-cost-change">Este mês</div>
+            </div>
+            <div class="stat-icon red">💰</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content Grid -->
+      <div class="content-grid">
+        <!-- Chart -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Uso nas Últimas 7 Dias</h3>
+            <a href="#" class="card-action">Ver detalhes →</a>
+          </div>
+          <div class="chart-container">
+            <canvas id="usageChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Atividade Recente</h3>
+            <a href="#" class="card-action">Ver todas →</a>
+          </div>
+          <div class="activity-list" id="recentActivity">
+            <div class="loading">Carregando...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tables -->
+      <div class="content-grid">
+        <!-- Top Partners -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Parceiros com Maior Uso</h3>
+            <a href="#" class="card-action" onclick="switchView('partners')">Ver todos →</a>
+          </div>
+          <table class="table" id="topPartnersTable">
+            <thead>
+              <tr>
+                <th>Parceiro</th>
+                <th>Peças</th>
+                <th>Usuários</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="4" class="loading">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Recent Documents -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Documentos Recentes</h3>
+            <a href="#" class="card-action" onclick="switchView('documents')">Ver todos →</a>
+          </div>
+          <table class="table" id="recentDocsTable">
+            <thead>
+              <tr>
+                <th>Tipo</th>
+                <th>Parceiro</th>
+                <th>Data</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="3" class="loading">Carregando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Other views will be loaded dynamically -->
+    <div id="view-partners" class="view hidden">
+      <div class="page-header">
+        <h1 class="page-title">Gestão de Parceiros</h1>
+        <div class="header-actions">
+          <button class="btn btn-primary" onclick="window.location='/admin-partners.html'">
+            + Novo Parceiro
+          </button>
+        </div>
+      </div>
+      <div class="card">
+        <table class="table" id="allPartnersTable">
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Email</th>
+              <th>Usuários</th>
+              <th>Peças</th>
+              <th>Custo</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="7" class="loading">Carregando...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- More views... -->
+  </main>
+
+  <script>
+    // Data
+    let dashboardData = {
+      partners: [],
+      users: [],
+      usage: [],
+      pieces: [],
+      analytics: {},
+      billing: {}
+    };
+
+    // Chart
+    let usageChart = null;
+
+    // Initialize
+    async function init() {
+      await loadAllData();
+      initChart();
+      renderOverview();
+      setupNavigation();
+    }
+
+    // Load all data
+    async function loadAllData() {
+      try {
+        const [partners, users, usage, pieces, analytics, billing] = await Promise.all([
+          fetch('/api/partners').then(r => r.json()),
+          fetch('/api/dashboard/users').then(r => r.json()).catch(() => ({users: []})),
+          fetch('/api/dashboard/usage').then(r => r.json()).catch(() => ({usage: []})),
+          fetch('/api/dashboard/pieces').then(r => r.json()).catch(() => ({pieces: []})),
+          fetch('/api/dashboard/analytics').then(r => r.json()).catch(() => ({analytics: {}})),
+          fetch('/api/dashboard/billing').then(r => r.json()).catch(() => ({billing: {}}))
+        ]);
+
+        dashboardData = {
+          partners: partners.partners || [],
+          users: users.users || [],
+          usage: usage.usage || [],
+          pieces: pieces.pieces || [],
+          analytics: analytics.analytics || {},
+          billing: billing.billing || {}
+        };
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+      }
+    }
+
+    // Init Chart
+    function initChart() {
+      const ctx = document.getElementById('usageChart');
+      if (!ctx) return;
+
+      const labels = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+      const data = dashboardData.usage.slice(-7).map(d => d.count || 0);
+
+      usageChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Peças Geradas',
+            data: data.length ? data : [12, 19, 15, 25, 22, 18, 30],
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            borderWidth: 2,
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: '#F3F4F6'
+              }
+            },
+            x: {
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Render Overview
+    function renderOverview() {
+      // Stats
+      document.getElementById('stat-partners').textContent = dashboardData.partners.length;
+      document.getElementById('stat-users').textContent = dashboardData.users.length;
+      document.getElementById('stat-pieces').textContent = dashboardData.pieces.length;
+
+      const totalCost = dashboardData.billing.totalCost || 0;
+      document.getElementById('stat-cost').textContent = `R$ ${totalCost.toFixed(2)}`;
+
+      // Recent Activity
+      renderRecentActivity();
+
+      // Top Partners
+      renderTopPartners();
+
+      // Recent Documents
+      renderRecentDocuments();
+    }
+
+    // Render Recent Activity
+    function renderRecentActivity() {
+      const container = document.getElementById('recentActivity');
+      if (!container) return;
+
+      const activities = dashboardData.pieces.slice(-5).reverse();
+
+      if (!activities.length) {
+        container.innerHTML = '<div style="text-align: center; color: #6B7280; padding: 2rem;">Nenhuma atividade recente</div>';
+        return;
+      }
+
+      container.innerHTML = activities.map(activity => `
+        <div class="activity-item">
+          <div class="activity-icon" style="background: #D1FAE5;">📄</div>
+          <div class="activity-content">
+            <div class="activity-text">
+              <strong>${activity.partnerName || 'ROM'}</strong> gerou ${activity.type || 'documento'}
+            </div>
+            <div class="activity-time">${formatDate(activity.timestamp)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render Top Partners
+    function renderTopPartners() {
+      const tbody = document.querySelector('#topPartnersTable tbody');
+      if (!tbody) return;
+
+      const partners = dashboardData.partners.slice(0, 5);
+
+      if (!partners.length) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #6B7280; padding: 2rem;">Nenhum parceiro cadastrado</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = partners.map(partner => `
+        <tr>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div class="avatar">${partner.name.charAt(0)}</div>
+              <span>${partner.name}</span>
+            </div>
+          </td>
+          <td>${partner.pieces || 0}</td>
+          <td>${partner.users || 0}</td>
+          <td><span class="badge badge-success">Ativo</span></td>
+        </tr>
+      `).join('');
+    }
+
+    // Render Recent Documents
+    function renderRecentDocuments() {
+      const tbody = document.querySelector('#recentDocsTable tbody');
+      if (!tbody) return;
+
+      const docs = dashboardData.pieces.slice(-5).reverse();
+
+      if (!docs.length) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align: center; color: #6B7280; padding: 2rem;">Nenhum documento recente</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = docs.map(doc => `
+        <tr>
+          <td>${doc.type || 'Documento'}</td>
+          <td>${doc.partnerName || 'ROM'}</td>
+          <td>${formatDate(doc.timestamp)}</td>
+        </tr>
+      `).join('');
+    }
+
+    // Navigation
+    function setupNavigation() {
+      document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+        item.addEventListener('click', (e) => {
+          e.preventDefault();
+          const view = item.getAttribute('data-view');
+          switchView(view);
+        });
+      });
+    }
+
+    function switchView(viewName) {
+      // Update nav
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      document.querySelector(`.nav-item[data-view="${viewName}"]`)?.classList.add('active');
+
+      // Update views
+      document.querySelectorAll('.view').forEach(view => {
+        view.classList.add('hidden');
+      });
+      document.getElementById(`view-${viewName}`)?.classList.remove('hidden');
+
+      // Load view data
+      if (viewName === 'partners') {
+        renderAllPartners();
+      }
+    }
+
+    function renderAllPartners() {
+      const tbody = document.querySelector('#allPartnersTable tbody');
+      if (!tbody) return;
+
+      const partners = dashboardData.partners;
+
+      if (!partners.length) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #6B7280; padding: 2rem;">Nenhum parceiro cadastrado</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = partners.map(partner => `
+        <tr>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <div class="avatar">${partner.name.charAt(0)}</div>
+              <span>${partner.name}</span>
+            </div>
+          </td>
+          <td>${partner.email || '-'}</td>
+          <td>${partner.users || 0}</td>
+          <td>${partner.pieces || 0}</td>
+          <td>R$ ${(partner.cost || 0).toFixed(2)}</td>
+          <td><span class="badge badge-success">Ativo</span></td>
+          <td>
+            <button class="btn btn-secondary" style="padding: 0.25rem 0.75rem;" onclick="viewPartner('${partner.id}')">
+              Ver Detalhes
+            </button>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    // Utilities
+    function formatDate(timestamp) {
+      if (!timestamp) return 'Agora mesmo';
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diff = now - date;
+
+      if (diff < 60000) return 'Agora mesmo';
+      if (diff < 3600000) return `${Math.floor(diff / 60000)}min atrás`;
+      if (diff < 86400000) return `${Math.floor(diff / 3600000)}h atrás`;
+      return date.toLocaleDateString('pt-BR');
+    }
+
+    function refreshData() {
+      location.reload();
+    }
+
+    function exportData() {
+      const dataStr = JSON.stringify(dashboardData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `rom-dashboard-${new Date().toISOString()}.json`;
+      link.click();
+    }
+
+    function viewPartner(partnerId) {
+      // TODO: Implementar visualização detalhada do parceiro
+      alert('Visualizar parceiro: ' + partnerId);
+    }
+
+    // Init on load
+    init();
+  </script>
+</body>
+</html>

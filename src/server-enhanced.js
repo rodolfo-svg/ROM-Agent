@@ -497,6 +497,263 @@ app.get('/api/formatting/css/:partnerId?', (req, res) => {
   }
 });
 
+// ====================================================================
+// ROTAS DE API PARA DASHBOARD
+// ====================================================================
+
+// Helper para ler arquivos JSON de logs
+function readLogFile(filename) {
+  try {
+    const logsDir = path.join(__dirname, '../logs');
+    const filePath = path.join(logsDir, filename);
+
+    if (!fs.existsSync(logsDir)) {
+      fs.mkdirSync(logsDir, { recursive: true });
+    }
+
+    if (!fs.existsSync(filePath)) {
+      return [];
+    }
+
+    const data = fs.readFileSync(filePath, 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error(`Erro ao ler ${filename}:`, error);
+    return [];
+  }
+}
+
+// Helper para escrever arquivos JSON de logs
+function writeLogFile(filename, data) {
+  try {
+    const logsDir = path.join(__dirname, '../logs');
+    const filePath = path.join(logsDir, filename);
+
+    if (!fs.existsSync(logsDir)) {
+      fs.mkdirSync(logsDir, { recursive: true });
+    }
+
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    return true;
+  } catch (error) {
+    console.error(`Erro ao escrever ${filename}:`, error);
+    return false;
+  }
+}
+
+// Dashboard - Listar usuários
+app.get('/api/dashboard/users', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de admin
+    const users = readLogFile('users.json');
+    res.json({ users });
+  } catch (error) {
+    console.error('Erro ao listar usuários:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Dashboard - Obter dados de uso
+app.get('/api/dashboard/usage', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de admin
+    const usage = readLogFile('usage.json');
+    res.json({ usage });
+  } catch (error) {
+    console.error('Erro ao obter dados de uso:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Dashboard - Obter histórico de peças
+app.get('/api/dashboard/pieces', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de admin
+    const pieces = readLogFile('pieces_history.json');
+    res.json({ pieces });
+  } catch (error) {
+    console.error('Erro ao obter histórico de peças:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Dashboard - Obter analytics
+app.get('/api/dashboard/analytics', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de admin
+    const analytics = readLogFile('analytics.json');
+    res.json({ analytics });
+  } catch (error) {
+    console.error('Erro ao obter analytics:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Dashboard - Obter dados de billing
+app.get('/api/dashboard/billing', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de admin
+    const billing = readLogFile('billing.json');
+    res.json({ billing });
+  } catch (error) {
+    console.error('Erro ao obter billing:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ====================================================================
+// ROTAS DE API PARA PROMPTS E CUSTOM INSTRUCTIONS
+// ====================================================================
+
+// Listar todos os prompts do sistema
+app.get('/api/prompts/system', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de admin
+    const promptsDir = path.join(__dirname, '../config/system_prompts');
+
+    if (!fs.existsSync(promptsDir)) {
+      fs.mkdirSync(promptsDir, { recursive: true });
+    }
+
+    const files = fs.readdirSync(promptsDir).filter(f => f.endsWith('.txt') || f.endsWith('.md'));
+    const prompts = files.map(file => {
+      const content = fs.readFileSync(path.join(promptsDir, file), 'utf8');
+      return {
+        id: file,
+        name: file.replace(/\.(txt|md)$/, ''),
+        content,
+        filename: file
+      };
+    });
+
+    res.json({ prompts });
+  } catch (error) {
+    console.error('Erro ao listar prompts:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Obter um prompt específico
+app.get('/api/prompts/system/:promptId', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de admin
+    const { promptId } = req.params;
+    const promptsDir = path.join(__dirname, '../config/system_prompts');
+    const filePath = path.join(promptsDir, promptId);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Prompt não encontrado' });
+    }
+
+    const content = fs.readFileSync(filePath, 'utf8');
+    res.json({
+      id: promptId,
+      name: promptId.replace(/\.(txt|md)$/, ''),
+      content,
+      filename: promptId
+    });
+  } catch (error) {
+    console.error('Erro ao obter prompt:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Atualizar um prompt
+app.put('/api/prompts/system/:promptId', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de admin
+    const { promptId } = req.params;
+    const { content } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ error: 'Conteúdo é obrigatório' });
+    }
+
+    const promptsDir = path.join(__dirname, '../config/system_prompts');
+
+    if (!fs.existsSync(promptsDir)) {
+      fs.mkdirSync(promptsDir, { recursive: true });
+    }
+
+    const filePath = path.join(promptsDir, promptId);
+    fs.writeFileSync(filePath, content, 'utf8');
+
+    res.json({
+      success: true,
+      prompt: {
+        id: promptId,
+        name: promptId.replace(/\.(txt|md)$/, ''),
+        content,
+        filename: promptId
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao atualizar prompt:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Criar novo prompt
+app.post('/api/prompts/system', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de admin
+    const { name, content } = req.body;
+
+    if (!name || !content) {
+      return res.status(400).json({ error: 'Nome e conteúdo são obrigatórios' });
+    }
+
+    const filename = name.endsWith('.txt') || name.endsWith('.md') ? name : `${name}.txt`;
+    const promptsDir = path.join(__dirname, '../config/system_prompts');
+
+    if (!fs.existsSync(promptsDir)) {
+      fs.mkdirSync(promptsDir, { recursive: true });
+    }
+
+    const filePath = path.join(promptsDir, filename);
+
+    if (fs.existsSync(filePath)) {
+      return res.status(409).json({ error: 'Prompt com esse nome já existe' });
+    }
+
+    fs.writeFileSync(filePath, content, 'utf8');
+
+    res.json({
+      success: true,
+      prompt: {
+        id: filename,
+        name: filename.replace(/\.(txt|md)$/, ''),
+        content,
+        filename
+      }
+    });
+  } catch (error) {
+    console.error('Erro ao criar prompt:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Deletar um prompt
+app.delete('/api/prompts/system/:promptId', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de admin
+    const { promptId } = req.params;
+    const promptsDir = path.join(__dirname, '../config/system_prompts');
+    const filePath = path.join(promptsDir, promptId);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Prompt não encontrado' });
+    }
+
+    fs.unlinkSync(filePath);
+
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erro ao deletar prompt:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // HTML da interface melhorada
 function getEnhancedHTML() {
   return `
