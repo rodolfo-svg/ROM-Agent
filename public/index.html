@@ -1539,6 +1539,10 @@
                     <span id="themeIcon">🌙</span>
                     <span id="themeText">Modo Escuro</span>
                 </button>
+                <button class="sidebar-nav-btn" onclick="logout()" style="border-top: 1px solid var(--border-color); margin-top: 8px; padding-top: 12px; color: var(--text-secondary);">
+                    <span>🚪</span>
+                    <span>Sair</span>
+                </button>
             </div>
         </aside>
 
@@ -1808,6 +1812,43 @@
     </div>
 
     <script>
+        // ============================================
+        // AUTHENTICATION CHECK
+        // ============================================
+        (async function checkAuthentication() {
+            const token = localStorage.getItem('accessToken');
+
+            if (!token) {
+                console.log('⚠️ No authentication token found. Redirecting to login...');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/status', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.authenticated) {
+                    console.log('⚠️ Invalid or expired token. Redirecting to login...');
+                    localStorage.removeItem('accessToken');
+                    localStorage.removeItem('refreshToken');
+                    localStorage.removeItem('user');
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                console.log('✅ User authenticated:', data.user?.name || 'Unknown');
+            } catch (error) {
+                console.error('❌ Authentication check failed:', error);
+                window.location.href = '/login.html';
+            }
+        })();
+
         // ============================================
         // STATE MANAGEMENT
         // ============================================
@@ -2647,6 +2688,22 @@
 
         function openHelp() {
             showToast('Ajuda', 'Bem-vindo ao Sistema de Projetos Inteligente!', 'success');
+        }
+
+        function logout() {
+            // Clear all authentication data
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
+            localStorage.removeItem('user');
+            localStorage.removeItem('rememberMe');
+
+            // Show toast message
+            showToast('Logout', 'Saindo do sistema...', 'success');
+
+            // Redirect to login page after a brief delay
+            setTimeout(() => {
+                window.location.href = '/login.html';
+            }, 500);
         }
 
         // ============================================
