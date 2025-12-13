@@ -1,0 +1,16 @@
+{
+  "version": "2.0.1",
+  "build": "2024-12-13T05:50:00Z",
+  "commit": "64c0b44",
+  "features": [
+    "Cache Inteligente (70% economia tokens)",
+    "Validação de Qualidade Pré-Envio",
+    "Upload Sync (Desktop → KB)",
+    "KB Auto-Cleanup",
+    "Model Monitor (Anti-obsolescência)",
+    "Auth JWT Completo",
+    "DataJud CNJ/STF"
+  ],
+  "deployed": true,
+  "render_deploy": "2024-12-13"
+}
