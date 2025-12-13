@@ -21,6 +21,7 @@ import { ROMAgent, CONFIG } from './index.js';
 import partnersBranding from '../lib/partners-branding.js';
 import formattingTemplates from '../lib/formatting-templates.js';
 import { extractDocument } from '../lib/extractor-pipeline.js';
+import { conversarComTools } from './modules/bedrock-tools.js';
 import dotenv from 'dotenv';
 
 // Importar módulos CommonJS
@@ -261,6 +262,59 @@ app.post('/api/chat', async (req, res) => {
     res.json(response);
   } catch (error) {
     console.error('Erro no chat:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// API - Chat com Tool Use (Jurisprudência Automática)
+app.post('/api/chat-with-tools', async (req, res) => {
+  try {
+    const { message, modelo = 'amazon.nova-pro-v1:0', systemPrompt = null } = req.body;
+    const history = getHistory(req.session.id);
+
+    console.log('🔧 [Tool Use] Processando mensagem com ferramentas automáticas');
+
+    // Usar conversação com tool use
+    const resultado = await conversarComTools(message, {
+      modelo,
+      systemPrompt: systemPrompt || `Você é o ROM Agent, um assistente especializado em Direito brasileiro.
+
+Quando precisar de jurisprudência ou precedentes judiciais para fundamentar sua resposta, use a ferramenta pesquisar_jurisprudencia automaticamente.
+
+Sempre cite as fontes corretamente e formate as referências em ABNT.`,
+      historico: history.slice(-10), // Últimas 10 mensagens
+      maxTokens: 4096,
+      temperature: 0.7
+    });
+
+    if (!resultado.sucesso) {
+      return res.status(500).json({ error: resultado.erro });
+    }
+
+    // Adicionar ao histórico
+    history.push({
+      role: 'user',
+      content: message,
+      timestamp: new Date()
+    });
+
+    history.push({
+      role: 'assistant',
+      content: resultado.resposta,
+      toolsUsadas: resultado.toolsUsadas || [],
+      timestamp: new Date()
+    });
+
+    res.json({
+      response: resultado.resposta,
+      toolsUsadas: resultado.toolsUsadas || [],
+      iteracoes: resultado.iteracoes || 1,
+      modelo,
+      uso: resultado.uso
+    });
+
+  } catch (error) {
+    console.error('❌ [Tool Use] Erro:', error);
     res.status(500).json({ error: error.message });
   }
 });
