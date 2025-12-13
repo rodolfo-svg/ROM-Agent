@@ -3855,6 +3855,288 @@ setInterval(async () => {
   await preloadModelos();
 }, 5 * 60 * 1000);
 
+// ═══════════════════════════════════════════════════════════════
+// PHASE 4 & 5 - API ENDPOINTS
+// ═══════════════════════════════════════════════════════════════
+
+// Semantic Search - TF-IDF Local
+app.post('/api/semantic-search', searchLimiter, authSystem.authMiddleware(), async (req, res) => {
+  try {
+    const { query, limit = 10 } = req.body;
+
+    if (!query) {
+      return res.status(400).json({ error: 'Query parameter is required' });
+    }
+
+    logger.info(`Semantic search: "${query}"`);
+
+    // Buscar documentos na Knowledge Base
+    const kbPath = path.join(__dirname, '../KB/ROM');
+    const documents = [];
+
+    // Ler todos os documentos das subpastas
+    const folders = ['modelos', 'legislacao', 'jurisprudencia', 'doutrina'];
+
+    for (const folder of folders) {
+      const folderPath = path.join(kbPath, folder);
+      if (fs.existsSync(folderPath)) {
+        const files = fs.readdirSync(folderPath);
+
+        for (const file of files) {
+          if (file.endsWith('.txt') || file.endsWith('.md')) {
+            const filePath = path.join(folderPath, file);
+            const content = fs.readFileSync(filePath, 'utf8');
+            documents.push({
+              filename: file,
+              content,
+              type: folder,
+              path: filePath
+            });
+          }
+        }
+      }
+    }
+
+    if (documents.length === 0) {
+      return res.json([]);
+    }
+
+    // Executar busca semântica
+    const results = semanticSearch.search(query, documents, limit);
+
+    logger.info(`Found ${results.length} results for "${query}"`);
+    logKBOperation('semantic_search', {
+      query,
+      resultsCount: results.length,
+      topScore: results[0]?.score || 0
+    });
+
+    res.json(results);
+  } catch (error) {
+    logger.error('Semantic search error:', error);
+    res.status(500).json({ error: 'Erro ao realizar busca semântica' });
+  }
+});
+
+// Templates Manager - List Templates
+app.get('/api/templates/list', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+  try {
+    logger.info('Listing templates');
+
+    const templates = templatesManager.listTemplates();
+
+    logger.info(`Found ${templates.length} templates`);
+    res.json(templates);
+  } catch (error) {
+    logger.error('Templates list error:', error);
+    res.status(500).json({ error: 'Erro ao listar templates' });
+  }
+});
+
+// Templates Manager - Get Template
+app.get('/api/templates/:templateId', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+  try {
+    const { templateId } = req.params;
+
+    logger.info(`Getting template: ${templateId}`);
+
+    const template = templatesManager.getTemplate(templateId);
+
+    if (!template) {
+      return res.status(404).json({ error: 'Template não encontrado' });
+    }
+
+    res.json(template);
+  } catch (error) {
+    logger.error('Template get error:', error);
+    res.status(500).json({ error: 'Erro ao obter template' });
+  }
+});
+
+// Templates Manager - Render Template
+app.post('/api/templates/render', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+  try {
+    const { templateId, variables } = req.body;
+
+    if (!templateId || !variables) {
+      return res.status(400).json({ error: 'templateId and variables are required' });
+    }
+
+    logger.info(`Rendering template: ${templateId}`);
+
+    const rendered = templatesManager.renderTemplate(templateId, variables);
+
+    logger.info(`Template ${templateId} rendered successfully`);
+    res.json({ content: rendered });
+  } catch (error) {
+    logger.error('Template render error:', error);
+    res.status(500).json({ error: error.message || 'Erro ao renderizar template' });
+  }
+});
+
+// Versioning - Get Versions
+app.get('/api/versions/:documentId', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+  try {
+    const { documentId } = req.params;
+
+    logger.info(`Getting versions for document: ${documentId}`);
+
+    const versions = documentVersioning.getVersions(documentId);
+
+    logger.info(`Found ${versions.length} versions for ${documentId}`);
+    res.json(versions);
+  } catch (error) {
+    logger.error('Versions get error:', error);
+    res.status(500).json({ error: 'Erro ao obter versões' });
+  }
+});
+
+// Versioning - Save Version
+app.post('/api/versions/save', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+  try {
+    const { documentId, content, metadata = {} } = req.body;
+
+    if (!documentId || !content) {
+      return res.status(400).json({ error: 'documentId and content are required' });
+    }
+
+    logger.info(`Saving version for document: ${documentId}`);
+
+    metadata.author = req.user?.name || 'System';
+    const version = documentVersioning.saveVersion(documentId, content, metadata);
+
+    logger.info(`Version saved: ${version.id}`);
+    res.json(version);
+  } catch (error) {
+    logger.error('Version save error:', error);
+    res.status(500).json({ error: 'Erro ao salvar versão' });
+  }
+});
+
+// Versioning - Restore Version
+app.post('/api/versions/restore', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+  try {
+    const { documentId, versionId } = req.body;
+
+    if (!documentId || !versionId) {
+      return res.status(400).json({ error: 'documentId and versionId are required' });
+    }
+
+    logger.info(`Restoring version ${versionId} for document ${documentId}`);
+
+    const content = documentVersioning.restoreVersion(documentId, versionId);
+
+    logger.info(`Version ${versionId} restored successfully`);
+    res.json({ content });
+  } catch (error) {
+    logger.error('Version restore error:', error);
+    res.status(500).json({ error: error.message || 'Erro ao restaurar versão' });
+  }
+});
+
+// Versioning - Diff Versions
+app.post('/api/versions/diff', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+  try {
+    const { documentId, versionId1, versionId2 } = req.body;
+
+    if (!documentId || !versionId1 || !versionId2) {
+      return res.status(400).json({ error: 'documentId, versionId1, and versionId2 are required' });
+    }
+
+    logger.info(`Comparing versions ${versionId1} and ${versionId2}`);
+
+    const versions = documentVersioning.getVersions(documentId);
+    const v1 = versions.find(v => v.id === versionId1);
+    const v2 = versions.find(v => v.id === versionId2);
+
+    if (!v1 || !v2) {
+      return res.status(404).json({ error: 'Versões não encontradas' });
+    }
+
+    const diff = documentVersioning.diffVersions(v1, v2);
+
+    logger.info(`Diff generated: ${diff.length} differences`);
+    res.json(diff);
+  } catch (error) {
+    logger.error('Version diff error:', error);
+    res.status(500).json({ error: 'Erro ao gerar diff' });
+  }
+});
+
+// Backup - Status
+app.get('/api/backup/status', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+  try {
+    logger.info('Getting backup status');
+
+    const backupDir = path.join(__dirname, '../backups');
+
+    if (!fs.existsSync(backupDir)) {
+      return res.json([]);
+    }
+
+    const files = fs.readdirSync(backupDir)
+      .filter(f => f.startsWith('backup-') && f.endsWith('.zip'))
+      .map(f => {
+        const filePath = path.join(backupDir, f);
+        const stats = fs.statSync(filePath);
+        return {
+          filename: f,
+          size: stats.size,
+          timestamp: stats.mtime
+        };
+      })
+      .sort((a, b) => b.timestamp - a.timestamp);
+
+    logger.info(`Found ${files.length} backups`);
+    res.json(files);
+  } catch (error) {
+    logger.error('Backup status error:', error);
+    res.status(500).json({ error: 'Erro ao verificar backups' });
+  }
+});
+
+// Backup - Create Manual Backup
+app.post('/api/backup/create', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+  try {
+    logger.info('Creating manual backup');
+
+    const result = await backupManager.createBackup();
+
+    logger.info(`Backup created: ${result.filename}`);
+    res.json(result);
+  } catch (error) {
+    logger.error('Backup creation error:', error);
+    res.status(500).json({ error: 'Erro ao criar backup' });
+  }
+});
+
+// Backup - Download
+app.get('/api/backup/download/:filename', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+  try {
+    const { filename } = req.params;
+
+    // Validate filename
+    if (!filename.startsWith('backup-') || !filename.endsWith('.zip')) {
+      return res.status(400).json({ error: 'Nome de arquivo inválido' });
+    }
+
+    const filePath = path.join(__dirname, '../backups', filename);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Backup não encontrado' });
+    }
+
+    logger.info(`Downloading backup: ${filename}`);
+
+    res.download(filePath, filename);
+  } catch (error) {
+    logger.error('Backup download error:', error);
+    res.status(500).json({ error: 'Erro ao baixar backup' });
+  }
+});
+
+logger.info('✅ Phase 4 & 5 API endpoints configured');
+
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
 
