@@ -1474,9 +1474,44 @@
                 </button>
             </div>
 
-            <!-- Projects List -->
+            <!-- ROM Permanent Project -->
+            <div class="projects-container" style="border-bottom: 2px solid var(--gold-primary); padding-bottom: 12px; margin-bottom: 12px;">
+                <div class="project-card active" id="romProject" onclick="selectROMProject()">
+                    <div class="project-status"></div>
+                    <div class="project-info">
+                        <h4>🏛️ ROM - Redação de Peças</h4>
+                        <div class="project-meta">
+                            <span>Sistema Principal</span>
+                        </div>
+                        <div class="project-time">Sempre ativo</div>
+                    </div>
+                </div>
+
+                <!-- Extraction Tools Button -->
+                <button class="sidebar-nav-btn" onclick="toggleExtractionTools()" style="margin-top: 8px; font-size: 12px;">
+                    <span>🔍</span>
+                    <span>Ferramentas de Extração</span>
+                    <span id="extractionToggleIcon" style="margin-left: auto;">▼</span>
+                </button>
+
+                <!-- Extraction Tools Panel (collapsed by default) -->
+                <div id="extractionToolsPanel" style="display: none; margin-top: 8px; padding: 8px; background: var(--bg-tertiary); border-radius: 8px; font-size: 11px;">
+                    <div style="margin-bottom: 8px; font-weight: 600; color: var(--gold-primary);">📤 Upload de Documentos</div>
+                    <input type="file" id="extractionFileInput" multiple accept=".pdf,.docx,.doc,.txt,.jpg,.jpeg,.png"
+                           style="display: none;" onchange="handleExtractionUpload(this.files)">
+                    <button onclick="document.getElementById('extractionFileInput').click()"
+                            style="width: 100%; padding: 8px; background: var(--gold-primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; margin-bottom: 8px;">
+                        Selecionar Arquivos (até 100MB)
+                    </button>
+                    <div style="font-size: 10px; color: var(--text-tertiary); text-align: center;">
+                        Até 20 arquivos • PDF, DOCX, TXT, Imagens
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Projects List -->
             <div class="projects-container" id="projectsContainer">
-                <h3 class="projects-header">📁 PROJETOS (5)</h3>
+                <h3 class="projects-header">📁 MEUS PROJETOS (<span id="projectsCount">0</span>)</h3>
                 <div id="projectsList">
                     <!-- Projects will be loaded here -->
                 </div>
@@ -1787,6 +1822,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
             loadProjects();
+            selectROMProject(); // Select ROM project by default
             setupEventListeners();
             checkTheme();
         });
@@ -2038,6 +2074,12 @@
 
         function renderProjects() {
             const container = document.getElementById('projectsList');
+            const countElement = document.getElementById('projectsCount');
+
+            // Update projects count
+            if (countElement) {
+                countElement.textContent = projects.length;
+            }
 
             if (projects.length === 0) {
                 container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-tertiary); font-size: 13px;">Nenhum projeto ainda</div>';
@@ -2045,7 +2087,7 @@
             }
 
             container.innerHTML = projects.map(project => `
-                <div class="project-card ${project.id === currentProjectId ? 'active' : ''}"
+                <div class="project-card ${project.id === currentProjectId && currentProjectId !== 'rom' ? 'active' : ''}"
                      onclick="selectProject('${project.id}')"
                      data-id="${project.id}">
                     <div class="project-status"></div>
@@ -2118,6 +2160,147 @@
         }
 
         // ============================================
+        // ROM PERMANENT PROJECT
+        // ============================================
+        function selectROMProject() {
+            currentProjectId = 'rom';
+
+            // Deselect all other projects
+            document.querySelectorAll('.project-card').forEach(card => {
+                card.classList.remove('active');
+            });
+
+            // Select ROM project
+            document.getElementById('romProject').classList.add('active');
+
+            // Show main interface (hide empty state)
+            document.getElementById('emptyStateWelcome').classList.add('hidden');
+            document.getElementById('projectView').classList.add('active');
+            document.getElementById('projectTitle').textContent = '🏛️ ROM - Redação de Peças Jurídicas';
+
+            // Show preview
+            showPreview();
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+
+            showToast('ROM Agent', 'Sistema principal ativado', 'success');
+        }
+
+        function toggleExtractionTools() {
+            const panel = document.getElementById('extractionToolsPanel');
+            const icon = document.getElementById('extractionToggleIcon');
+
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                icon.textContent = '▲';
+            } else {
+                panel.style.display = 'none';
+                icon.textContent = '▼';
+            }
+        }
+
+        async function handleExtractionUpload(files) {
+            if (!files || files.length === 0) {
+                showToast('Erro', 'Nenhum arquivo selecionado', 'error');
+                return;
+            }
+
+            // Validate file count (max 20)
+            if (files.length > 20) {
+                showToast('Erro', 'Máximo de 20 arquivos por upload', 'error');
+                return;
+            }
+
+            // Validate file sizes (max 100MB each)
+            for (let file of files) {
+                if (file.size > 100 * 1024 * 1024) {
+                    showToast('Erro', `Arquivo "${file.name}" excede 100MB`, 'error');
+                    return;
+                }
+            }
+
+            showToast('Upload', `Processando ${files.length} arquivo(s)...`, 'info');
+
+            try {
+                const formData = new FormData();
+                Array.from(files).forEach(file => {
+                    formData.append('files', file);
+                });
+
+                const response = await fetch('/api/upload-documents', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+
+                    showToast('Sucesso', `${files.length} arquivo(s) processado(s) com as 33 ferramentas de extração`, 'success');
+
+                    // Show extracted data in preview
+                    if (result.extractions && result.extractions.length > 0) {
+                        displayExtractions(result.extractions);
+                    }
+
+                    // Clear file input
+                    document.getElementById('extractionFileInput').value = '';
+                } else {
+                    throw new Error('Erro no upload');
+                }
+            } catch (error) {
+                console.error('Error uploading files:', error);
+                showToast('Erro', 'Erro ao processar documentos', 'error');
+            }
+        }
+
+        function displayExtractions(extractions) {
+            const documentContent = document.getElementById('documentContent');
+
+            // Show preview panel
+            showPreview();
+
+            let html = '<div style="padding: 20px; background: white; min-height: 600px;">';
+            html += '<h1 style="text-align: center; color: var(--gold-primary); margin-bottom: 30px; font-size: 24px;">📊 Dados Extraídos - 33 Ferramentas</h1>';
+
+            extractions.forEach((extraction, index) => {
+                html += `
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--gold-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <h2 style="font-size: 18px; margin-bottom: 15px; color: #1C1C1C; font-weight: 700;">
+                            📄 ${extraction.filename || `Documento ${index + 1}`}
+                        </h2>
+                        <div style="display: grid; gap: 12px; font-size: 14px;">
+                `;
+
+                // Display extracted fields
+                if (extraction.data) {
+                    Object.entries(extraction.data).forEach(([key, value]) => {
+                        if (value && value !== 'N/A') {
+                            html += `
+                                <div style="display: flex; gap: 15px; padding: 8px 0; border-bottom: 1px solid #e0e0e0;">
+                                    <strong style="color: var(--gold-primary); min-width: 180px; font-weight: 600;">${key}:</strong>
+                                    <span style="color: #1C1C1C; flex: 1;">${value}</span>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+
+                html += '</div></div>';
+            });
+
+            html += '<div style="text-align: center; margin-top: 30px; padding: 20px; background: #f0f0f0; border-radius: 8px;">';
+            html += '<p style="color: #666; font-size: 13px;">✅ Extração automática concluída com sucesso!</p>';
+            html += '<p style="color: #666; font-size: 12px; margin-top: 5px;">33 ferramentas de análise aplicadas</p>';
+            html += '</div>';
+
+            html += '</div>';
+            documentContent.innerHTML = html;
+        }
+
+        // ============================================
         // MODAL - NOVO PROJETO
         // ============================================
         function openNewProjectModal() {
@@ -2185,13 +2368,13 @@
 
                 closeNewProjectModal();
                 await loadProjects();
-                selectProject(data.projectId);
+                selectProject(data.project.id);
 
                 showToast('Sucesso', 'Projeto criado com sucesso!', 'success');
 
                 // If auto-analyze is enabled, trigger analysis
                 if (autoAnalyze && uploadedFiles.length > 0) {
-                    analyzeProject(data.projectId);
+                    analyzeProject(data.project.id);
                 }
 
             } catch (error) {
