@@ -244,6 +244,10 @@ npm run web:enhanced
 - [x] Documentação completa criada
 - [x] AWS Bedrock configurado localmente
 - [x] render.yaml configurado corretamente
+- [x] Projeto ROM permanente adicionado à sidebar
+- [x] Ferramentas de extração implementadas (100MB/20 arquivos)
+- [x] Bugs corrigidos (createProject, displayExtractions)
+- [x] Push para GitHub concluído (commit 46d8f5e)
 - [ ] Variáveis de ambiente configuradas no painel Render
 - [ ] Deploy iniciado automaticamente
 - [ ] Health check passou
@@ -306,8 +310,30 @@ curl https://rom-agent.onrender.com/api/kb/stats
 
 ---
 
+---
+
+## 📝 ATUALIZAÇÃO - 13/12/2024 11:15 BRT
+
+### Bugs Corrigidos
+✅ **createProject()** - Corrigido acesso incorreto a `data.projectId` → `data.project.id`
+✅ **displayExtractions()** - Corrigido acesso a elemento inexistente `previewContent` → `documentContent`
+✅ **Projeto ROM Permanente** - Adicionado na sidebar, sempre visível e ativo por padrão
+✅ **Ferramentas de Extração** - Painel colapsável com upload de até 20 arquivos de 100MB
+
+### Commit
+```
+46d8f5e - Fix: Corrige funções não operacionais e adiciona projeto ROM permanente
+```
+
+### Deploy
+- ✅ Push concluído para GitHub
+- ⏳ Render irá detectar automaticamente e iniciar deploy
+- ⏳ Tempo estimado: 5-10 minutos
+
+---
+
 **🚀 Sistema pronto para produção!**
 
-**Data**: 13 de dezembro de 2024, 06:00 BRT
-**Build**: 146502f
+**Data**: 13 de dezembro de 2024, 11:15 BRT
+**Build**: 46d8f5e
 **Status**: ✅ PRODUCTION READY
