@@ -1258,35 +1258,46 @@
         }
 
         .preview-btn {
-            padding: var(--spacing-sm) var(--spacing-md);
+            padding: 7px 12px;
             background: transparent;
-            border: 1px solid var(--gold-primary);
-            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
             font-size: 13px;
-            font-weight: 600;
-            color: var(--gold-primary);
+            font-weight: 500;
+            color: var(--text-primary);
             cursor: pointer;
-            transition: all var(--transition-fast);
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
-            gap: var(--spacing-xs);
+            gap: 6px;
         }
 
         .preview-btn:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--text-secondary);
+            color: var(--text-primary);
+        }
+
+        .preview-btn-primary {
             background: var(--gold-primary);
+            border-color: var(--gold-primary);
             color: white;
-            transform: translateY(-2px);
-            box-shadow: var(--shadow-gold);
+        }
+
+        .preview-btn-primary:hover {
+            background: var(--gold-dark);
+            border-color: var(--gold-dark);
+            color: white;
         }
 
         /* Dropdown Menu Styles */
         .dropdown-item:hover {
-            background: var(--champagne) !important;
+            background: var(--bg-tertiary) !important;
         }
 
         .dropdown-item:active {
-            background: var(--gold-primary) !important;
-            color: white !important;
+            background: var(--bg-tertiary) !important;
+            opacity: 0.7;
         }
 
         /* ============================================
@@ -1849,7 +1860,7 @@
                         <span>Baixar</span>
                         <span class="dropdown-arrow" style="margin-left: 4px; font-size: 10px;">▼</span>
                     </button>
-                    <div id="downloadMenu" class="dropdown-menu" style="display: none; position: absolute; bottom: 100%; left: 0; margin-bottom: 8px; background: var(--bg-secondary); border: 2px solid var(--gold-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1000;">
+                    <div id="downloadMenu" class="dropdown-menu" style="display: none; position: absolute; bottom: 100%; left: 0; margin-bottom: 8px; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--shadow-md); min-width: 200px; z-index: 1000;">
                         <button class="dropdown-item" onclick="downloadDOCX()" style="width: 100%; padding: 10px 16px; border: none; background: transparent; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); transition: all 0.15s;">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
