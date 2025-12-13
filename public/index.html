@@ -3,15 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROM Agent - IA Jurídica Especializada</title>
-
-    <!-- PWA -->
+    <title>ROM Agent</title>
     <link rel="manifest" href="/manifest.json">
-    <meta name="theme-color" content="#D4AF37">
-
-    <!-- Marked.js -->
+    <meta name="theme-color" content="#2F2F2F">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-
     <style>
         * {
             margin: 0;
@@ -20,294 +15,233 @@
         }
 
         :root {
-            --gold: #D4AF37;
-            --gold-dark: #B8860B;
-            --bg: #0F0F0F;
-            --surface: #1A1A1A;
-            --border: #333;
-            --text: #FAFAFA;
-            --text-dim: #999;
+            --bg-0: #0E0E0E;
+            --bg-1: #171717;
+            --bg-2: #2F2F2F;
+            --bg-3: #3E3E3E;
+            --text-primary: #ECECEC;
+            --text-secondary: #9B9B9B;
+            --text-tertiary: #6B6B6B;
+            --border: #3E3E3E;
+            --accent: #AB7843;
+            --accent-hover: #C48854;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-0);
+            color: var(--text-primary);
             height: 100vh;
             overflow: hidden;
         }
 
-        /* Layout Principal */
         .app {
             display: flex;
             height: 100vh;
         }
 
-        /* Sidebar */
+        /* ========== SIDEBAR ========== */
         .sidebar {
             width: 260px;
-            background: var(--surface);
+            background: var(--bg-1);
             border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            padding: 20px;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 30px;
-        }
-
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-        }
-
-        .logo-text {
-            font-size: 20px;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .sidebar-header {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border);
         }
 
         .new-chat-btn {
             width: 100%;
-            padding: 12px 16px;
-            background: var(--gold);
-            color: #000;
-            border: none;
-            border-radius: 8px;
+            padding: 10px 14px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
             font-size: 14px;
-            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
             gap: 8px;
-            transition: all 0.2s;
-            margin-bottom: 20px;
+            transition: background 0.15s;
         }
 
         .new-chat-btn:hover {
-            background: var(--gold-dark);
-            transform: translateY(-1px);
+            background: var(--bg-2);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
         }
 
         .nav-section {
-            flex: 1;
-            overflow-y: auto;
+            padding: 8px 12px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            padding: 8px 6px 6px;
+            letter-spacing: 0.5px;
         }
 
         .nav-item {
-            padding: 10px 12px;
-            margin-bottom: 4px;
+            padding: 8px 10px;
+            margin: 2px 0;
             border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
             cursor: pointer;
-            font-size: 14px;
-            color: var(--text-dim);
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: all 0.2s;
+            transition: all 0.15s;
         }
 
         .nav-item:hover {
-            background: rgba(212, 175, 55, 0.1);
-            color: var(--text);
+            background: var(--bg-2);
+            color: var(--text-primary);
         }
 
         .nav-item.active {
-            background: rgba(212, 175, 55, 0.15);
-            color: var(--gold);
+            background: var(--bg-2);
+            color: var(--text-primary);
         }
 
-        /* Main Content */
+        .sidebar-footer {
+            padding: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .user-info:hover {
+            background: var(--bg-2);
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            background: var(--bg-3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .user-name {
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        /* ========== MAIN ========== */
         .main {
             flex: 1;
             display: flex;
             flex-direction: column;
-            background: var(--bg);
+            background: var(--bg-0);
         }
 
-        /* Header */
-        .header {
-            padding: 16px 24px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: var(--surface);
-        }
-
-        .header-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--gold);
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 12px;
-        }
-
-        .icon-btn {
-            width: 36px;
-            height: 36px;
-            border: none;
-            background: transparent;
-            color: var(--text-dim);
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s;
-            font-size: 18px;
-        }
-
-        .icon-btn:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text);
-        }
-
-        /* Chat Area */
         .chat-container {
             flex: 1;
             overflow-y: auto;
-            padding: 24px;
             display: flex;
             flex-direction: column;
         }
 
+        .messages {
+            flex: 1;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 24px 80px;
+        }
+
         /* Welcome */
         .welcome {
-            max-width: 700px;
-            margin: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
             text-align: center;
-            padding: 60px 20px;
         }
 
         .welcome-icon {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            border-radius: 20px;
+            width: 64px;
+            height: 64px;
+            background: var(--bg-2);
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 40px;
-            margin: 0 auto 24px;
+            font-size: 32px;
+            margin-bottom: 24px;
         }
 
         .welcome h1 {
-            font-size: 32px;
+            font-size: 28px;
+            font-weight: 500;
             margin-bottom: 12px;
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: var(--text-primary);
         }
 
         .welcome p {
-            color: var(--text-dim);
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 32px;
-        }
-
-        .examples {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-            margin-top: 32px;
-        }
-
-        .example-card {
-            padding: 16px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-align: left;
-        }
-
-        .example-card:hover {
-            border-color: var(--gold);
-            transform: translateY(-2px);
-        }
-
-        .example-card h4 {
-            font-size: 14px;
-            color: var(--gold);
-            margin-bottom: 6px;
-        }
-
-        .example-card p {
-            font-size: 13px;
-            color: var(--text-dim);
-            margin: 0;
+            font-size: 15px;
+            color: var(--text-secondary);
+            max-width: 500px;
+            line-height: 1.5;
         }
 
         /* Messages */
         .message {
             display: flex;
             gap: 16px;
-            margin-bottom: 24px;
-            max-width: 900px;
-            animation: slideIn 0.3s ease;
-        }
-
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            margin-bottom: 32px;
         }
 
         .message-avatar {
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 8px;
+            background: var(--bg-2);
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            font-weight: 700;
-            font-size: 14px;
-        }
-
-        .message.user .message-avatar {
-            background: #2D3748;
-            color: #fff;
+            font-size: 16px;
         }
 
         .message.assistant .message-avatar {
-            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
+            background: var(--accent);
             color: #000;
         }
 
         .message-content {
             flex: 1;
-            padding-top: 2px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-primary);
         }
 
         .message-content p {
-            line-height: 1.6;
             margin-bottom: 12px;
         }
 
@@ -316,15 +250,15 @@
         }
 
         .message-content code {
-            background: var(--surface);
+            background: var(--bg-2);
             padding: 2px 6px;
             border-radius: 4px;
-            font-family: 'Courier New', monospace;
+            font-family: 'Monaco', 'Courier New', monospace;
             font-size: 13px;
         }
 
         .message-content pre {
-            background: var(--surface);
+            background: var(--bg-2);
             padding: 16px;
             border-radius: 8px;
             overflow-x: auto;
@@ -332,85 +266,308 @@
         }
 
         /* Loading */
-        .loading {
+        .typing {
             display: flex;
             gap: 4px;
-            padding: 8px 0;
+            padding: 4px 0;
         }
 
-        .loading-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--gold);
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-tertiary);
             border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out both;
+            animation: typing 1.4s infinite ease-in-out both;
         }
 
-        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
-        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
 
-        @keyframes bounce {
-            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
             40% { transform: scale(1); opacity: 1; }
         }
 
         /* Input Area */
         .input-area {
-            padding: 20px 24px;
-            border-top: 1px solid var(--border);
-            background: var(--surface);
+            position: relative;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px;
         }
 
         .input-wrapper {
-            max-width: 900px;
-            margin: 0 auto;
             position: relative;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: border-color 0.15s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--text-tertiary);
         }
 
         .input-box {
             width: 100%;
-            padding: 14px 50px 14px 16px;
-            background: var(--bg);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            color: var(--text);
+            background: transparent;
+            border: none;
+            padding: 14px 48px 14px 16px;
+            color: var(--text-primary);
             font-size: 15px;
             font-family: inherit;
             resize: none;
-            min-height: 52px;
+            min-height: 48px;
             max-height: 200px;
-            transition: all 0.2s;
+            outline: none;
         }
 
-        .input-box:focus {
-            outline: none;
-            border-color: var(--gold);
+        .input-box::placeholder {
+            color: var(--text-tertiary);
         }
 
         .send-btn {
             position: absolute;
-            right: 8px;
-            bottom: 8px;
-            width: 36px;
-            height: 36px;
-            background: var(--gold);
+            right: 10px;
+            bottom: 10px;
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
             border: none;
             border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.2s;
-            color: #000;
+            transition: background 0.15s;
         }
 
-        .send-btn:hover {
-            background: var(--gold-dark);
+        .send-btn:hover:not(:disabled) {
+            background: var(--accent-hover);
         }
 
         .send-btn:disabled {
             opacity: 0.4;
             cursor: not-allowed;
+        }
+
+        .send-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: #000;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-1);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: var(--bg-2);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent);
+            background: var(--bg-2);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-2);
+            border-radius: 6px;
+        }
+
+        .file-icon {
+            font-size: 20px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .file-remove {
+            background: transparent;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 18px;
+        }
+
+        .file-remove:hover {
+            color: var(--text-primary);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-2);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-3);
+        }
+
+        /* Projects */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .project-card {
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .project-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .project-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-top: 8px;
         }
 
         /* Scrollbar */
@@ -423,18 +580,30 @@
         }
 
         ::-webkit-scrollbar-thumb {
-            background: #333;
+            background: var(--bg-3);
             border-radius: 4px;
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: #444;
+            background: var(--text-tertiary);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
-                display: none;
+                position: fixed;
+                left: -260px;
+                z-index: 100;
+                transition: left 0.3s;
+            }
+
+            .sidebar.open {
+                left: 0;
             }
         }
     </style>
@@ -443,70 +612,96 @@
     <div class="app">
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="logo">
-                <div class="logo-icon">⚖️</div>
-                <div class="logo-text">ROM Agent</div>
+            <div class="sidebar-header">
+                <button class="new-chat-btn" onclick="newChat()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 3.5a.5.5 0 01.5.5v3.5H12a.5.5 0 010 1H8.5V12a.5.5 0 01-1 0V8.5H4a.5.5 0 010-1h3.5V4a.5.5 0 01.5-.5z"/>
+                    </svg>
+                    Nova conversa
+                </button>
             </div>
 
-            <button class="new-chat-btn" onclick="newChat()">
-                <span>✨</span>
-                Nova Conversa
-            </button>
+            <div class="sidebar-nav">
+                <div class="nav-section">
+                    <div class="nav-section-title">Principal</div>
+                    <div class="nav-item active" onclick="showView('chat')">
+                        <span>💬</span> Chat
+                    </div>
+                    <div class="nav-item" onclick="showView('projects')">
+                        <span>📁</span> Projetos ROM
+                    </div>
+                    <div class="nav-item" onclick="showView('kb')">
+                        <span>📚</span> Knowledge Base
+                    </div>
+                </div>
 
-            <div class="nav-section">
-                <div class="nav-item active" onclick="showView('chat')">
-                    <span>💬</span>
-                    Chat Principal
+                <div class="nav-section">
+                    <div class="nav-section-title">Ferramentas</div>
+                    <div class="nav-item" onclick="showView('extraction')">
+                        <span>🔧</span> Extração de Documentos
+                    </div>
+                    <div class="nav-item" onclick="window.open('/analytics.html', '_blank')">
+                        <span>📊</span> Dashboard Analytics
+                    </div>
                 </div>
-                <div class="nav-item" onclick="window.open('/analytics.html', '_blank')">
-                    <span>📊</span>
-                    Analytics
-                </div>
-                <div class="nav-item" onclick="showView('kb')">
-                    <span>📚</span>
-                    Knowledge Base
-                </div>
-                <div class="nav-item" onclick="showView('tools')">
-                    <span>🔧</span>
-                    Ferramentas
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar">ROM</div>
+                    <div class="user-name">ROM Agent v2.7</div>
                 </div>
             </div>
         </div>
 
-        <!-- Main Content -->
+        <!-- Main -->
         <div class="main">
-            <div class="header">
-                <div class="header-title">IA Jurídica Especializada</div>
-                <div class="header-actions">
-                    <button class="icon-btn" title="Tema" onclick="toggleTheme()">🌙</button>
-                    <button class="icon-btn" title="Limpar" onclick="clearChat()">🗑️</button>
+            <div class="chat-container">
+                <!-- Chat View -->
+                <div id="chatView" class="messages">
+                    <div class="welcome" id="welcome">
+                        <div class="welcome-icon">⚖️</div>
+                        <h1>Como posso ajudar?</h1>
+                        <p>Assistente jurídico especializado em Direito brasileiro. Redação de peças, pesquisa de jurisprudência e análise legal.</p>
+                    </div>
                 </div>
-            </div>
 
-            <div class="chat-container" id="chatContainer">
-                <div class="welcome" id="welcome">
-                    <div class="welcome-icon">⚖️</div>
-                    <h1>Bem-vindo ao ROM Agent</h1>
-                    <p>Assistente jurídico especializado em Direito brasileiro. Pergunte sobre legislação, jurisprudência, redação de peças ou análise de casos.</p>
+                <!-- Projects View -->
+                <div id="projectsView" class="messages hidden">
+                    <h1 style="margin-bottom: 20px;">Projetos ROM</h1>
+                    <button class="btn btn-primary" onclick="createProject()">+ Novo Projeto</button>
+                    <div class="projects-grid" id="projectsGrid">
+                        <!-- Projects will be loaded here -->
+                    </div>
+                </div>
 
-                    <div class="examples">
-                        <div class="example-card" onclick="sendExample('Redija uma petição inicial de danos morais')">
-                            <h4>📝 Petição Inicial</h4>
-                            <p>Danos morais</p>
-                        </div>
-                        <div class="example-card" onclick="sendExample('Busque jurisprudência do STJ sobre responsabilidade civil')">
-                            <h4>⚖️ Jurisprudência</h4>
-                            <p>STJ - Resp. Civil</p>
-                        </div>
-                        <div class="example-card" onclick="sendExample('Elabore um habeas corpus por excesso de prazo')">
-                            <h4>🔓 Habeas Corpus</h4>
-                            <p>Excesso de prazo</p>
-                        </div>
-                        <div class="example-card" onclick="sendExample('Analise o artigo 927 do Código Civil')">
-                            <h4>📖 Análise Legal</h4>
-                            <p>Art. 927 CC</p>
+                <!-- KB View -->
+                <div id="kbView" class="messages hidden">
+                    <h1 style="margin-bottom: 20px;">Knowledge Base</h1>
+                    <div class="upload-area" onclick="document.getElementById('kbFileInput').click()" ondrop="handleKBDrop(event)" ondragover="handleKBDragOver(event)" ondragleave="handleKBDragLeave(event)">
+                        <div class="upload-icon">📤</div>
+                        <div class="upload-text">
+                            <strong>Clique para selecionar</strong> ou arraste arquivos aqui<br>
+                            <small>PDF, DOCX, TXT (máx. 100MB por arquivo, 20 arquivos)</small>
                         </div>
                     </div>
+                    <input type="file" id="kbFileInput" multiple accept=".pdf,.doc,.docx,.txt" style="display: none;" onchange="handleKBFiles(this.files)">
+                    <div class="file-list" id="kbFileList"></div>
+                </div>
+
+                <!-- Extraction View -->
+                <div id="extractionView" class="messages hidden">
+                    <h1 style="margin-bottom: 20px;">Ferramentas de Extração</h1>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">Extraia texto de documentos usando 33 ferramentas gratuitas</p>
+                    <div class="upload-area" onclick="document.getElementById('extractFileInput').click()" ondrop="handleExtractDrop(event)" ondragover="handleKBDragOver(event)" ondragleave="handleKBDragLeave(event)">
+                        <div class="upload-icon">🔧</div>
+                        <div class="upload-text">
+                            <strong>Upload para Extração</strong><br>
+                            <small>33 ferramentas processarão seu documento automaticamente</small>
+                        </div>
+                    </div>
+                    <input type="file" id="extractFileInput" multiple accept=".pdf,.doc,.docx" style="display: none;" onchange="handleExtractFiles(this.files)">
+                    <div class="file-list" id="extractFileList"></div>
                 </div>
             </div>
 
@@ -515,13 +710,15 @@
                     <textarea
                         id="messageInput"
                         class="input-box"
-                        placeholder="Digite sua mensagem..."
+                        placeholder="Envie uma mensagem..."
                         rows="1"
                         onkeydown="handleKeyDown(event)"
                         oninput="autoResize(this)"
                     ></textarea>
                     <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                        ➤
+                        <svg viewBox="0 0 16 16">
+                            <path d="M.5 1.163A1 1 0 011.97.28l12.868 6.837a1 1 0 010 1.766L1.969 15.72A1 1 0 01.5 14.836V10.33a1 1 0 011-1h3.134a.25.25 0 00.192-.41L.5 4.845V1.163z"/>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -529,10 +726,8 @@
     </div>
 
     <script>
-        const chatContainer = document.getElementById('chatContainer');
-        const messageInput = document.getElementById('messageInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const welcome = document.getElementById('welcome');
+        const views = ['chatView', 'projectsView', 'kbView', 'extractionView'];
+        let currentView = 'chatView';
 
         // Auto-resize textarea
         function autoResize(el) {
@@ -548,84 +743,87 @@
             }
         }
 
-        // Send example
-        function sendExample(text) {
-            messageInput.value = text;
-            sendMessage();
+        // Show view
+        function showView(view) {
+            views.forEach(v => {
+                document.getElementById(v).classList.add('hidden');
+            });
+
+            const viewMap = {
+                'chat': 'chatView',
+                'projects': 'projectsView',
+                'kb': 'kbView',
+                'extraction': 'extractionView'
+            };
+
+            const targetView = viewMap[view];
+            document.getElementById(targetView).classList.remove('hidden');
+            currentView = targetView;
+
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Load data for specific views
+            if (view === 'projects') loadProjects();
         }
 
         // New chat
         function newChat() {
             fetch('/api/clear', { method: 'POST' });
-            chatContainer.innerHTML = '';
-            welcome.style.display = 'block';
-            chatContainer.appendChild(welcome);
+            const chatView = document.getElementById('chatView');
+            chatView.innerHTML = `
+                <div class="welcome" id="welcome">
+                    <div class="welcome-icon">⚖️</div>
+                    <h1>Como posso ajudar?</h1>
+                    <p>Assistente jurídico especializado em Direito brasileiro. Redação de peças, pesquisa de jurisprudência e análise legal.</p>
+                </div>
+            `;
+            showView('chat');
         }
 
-        // Clear chat
-        function clearChat() {
-            if (confirm('Limpar conversa atual?')) {
-                newChat();
-            }
-        }
-
-        // Toggle theme
-        function toggleTheme() {
-            const html = document.documentElement;
-            const current = html.getAttribute('data-theme');
-            html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
-        }
-
-        // Show view
-        function showView(view) {
-            alert(`View '${view}' em desenvolvimento`);
-        }
-
-        // Add message to chat
+        // Add message
         function addMessage(text, sender) {
-            if (welcome.style.display !== 'none') {
-                welcome.style.display = 'none';
-            }
+            const welcome = document.getElementById('welcome');
+            if (welcome) welcome.remove();
 
+            const chatView = document.getElementById('chatView');
             const div = document.createElement('div');
             div.className = `message ${sender}`;
 
             const avatar = sender === 'assistant' ? '⚖️' : '👤';
-            let content = text;
-
-            if (sender === 'assistant') {
-                content = marked.parse(text);
-            } else {
-                content = `<p>${escapeHtml(text)}</p>`;
-            }
+            let content = sender === 'assistant' ? marked.parse(text) : `<p>${escapeHtml(text)}</p>`;
 
             div.innerHTML = `
                 <div class="message-avatar">${avatar}</div>
                 <div class="message-content">${content}</div>
             `;
 
-            chatContainer.appendChild(div);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            chatView.appendChild(div);
+            chatView.parentElement.scrollTop = chatView.parentElement.scrollHeight;
         }
 
-        // Add loading indicator
+        // Add loading
         function addLoading() {
             const id = 'loading-' + Date.now();
+            const chatView = document.getElementById('chatView');
             const div = document.createElement('div');
             div.id = id;
             div.className = 'message assistant';
             div.innerHTML = `
                 <div class="message-avatar">⚖️</div>
                 <div class="message-content">
-                    <div class="loading">
-                        <div class="loading-dot"></div>
-                        <div class="loading-dot"></div>
-                        <div class="loading-dot"></div>
+                    <div class="typing">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
                     </div>
                 </div>
             `;
-            chatContainer.appendChild(div);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            chatView.appendChild(div);
+            chatView.parentElement.scrollTop = chatView.parentElement.scrollHeight;
             return id;
         }
 
@@ -637,17 +835,16 @@
 
         // Send message
         async function sendMessage() {
-            const message = messageInput.value.trim();
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
             if (!message) return;
 
-            // Add user message
             addMessage(message, 'user');
-            messageInput.value = '';
-            messageInput.style.height = 'auto';
+            input.value = '';
+            input.style.height = 'auto';
 
-            // Show loading
             const loadingId = addLoading();
-            sendBtn.disabled = true;
+            document.getElementById('sendBtn').disabled = true;
 
             try {
                 const response = await fetch('/api/chat', {
@@ -666,22 +863,164 @@
                 }
             } catch (error) {
                 removeLoading(loadingId);
-                addMessage('❌ Erro de conexão. Verifique se o servidor está rodando.', 'assistant');
+                addMessage('❌ Erro de conexão', 'assistant');
             }
 
-            sendBtn.disabled = false;
-            messageInput.focus();
+            document.getElementById('sendBtn').disabled = false;
+            input.focus();
         }
 
-        // Escape HTML
+        // Projects
+        async function loadProjects() {
+            try {
+                const response = await fetch('/api/projects/list');
+                const projects = await response.json();
+
+                const grid = document.getElementById('projectsGrid');
+                if (projects.length === 0) {
+                    grid.innerHTML = '<p style="color: var(--text-secondary);">Nenhum projeto ainda. Clique em "Novo Projeto" para começar.</p>';
+                    return;
+                }
+
+                grid.innerHTML = projects.map(p => `
+                    <div class="project-card" onclick="openProject('${p.id}')">
+                        <div class="project-header">
+                            <div class="project-icon">${p.icon || '📁'}</div>
+                            <div>
+                                <div class="project-title">${p.name}</div>
+                                <div class="project-meta">${p.documents || 0} documentos</div>
+                            </div>
+                        </div>
+                        <div class="project-meta">${new Date(p.lastModified).toLocaleDateString('pt-BR')}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar projetos:', error);
+            }
+        }
+
+        function createProject() {
+            const name = prompt('Nome do projeto:');
+            if (!name) return;
+
+            fetch('/api/projects/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            }).then(() => loadProjects());
+        }
+
+        function openProject(id) {
+            alert(`Abrindo projeto ${id} (funcionalidade em desenvolvimento)`);
+        }
+
+        // KB Upload
+        function handleKBDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleKBDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handleKBDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            handleKBFiles(e.dataTransfer.files);
+        }
+
+        async function handleKBFiles(files) {
+            const fileList = document.getElementById('kbFileList');
+
+            for (const file of files) {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <div class="file-icon">📄</div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${formatSize(file.size)} - Processando...</div>
+                    </div>
+                `;
+                fileList.appendChild(item);
+
+                // Upload
+                const formData = new FormData();
+                formData.append('files', file);
+
+                try {
+                    const response = await fetch('/api/upload-documents', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+
+                    item.querySelector('.file-size').textContent =
+                        `${formatSize(file.size)} - ✅ Processado`;
+                } catch (error) {
+                    item.querySelector('.file-size').textContent =
+                        `${formatSize(file.size)} - ❌ Erro`;
+                }
+            }
+        }
+
+        // Extraction
+        function handleExtractDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            handleExtractFiles(e.dataTransfer.files);
+        }
+
+        async function handleExtractFiles(files) {
+            const fileList = document.getElementById('extractFileList');
+
+            for (const file of files) {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <div class="file-icon">🔧</div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${formatSize(file.size)} - Extraindo com 33 ferramentas...</div>
+                    </div>
+                `;
+                fileList.appendChild(item);
+
+                const formData = new FormData();
+                formData.append('files', file);
+
+                try {
+                    const response = await fetch('/api/upload-documents', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+
+                    const extraction = data.extractions[0];
+                    item.querySelector('.file-size').textContent =
+                        `${formatSize(file.size)} - ✅ ${extraction.textLength} caracteres extraídos`;
+                } catch (error) {
+                    item.querySelector('.file-size').textContent =
+                        `${formatSize(file.size)} - ❌ Erro na extração`;
+                }
+            }
+        }
+
+        // Utils
+        function formatSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-
-        // Focus input on load
-        messageInput.focus();
 
         // Load history
         async function loadHistory() {
@@ -690,7 +1029,9 @@
                 const data = await response.json();
 
                 if (data.history && data.history.length > 0) {
-                    welcome.style.display = 'none';
+                    const welcome = document.getElementById('welcome');
+                    if (welcome) welcome.remove();
+
                     data.history.forEach(msg => {
                         const sender = msg.role === 'user' ? 'user' : 'assistant';
                         addMessage(msg.content, sender);
@@ -701,6 +1042,8 @@
             }
         }
 
+        // Init
+        document.getElementById('messageInput').focus();
         loadHistory();
     </script>
 </body>
