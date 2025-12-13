@@ -105,6 +105,69 @@ Todas as melhorias solicitadas foram implementadas com sucesso! Seu agente ROM a
 - **Validação de configurações**
 - Acesso em: `http://localhost:3000/admin-formatting.html`
 
+### 12. ✅ **NOVO!** Dashboard Master Completo
+- **Interface de administração profissional:**
+  - Sidebar navegável com múltiplas seções
+  - Estatísticas em tempo real (parceiros, usuários, documentos, custos)
+  - Gráfico de uso dos últimos 7 dias com Chart.js
+  - Feed de atividades recentes
+  - Tabelas de top parceiros e documentos recentes
+- **Views especializadas:**
+  - Visão Geral (Overview)
+  - Gestão de Parceiros
+  - Usuários
+  - Documentos
+  - Uso & Performance
+  - Faturamento
+  - Qualidade
+  - Ferramentas de Extração
+  - Logs do Sistema
+- **Design responsivo e moderno**
+- Acesso em: `http://localhost:3000/dashboard.html`
+
+### 13. ✅ **NOVO!** Editor de Prompts & Custom Instructions
+- **Interface visual completa:**
+  - Lista lateral de todos os prompts do sistema
+  - Editor de código com syntax highlighting
+  - Estatísticas em tempo real (linhas, caracteres, palavras)
+  - Busca de prompts por nome
+- **Funcionalidades:**
+  - Criar novos prompts
+  - Editar prompts existentes
+  - Salvar alterações (Ctrl+S)
+  - Deletar prompts
+  - Preview de conteúdo
+- **3 prompts pré-configurados:**
+  - Petição Inicial (estrutura completa)
+  - Habeas Corpus (todos os tipos)
+  - Custom Instructions (personalização do ROM)
+- **Toast notifications** para feedback visual
+- Acesso em: `http://localhost:3000/prompts-editor.html`
+
+### 14. ✅ **NOVO!** APIs do Dashboard
+- **Endpoints implementados:**
+  - `GET /api/dashboard/users` - Listar usuários
+  - `GET /api/dashboard/usage` - Dados de uso
+  - `GET /api/dashboard/pieces` - Histórico de peças geradas
+  - `GET /api/dashboard/analytics` - Analytics gerais
+  - `GET /api/dashboard/billing` - Dados de faturamento
+- **Helpers para logs:**
+  - Função `readLogFile()` - Leitura de JSON
+  - Função `writeLogFile()` - Escrita de JSON
+  - Criação automática de diretórios
+
+### 15. ✅ **NOVO!** APIs de Prompts
+- **Gerenciamento completo:**
+  - `GET /api/prompts/system` - Listar todos os prompts
+  - `GET /api/prompts/system/:id` - Obter prompt específico
+  - `POST /api/prompts/system` - Criar novo prompt
+  - `PUT /api/prompts/system/:id` - Atualizar prompt
+  - `DELETE /api/prompts/system/:id` - Deletar prompt
+- **Validações:**
+  - Verificação de nomes duplicados
+  - Validação de conteúdo
+  - Tratamento de erros
+
 ---
 
 ## 🗂️ Arquivos Criados/Modificados
@@ -115,10 +178,23 @@ Todas as melhorias solicitadas foram implementadas com sucesso! Seu agente ROM a
 ✅ src/server-enhanced.js           - Servidor completo (todas funcionalidades)
 ✅ lib/partners-branding.js         - Sistema de gerenciamento de parceiros
 ✅ lib/formatting-templates.js      - Sistema de templates de formatação
+✅ public/index.html                - Interface principal do chat
+✅ public/dashboard.html            - Dashboard Master de administração
+✅ public/prompts-editor.html       - Editor de prompts e custom instructions
 ✅ public/admin-partners.html       - Interface de administração de parceiros
 ✅ public/admin-formatting.html     - Interface de configuração de formatação
 ✅ public/img/logo_rom.png          - Sua logomarca
 ✅ public/img/timbrado_header_LIMPO.png - Logo timbrada
+
+✅ config/system_prompts/peticao_inicial.txt - Prompt de petição inicial
+✅ config/system_prompts/habeas_corpus.txt   - Prompt de habeas corpus
+✅ config/system_prompts/custom_instructions.txt - Instruções personalizadas
+
+✅ logs/users.json              - Dados de usuários
+✅ logs/usage.json              - Dados de uso
+✅ logs/pieces_history.json     - Histórico de peças
+✅ logs/analytics.json          - Dados de analytics
+✅ logs/billing.json            - Dados de faturamento
 
 ✅ render.yaml                      - Deploy no Render
 ✅ railway.json                     - Deploy no Railway
@@ -281,6 +357,30 @@ curl -X POST http://localhost:3000/api/partners/silva-associados/logo \
 - `POST /api/auth/login` - Login
 - `POST /api/auth/logout` - Logout
 - `GET /api/auth/status` - Status da sessão
+
+### Dashboard
+- `GET /api/dashboard/users` - Listar usuários
+- `GET /api/dashboard/usage` - Dados de uso
+- `GET /api/dashboard/pieces` - Histórico de peças
+- `GET /api/dashboard/analytics` - Analytics gerais
+- `GET /api/dashboard/billing` - Dados de faturamento
+
+### Prompts
+- `GET /api/prompts/system` - Listar todos os prompts
+- `GET /api/prompts/system/:id` - Obter prompt específico
+- `POST /api/prompts/system` - Criar novo prompt
+- `PUT /api/prompts/system/:id` - Atualizar prompt
+- `DELETE /api/prompts/system/:id` - Deletar prompt
+
+### Formatação
+- `GET /api/formatting/presets` - Listar presets disponíveis
+- `GET /api/formatting/presets/:id` - Obter preset específico
+- `GET /api/formatting/template/:partnerId` - Obter template do parceiro
+- `PUT /api/formatting/template/:partnerId` - Configurar template
+- `PATCH /api/formatting/template/:partnerId` - Atualizar customizações
+- `DELETE /api/formatting/template/:partnerId` - Resetar template
+- `GET /api/formatting/docx-config/:partnerId` - Obter config DOCX
+- `GET /api/formatting/css/:partnerId` - Obter CSS do template
 
 ---
 
