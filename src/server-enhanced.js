@@ -658,11 +658,20 @@ app.get('/api/formatting/template/:partnerId?', (req, res) => {
 });
 
 // Configurar template de um parceiro (selecionar preset + customizações)
-app.put('/api/formatting/template/:partnerId', (req, res) => {
+// Middleware customizado: master_admin pode editar qualquer parceiro, admin só o seu
+app.put('/api/formatting/template/:partnerId', authSystem.authMiddleware(), (req, res) => {
   try {
-    // TODO: Adicionar verificação de admin ou do próprio parceiro
     const { partnerId } = req.params;
     const { templateId, customizations } = req.body;
+    const user = req.user;
+
+    // Verificar permissões: master_admin pode tudo, admin só o próprio parceiro
+    if (user.role !== 'master_admin' && user.partnerId !== partnerId) {
+      return res.status(403).json({
+        error: 'Acesso negado',
+        message: 'Você só pode editar a formatação do seu próprio escritório'
+      });
+    }
 
     if (!templateId) {
       return res.status(400).json({ error: 'templateId é obrigatório' });
@@ -676,7 +685,8 @@ app.put('/api/formatting/template/:partnerId', (req, res) => {
 
     res.json({
       success: true,
-      template: updatedTemplate
+      template: updatedTemplate,
+      message: `Template atualizado para ${partnerId}`
     });
   } catch (error) {
     console.error('Erro ao configurar template:', error);
@@ -685,11 +695,19 @@ app.put('/api/formatting/template/:partnerId', (req, res) => {
 });
 
 // Atualizar apenas customizações de um parceiro
-app.patch('/api/formatting/template/:partnerId', (req, res) => {
+app.patch('/api/formatting/template/:partnerId', authSystem.authMiddleware(), (req, res) => {
   try {
-    // TODO: Adicionar verificação de admin ou do próprio parceiro
     const { partnerId } = req.params;
     const { customizations } = req.body;
+    const user = req.user;
+
+    // Verificar permissões: master_admin pode tudo, admin só o próprio parceiro
+    if (user.role !== 'master_admin' && user.partnerId !== partnerId) {
+      return res.status(403).json({
+        error: 'Acesso negado',
+        message: 'Você só pode editar a formatação do seu próprio escritório'
+      });
+    }
 
     if (!customizations) {
       return res.status(400).json({ error: 'customizations é obrigatório' });
