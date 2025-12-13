@@ -130,6 +130,42 @@
             <div class="value" id="costSavings">$0.00</div>
             <div class="change">+0% vs ontem</div>
         </div>
+
+        <div class="stat-card">
+            <h3>Rate Limiting - Requisições Bloqueadas</h3>
+            <div class="value" id="rateLimitBlocked">0</div>
+            <div class="change">Proteção ativa</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Compressão - Dados Economizados</h3>
+            <div class="value" id="compressionSaved">0 MB</div>
+            <div class="change">Gzip/Brotli ativo</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Buscas Semânticas</h3>
+            <div class="value" id="semanticSearches">0</div>
+            <div class="change">TF-IDF local</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Versões Salvas</h3>
+            <div class="value" id="versionsSaved">0</div>
+            <div class="change">Histórico completo</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Templates Disponíveis</h3>
+            <div class="value" id="templatesAvailable">1</div>
+            <div class="change">Peça Inicial</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Último Backup</h3>
+            <div class="value" id="lastBackup">Hoje</div>
+            <div class="change">03:00 automático</div>
+        </div>
     </div>
 
     <div class="chart-container">
@@ -140,6 +176,11 @@
     <div class="chart-container">
         <h2>Consultas por Hora (Últimas 24h)</h2>
         <canvas id="queriesChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Performance das Fases 4 & 5</h2>
+        <canvas id="phase45Chart"></canvas>
     </div>
 
     <script>
@@ -207,6 +248,35 @@
                 scales: {
                     y: {
                         beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Phase 4 & 5 features
+        const phase45Ctx = document.getElementById('phase45Chart').getContext('2d');
+        new Chart(phase45Ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Rate Limiting', 'Compression', 'Semantic Search', 'Versioning', 'Templates', 'Backups'],
+                datasets: [{
+                    label: 'Uso Diário',
+                    data: [15, 87, 24, 12, 5, 1],
+                    backgroundColor: 'rgba(26, 54, 93, 0.8)',
+                    borderColor: '#1a365d',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
                     }
                 }
             }

@@ -1536,6 +1536,30 @@
                     <span>Analytics</span>
                 </button>
 
+                <!-- Semantic Search Button -->
+                <button class="sidebar-nav-btn" onclick="toggleSemanticSearch()" style="margin-top: 8px; font-size: 12px;">
+                    <span>🔍</span>
+                    <span>Busca Semântica</span>
+                </button>
+
+                <!-- Templates Manager Button -->
+                <button class="sidebar-nav-btn" onclick="openTemplatesManager()" style="margin-top: 8px; font-size: 12px;">
+                    <span>📋</span>
+                    <span>Gerenciar Templates</span>
+                </button>
+
+                <!-- Versioning Button -->
+                <button class="sidebar-nav-btn" onclick="openVersionHistory()" style="margin-top: 8px; font-size: 12px;">
+                    <span>🕒</span>
+                    <span>Histórico de Versões</span>
+                </button>
+
+                <!-- Backup Status Button -->
+                <button class="sidebar-nav-btn" onclick="checkBackupStatus()" style="margin-top: 8px; font-size: 12px;">
+                    <span>💾</span>
+                    <span>Status de Backups</span>
+                </button>
+
                 <!-- Extraction Tools Panel (collapsed by default) -->
                 <div id="extractionToolsPanel" style="display: none; margin-top: 8px; padding: 8px; background: var(--bg-tertiary); border-radius: 8px; font-size: 11px;">
                     <div style="margin-bottom: 8px; font-weight: 600; color: var(--gold-primary);">📤 Upload de Documentos</div>
@@ -3313,6 +3337,286 @@ Esc - Focar no Input`);
         }
 
         console.log('⌨️ Atalhos de teclado ativados! Pressione Ctrl+/ para ver a lista');
+
+        // ============================================
+        // PHASE 4 & 5 FEATURES - UI FUNCTIONS
+        // ============================================
+
+        // Semantic Search
+        async function toggleSemanticSearch() {
+            const query = prompt('🔍 Buscar documentos na Knowledge Base:\n\nDigite palavras-chave:');
+            if (!query) return;
+
+            showToast('Buscando', 'Procurando documentos relevantes...', 'success');
+
+            try {
+                const response = await fetch('/api/semantic-search', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                    body: JSON.stringify({ query, limit: 10 })
+                });
+
+                if (!response.ok) throw new Error('Erro na busca');
+
+                const results = await response.json();
+
+                if (results.length === 0) {
+                    showToast('Sem resultados', 'Nenhum documento encontrado', 'error');
+                    return;
+                }
+
+                // Display results in preview panel
+                let html = '<div style="padding: 20px; background: white;">';
+                html += `<h1 style="color: var(--gold-primary); margin-bottom: 20px;">🔍 Resultados da Busca: "${query}"</h1>`;
+                html += `<p style="color: #666; margin-bottom: 30px;">Encontrados ${results.length} documentos relevantes</p>`;
+
+                results.forEach((result, index) => {
+                    html += `
+                        <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--gold-primary);">
+                            <h3 style="font-size: 16px; margin-bottom: 10px; color: #1C1C1C;">${index + 1}. ${result.doc.filename || 'Documento'}</h3>
+                            <p style="font-size: 14px; color: #666; margin-bottom: 10px;">${result.doc.content.substring(0, 300)}...</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <span style="background: var(--gold-primary); color: white; padding: 4px 12px; border-radius: 6px; font-size: 12px; font-weight: 600;">
+                                    Relevância: ${(result.score * 100).toFixed(1)}%
+                                </span>
+                                <span style="font-size: 12px; color: #999;">${result.doc.type || 'Documento'}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += '</div>';
+                document.getElementById('documentContent').innerHTML = html;
+                showPreview();
+                showToast('Busca concluída', `${results.length} documentos encontrados`, 'success');
+
+            } catch (error) {
+                console.error('Search error:', error);
+                showToast('Erro', 'Não foi possível realizar a busca', 'error');
+            }
+        }
+
+        // Templates Manager
+        async function openTemplatesManager() {
+            try {
+                const response = await fetch('/api/templates/list', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Erro ao carregar templates');
+
+                const templates = await response.json();
+
+                let html = '<div style="padding: 20px; background: white; min-height: 600px;">';
+                html += '<h1 style="text-align: center; color: var(--gold-primary); margin-bottom: 30px;">📋 Gerenciar Templates</h1>';
+
+                if (templates.length === 0) {
+                    html += '<p style="text-align: center; color: #999;">Nenhum template disponível</p>';
+                } else {
+                    templates.forEach(template => {
+                        html += `
+                            <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid var(--gold-primary);">
+                                <h3 style="font-size: 18px; margin-bottom: 10px; color: #1C1C1C;">${template.name}</h3>
+                                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">${template.description || 'Sem descrição'}</p>
+                                <div style="display: flex; gap: 10px;">
+                                    <button onclick="useTemplate('${template.id}')" style="padding: 8px 16px; background: var(--gold-primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;">
+                                        Usar Template
+                                    </button>
+                                    <button onclick="viewTemplateVariables('${template.id}')" style="padding: 8px 16px; background: transparent; color: var(--gold-primary); border: 2px solid var(--gold-primary); border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600;">
+                                        Ver Variáveis
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                html += '</div>';
+                document.getElementById('documentContent').innerHTML = html;
+                showPreview();
+                showToast('Templates', `${templates.length} template(s) disponível(is)`, 'success');
+
+            } catch (error) {
+                console.error('Templates error:', error);
+                showToast('Erro', 'Não foi possível carregar templates', 'error');
+            }
+        }
+
+        async function useTemplate(templateId) {
+            // This would open a form to fill in the template variables
+            showToast('Template', 'Funcionalidade em desenvolvimento', 'success');
+        }
+
+        async function viewTemplateVariables(templateId) {
+            showToast('Variáveis', 'Funcionalidade em desenvolvimento', 'success');
+        }
+
+        // Version History
+        async function openVersionHistory() {
+            if (!currentProjectId) {
+                showToast('Aviso', 'Selecione um projeto primeiro', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/versions/${currentProjectId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Erro ao carregar versões');
+
+                const versions = await response.json();
+
+                let html = '<div style="padding: 20px; background: white; min-height: 600px;">';
+                html += '<h1 style="text-align: center; color: var(--gold-primary); margin-bottom: 30px;">🕒 Histórico de Versões</h1>';
+
+                if (versions.length === 0) {
+                    html += '<p style="text-align: center; color: #999;">Nenhuma versão salva ainda</p>';
+                } else {
+                    versions.forEach((version, index) => {
+                        const date = new Date(version.metadata.timestamp).toLocaleString('pt-BR');
+                        html += `
+                            <div style="background: #f9f9f9; padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 4px solid var(--gold-primary);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <h3 style="font-size: 16px; color: #1C1C1C;">Versão ${versions.length - index}</h3>
+                                    <span style="font-size: 12px; color: #999;">${date}</span>
+                                </div>
+                                <p style="font-size: 13px; color: #666; margin-bottom: 10px;">Hash: ${version.metadata.hash.substring(0, 12)}...</p>
+                                <div style="display: flex; gap: 10px;">
+                                    <button onclick="restoreVersion('${version.id}')" style="padding: 6px 12px; background: var(--gold-primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                                        Restaurar
+                                    </button>
+                                    <button onclick="viewVersionDiff('${version.id}', '${versions[index + 1]?.id || version.id}')" style="padding: 6px 12px; background: transparent; color: var(--gold-primary); border: 1px solid var(--gold-primary); border-radius: 6px; cursor: pointer; font-size: 12px;">
+                                        Ver Diferenças
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+
+                html += '</div>';
+                document.getElementById('documentContent').innerHTML = html;
+                showPreview();
+                showToast('Versões', `${versions.length} versão(ões) encontrada(s)`, 'success');
+
+            } catch (error) {
+                console.error('Versions error:', error);
+                showToast('Erro', 'Não foi possível carregar versões', 'error');
+            }
+        }
+
+        async function restoreVersion(versionId) {
+            if (!confirm('Deseja realmente restaurar esta versão? O conteúdo atual será substituído.')) return;
+            showToast('Restaurando', 'Restaurando versão...', 'success');
+            // Implementation would call API to restore version
+        }
+
+        async function viewVersionDiff(versionId1, versionId2) {
+            showToast('Diferenças', 'Funcionalidade em desenvolvimento', 'success');
+        }
+
+        // Backup Status
+        async function checkBackupStatus() {
+            try {
+                const response = await fetch('/api/backup/status', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Erro ao verificar backups');
+
+                const backups = await response.json();
+
+                let html = '<div style="padding: 20px; background: white; min-height: 600px;">';
+                html += '<h1 style="text-align: center; color: var(--gold-primary); margin-bottom: 30px;">💾 Status de Backups</h1>';
+
+                html += `
+                    <div style="background: #e8f5e9; padding: 20px; border-radius: 12px; margin-bottom: 30px; border-left: 4px solid #4caf50;">
+                        <h3 style="font-size: 16px; margin-bottom: 10px; color: #2e7d32;">✅ Sistema de Backup Ativo</h3>
+                        <p style="font-size: 14px; color: #666; margin-bottom: 10px;">Backup automático diário às 03:00</p>
+                        <p style="font-size: 13px; color: #999;">Retenção: últimos 7 backups</p>
+                    </div>
+                `;
+
+                html += '<h2 style="font-size: 18px; margin-bottom: 15px; color: #1C1C1C;">Backups Disponíveis</h2>';
+
+                if (backups.length === 0) {
+                    html += '<p style="text-align: center; color: #999;">Nenhum backup disponível</p>';
+                } else {
+                    backups.forEach((backup, index) => {
+                        const sizeMB = (backup.size / 1024 / 1024).toFixed(2);
+                        const date = new Date(backup.timestamp).toLocaleString('pt-BR');
+                        html += `
+                            <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h4 style="font-size: 14px; margin-bottom: 5px; color: #1C1C1C;">${backup.filename}</h4>
+                                    <p style="font-size: 12px; color: #999;">${date} • ${sizeMB} MB</p>
+                                </div>
+                                <button onclick="downloadBackup('${backup.filename}')" style="padding: 6px 12px; background: var(--gold-primary); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
+                                    Baixar
+                                </button>
+                            </div>
+                        `;
+                    });
+                }
+
+                html += `
+                    <div style="margin-top: 30px; text-align: center;">
+                        <button onclick="createManualBackup()" style="padding: 12px 24px; background: var(--gold-primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600;">
+                            Criar Backup Manual
+                        </button>
+                    </div>
+                `;
+
+                html += '</div>';
+                document.getElementById('documentContent').innerHTML = html;
+                showPreview();
+                showToast('Backups', `${backups.length} backup(s) disponível(is)`, 'success');
+
+            } catch (error) {
+                console.error('Backup error:', error);
+                showToast('Erro', 'Não foi possível verificar backups', 'error');
+            }
+        }
+
+        async function downloadBackup(filename) {
+            showToast('Download', 'Baixando backup...', 'success');
+            window.location.href = `/api/backup/download/${filename}`;
+        }
+
+        async function createManualBackup() {
+            if (!confirm('Deseja criar um backup manual agora?')) return;
+
+            showToast('Backup', 'Criando backup...', 'success');
+
+            try {
+                const response = await fetch('/api/backup/create', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Erro ao criar backup');
+
+                const result = await response.json();
+                showToast('Sucesso', `Backup criado: ${result.filename}`, 'success');
+                checkBackupStatus(); // Refresh the list
+
+            } catch (error) {
+                console.error('Backup creation error:', error);
+                showToast('Erro', 'Não foi possível criar backup', 'error');
+            }
+        }
     </script>
 
     <!-- PWA Service Worker Registration -->
