@@ -2131,58 +2131,14 @@
                 if (response.ok) {
                     projects = await response.json();
                 } else {
-                    // Mock data for demonstration
-                    projects = [
-                        {
-                            id: '1',
-                            name: 'Caso Silva vs Empresa X',
-                            documents: 12,
-                            type: 'Petição Inicial',
-                            icon: '⚖️',
-                            lastModified: 'Hoje, 14:30',
-                            status: 'active'
-                        },
-                        {
-                            id: '2',
-                            name: 'Indenização Danos Morais',
-                            documents: 8,
-                            type: 'Recurso Apelação',
-                            icon: '📋',
-                            lastModified: 'Ontem, 16:45',
-                            status: 'inactive'
-                        },
-                        {
-                            id: '3',
-                            name: 'HC João da Silva',
-                            documents: 5,
-                            type: 'Habeas Corpus',
-                            icon: '⚖️',
-                            lastModified: '3 dias atrás',
-                            status: 'inactive'
-                        },
-                        {
-                            id: '4',
-                            name: 'Execução Fiscal',
-                            documents: 15,
-                            type: 'Embargos',
-                            icon: '📊',
-                            lastModified: '1 semana atrás',
-                            status: 'inactive'
-                        },
-                        {
-                            id: '5',
-                            name: 'Divórcio Consensual',
-                            documents: 6,
-                            type: 'Petição Inicial',
-                            icon: '📝',
-                            lastModified: '2 semanas atrás',
-                            status: 'inactive'
-                        }
-                    ];
+                    projects = [];
+                    throw new Error('Falha ao carregar projetos');
                 }
                 renderProjects();
             } catch (error) {
                 console.error('Error loading projects:', error);
+                projects = [];
+                renderProjects();
                 showToast('Erro', 'Não foi possível carregar os projetos', 'error');
             }
         }

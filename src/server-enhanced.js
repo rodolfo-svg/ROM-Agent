@@ -20,6 +20,7 @@ import fs from 'fs';
 import { ROMAgent, CONFIG } from './index.js';
 import partnersBranding from '../lib/partners-branding.js';
 import formattingTemplates from '../lib/formatting-templates.js';
+import { extractDocument } from '../lib/extractor-pipeline.js';
 import dotenv from 'dotenv';
 
 // Importar módulos CommonJS
@@ -319,34 +320,95 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
 
     for (const file of req.files) {
       try {
-        console.log(`🔍 Processando: ${file.originalname}`);
+        console.log(`🔍 Processando: ${file.originalname} com 33 ferramentas...`);
 
-        // Simular extração de dados (aqui chamaríamos as 33 ferramentas)
+        // 🚀 EXTRAÇÃO REAL usando pipeline (33 ferramentas, 100% gratuito)
+        const extractionResult = await extractDocument(file.path);
+
+        // Estruturar dados extraídos
         const extractedData = {
           filename: file.originalname,
           size: file.size,
           type: file.mimetype,
           uploadedAt: new Date().toISOString(),
+
+          // Dados extraídos reais
+          extractedText: extractionResult.text || '',
+          textLength: extractionResult.textLength || 0,
+          toolsUsed: extractionResult.toolsUsed || [],
+
+          // Metadados inteligentes
           data: {
-            'Tipo de Documento': 'Processual',
-            'Número do Processo': 'Aguardando extração',
-            'Partes': 'Aguardando extração',
-            'Vara/Tribunal': 'Aguardando extração',
-            'Assunto': 'Aguardando extração',
-            'Status': '✅ Arquivo recebido e pronto para processamento'
-          }
+            'Tipo de Documento': detectDocumentType(extractionResult.text),
+            'Número do Processo': extractProcessNumber(extractionResult.text),
+            'Partes': extractParties(extractionResult.text),
+            'Vara/Tribunal': extractCourt(extractionResult.text),
+            'Assunto': extractSubject(extractionResult.text),
+            'Data': extractDate(extractionResult.text),
+            'Valor da Causa': extractValue(extractionResult.text),
+            'Status': `✅ Extraído com sucesso (${extractionResult.toolsUsed.length} ferramentas)`
+          },
+
+          // Info técnica
+          stats: extractionResult.stats || {},
+          chunks: extractionResult.chunks || []
         };
 
         extractions.push(extractedData);
-        console.log(`✅ Processado: ${file.originalname}`);
+        console.log(`✅ Processado: ${file.originalname} (${extractionResult.textLength} caracteres)`);
       } catch (fileError) {
         console.error(`❌ Erro ao processar ${file.originalname}:`, fileError);
         extractions.push({
           filename: file.originalname,
           error: fileError.message,
-          data: null
+          data: {
+            'Status': `❌ Erro: ${fileError.message}`
+          }
         });
       }
+    }
+
+    // Helper functions para extração inteligente de metadados
+    function detectDocumentType(text) {
+      const lower = text.toLowerCase();
+      if (lower.includes('petição inicial')) return 'Petição Inicial';
+      if (lower.includes('recurso')) return 'Recurso';
+      if (lower.includes('contestação')) return 'Contestação';
+      if (lower.includes('sentença')) return 'Sentença';
+      if (lower.includes('agravo')) return 'Agravo';
+      if (lower.includes('habeas corpus')) return 'Habeas Corpus';
+      if (lower.includes('contrato')) return 'Contrato';
+      return 'Documento Jurídico';
+    }
+
+    function extractProcessNumber(text) {
+      const match = text.match(/\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}/);
+      return match ? match[0] : 'Não identificado';
+    }
+
+    function extractParties(text) {
+      const match = text.match(/(?:autor|requerente):\s*([^\n]+)|([^\n]+)\s*(?:x|versus)\s*([^\n]+)/i);
+      return match ? (match[1] || `${match[2]} x ${match[3]}`).trim() : 'Não identificado';
+    }
+
+    function extractCourt(text) {
+      const match = text.match(/(?:vara|tribunal|juízo)\s+([^\n]+)/i);
+      return match ? match[0].trim() : 'Não identificado';
+    }
+
+    function extractSubject(text) {
+      const match = text.match(/(?:assunto|objeto):\s*([^\n]+)/i);
+      return match ? match[1].trim() : 'Não identificado';
+    }
+
+    function extractDate(text) {
+      const match = text.match(/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/);
+      return match ? match[0] : 'Não identificado';
+    }
+
+    function extractValue(text) {
+      const match = text.match(/R\$\s*[\d.,]+/);
+      return match ? match[0] : 'Não identificado';
     }
 
     console.log(`✅ Upload concluído: ${extractions.length} arquivo(s) processado(s)`);
