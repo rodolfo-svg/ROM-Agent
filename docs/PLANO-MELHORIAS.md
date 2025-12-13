@@ -420,5 +420,5 @@ const analytics = {
 
 ---
 
-**Última atualização:** 13/12/2024  
+**Última atualização:** 13/12/2025
 **Versão:** 2.0.0
