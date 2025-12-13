@@ -196,7 +196,7 @@ function getHistory(sessionId) {
 
 // Rota principal - Interface melhorada
 app.get('/', (req, res) => {
-  res.send(getEnhancedHTML());
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 // API - Processar mensagem com streaming
