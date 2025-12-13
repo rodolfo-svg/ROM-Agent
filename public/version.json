@@ -1,12 +1,16 @@
 {
-  "version": "2.1.0",
-  "build": "2024-12-13T08:00:00Z",
-  "commit": "2774952",
+  "version": "2.2.0",
+  "build": "2024-12-13T14:00:00Z",
+  "commit": "pending",
   "features": [
     "Cache Inteligente (70% economia tokens)",
     "Validação de Qualidade Pré-Envio",
     "Peças Indistinguíveis de Produção Humana",
     "Análise Completa de Prompts",
+    "Técnicas de Persuasão Jurídica (11 técnicas)",
+    "Recurso de Apelação Completo (809 linhas)",
+    "Agravo de Instrumento Completo (672 linhas)",
+    "Banco de Frases Persuasivas",
     "Upload Sync (Desktop → KB)",
     "KB Auto-Cleanup",
     "Model Monitor (Anti-obsolescência)",
@@ -15,5 +19,5 @@
   ],
   "deployed": true,
   "render_deploy": "2024-12-13",
-  "optimization_status": "Fase 1/3 completa"
+  "optimization_status": "Fase 2/3 completa - Prompts Otimizados"
 }
