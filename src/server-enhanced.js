@@ -1402,13 +1402,267 @@ app.get('/api/kb/approved-pieces', authSystem.authMiddleware(), (req, res) => {
   }
 });
 
-// Obter estatísticas do KB
+// Obter estatísticas do KB (sem auth - manter compatibilidade)
 app.get('/api/kb/statistics', (req, res) => {
   try {
     const stats = kbCleaner.getStatistics();
     res.json({ stats });
   } catch (error) {
     console.error('Erro ao obter estatísticas do KB:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ====================================================================
+// ROTAS DE API PARA KNOWLEDGE BASE (KB) COM AUTENTICAÇÃO
+// ====================================================================
+
+// Upload de documentos para o KB (requer autenticação)
+app.post('/api/kb/upload', authSystem.authMiddleware(), upload.array('files', 20), async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'Nenhum arquivo enviado' });
+    }
+
+    const userId = req.user.userId;
+    const userName = req.user.name || 'Unknown';
+    const uploadedDocs = [];
+
+    // Processar cada arquivo
+    for (const file of req.files) {
+      try {
+        console.log(`📤 KB Upload: ${file.originalname} por ${userName}`);
+
+        // Extrair conteúdo usando pipeline
+        const extractionResult = await extractDocument(file.path);
+
+        // Criar documento KB
+        const doc = {
+          id: `kb-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          name: file.originalname,
+          type: file.mimetype,
+          size: file.size,
+          path: file.path,
+          userId: userId,
+          userName: userName,
+          uploadedAt: new Date().toISOString(),
+          extractedText: extractionResult.text || '',
+          textLength: extractionResult.textLength || 0,
+          metadata: {
+            toolsUsed: extractionResult.toolsUsed || [],
+            documentType: detectDocumentType(extractionResult.text),
+            processNumber: extractProcessNumber(extractionResult.text),
+            parties: extractParties(extractionResult.text),
+            court: extractCourt(extractionResult.text)
+          }
+        };
+
+        // Salvar documento no KB
+        const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+        let kbDocs = [];
+
+        if (fs.existsSync(kbDocsPath)) {
+          const data = fs.readFileSync(kbDocsPath, 'utf8');
+          kbDocs = JSON.parse(data);
+        }
+
+        kbDocs.push(doc);
+        fs.writeFileSync(kbDocsPath, JSON.stringify(kbDocs, null, 2));
+
+        uploadedDocs.push({
+          id: doc.id,
+          name: doc.name,
+          size: doc.size,
+          uploadedAt: doc.uploadedAt,
+          status: 'success'
+        });
+
+        console.log(`✅ KB: ${file.originalname} salvo com sucesso`);
+      } catch (fileError) {
+        console.error(`❌ Erro ao processar ${file.originalname}:`, fileError);
+        uploadedDocs.push({
+          name: file.originalname,
+          status: 'error',
+          error: fileError.message
+        });
+      }
+    }
+
+    res.json({
+      success: true,
+      message: `${uploadedDocs.length} documento(s) processado(s)`,
+      documents: uploadedDocs
+    });
+  } catch (error) {
+    console.error('❌ Erro no upload KB:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Listar documentos do KB do usuário (requer autenticação)
+app.get('/api/kb/documents', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+
+    if (!fs.existsSync(kbDocsPath)) {
+      return res.json({ documents: [] });
+    }
+
+    const data = fs.readFileSync(kbDocsPath, 'utf8');
+    const allDocs = JSON.parse(data);
+
+    // Filtrar apenas documentos do usuário atual
+    const userDocs = allDocs.filter(doc => doc.userId === userId);
+
+    // Retornar documentos formatados
+    const documents = userDocs.map(doc => ({
+      id: doc.id,
+      name: doc.name,
+      type: doc.type,
+      size: doc.size,
+      uploadedAt: doc.uploadedAt,
+      textLength: doc.textLength,
+      metadata: doc.metadata
+    }));
+
+    res.json({ documents });
+  } catch (error) {
+    console.error('❌ Erro ao listar documentos KB:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Download de documento do KB (requer autenticação e ownership)
+app.get('/api/kb/documents/:id/download', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId;
+    const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+
+    if (!fs.existsSync(kbDocsPath)) {
+      return res.status(404).json({ error: 'Documento não encontrado' });
+    }
+
+    const data = fs.readFileSync(kbDocsPath, 'utf8');
+    const allDocs = JSON.parse(data);
+    const doc = allDocs.find(d => d.id === id);
+
+    if (!doc) {
+      return res.status(404).json({ error: 'Documento não encontrado' });
+    }
+
+    // Verificar ownership
+    if (doc.userId !== userId && req.user.role !== 'master_admin') {
+      return res.status(403).json({ error: 'Acesso negado' });
+    }
+
+    // Verificar se arquivo existe
+    if (!fs.existsSync(doc.path)) {
+      return res.status(404).json({ error: 'Arquivo não encontrado no servidor' });
+    }
+
+    // Enviar arquivo
+    res.download(doc.path, doc.name);
+  } catch (error) {
+    console.error('❌ Erro ao baixar documento KB:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Deletar documento do KB (requer autenticação e ownership)
+app.delete('/api/kb/documents/:id', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.userId;
+    const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+
+    if (!fs.existsSync(kbDocsPath)) {
+      return res.status(404).json({ error: 'Documento não encontrado' });
+    }
+
+    const data = fs.readFileSync(kbDocsPath, 'utf8');
+    let allDocs = JSON.parse(data);
+    const docIndex = allDocs.findIndex(d => d.id === id);
+
+    if (docIndex === -1) {
+      return res.status(404).json({ error: 'Documento não encontrado' });
+    }
+
+    const doc = allDocs[docIndex];
+
+    // Verificar ownership
+    if (doc.userId !== userId && req.user.role !== 'master_admin') {
+      return res.status(403).json({ error: 'Acesso negado' });
+    }
+
+    // Deletar arquivo físico
+    if (fs.existsSync(doc.path)) {
+      fs.unlinkSync(doc.path);
+    }
+
+    // Remover do JSON
+    allDocs.splice(docIndex, 1);
+    fs.writeFileSync(kbDocsPath, JSON.stringify(allDocs, null, 2));
+
+    console.log(`🗑️ KB: Documento ${doc.name} deletado por ${req.user.name}`);
+
+    res.json({
+      success: true,
+      message: 'Documento excluído com sucesso'
+    });
+  } catch (error) {
+    console.error('❌ Erro ao deletar documento KB:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Estatísticas do KB do usuário (requer autenticação)
+app.get('/api/kb/user-statistics', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+
+    if (!fs.existsSync(kbDocsPath)) {
+      return res.json({
+        stats: {
+          totalDocuments: 0,
+          totalSize: 0,
+          documentsToday: 0,
+          lastUpdate: null
+        }
+      });
+    }
+
+    const data = fs.readFileSync(kbDocsPath, 'utf8');
+    const allDocs = JSON.parse(data);
+    const userDocs = allDocs.filter(doc => doc.userId === userId);
+
+    // Calcular estatísticas
+    const totalSize = userDocs.reduce((sum, doc) => sum + doc.size, 0);
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const documentsToday = userDocs.filter(doc => {
+      const uploadDate = new Date(doc.uploadedAt);
+      uploadDate.setHours(0, 0, 0, 0);
+      return uploadDate.getTime() === today.getTime();
+    }).length;
+
+    const lastUpdate = userDocs.length > 0
+      ? userDocs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt))[0].uploadedAt
+      : null;
+
+    res.json({
+      stats: {
+        totalDocuments: userDocs.length,
+        totalSize: totalSize,
+        documentsToday: documentsToday,
+        lastUpdate: lastUpdate
+      }
+    });
+  } catch (error) {
+    console.error('❌ Erro ao obter estatísticas KB do usuário:', error);
     res.status(500).json({ error: error.message });
   }
 });

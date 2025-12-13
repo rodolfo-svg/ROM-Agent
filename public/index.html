@@ -1527,6 +1527,10 @@
                     <span>📝</span>
                     <span>Gerenciar Prompts</span>
                 </button>
+                <button class="sidebar-nav-btn" onclick="openKnowledgeBase()">
+                    <span>📚</span>
+                    <span>Knowledge Base</span>
+                </button>
                 <button class="sidebar-nav-btn" onclick="openTools()">
                     <span>🔧</span>
                     <span>Ferramentas</span>
@@ -2777,6 +2781,10 @@
 
         function openPromptsEditor() {
             window.location.href = '/prompts-editor.html';
+        }
+
+        function openKnowledgeBase() {
+            window.location.href = '/knowledge-base.html';
         }
 
         function openTools() {
