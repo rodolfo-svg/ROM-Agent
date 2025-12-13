@@ -27,6 +27,10 @@ const require = createRequire(import.meta.url);
 const IntegradorSistema = require('../lib/integrador-sistema.js');
 const PromptsManager = require('../lib/prompts-manager.js');
 const PromptsVersioning = require('../lib/prompts-versioning.js');
+const AuthSystem = require('../lib/auth-system.js');
+const UploadSync = require('../lib/upload-sync.js');
+const ModelMonitor = require('../lib/model-monitor.js');
+const KBCleaner = require('../lib/kb-cleaner.js');
 
 dotenv.config();
 
@@ -41,6 +45,39 @@ integrador.inicializar().then(() => {
 // Inicializar gerenciador de prompts multi-tenant
 const promptsManager = new PromptsManager();
 const promptsVersioning = new PromptsVersioning();
+
+// Inicializar sistema de autenticação JWT
+const authSystem = new AuthSystem();
+
+// Inicializar sistema de limpeza de KB
+const kbCleaner = new KBCleaner();
+
+// Inicializar monitor de modelos AI
+const modelMonitor = new ModelMonitor();
+
+// Inicializar sistema de upload sincronizado
+let uploadSync = null;
+(async () => {
+  try {
+    uploadSync = new UploadSync();
+    await uploadSync.start();
+    console.log('✅ Sistema de Upload Sync inicializado');
+  } catch (error) {
+    console.error('❌ Erro ao inicializar Upload Sync:', error);
+  }
+})();
+
+// Agendar verificação de novos modelos
+modelMonitor.scheduleAutoCheck((result) => {
+  console.log(`🆕 ${result.newSuggestions} novas sugestões de modelos AI disponíveis`);
+});
+
+// Agendar limpeza automática de KB
+kbCleaner.scheduleAutoCleaning({
+  cleanOrphans: true,
+  orphansInterval: 24 * 60 * 60 * 1000, // 24h
+  cleanOldDocs: false
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -296,36 +333,126 @@ app.get('/api/info', (req, res) => {
   });
 });
 
-// API - Autenticação simples (para demonstração)
-app.post('/api/auth/login', (req, res) => {
-  const { username, password } = req.body;
+// ====================================================================
+// ROTAS DE AUTENTICAÇÃO JWT
+// ====================================================================
 
-  // Autenticação básica (TROCAR por sistema real em produção!)
-  const validUsers = {
-    'admin': 'admin123',
-    'demo': 'demo123'
-  };
+// Login com JWT
+app.post('/api/auth/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-  if (validUsers[username] === password) {
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email e senha são obrigatórios' });
+    }
+
+    const result = await authSystem.login(email, password);
+
+    // Salvar info na sessão também (para compatibilidade)
     req.session.authenticated = true;
-    req.session.username = username;
-    res.json({ success: true, username });
-  } else {
-    res.status(401).json({ error: 'Credenciais inválidas' });
+    req.session.userId = result.user.id;
+    req.session.username = result.user.name;
+    req.session.partnerId = result.user.partnerId;
+    req.session.userRole = result.user.role;
+
+    res.json({
+      success: true,
+      user: result.user,
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken
+    });
+  } catch (error) {
+    console.error('Erro no login:', error);
+    res.status(401).json({ error: error.message });
   }
 });
 
+// Logout
 app.post('/api/auth/logout', (req, res) => {
-  req.session.destroy();
-  res.json({ success: true });
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+      authSystem.logout(token);
+    }
+
+    req.session.destroy();
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Erro no logout:', error);
+    res.json({ success: true }); // Sempre retornar sucesso no logout
+  }
 });
 
+// Refresh token
+app.post('/api/auth/refresh', (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(400).json({ error: 'Refresh token é obrigatório' });
+    }
+
+    const result = authSystem.refreshAccessToken(refreshToken);
+
+    res.json({
+      success: true,
+      accessToken: result.accessToken,
+      refreshToken: result.refreshToken
+    });
+  } catch (error) {
+    console.error('Erro ao refresh token:', error);
+    res.status(401).json({ error: error.message });
+  }
+});
+
+// Registrar novo usuário (requer autenticação)
+app.post('/api/auth/register', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const userData = req.body;
+    const newUser = authSystem.registerUser(userData);
+
+    res.json({
+      success: true,
+      user: newUser
+    });
+  } catch (error) {
+    console.error('Erro ao registrar usuário:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Status de autenticação
 app.get('/api/auth/status', (req, res) => {
-  res.json({
-    authenticated: !!req.session.authenticated,
-    username: req.session.username || null,
-    partnerId: req.session.partnerId || 'rom'
-  });
+  try {
+    const authHeader = req.headers.authorization;
+
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.substring(7);
+      const decoded = authSystem.verifyToken(token);
+
+      return res.json({
+        authenticated: true,
+        user: {
+          userId: decoded.userId,
+          email: decoded.email,
+          role: decoded.role,
+          partnerId: decoded.partnerId
+        }
+      });
+    }
+
+    // Fallback para sessão antiga (compatibilidade)
+    res.json({
+      authenticated: !!req.session.authenticated,
+      username: req.session.username || null,
+      partnerId: req.session.partnerId || 'rom'
+    });
+  } catch (error) {
+    res.json({
+      authenticated: false
+    });
+  }
 });
 
 // ====================================================================
@@ -997,6 +1124,231 @@ app.get('/api/v2/prompts/:promptId/changelog', (req, res) => {
     res.json(changelog);
   } catch (error) {
     console.error('Erro ao obter changelog:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ====================================================================
+// ROTAS DE API PARA UPLOAD SYNC E KB MANAGEMENT
+// ====================================================================
+
+// Obter estatísticas do Upload Sync
+app.get('/api/upload/stats', (req, res) => {
+  try {
+    if (!uploadSync) {
+      return res.status(503).json({ error: 'Upload Sync não inicializado' });
+    }
+
+    const stats = uploadSync.getStatistics();
+    res.json({ stats });
+  } catch (error) {
+    console.error('Erro ao obter estatísticas do upload:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Buscar documentos no KB
+app.get('/api/kb/search', (req, res) => {
+  try {
+    if (!uploadSync) {
+      return res.status(503).json({ error: 'Upload Sync não inicializado' });
+    }
+
+    const { query } = req.query;
+
+    if (!query) {
+      return res.status(400).json({ error: 'Query é obrigatória' });
+    }
+
+    const results = uploadSync.search(query);
+    res.json({ results, total: results.length });
+  } catch (error) {
+    console.error('Erro ao buscar no KB:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ====================================================================
+// ROTAS DE API PARA KB CLEANER
+// ====================================================================
+
+// Aprovar peça e limpar arquivos usados
+app.post('/api/kb/approve-and-clean', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const pieceData = req.body;
+
+    // Adicionar info do usuário
+    pieceData.approvedBy = req.user.userId;
+    pieceData.approvedAt = new Date().toISOString();
+
+    const result = kbCleaner.approveAndCleanup(pieceData);
+
+    res.json({
+      success: true,
+      cleanup: result
+    });
+  } catch (error) {
+    console.error('Erro ao aprovar e limpar:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Remover documento específico do KB
+app.delete('/api/kb/documents/:docId', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const { docId } = req.params;
+    const result = kbCleaner.removeDocument(docId);
+
+    res.json({
+      success: result.success,
+      result
+    });
+  } catch (error) {
+    console.error('Erro ao remover documento:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Limpar arquivos órfãos
+app.post('/api/kb/clean-orphans', authSystem.authMiddleware(), authSystem.requireRole('master_admin'), (req, res) => {
+  try {
+    const result = kbCleaner.cleanOrphanedFiles();
+
+    res.json({
+      success: true,
+      result
+    });
+  } catch (error) {
+    console.error('Erro ao limpar órfãos:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Limpar documentos antigos
+app.post('/api/kb/clean-old', authSystem.authMiddleware(), authSystem.requireRole('master_admin'), (req, res) => {
+  try {
+    const { daysOld = 30 } = req.body;
+    const result = kbCleaner.cleanOldDocuments(daysOld);
+
+    res.json({
+      success: true,
+      result
+    });
+  } catch (error) {
+    console.error('Erro ao limpar documentos antigos:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Obter peças aprovadas
+app.get('/api/kb/approved-pieces', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const filters = req.query;
+    const pieces = kbCleaner.getApprovedPieces(filters);
+
+    res.json({
+      pieces,
+      total: pieces.length
+    });
+  } catch (error) {
+    console.error('Erro ao obter peças aprovadas:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Obter estatísticas do KB
+app.get('/api/kb/statistics', (req, res) => {
+  try {
+    const stats = kbCleaner.getStatistics();
+    res.json({ stats });
+  } catch (error) {
+    console.error('Erro ao obter estatísticas do KB:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ====================================================================
+// ROTAS DE API PARA MODEL MONITOR
+// ====================================================================
+
+// Verificar novos modelos disponíveis
+app.post('/api/models/check', authSystem.authMiddleware(), authSystem.requireRole('master_admin'), async (req, res) => {
+  try {
+    const result = await modelMonitor.checkForNewModels();
+
+    res.json({
+      success: true,
+      result
+    });
+  } catch (error) {
+    console.error('Erro ao verificar novos modelos:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Listar sugestões de modelos pendentes
+app.get('/api/models/suggestions', authSystem.authMiddleware(), authSystem.requireRole('master_admin'), (req, res) => {
+  try {
+    const suggestions = modelMonitor.listPendingSuggestions();
+
+    res.json({
+      suggestions,
+      total: suggestions.length
+    });
+  } catch (error) {
+    console.error('Erro ao listar sugestões:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Aprovar sugestão de modelo
+app.post('/api/models/suggestions/:suggestionId/approve', authSystem.authMiddleware(), authSystem.requireRole('master_admin'), (req, res) => {
+  try {
+    const { suggestionId } = req.params;
+    const approvedBy = req.user.userId;
+
+    const result = modelMonitor.approveSuggestion(suggestionId, approvedBy);
+
+    res.json({
+      success: true,
+      result
+    });
+  } catch (error) {
+    console.error('Erro ao aprovar sugestão:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Rejeitar sugestão de modelo
+app.post('/api/models/suggestions/:suggestionId/reject', authSystem.authMiddleware(), authSystem.requireRole('master_admin'), (req, res) => {
+  try {
+    const { suggestionId } = req.params;
+    const { reason } = req.body;
+    const rejectedBy = req.user.userId;
+
+    if (!reason) {
+      return res.status(400).json({ error: 'Motivo é obrigatório' });
+    }
+
+    const result = modelMonitor.rejectSuggestion(suggestionId, rejectedBy, reason);
+
+    res.json({
+      success: true,
+      result
+    });
+  } catch (error) {
+    console.error('Erro ao rejeitar sugestão:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Obter estatísticas de modelos
+app.get('/api/models/statistics', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const stats = modelMonitor.getStatistics();
+    res.json({ stats });
+  } catch (error) {
+    console.error('Erro ao obter estatísticas de modelos:', error);
     res.status(500).json({ error: error.message });
   }
 });
