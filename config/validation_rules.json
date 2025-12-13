@@ -1,0 +1,107 @@
+{
+  "common": {
+    "minLength": 100,
+    "requiredSections": [],
+    "forbiddenWords": [
+      "TODO",
+      "FIXME",
+      "XXX",
+      "[PENDENTE]"
+    ]
+  },
+  "peticao_inicial": {
+    "requiredSections": [
+      "Excelentíssimo",
+      "FATOS",
+      "DIREITO",
+      "PEDIDOS",
+      "Termos em que"
+    ],
+    "requiredData": [
+      "autor",
+      "réu",
+      "comarca"
+    ],
+    "minParagraphs": 5,
+    "mustHaveLegalCitation": true
+  },
+  "contestacao": {
+    "requiredSections": [
+      "Excelentíssimo",
+      "PRELIMINARMENTE",
+      "MÉRITO",
+      "PEDIDOS",
+      "Termos em que"
+    ],
+    "requiredData": [
+      "autor",
+      "réu",
+      "processo"
+    ],
+    "minParagraphs": 5,
+    "mustHaveLegalCitation": true
+  },
+  "recurso_apelacao": {
+    "requiredSections": [
+      "Excelentíssimo",
+      "RAZÕES RECURSAIS",
+      "PEDIDOS"
+    ],
+    "requiredData": [
+      "apelante",
+      "apelado",
+      "processo",
+      "sentença"
+    ],
+    "minParagraphs": 5,
+    "mustHaveLegalCitation": true,
+    "mustCiteSentenca": true
+  },
+  "habeas_corpus": {
+    "requiredSections": [
+      "Excelentíssimo",
+      "FATOS",
+      "ILEGALIDADE",
+      "PEDIDO LIMINAR",
+      "PEDIDOS"
+    ],
+    "requiredData": [
+      "paciente",
+      "autoridade_coatora"
+    ],
+    "minParagraphs": 4,
+    "mustHaveLegalCitation": true,
+    "urgency": true
+  },
+  "agravo_instrumento": {
+    "requiredSections": [
+      "Excelentíssimo",
+      "DECISÃO RECORRIDA",
+      "RAZÕES DO AGRAVO",
+      "PEDIDO DE EFEITO SUSPENSIVO",
+      "PEDIDOS"
+    ],
+    "requiredData": [
+      "agravante",
+      "agravado",
+      "processo",
+      "decisão"
+    ],
+    "minParagraphs": 4,
+    "mustHaveLegalCitation": true
+  },
+  "memoriais": {
+    "requiredSections": [
+      "Excelentíssimo",
+      "SÍNTESE",
+      "PROVAS",
+      "CONCLUSÃO"
+    ],
+    "requiredData": [
+      "parte",
+      "processo"
+    ],
+    "minParagraphs": 5,
+    "mustHaveLegalCitation": true
+  }
+}

@@ -25,7 +25,7 @@
     }
 
     h1 {
-      color: #ab68ff;
+      color: #1a365d;
       margin-bottom: 2rem;
       display: flex;
       align-items: center;
@@ -63,7 +63,7 @@
 
     input:focus, textarea:focus {
       outline: none;
-      border-color: #ab68ff;
+      border-color: #1a365d;
     }
 
     .form-row {
@@ -83,12 +83,12 @@
     }
 
     .btn-primary {
-      background: #ab68ff;
+      background: #1a365d;
       color: white;
     }
 
     .btn-primary:hover {
-      background: #9d5fee;
+      background: #2c5282;
     }
 
     .btn-secondary {
@@ -141,7 +141,7 @@
     .partner-name {
       font-size: 1.25rem;
       font-weight: 600;
-      color: #ab68ff;
+      color: #1a365d;
       margin-bottom: 0.5rem;
     }
 
@@ -223,7 +223,7 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      color: #ab68ff;
+      color: #1a365d;
       text-decoration: none;
       margin-bottom: 2rem;
       font-weight: 500;
@@ -257,7 +257,7 @@
     }
 
     .admin-nav a.active {
-      background: #ab68ff;
+      background: #1a365d;
       color: white;
     }
   </style>
@@ -327,11 +327,11 @@
           <div class="color-group">
             <div>
               <label for="primaryColor">Primária</label>
-              <input type="color" id="primaryColor" class="color-input" value="#ab68ff">
+              <input type="color" id="primaryColor" class="color-input" value="#1a365d">
             </div>
             <div>
               <label for="primaryLightColor">Primária Clara</label>
-              <input type="color" id="primaryLightColor" class="color-input" value="#9d5fee">
+              <input type="color" id="primaryLightColor" class="color-input" value="#2c5282">
             </div>
             <div>
               <label for="secondaryColor">Secundária</label>

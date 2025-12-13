@@ -1,17 +1,74 @@
+# ═══════════════════════════════════════════════════════════════
+# ROM AGENT - CONFIGURAÇÃO RENDER.COM
+# ═══════════════════════════════════════════════════════════════
+# Serviço Web Principal - Interface Claude AI + API Bedrock
+# Deploy automático via GitHub (main branch)
+# ═══════════════════════════════════════════════════════════════
+
 services:
   - type: web
     name: rom-agent
-    env: node
+    runtime: node
     plan: free
-    buildCommand: npm install
+
+    # ═══ BUILD ═══
+    buildCommand: |
+      echo "🔧 Instalando dependências..."
+      npm ci --only=production
+      echo "✅ Build concluído"
+
+    # ═══ START ═══
     startCommand: npm run web:enhanced
+
+    # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
+      # Node.js
       - key: NODE_ENV
         value: production
-      - key: ANTHROPIC_API_KEY
-        sync: false
-      - key: SESSION_SECRET
-        generateValue: true
+
+      # Porta (Render usa 10000)
       - key: PORT
         value: 10000
+
+      # AWS Bedrock (obrigatório)
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_REGION
+        value: us-east-1
+
+      # Anthropic (alternativo)
+      - key: ANTHROPIC_API_KEY
+        sync: false
+
+      # DataJud (consulta jurisprudência)
+      - key: DATAJUD_API_KEY
+        sync: false
+
+      # Session Secret (auto-gerado)
+      - key: SESSION_SECRET
+        generateValue: true
+
+      # Rate Limiter
+      - key: RATE_LIMIT_PER_MINUTE
+        value: 10
+      - key: RATE_LIMIT_PER_HOUR
+        value: 100
+
+    # ═══ HEALTH CHECK ═══
     healthCheckPath: /api/info
+
+    # ═══ RECURSOS ═══
+    disk:
+      name: rom-storage
+      mountPath: /var/data
+      sizeGB: 1
+
+    # ═══ AUTO-DEPLOY ═══
+    autoDeploy: true
+
+    # ═══ DOMÍNIOS ═══
+    # domains:
+    #   - iarom.com.br
+    #   - www.iarom.com.br

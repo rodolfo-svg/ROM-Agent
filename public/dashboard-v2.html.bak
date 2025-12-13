@@ -21,11 +21,11 @@
       --text-secondary: #6B7280;
       --text-tertiary: #9CA3AF;
       --border: #E5E7EB;
-      --accent: #ab68ff;
-      --accent-hover: #9d5fee;
+      --accent: #10B981;
+      --accent-hover: #059669;
       --danger: #EF4444;
       --warning: #F59E0B;
-      --info: #ab68ff;
+      --info: #3B82F6;
       --purple: #8B5CF6;
       --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
       --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
@@ -1360,7 +1360,7 @@
           datasets: [{
             label: 'Peças Geradas',
             data: [42, 58, 51, 63, 48, 31, 49],
-            borderColor: '#ab68ff',
+            borderColor: '#10B981',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             tension: 0.4,
             fill: true
@@ -1388,7 +1388,7 @@
           labels: ['Petição Inicial', 'Contestação', 'Habeas Corpus', 'Outros'],
           datasets: [{
             data: [35, 25, 20, 20],
-            backgroundColor: ['#ab68ff', '#ab68ff', '#8B5CF6', '#F59E0B']
+            backgroundColor: ['#10B981', '#3B82F6', '#8B5CF6', '#F59E0B']
           }]
         },
         options: {
@@ -1440,7 +1440,7 @@
           datasets: [{
             label: 'Faturamento',
             data: [8200, 8900, 9200, 9800, 10200, 10800, 11200, 11800, 12100, 12450, 12800, 13200],
-            backgroundColor: '#ab68ff'
+            backgroundColor: '#10B981'
           }]
         },
         options: {
@@ -1460,7 +1460,7 @@
           labels: ['Enterprise', 'Pro', 'Trial'],
           datasets: [{
             data: [40, 45, 15],
-            backgroundColor: ['#8B5CF6', '#ab68ff', '#F59E0B']
+            backgroundColor: ['#8B5CF6', '#3B82F6', '#F59E0B']
           }]
         },
         options: {
@@ -1480,7 +1480,7 @@
           datasets: [{
             label: 'Score de Qualidade (%)',
             data: [95, 92, 98, 91],
-            backgroundColor: '#ab68ff'
+            backgroundColor: '#10B981'
           }]
         },
         options: {
@@ -1503,7 +1503,7 @@
           datasets: [{
             label: 'Qualidade Média (%)',
             data: [88, 89, 90, 91, 91, 92, 92, 93, 93, 94, 94, 94.2],
-            borderColor: '#ab68ff',
+            borderColor: '#10B981',
             backgroundColor: 'rgba(16, 185, 129, 0.1)',
             fill: true,
             tension: 0.4

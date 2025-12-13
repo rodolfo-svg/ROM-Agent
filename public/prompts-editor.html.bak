@@ -14,10 +14,10 @@
 
     :root {
       --primary: #2D3648;
-      --accent: #ab68ff;
+      --accent: #10B981;
       --danger: #EF4444;
       --warning: #F59E0B;
-      --info: #ab68ff;
+      --info: #3B82F6;
       --bg-primary: #FFFFFF;
       --bg-secondary: #F9FAFB;
       --bg-tertiary: #F3F4F6;
@@ -79,7 +79,7 @@
     }
 
     .btn-primary:hover {
-      background: #9d5fee;
+      background: #059669;
     }
 
     .btn-danger {
