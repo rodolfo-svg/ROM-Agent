@@ -1359,6 +1359,96 @@ app.get('/api/models/statistics', authSystem.authMiddleware(), (req, res) => {
 });
 
 // ====================================================================
+// ROTAS DE API PARA JUSBRASIL (CREDENCIAIS POR PARCEIRO)
+// ====================================================================
+
+// Configurar credenciais Jusbrasil do parceiro
+app.post('/api/jusbrasil/credentials', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const { email, senha } = req.body;
+    const partnerId = req.user.partnerId || 'rom';
+
+    if (!email || !senha) {
+      return res.status(400).json({ error: 'Email e senha são obrigatórios' });
+    }
+
+    // Salvar credenciais por parceiro (em produção, criptografar!)
+    const usersPath = path.join(__dirname, '../data/users.json');
+    const users = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
+
+    const user = users.find(u => u.id === req.user.userId);
+    if (user) {
+      user.jusbrasilCredentials = {
+        email,
+        senha, // Em produção: bcrypt.hashSync(senha, 10)
+        configuredAt: new Date().toISOString()
+      };
+
+      fs.writeFileSync(usersPath, JSON.stringify(users, null, 2));
+
+      res.json({
+        success: true,
+        message: 'Credenciais Jusbrasil configuradas com sucesso',
+        email
+      });
+    } else {
+      res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+  } catch (error) {
+    console.error('Erro ao configurar credenciais Jusbrasil:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Obter status das credenciais Jusbrasil
+app.get('/api/jusbrasil/credentials/status', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const usersPath = path.join(__dirname, '../data/users.json');
+    const users = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
+
+    const user = users.find(u => u.id === req.user.userId);
+    if (user && user.jusbrasilCredentials) {
+      res.json({
+        configured: true,
+        email: user.jusbrasilCredentials.email,
+        configuredAt: user.jusbrasilCredentials.configuredAt
+      });
+    } else {
+      res.json({
+        configured: false
+      });
+    }
+  } catch (error) {
+    console.error('Erro ao verificar credenciais:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Remover credenciais Jusbrasil
+app.delete('/api/jusbrasil/credentials', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const usersPath = path.join(__dirname, '../data/users.json');
+    const users = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
+
+    const user = users.find(u => u.id === req.user.userId);
+    if (user) {
+      delete user.jusbrasilCredentials;
+      fs.writeFileSync(usersPath, JSON.stringify(users, null, 2));
+
+      res.json({
+        success: true,
+        message: 'Credenciais Jusbrasil removidas'
+      });
+    } else {
+      res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+  } catch (error) {
+    console.error('Erro ao remover credenciais:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ====================================================================
 // ROTAS DE API PARA VALIDAÇÃO DE QUALIDADE
 // ====================================================================
 
