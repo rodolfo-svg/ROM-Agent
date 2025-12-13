@@ -24,9 +24,9 @@ import dotenv from 'dotenv';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
-const IntegradorSistema = require('../lib/integrador-sistema.js');
-const PromptsManager = require('../lib/prompts-manager.js');
-const PromptsVersioning = require('../lib/prompts-versioning.js');
+const IntegradorSistema = require('../lib/integrador-sistema.cjs');
+const PromptsManager = require('../lib/prompts-manager.cjs');
+const PromptsVersioning = require('../lib/prompts-versioning.cjs');
 const AuthSystem = require('../lib/auth-system.js');
 const UploadSync = require('../lib/upload-sync.js');
 const ModelMonitor = require('../lib/model-monitor.js');
