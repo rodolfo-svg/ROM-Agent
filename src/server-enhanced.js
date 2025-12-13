@@ -13,6 +13,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 import multer from 'multer';
 import session from 'express-session';
 import fs from 'fs';
@@ -21,7 +22,19 @@ import partnersBranding from '../lib/partners-branding.js';
 import formattingTemplates from '../lib/formatting-templates.js';
 import dotenv from 'dotenv';
 
+// Importar módulos CommonJS
+const require = createRequire(import.meta.url);
+const IntegradorSistema = require('../lib/integrador-sistema.js');
+
 dotenv.config();
+
+// Inicializar sistema de auto-atualização
+const integrador = new IntegradorSistema();
+integrador.inicializar().then(() => {
+  console.log('✅ Sistema de auto-atualização inicializado');
+}).catch(err => {
+  console.error('❌ Erro ao inicializar sistema:', err);
+});
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -141,11 +154,43 @@ app.post('/api/chat', async (req, res) => {
       return res.status(500).json({ error: 'API Key não configurada' });
     }
 
-    const { message } = req.body;
+    const { message, metadata } = req.body;
     const history = getHistory(req.session.id);
 
+    // ✅ VERIFICAÇÃO E ANÁLISE DO SISTEMA DE AUTO-ATUALIZAÇÃO
+    let contextoEnriquecido = null;
+    if (metadata?.dataDosFatos || metadata?.ramoDireito || metadata?.tipoPeca) {
+      console.log('🔍 Analisando contexto jurídico...');
+      const analise = await integrador.processarRequisicao({
+        dataDosFatos: metadata.dataDosFatos,
+        dataAjuizamento: metadata.dataAjuizamento,
+        ramoDireito: metadata.ramoDireito,
+        naturezaProcesso: metadata.naturezaProcesso,
+        instancia: metadata.instancia,
+        tipoPeca: metadata.tipoPeca
+      });
+
+      contextoEnriquecido = analise;
+
+      // Adicionar aviso de direito intertemporal na resposta se aplicável
+      if (analise.analiseIntertemporal?.direitoIntertemporal?.material) {
+        console.log(`⚖️ ${analise.analiseIntertemporal.direitoIntertemporal.material}`);
+      }
+
+      // Adicionar recomendações ao contexto da mensagem
+      if (analise.recomendacoes && analise.recomendacoes.length > 0) {
+        console.log(`📋 ${analise.recomendacoes.length} recomendações aplicáveis`);
+      }
+    }
+
     // Adicionar mensagem do usuário ao histórico
-    history.push({ role: 'user', content: message, timestamp: new Date() });
+    history.push({
+      role: 'user',
+      content: message,
+      metadata: metadata || {},
+      contextoEnriquecido,
+      timestamp: new Date()
+    });
 
     // Processar com agente
     const resposta = await agent.processar(message);
@@ -153,7 +198,15 @@ app.post('/api/chat', async (req, res) => {
     // Adicionar resposta ao histórico
     history.push({ role: 'assistant', content: resposta, timestamp: new Date() });
 
-    res.json({ response: resposta });
+    // Preparar resposta com metadados de verificação
+    const response = {
+      response: resposta,
+      metadados: contextoEnriquecido?.metadados || {},
+      recomendacoes: contextoEnriquecido?.recomendacoes || [],
+      verificacaoRealizada: !!contextoEnriquecido
+    };
+
+    res.json(response);
   } catch (error) {
     console.error('Erro no chat:', error);
     res.status(500).json({ error: error.message });
