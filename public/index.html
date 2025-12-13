@@ -5,6 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ROM Agent v2.6.0 - Sistema de Projetos Inteligente</title>
 
+    <!-- PWA Configuration -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ROM Agent">
+    <link rel="apple-touch-icon" href="/img/logo_rom.png">
+    <meta name="theme-color" content="#1a365d">
+
     <!-- Marked.js for Markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <!-- jsPDF for PDF generation -->
@@ -1519,6 +1528,12 @@
                 <button class="sidebar-nav-btn" onclick="window.location.href='/knowledge-base.html'" style="margin-top: 8px; font-size: 12px; background: var(--champagne); border: 1px solid var(--gold-primary);">
                     <span>📚</span>
                     <span>Knowledge Base ROM</span>
+                </button>
+
+                <!-- Analytics Button -->
+                <button class="sidebar-nav-btn" onclick="window.location.href='/analytics.html'" style="margin-top: 8px; font-size: 12px; background: var(--gold-primary); color: white;">
+                    <span>📊</span>
+                    <span>Analytics</span>
                 </button>
 
                 <!-- Extraction Tools Panel (collapsed by default) -->
@@ -3253,6 +3268,76 @@
         }
 
         console.log('✅ AI Model Selector inicializado');
+
+        // ====================================================================
+        // ATALHOS DE TECLADO
+        // ====================================================================
+        document.addEventListener('keydown', (e) => {
+          // Ctrl+K ou Cmd+K: Busca rápida no KB
+          if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            e.preventDefault();
+            window.location.href = '/knowledge-base.html';
+          }
+
+          // Ctrl+N ou Cmd+N: Nova conversa
+          if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+            e.preventDefault();
+            limparChat();
+          }
+
+          // Ctrl+/ ou Cmd+/: Mostrar atalhos
+          if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+            e.preventDefault();
+            mostrarAtalhos();
+          }
+
+          // Esc: Focar no input
+          if (e.key === 'Escape') {
+            messageInput.focus();
+          }
+        });
+
+        // Função para mostrar atalhos
+        function mostrarAtalhos() {
+          const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+          const mod = isMac ? '⌘' : 'Ctrl';
+
+          alert(`Atalhos de Teclado do ROM Agent:
+
+${mod}+K - Abrir Knowledge Base
+${mod}+N - Nova Conversa
+${mod}+/ - Mostrar Atalhos
+Enter - Enviar Mensagem
+Shift+Enter - Nova Linha
+Esc - Focar no Input`);
+        }
+
+        console.log('⌨️ Atalhos de teclado ativados! Pressione Ctrl+/ para ver a lista');
+    </script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js')
+          .then((reg) => console.log('✅ Service Worker registrado:', reg.scope))
+          .catch((err) => console.log('❌ Erro ao registrar SW:', err));
+      });
+    }
+
+    // Detectar instalação PWA
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Pode mostrar botão "Instalar App" aqui
+      console.log('💡 PWA pode ser instalado');
+    });
+
+    window.addEventListener('appinstalled', () => {
+      console.log('✅ PWA instalado!');
+      deferredPrompt = null;
+    });
     </script>
 </body>
 </html>
