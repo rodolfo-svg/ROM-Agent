@@ -1279,6 +1279,16 @@
             box-shadow: var(--shadow-gold);
         }
 
+        /* Dropdown Menu Styles */
+        .dropdown-item:hover {
+            background: var(--champagne) !important;
+        }
+
+        .dropdown-item:active {
+            background: var(--gold-primary) !important;
+            color: white !important;
+        }
+
         /* ============================================
            TOAST NOTIFICATIONS
            ============================================ */
@@ -1817,19 +1827,54 @@
                 </div>
             </div>
 
-            <!-- Preview Actions -->
+            <!-- Preview Actions (Claude-style) -->
             <div class="preview-actions">
-                <button class="preview-btn" onclick="downloadPDF()">
-                    <span>📥</span>
-                    <span>Baixar PDF</span>
-                </button>
+                <!-- Download Dropdown -->
+                <div class="dropdown-container" style="position: relative;">
+                    <button class="preview-btn preview-btn-primary" onclick="toggleDownloadMenu(event)" style="background: var(--gold-primary); color: white; font-weight: 600;">
+                        <span>📥</span>
+                        <span>Baixar</span>
+                        <span class="dropdown-arrow" style="margin-left: 4px; font-size: 10px;">▼</span>
+                    </button>
+                    <div id="downloadMenu" class="dropdown-menu" style="display: none; position: absolute; bottom: 100%; left: 0; margin-bottom: 8px; background: var(--bg-secondary); border: 2px solid var(--gold-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1000;">
+                        <button class="dropdown-item" onclick="downloadDOCX()" style="width: 100%; padding: 10px 16px; border: none; background: transparent; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); transition: all 0.15s;">
+                            <span>📄</span>
+                            <span style="flex: 1;">DOCX</span>
+                            <span class="badge-recommended" style="background: var(--gold-primary); color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 600;">RECOMENDADO</span>
+                        </button>
+                        <button class="dropdown-item" onclick="downloadPDF()" style="width: 100%; padding: 10px 16px; border: none; background: transparent; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); transition: all 0.15s;">
+                            <span>📕</span>
+                            <span>PDF</span>
+                        </button>
+                        <button class="dropdown-item" onclick="downloadTXT()" style="width: 100%; padding: 10px 16px; border: none; background: transparent; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); transition: all 0.15s;">
+                            <span>📝</span>
+                            <span>TXT</span>
+                        </button>
+                        <button class="dropdown-item" onclick="downloadHTML()" style="width: 100%; padding: 10px 16px; border: none; background: transparent; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); transition: all 0.15s;">
+                            <span>🌐</span>
+                            <span>HTML</span>
+                        </button>
+                    </div>
+                </div>
+
                 <button class="preview-btn" onclick="copyContent()">
                     <span>📋</span>
                     <span>Copiar</span>
                 </button>
+
+                <button class="preview-btn" onclick="addToProject()">
+                    <span>📁</span>
+                    <span>Adicionar</span>
+                </button>
+
                 <button class="preview-btn" onclick="shareContent()">
                     <span>📤</span>
                     <span>Compartilhar</span>
+                </button>
+
+                <button class="preview-btn preview-btn-secondary" onclick="regenerateDocument()" style="color: var(--text-secondary);">
+                    <span>🔄</span>
+                    <span>Regenerar</span>
                 </button>
             </div>
         </aside>
@@ -2710,7 +2755,68 @@
             content.innerHTML = html;
         }
 
+        // ============================================
+        // DOWNLOAD MENU & FUNCTIONS
+        // ============================================
+        function toggleDownloadMenu(event) {
+            event?.stopPropagation();
+            const menu = document.getElementById('downloadMenu');
+            menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+
+            // Close menu when clicking outside
+            if (menu.style.display === 'block') {
+                setTimeout(() => {
+                    document.addEventListener('click', function closeMenu(e) {
+                        if (!e.target.closest('.dropdown-container')) {
+                            menu.style.display = 'none';
+                            document.removeEventListener('click', closeMenu);
+                        }
+                    });
+                }, 0);
+            }
+        }
+
+        async function downloadDOCX() {
+            document.getElementById('downloadMenu').style.display = 'none';
+            showToast('DOCX', 'Gerando documento DOCX...', 'success');
+
+            try {
+                const content = document.getElementById('documentContent').innerHTML;
+
+                // Call backend API to generate DOCX
+                const response = await fetch('/api/export/docx', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    },
+                    body: JSON.stringify({
+                        content: content,
+                        projectId: currentProjectId
+                    })
+                });
+
+                if (!response.ok) throw new Error('Erro ao gerar DOCX');
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `documento_${currentProjectId}_${Date.now()}.docx`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+
+                showToast('Sucesso', 'DOCX gerado com sucesso! (Calibri 12pt)', 'success');
+            } catch (error) {
+                console.error('Error generating DOCX:', error);
+                showToast('Erro', 'Não foi possível gerar o DOCX', 'error');
+            }
+        }
+
         async function downloadPDF() {
+            document.getElementById('downloadMenu').style.display = 'none';
             showToast('PDF', 'Gerando PDF...', 'success');
 
             try {
@@ -2737,6 +2843,134 @@
             } catch (error) {
                 console.error('Error generating PDF:', error);
                 showToast('Erro', 'Não foi possível gerar o PDF', 'error');
+            }
+        }
+
+        function downloadTXT() {
+            document.getElementById('downloadMenu').style.display = 'none';
+            showToast('TXT', 'Gerando arquivo TXT...', 'success');
+
+            try {
+                const content = document.getElementById('documentContent').innerText;
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `documento_${currentProjectId}_${Date.now()}.txt`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+
+                showToast('Sucesso', 'Arquivo TXT baixado!', 'success');
+            } catch (error) {
+                console.error('Error generating TXT:', error);
+                showToast('Erro', 'Não foi possível gerar o TXT', 'error');
+            }
+        }
+
+        function downloadHTML() {
+            document.getElementById('downloadMenu').style.display = 'none';
+            showToast('HTML', 'Gerando arquivo HTML...', 'success');
+
+            try {
+                const content = document.getElementById('paperLetterhead').outerHTML;
+                const fullHTML = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documento ROM Agent</title>
+    <style>
+        body { margin: 0; padding: 20px; background: #f5f5f5; font-family: 'Times New Roman', serif; }
+        .paper-letterhead { max-width: 595px; margin: 0 auto; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    ${content}
+</body>
+</html>`;
+
+                const blob = new Blob([fullHTML], { type: 'text/html' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `documento_${currentProjectId}_${Date.now()}.html`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+
+                showToast('Sucesso', 'Arquivo HTML baixado!', 'success');
+            } catch (error) {
+                console.error('Error generating HTML:', error);
+                showToast('Erro', 'Não foi possível gerar o HTML', 'error');
+            }
+        }
+
+        function addToProject() {
+            if (!currentProjectId) {
+                showToast('Aviso', 'Nenhum projeto selecionado', 'error');
+                return;
+            }
+
+            const content = document.getElementById('documentContent').innerHTML;
+
+            // Save document to current project
+            fetch(`/api/projects/${currentProjectId}/add-document`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                },
+                body: JSON.stringify({
+                    content: content,
+                    type: 'document',
+                    timestamp: new Date().toISOString()
+                })
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Erro ao adicionar');
+                return response.json();
+            })
+            .then(data => {
+                showToast('Adicionado', 'Documento adicionado ao projeto!', 'success');
+            })
+            .catch(error => {
+                console.error('Error adding to project:', error);
+                showToast('Erro', 'Não foi possível adicionar ao projeto', 'error');
+            });
+        }
+
+        async function regenerateDocument() {
+            if (!currentProjectId) {
+                showToast('Aviso', 'Nenhum projeto selecionado', 'error');
+                return;
+            }
+
+            const confirmed = confirm('Deseja regenerar este documento? O conteúdo atual será substituído.');
+            if (!confirmed) return;
+
+            showToast('Regenerando', 'IA regenerando documento...', 'success');
+
+            try {
+                const response = await fetch(`/api/projects/${currentProjectId}/regenerate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                    }
+                });
+
+                if (!response.ok) throw new Error('Erro ao regenerar');
+
+                const data = await response.json();
+                updatePreview(data.content);
+                showToast('Sucesso', 'Documento regenerado!', 'success');
+
+            } catch (error) {
+                console.error('Error regenerating:', error);
+                showToast('Erro', 'Não foi possível regenerar o documento', 'error');
             }
         }
 
