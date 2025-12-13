@@ -1691,9 +1691,54 @@
                             Como posso ajudá-lo com este projeto?
                         </p>
                     </div>
+
+                    <!-- AI Model Selector (estilo Claude.ai) -->
+                    <div class="model-selector-container" style="padding: 12px; background: var(--bg-secondary); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+                        <label style="font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; font-weight: 600; display: block; margin-bottom: 6px;">
+                            🤖 Modelo de IA
+                        </label>
+                        <select id="aiModelSelector" style="width: 100%; padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); font-size: 13px; cursor: pointer;">
+                            <!-- Premium Models (Claude) -->
+                            <optgroup label="🔥 Premium - Máxima Qualidade">
+                                <option value="claude-opus-4" selected>Claude Opus 4 - Ultra (Melhor qualidade, raciocínio avançado)</option>
+                                <option value="claude-sonnet-4.5">Claude Sonnet 4.5 - Avançado (Equilíbrio perfeito)</option>
+                                <option value="claude-sonnet-4">Claude Sonnet 4 - Padrão (Rápido e inteligente)</option>
+                                <option value="claude-haiku-4">Claude Haiku 4 - Rápido (Respostas ágeis)</option>
+                            </optgroup>
+
+                            <!-- GPT Models -->
+                            <optgroup label="⚡ OpenAI GPT">
+                                <option value="gpt-4-turbo">GPT-4 Turbo - Premium (Muito avançado)</option>
+                                <option value="gpt-4">GPT-4 - Premium (Alta qualidade)</option>
+                                <option value="gpt-3.5-turbo">GPT-3.5 Turbo - Econômico (Bom custo-benefício)</option>
+                            </optgroup>
+
+                            <!-- Free/Open Source Models -->
+                            <optgroup label="💰 Gratuitos/Open Source">
+                                <option value="llama-3.3-70b">Llama 3.3 70B - Gratuito (Meta, open source)</option>
+                                <option value="mistral-large">Mistral Large - Gratuito (Europeu, open source)</option>
+                                <option value="gemini-pro">Gemini Pro - Gratuito (Google)</option>
+                                <option value="mixtral-8x7b">Mixtral 8x7B - Gratuito (Open source eficiente)</option>
+                            </optgroup>
+
+                            <!-- Local Models -->
+                            <optgroup label="🏠 Modelos Locais (Privacidade Total)">
+                                <option value="local-llama">Llama Local - Offline (Sem internet necessária)</option>
+                                <option value="local-phi">Phi-3 Local - Offline (Leve e rápido)</option>
+                            </optgroup>
+                        </select>
+                        <div id="modelInfo" style="margin-top: 6px; font-size: 11px; color: var(--text-tertiary); padding: 6px 8px; background: var(--bg-tertiary); border-radius: 6px; display: none;">
+                            <strong>💡 Dica:</strong> <span id="modelDescription"></span>
+                        </div>
+                    </div>
+
                     <div class="input-area-project">
                         <textarea placeholder="Escreva sua mensagem..." id="projectChatInput" rows="1"></textarea>
-                        <button onclick="sendProjectMessage()">→</button>
+                        <button onclick="sendProjectMessage()">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+                            </svg>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -1717,11 +1762,28 @@
             <!-- Preview Content -->
             <div class="preview-content">
                 <div class="paper-letterhead" id="paperLetterhead">
-                    <!-- Timbrado Header -->
-                    <img src="/img/timbrado_header_LIMPO.png" alt="Timbrado Header" class="letterhead-header" onerror="this.style.display='none'">
+                    <!-- Timbrado Header com Balança da Justiça -->
+                    <div style="display: flex; align-items: center; justify-content: center; padding: 20px 0; border-bottom: 3px solid var(--gold-primary); margin-bottom: 30px;">
+                        <!-- Balança da Justiça (SVG) -->
+                        <svg width="50" height="50" viewBox="0 0 64 64" fill="none" style="margin-right: 15px;">
+                            <path d="M32 8v48M32 8L20 20M32 8L44 20M20 20H44M20 20v8h24v-8M16 28l-8 12h16l-8-12M48 28l-8 12h16l-8-12M24 52h16M28 52v4h8v-4" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="16" cy="28" r="2" fill="#D4AF37"/>
+                            <circle cx="48" cy="28" r="2" fill="#D4AF37"/>
+                        </svg>
 
-                    <!-- Logo ROM -->
-                    <img src="/img/logo_rom.png" alt="Logo ROM" class="letterhead-logo" onerror="this.style.display='none'">
+                        <!-- Logo ROM -->
+                        <img src="/img/logo_rom.png" alt="Logo ROM" style="height: 60px; width: auto; max-width: 200px; object-fit: contain;" onerror="this.style.display='none'">
+
+                        <!-- Balança da Justiça (espelhada) -->
+                        <svg width="50" height="50" viewBox="0 0 64 64" fill="none" style="margin-left: 15px; transform: scaleX(-1);">
+                            <path d="M32 8v48M32 8L20 20M32 8L44 20M20 20H44M20 20v8h24v-8M16 28l-8 12h16l-8-12M48 28l-8 12h16l-8-12M24 52h16M28 52v4h8v-4" stroke="#D4AF37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="16" cy="28" r="2" fill="#D4AF37"/>
+                            <circle cx="48" cy="28" r="2" fill="#D4AF37"/>
+                        </svg>
+                    </div>
+
+                    <!-- Timbrado Header (imagem de backup) -->
+                    <img src="/img/timbrado_header_LIMPO.png" alt="Timbrado Header" class="letterhead-header" style="display: none;" onerror="this.remove()">
 
                     <!-- Document Content -->
                     <div class="document-content" id="documentContent">
@@ -1730,11 +1792,23 @@
                         </p>
                     </div>
 
-                    <!-- Letterhead Footer -->
-                    <div class="letterhead-footer" id="letterheadFooter">
-                        <strong>Rodolfo Otávio Mota Advogados Associados</strong><br>
-                        OAB/MG | Belo Horizonte - MG<br>
-                        contato@rom.adv.br
+                    <!-- Letterhead Footer com ícones melhorados -->
+                    <div class="letterhead-footer" id="letterheadFooter" style="display: flex; align-items: center; justify-content: center; gap: 20px; border-top: 2px solid var(--gold-primary); padding-top: 15px;">
+                        <div style="text-align: center;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" stroke="#D4AF37" stroke-width="2"/>
+                                <circle cx="12" cy="10" r="3" stroke="#D4AF37" stroke-width="2"/>
+                            </svg>
+                            <strong style="color: var(--gold-primary);">Rodolfo Otávio Mota Advogados Associados</strong><br>
+                            <span style="font-size: 12px; color: var(--text-secondary);">OAB/MG | Belo Horizonte - MG</span>
+                        </div>
+                        <div style="text-align: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="#D4AF37" stroke-width="2"/>
+                                <polyline points="22,6 12,13 2,6" stroke="#D4AF37" stroke-width="2"/>
+                            </svg>
+                            <span style="font-size: 12px; color: var(--text-secondary);">contato@rom.adv.br</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -2754,7 +2828,7 @@
         }
 
         function openSettings() {
-            showToast('Configurações', 'Use o menu lateral para acessar as ferramentas disponíveis', 'success');
+            window.location.href = '/settings.html';
         }
 
         function openHelp() {
@@ -2854,6 +2928,69 @@
         console.log('  POST /api/projects/:id/chat - Chat do projeto');
         console.log('  DELETE /api/projects/:id - Excluir projeto');
         console.log('');
+
+        // ============================================
+        // AI MODEL SELECTOR (estilo Claude.ai)
+        // ============================================
+        const aiModelSelector = document.getElementById('aiModelSelector');
+        const modelInfo = document.getElementById('modelInfo');
+        const modelDescription = document.getElementById('modelDescription');
+
+        // Model configurations
+        const modelConfigs = {
+            'claude-opus-4': {
+                description: 'Melhor modelo disponível. Ideal para análises complexas e peças longas.',
+                cost: 'premium', speed: 'moderado', quality: 10
+            },
+            'claude-sonnet-4.5': {
+                description: 'Equilíbrio perfeito entre qualidade e velocidade. Recomendado para uso geral.',
+                cost: 'médio', speed: 'rápido', quality: 9
+            },
+            'gpt-4-turbo': {
+                description: 'GPT-4 otimizado. Excelente para análise jurídica.',
+                cost: 'premium', speed: 'rápido', quality: 9
+            },
+            'llama-3.3-70b': {
+                description: '🎉 GRATUITO! Open source da Meta. Excelente qualidade.',
+                cost: 'gratuito', speed: 'rápido', quality: 8
+            },
+            'mistral-large': {
+                description: '🎉 GRATUITO! Modelo europeu de alta qualidade.',
+                cost: 'gratuito', speed: 'rápido', quality: 8
+            },
+            'gemini-pro': {
+                description: '🎉 GRATUITO! Google Gemini. Ótimo para análises.',
+                cost: 'gratuito', speed: 'muito rápido', quality: 7
+            },
+            'local-llama': {
+                description: '🔒 100% PRIVADO! Roda localmente, sem enviar dados para internet.',
+                cost: 'gratuito', speed: 'moderado', quality: 7
+            }
+        };
+
+        // Show model info on selection
+        if (aiModelSelector) {
+            aiModelSelector.addEventListener('change', function() {
+                const selectedModel = this.value;
+                const config = modelConfigs[selectedModel];
+
+                if (config && modelInfo && modelDescription) {
+                    modelDescription.textContent = config.description;
+                    modelInfo.style.display = 'block';
+                    localStorage.setItem('selectedAIModel', selectedModel);
+                    console.log(`✅ Modelo selecionado: ${selectedModel} (${config.quality}/10)`);
+                }
+            });
+
+            // Load saved model
+            const savedModel = localStorage.getItem('selectedAIModel');
+            if (savedModel) {
+                aiModelSelector.value = savedModel;
+            }
+            aiModelSelector.dispatchEvent(new Event('change'));
+        }
+
+        console.log('✅ AI Model Selector inicializado');
     </script>
 </body>
 </html>
