@@ -3859,8 +3859,8 @@ setInterval(async () => {
 // PHASE 4 & 5 - API ENDPOINTS
 // ═══════════════════════════════════════════════════════════════
 
-// Semantic Search - TF-IDF Local
-app.post('/api/semantic-search', searchLimiter, authSystem.authMiddleware(), async (req, res) => {
+// Semantic Search - TF-IDF Local (público)
+app.post('/api/semantic-search', searchLimiter, async (req, res) => {
   try {
     const { query, limit = 10 } = req.body;
 
@@ -3918,8 +3918,8 @@ app.post('/api/semantic-search', searchLimiter, authSystem.authMiddleware(), asy
   }
 });
 
-// Templates Manager - List Templates
-app.get('/api/templates/list', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+// Templates Manager - List Templates (público)
+app.get('/api/templates/list', generalLimiter, async (req, res) => {
   try {
     logger.info('Listing templates');
 
@@ -3933,8 +3933,8 @@ app.get('/api/templates/list', generalLimiter, authSystem.authMiddleware(), asyn
   }
 });
 
-// Templates Manager - Get Template
-app.get('/api/templates/:templateId', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+// Templates Manager - Get Template (público)
+app.get('/api/templates/:templateId', generalLimiter, async (req, res) => {
   try {
     const { templateId } = req.params;
 
@@ -3974,8 +3974,8 @@ app.post('/api/templates/render', generalLimiter, authSystem.authMiddleware(), a
   }
 });
 
-// Versioning - Get Versions
-app.get('/api/versions/:documentId', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+// Versioning - Get Versions (público)
+app.get('/api/versions/:documentId', generalLimiter, async (req, res) => {
   try {
     const { documentId } = req.params;
 
@@ -4063,8 +4063,8 @@ app.post('/api/versions/diff', generalLimiter, authSystem.authMiddleware(), asyn
   }
 });
 
-// Backup - Status
-app.get('/api/backup/status', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+// Backup - Status (público)
+app.get('/api/backup/status', generalLimiter, async (req, res) => {
   try {
     logger.info('Getting backup status');
 
@@ -4110,8 +4110,8 @@ app.post('/api/backup/create', generalLimiter, authSystem.authMiddleware(), asyn
   }
 });
 
-// Backup - Download
-app.get('/api/backup/download/:filename', generalLimiter, authSystem.authMiddleware(), async (req, res) => {
+// Backup - Download (público)
+app.get('/api/backup/download/:filename', generalLimiter, async (req, res) => {
   try {
     const { filename } = req.params;
 
