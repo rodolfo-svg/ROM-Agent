@@ -195,12 +195,14 @@ export async function pesquisarJusbrasil(termo, options = {}) {
       if (titulo || ementa) {
         resultados.push({
           titulo: titulo || 'Sem título',
-          ementa: ementa.substring(0, 500) + (ementa.length > 500 ? '...' : ''),
+          ementa: ementa,  // EMENTA COMPLETA - NÃO TRUNCAR
+          ementaCompleta: ementa,  // Campo adicional garantindo ementa completa
           tribunal: tribunalNome || tribunal?.toUpperCase() || 'Não informado',
           data,
           numero,
           link: link?.startsWith('http') ? link : `${CONFIG.urls.jusbrasil}${link}`,
-          fonte: 'Jusbrasil'
+          fonte: 'Jusbrasil',
+          dataConsulta: new Date().toISOString()
         });
       }
     });
@@ -299,14 +301,17 @@ export async function pesquisarSTF(termo, options = {}) {
       for (const item of data.result) {
         resultados.push({
           titulo: item.titulo || item.classe + ' ' + item.numero,
-          ementa: limparTexto(item.ementa || item.texto || '').substring(0, 500),
-          tribunal: 'STF',
+          ementa: limparTexto(item.ementa || item.texto || ''),  // EMENTA COMPLETA
+          ementaCompleta: limparTexto(item.ementa || item.texto || ''),
+          tribunal: 'STF - SUPREMO TRIBUNAL FEDERAL',
           data: item.dataJulgamento || item.dataPublicacao || '',
           numero: item.numero || item.incidente || '',
           relator: item.relator || '',
           classe: item.classe || '',
+          orgaoJulgador: item.orgaoJulgador || item.turma || '',
           link: `${CONFIG.urls.stf}/#/jurisprudencia/detalhe/${item.id}`,
-          fonte: 'STF'
+          fonte: 'STF - Supremo Tribunal Federal - Portal de Jurisprudência',
+          dataConsulta: new Date().toISOString()
         });
       }
     }
@@ -362,13 +367,15 @@ async function pesquisarSTFFallback(termo, options = {}) {
       if (titulo || ementa) {
         resultados.push({
           titulo: titulo || numero || 'Decisão STF',
-          ementa: ementa.substring(0, 500),
-          tribunal: 'STF',
+          ementa: ementa,  // EMENTA COMPLETA
+          ementaCompleta: ementa,
+          tribunal: 'STF - SUPREMO TRIBUNAL FEDERAL',
           data,
           numero,
           relator,
           link: CONFIG.urls.stf,
-          fonte: 'STF'
+          fonte: 'STF - Supremo Tribunal Federal - Portal Institucional',
+          dataConsulta: new Date().toISOString()
         });
       }
     });
@@ -447,15 +454,17 @@ export async function pesquisarSTJ(termo, options = {}) {
       if (classe || numero || ementa) {
         resultados.push({
           titulo: `${classe} ${numero}`.trim() || 'Decisão STJ',
-          ementa: ementa.substring(0, 500) + (ementa.length > 500 ? '...' : ''),
-          tribunal: 'STJ',
+          ementa: ementa,  // EMENTA COMPLETA - NÃO TRUNCAR
+          ementaCompleta: ementa,
+          tribunal: 'STJ - SUPERIOR TRIBUNAL DE JUSTIÇA',
           data: dataJulgamento,
           numero,
           classe,
           relator,
           orgaoJulgador,
           link: link ? `${CONFIG.urls.stj}${link}` : CONFIG.urls.stj,
-          fonte: 'STJ'
+          fonte: 'STJ - Superior Tribunal de Justiça - Sistema de Consulta SCON',
+          dataConsulta: new Date().toISOString()
         });
       }
     });
@@ -537,16 +546,30 @@ export async function pesquisarDatajud(numeroProcesso, options = {}) {
     const data = response.data;
     const hits = data.hits?.hits || [];
 
-    const resultados = hits.map(hit => ({
-      numeroProcesso: hit._source.numeroProcesso,
-      classe: hit._source.classe?.nome || '',
-      assuntos: hit._source.assuntos?.map(a => a.nome) || [],
-      orgaoJulgador: hit._source.orgaoJulgador?.nome || '',
-      dataAjuizamento: hit._source.dataAjuizamento,
-      movimentos: hit._source.movimentos?.slice(0, 10) || [],
-      tribunal: tribunalCode,
-      fonte: 'CNJ Datajud'
-    }));
+    const resultados = hits.map(hit => {
+      const source = hit._source;
+      return {
+        numeroProcesso: source.numeroProcesso,
+        titulo: `${source.classe?.nome || 'Processo'} nº ${source.numeroProcesso}`,
+        classe: source.classe?.nome || '',
+        assuntos: source.assuntos?.map(a => a.nome) || [],
+        orgaoJulgador: source.orgaoJulgador?.nome || '',
+        dataAjuizamento: source.dataAjuizamento,
+        movimentos: source.movimentos || [],  // TODOS os movimentos, não limitar
+        movimentosCompletos: source.movimentos || [],
+        partes: source.partes || [],  // Adicionar partes do processo
+        magistrado: source.magistrado || '',
+        tribunal: tribunalCode,
+        ementa: source.ementa || source.resumo || '',  // Ementa completa se disponível
+        ementaCompleta: source.ementa || source.resumo || '',
+        decisao: source.decisao || '',  // Decisão completa
+        sentenca: source.sentenca || '',  // Sentença completa
+        acordao: source.acordao || '',  // Acórdão completo
+        fonte: 'CNJ DataJud - Conselho Nacional de Justiça - API Pública',
+        dataConsulta: new Date().toISOString(),
+        link: `https://datajud.cnj.jus.br/consulta-publica/processo/${source.numeroProcesso}`
+      };
+    });
 
     const resultado = {
       sucesso: true,
