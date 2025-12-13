@@ -27,10 +27,10 @@ const require = createRequire(import.meta.url);
 const IntegradorSistema = require('../lib/integrador-sistema.cjs');
 const PromptsManager = require('../lib/prompts-manager.cjs');
 const PromptsVersioning = require('../lib/prompts-versioning.cjs');
-const AuthSystem = require('../lib/auth-system.js');
-const UploadSync = require('../lib/upload-sync.js');
-const ModelMonitor = require('../lib/model-monitor.js');
-const KBCleaner = require('../lib/kb-cleaner.js');
+const AuthSystem = require('../lib/auth-system.cjs');
+const UploadSync = require('../lib/upload-sync.cjs');
+const ModelMonitor = require('../lib/model-monitor.cjs');
+const KBCleaner = require('../lib/kb-cleaner.cjs');
 
 dotenv.config();
 
