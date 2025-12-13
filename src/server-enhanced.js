@@ -31,6 +31,7 @@ const AuthSystem = require('../lib/auth-system.cjs');
 const UploadSync = require('../lib/upload-sync.cjs');
 const ModelMonitor = require('../lib/model-monitor.cjs');
 const KBCleaner = require('../lib/kb-cleaner.cjs');
+const QualityValidator = require('../lib/quality-validator.cjs');
 
 dotenv.config();
 
@@ -54,6 +55,10 @@ const kbCleaner = new KBCleaner();
 
 // Inicializar monitor de modelos AI
 const modelMonitor = new ModelMonitor();
+
+// Inicializar validador de qualidade
+const qualityValidator = new QualityValidator();
+console.log('✅ Validador de Qualidade inicializado - evita retrabalho');
 
 // Inicializar sistema de upload sincronizado
 let uploadSync = null;
@@ -1349,6 +1354,89 @@ app.get('/api/models/statistics', authSystem.authMiddleware(), (req, res) => {
     res.json({ stats });
   } catch (error) {
     console.error('Erro ao obter estatísticas de modelos:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ====================================================================
+// ROTAS DE API PARA VALIDAÇÃO DE QUALIDADE
+// ====================================================================
+
+// Validar peça ANTES de enviar para IA (economiza tokens, evita retrabalho)
+app.post('/api/validate', (req, res) => {
+  try {
+    const { type, content, metadata } = req.body;
+
+    if (!type || !content) {
+      return res.status(400).json({ error: 'type e content são obrigatórios' });
+    }
+
+    // 🚀 VALIDAÇÃO RÁPIDA - não é burocrática
+    const validation = qualityValidator.validate({ type, content, metadata });
+
+    res.json({
+      valid: validation.valid,
+      score: validation.score,
+      errors: validation.errors,
+      warnings: validation.warnings,
+      canProceed: validation.score >= 60, // Mínimo para prosseguir
+      message: validation.valid
+        ? '✅ Peça validada - pronta para geração'
+        : '⚠️ Peça precisa de ajustes antes de gerar'
+    });
+  } catch (error) {
+    console.error('Erro ao validar peça:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Obter estatísticas de validação
+app.get('/api/validate/statistics', (req, res) => {
+  try {
+    const stats = qualityValidator.getStatistics();
+    res.json({ stats });
+  } catch (error) {
+    console.error('Erro ao obter estatísticas de validação:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ====================================================================
+// ROTAS DE API PARA CACHE INTELIGENTE
+// ====================================================================
+
+// Obter estatísticas do cache
+app.get('/api/cache/statistics', (req, res) => {
+  try {
+    const agent = getAgent(req.session.id);
+    if (!agent) {
+      return res.status(500).json({ error: 'Agente não inicializado' });
+    }
+
+    const stats = agent.getCacheStatistics();
+    res.json({ stats });
+  } catch (error) {
+    console.error('Erro ao obter estatísticas do cache:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Limpar cache (requer autenticação de admin)
+app.post('/api/cache/clear', authSystem.authMiddleware(), authSystem.requireRole('master_admin'), (req, res) => {
+  try {
+    // Limpar cache de todos os agentes ativos
+    let cleared = 0;
+    for (const [sessionId, agent] of agents.entries()) {
+      agent.clearCache();
+      cleared++;
+    }
+
+    res.json({
+      success: true,
+      message: `Cache limpo em ${cleared} sessões`
+    });
+  } catch (error) {
+    console.error('Erro ao limpar cache:', error);
     res.status(500).json({ error: error.message });
   }
 });

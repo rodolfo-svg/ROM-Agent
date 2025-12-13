@@ -1,0 +1,12 @@
+[
+  {
+    "id": "user-001",
+    "name": "Rodolfo Otávio Mota",
+    "email": "rodolfo@rom.adv.br",
+    "passwordHash": "$2a$10$3XKg8WMcySxmEVyfeFJsE.QNu10nOZmxyi6/FQKITGV.JKVmw.SGK",
+    "role": "master_admin",
+    "partnerId": "rom",
+    "createdAt": "2025-12-13T05:40:44.159Z",
+    "active": true
+  }
+]
