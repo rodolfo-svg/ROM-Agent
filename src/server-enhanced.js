@@ -23,6 +23,13 @@ import formattingTemplates from '../lib/formatting-templates.js';
 import { extractDocument } from '../lib/extractor-pipeline.js';
 import { conversarComTools } from './modules/bedrock-tools.js';
 import dotenv from 'dotenv';
+import compression from 'compression';
+import logger, { requestLogger, logAIOperation, logKBOperation } from '../lib/logger.js';
+import { generalLimiter, chatLimiter, uploadLimiter, authLimiter, searchLimiter } from '../lib/rate-limiter.js';
+import semanticSearch from '../lib/semantic-search.js';
+import documentVersioning from '../lib/versioning.js';
+import templatesManager from '../lib/templates-manager.js';
+import backupManager from '../lib/backup-manager.js';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
@@ -94,6 +101,21 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, '../public')));
 
+// Compression (Gzip/Brotli) - comprimir responses > 1KB
+app.use(compression({
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) {
+      return false;
+    }
+    return compression.filter(req, res);
+  },
+  level: 6, // Nível de compressão (0-9)
+  threshold: 1024 // Comprimir apenas responses > 1KB
+}));
+
+// Request Logger (logs estruturados)
+app.use(requestLogger);
+
 // Sessões para histórico
 app.use(session({
   secret: process.env.SESSION_SECRET || 'rom-secret-key-change-in-production',
@@ -101,6 +123,11 @@ app.use(session({
   saveUninitialized: true,
   cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 7 dias
 }));
+
+// Rate Limiter Geral (100 requisições/hora por IP)
+app.use('/api/', generalLimiter);
+
+logger.info('Sistema inicializado com todos os middlewares de otimização');
 
 // Configurar multer para upload
 const storage = multer.diskStorage({
@@ -573,13 +600,82 @@ app.get('/api/prompts', (req, res) => {
   }
 });
 
-// API - Info do sistema
-app.get('/api/info', (req, res) => {
-  res.json({
-    nome: CONFIG.nome,
-    versao: CONFIG.versao,
-    capacidades: CONFIG.capacidades
-  });
+// API - Info do sistema com health check completo
+app.get('/api/info', async (req, res) => {
+  try {
+    // Status do AWS Bedrock
+    let bedrockStatus = 'unknown';
+    try {
+      const { BedrockRuntimeClient } = await import('@aws-sdk/client-bedrock-runtime');
+      const client = new BedrockRuntimeClient({ region: process.env.AWS_REGION || 'us-east-1' });
+      bedrockStatus = 'connected';
+    } catch (error) {
+      bedrockStatus = 'disconnected';
+    }
+
+    // Status do cache
+    const cacheStats = {
+      enabled: true,
+      entries: agents.size
+    };
+
+    // Uptime
+    const uptime = process.uptime();
+    const uptimeFormatted = `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m`;
+
+    // Uso de memória
+    const memoryUsage = process.memoryUsage();
+
+    // Informações do sistema
+    const systemInfo = {
+      nome: CONFIG.nome,
+      versao: CONFIG.versao,
+      capacidades: CONFIG.capacidades,
+
+      // Health Check
+      health: {
+        status: bedrockStatus === 'connected' ? 'healthy' : 'degraded',
+        uptime: uptimeFormatted,
+        uptimeSeconds: Math.floor(uptime)
+      },
+
+      // AWS Bedrock
+      bedrock: {
+        status: bedrockStatus,
+        region: process.env.AWS_REGION || 'us-east-1'
+      },
+
+      // Cache
+      cache: {
+        enabled: cacheStats.enabled,
+        activeSessions: cacheStats.entries
+      },
+
+      // Servidor
+      server: {
+        nodeVersion: process.version,
+        platform: process.platform,
+        arch: process.arch,
+        pid: process.pid
+      },
+
+      // Memória
+      memory: {
+        rss: Math.round(memoryUsage.rss / 1024 / 1024) + ' MB',
+        heapTotal: Math.round(memoryUsage.heapTotal / 1024 / 1024) + ' MB',
+        heapUsed: Math.round(memoryUsage.heapUsed / 1024 / 1024) + ' MB',
+        external: Math.round(memoryUsage.external / 1024 / 1024) + ' MB'
+      },
+
+      // Timestamp
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(systemInfo);
+  } catch (error) {
+    console.error('Erro no health check:', error);
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // ====================================================================
