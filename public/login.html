@@ -460,13 +460,6 @@
                     <div class="spinner"></div>
                 </button>
             </form>
-
-            <!-- Demo Credentials -->
-            <div class="demo-credentials">
-                <h4>🔑 Credenciais de Demonstração</h4>
-                <p><strong>Email:</strong> rodolfo@rom.adv.br</p>
-                <p><strong>Senha:</strong> admin123</p>
-            </div>
         </div>
 
         <!-- Footer -->
@@ -602,12 +595,6 @@
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
 
-        // Auto-fill demo credentials on click
-        document.querySelector('.demo-credentials').addEventListener('click', () => {
-            document.getElementById('email').value = 'rodolfo@rom.adv.br';
-            document.getElementById('password').value = 'admin123';
-            document.getElementById('email').focus();
-        });
 
         // Forgot password
         document.querySelector('.forgot-password').addEventListener('click', (e) => {

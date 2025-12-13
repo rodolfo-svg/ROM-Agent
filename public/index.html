@@ -1687,12 +1687,12 @@
                 <div class="project-chat">
                     <h2>💬 CHAT DO PROJETO</h2>
                     <div class="messages" id="projectMessages">
-                        <p style="text-align: center; color: var(--text-tertiary); font-size: 13px;">
-                            Faça perguntas sobre o caso...
+                        <p style="text-align: center; color: var(--text-tertiary); font-size: 14px; padding: 20px;">
+                            Como posso ajudá-lo com este projeto?
                         </p>
                     </div>
                     <div class="input-area-project">
-                        <textarea placeholder="Pergunte algo sobre o caso..." id="projectChatInput" rows="1"></textarea>
+                        <textarea placeholder="Escreva sua mensagem..." id="projectChatInput" rows="1"></textarea>
                         <button onclick="sendProjectMessage()">→</button>
                     </div>
                 </div>
@@ -1732,9 +1732,9 @@
 
                     <!-- Letterhead Footer -->
                     <div class="letterhead-footer" id="letterheadFooter">
-                        <strong>Escritório ROM Advocacia</strong><br>
-                        OAB/XX 12345 | Rua Exemplo, 123 - Centro | Tel: (XX) XXXX-XXXX<br>
-                        contato@romadvocacia.com.br
+                        <strong>Rodolfo Otávio Mota Advogados Associados</strong><br>
+                        OAB/MG | Belo Horizonte - MG<br>
+                        contato@rom.adv.br
                     </div>
                 </div>
             </div>
@@ -1771,13 +1771,13 @@
                 <!-- Nome -->
                 <div class="form-group">
                     <label>Nome do Projeto *</label>
-                    <input type="text" id="projectName" placeholder="Ex: Caso Silva vs Empresa X">
+                    <input type="text" id="projectName" placeholder="Nome do caso ou processo">
                 </div>
 
                 <!-- Descrição -->
                 <div class="form-group">
                     <label>Descrição (opcional)</label>
-                    <textarea id="projectDescription" placeholder="Ação trabalhista rescisão irregular..."></textarea>
+                    <textarea id="projectDescription" placeholder="Descreva brevemente o caso ou processo..."></textarea>
                 </div>
 
                 <!-- Upload -->
@@ -2425,7 +2425,10 @@
         }
 
         async function uploadMoreDocuments() {
-            if (!currentProjectId) return;
+            if (!currentProjectId) {
+                showToast('Aviso', 'Selecione um projeto primeiro', 'error');
+                return;
+            }
 
             const input = document.createElement('input');
             input.type = 'file';
@@ -2436,7 +2439,20 @@
                 const files = Array.from(e.target.files);
                 if (files.length === 0) return;
 
-                showToast('Upload', 'Enviando documentos...', 'success');
+                // Validation
+                if (files.length > 20) {
+                    showToast('Limite excedido', 'Máximo de 20 arquivos por upload', 'error');
+                    return;
+                }
+
+                const oversized = files.find(f => f.size > 100 * 1024 * 1024);
+                if (oversized) {
+                    showToast('Arquivo grande', `"${oversized.name}" excede 100MB`, 'error');
+                    return;
+                }
+
+                isLoading = true;
+                showToast('Enviando', `Processando ${files.length} arquivo(s)...`, 'success');
 
                 try {
                     const formData = new FormData();
@@ -2446,6 +2462,9 @@
 
                     const response = await fetch(`/api/projects/${currentProjectId}/upload`, {
                         method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                        },
                         body: formData
                     });
 
@@ -2454,14 +2473,16 @@
                     }
 
                     const data = await response.json();
-                    showToast('Sucesso', `${files.length} documento(s) enviado(s)`, 'success');
+                    showToast('Concluído', `${files.length} arquivo(s) processado(s)`, 'success');
 
                     // Reload project
-                    selectProject(currentProjectId);
+                    await selectProject(currentProjectId);
 
                 } catch (error) {
                     console.error('Upload error:', error);
-                    showToast('Erro', 'Falha no upload dos documentos', 'error');
+                    showToast('Erro', error.message || 'Falha no upload', 'error');
+                } finally {
+                    isLoading = false;
                 }
             };
 
@@ -2526,12 +2547,23 @@
             }
         }
 
-        function modifySuggestion() {
-            showToast('Modificar', 'Funcionalidade em desenvolvimento', 'success');
+        async function modifySuggestion() {
+            if (!currentProjectId) return;
+
+            const newContent = prompt('Digite o conteúdo modificado:', '');
+            if (newContent) {
+                document.getElementById('documentContent').innerHTML = newContent;
+                showToast('Sucesso', 'Conteúdo modificado', 'success');
+            }
         }
 
         function exportProject() {
-            showToast('Export', 'Funcionalidade em desenvolvimento', 'success');
+            if (!currentProjectId) {
+                showToast('Aviso', 'Selecione um projeto primeiro', 'error');
+                return;
+            }
+
+            downloadPDF();
         }
 
         function deleteProject() {
@@ -2554,23 +2586,38 @@
 
             const messagesContainer = document.getElementById('projectMessages');
 
+            // Clear initial message if present
+            const initialMsg = messagesContainer.querySelector('p');
+            if (initialMsg) initialMsg.remove();
+
             // Add user message
             const userMsg = document.createElement('div');
-            userMsg.style.cssText = 'background: var(--champagne); padding: 8px 12px; border-radius: 8px; margin-bottom: 8px;';
+            userMsg.style.cssText = 'background: var(--champagne); padding: 12px 16px; border-radius: 12px; margin-bottom: 12px; max-width: 80%; margin-left: auto; animation: slideIn 0.3s ease;';
             userMsg.textContent = message;
             messagesContainer.appendChild(userMsg);
 
             input.value = '';
             input.style.height = 'auto';
 
+            // Add loading indicator
+            const loadingMsg = document.createElement('div');
+            loadingMsg.style.cssText = 'background: var(--bg-tertiary); padding: 12px 16px; border-radius: 12px; margin-bottom: 12px; max-width: 80%; animation: slideIn 0.3s ease;';
+            loadingMsg.innerHTML = '<span style="opacity: 0.6;">Pensando...</span> <span style="animation: pulse 1.5s infinite;">●</span>';
+            messagesContainer.appendChild(loadingMsg);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
             try {
                 const response = await fetch(`/api/projects/${currentProjectId}/chat`, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
                     },
                     body: JSON.stringify({ message })
                 });
+
+                // Remove loading indicator
+                loadingMsg.remove();
 
                 if (!response.ok) {
                     throw new Error('Erro ao enviar mensagem');
@@ -2580,16 +2627,23 @@
 
                 // Add assistant message
                 const assistantMsg = document.createElement('div');
-                assistantMsg.style.cssText = 'background: var(--bg-tertiary); padding: 8px 12px; border-radius: 8px; margin-bottom: 8px;';
-                assistantMsg.textContent = data.response;
+                assistantMsg.style.cssText = 'background: var(--bg-tertiary); padding: 12px 16px; border-radius: 12px; margin-bottom: 12px; max-width: 80%; animation: slideIn 0.3s ease; border-left: 3px solid var(--gold-primary);';
+                assistantMsg.innerHTML = data.response || data.message || 'Resposta recebida';
                 messagesContainer.appendChild(assistantMsg);
 
                 // Scroll to bottom
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
             } catch (error) {
+                loadingMsg.remove();
                 console.error('Chat error:', error);
-                showToast('Erro', 'Não foi possível enviar a mensagem', 'error');
+
+                // Add error message
+                const errorMsg = document.createElement('div');
+                errorMsg.style.cssText = 'background: #fee; padding: 12px 16px; border-radius: 12px; margin-bottom: 12px; max-width: 80%; color: #c00; border-left: 3px solid #c00;';
+                errorMsg.textContent = 'Erro ao processar mensagem. Tente novamente.';
+                messagesContainer.appendChild(errorMsg);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
         }
 
@@ -2663,8 +2717,25 @@
             });
         }
 
-        function shareContent() {
-            showToast('Compartilhar', 'Funcionalidade em desenvolvimento', 'success');
+        async function shareContent() {
+            const content = document.getElementById('documentContent');
+            const text = content.innerText;
+
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Documento ROM Agent',
+                        text: text
+                    });
+                    showToast('Compartilhado', 'Documento compartilhado com sucesso', 'success');
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        copyContent();
+                    }
+                }
+            } else {
+                copyContent();
+            }
         }
 
         // ============================================
@@ -2679,11 +2750,11 @@
         }
 
         function openTools() {
-            showToast('Ferramentas', 'Acesso às 33 ferramentas de extração', 'success');
+            toggleExtractionTools();
         }
 
         function openSettings() {
-            showToast('Configurações', 'Funcionalidade em desenvolvimento', 'success');
+            showToast('Configurações', 'Use o menu lateral para acessar as ferramentas disponíveis', 'success');
         }
 
         function openHelp() {
