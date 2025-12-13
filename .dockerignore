@@ -1,0 +1,14 @@
+node_modules
+npm-debug.log
+.env
+.DS_Store
+*.log
+downloads/*
+upload/*
+logs/*
+processed/*
+extracted/*
+.git
+.gitignore
+README.md
+.claude

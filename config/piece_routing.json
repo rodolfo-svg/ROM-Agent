@@ -1,0 +1,136 @@
+{
+  "version": "2.0",
+  "description": "Mapeamento de tipos de peças para tiers de modelo",
+  
+  "tier_definitions": {
+    "TIER_1_FAST": { "profile": "FAST", "description": "Peças simples" },
+    "TIER_2_STANDARD": { "profile": "STANDARD", "description": "Peças padrão" },
+    "TIER_3_PREMIUM": { "profile": "PREMIUM", "description": "Peças complexas" },
+    "TIER_4_ULTRA": { "profile": "ULTRA", "description": "Tribunais superiores" }
+  },
+
+  "explicit_overrides": {
+    "TIER_4_ULTRA": [
+      "recurso_especial",
+      "contrarrazoes_resp",
+      "recurso_extraordinario",
+      "contrarrazoes_re",
+      "embargos_divergencia",
+      "habeas_corpus_liminar",
+      "revisao_criminal",
+      "pedido_trancamento_acao_penal",
+      "reclamacao_constitucional"
+    ],
+    
+    "TIER_3_PREMIUM": [
+      "apelação",
+      "apelação_criminal",
+      "contrarrazoes_apelacao",
+      "contrarrazoes_apelacao_criminal",
+      "agravo_instrumento",
+      "mandado_seguranca",
+      "mandado_seguranca_tributario",
+      "mandado_seguranca_administrativo",
+      "mandado_seguranca_licitacao",
+      "acao_civil_publica_defesa",
+      "acao_improbidade_defesa",
+      "acao_popular_defesa",
+      "alegacoes_finais",
+      "sustentacao_oral_texto",
+      "memorial_arbitral",
+      "parecer_tributario",
+      "parecer_regulatorio",
+      "relatorio_due_diligence",
+      "recuperacao_judicial_peticao_inicial",
+      "pedido_falencia",
+      "defesa_pedido_falencia",
+      "acao_dissolucao_parcial_sociedade",
+      "acao_responsabilidade_administrador",
+      "acao_anulacao_sentenca_arbitral",
+      "incidente_resolucao_demandas_repetitivas",
+      "incidente_assuncao_competencia",
+      "pedido_suspensao_liminar_sentenca"
+    ],
+    
+    "TIER_1_FAST": [
+      "peticao_intermediaria",
+      "manifestacao",
+      "pedido_juntada_documentos",
+      "peticao_desarquivamento",
+      "pedido_reconsideracao",
+      "pedido_homologacao_acordo",
+      "pedido_justica_gratuita",
+      "quesitos_periciais",
+      "procuracao",
+      "notificacao_extrajudicial",
+      "contranotificacao",
+      "interpelacao",
+      "ata_reuniao",
+      "carta_proposta",
+      "memorando_interno",
+      "termo_confissao_divida",
+      "reclamacao_procon",
+      "reclamacao_procon_consumidor",
+      "notificacao_desocupacao",
+      "notificacao_inadimplemento_locacao",
+      "notificacao_fornecedor_vicio_produto",
+      "notificacao_cancelamento_servico",
+      "requerimento_acesso_informacao_lai"
+    ]
+  },
+
+  "area_defaults": {
+    "criminal": "TIER_3_PREMIUM",
+    "tributario": "TIER_3_PREMIUM",
+    "administrativo_publico": "TIER_3_PREMIUM",
+    "licitacoes_contratos_publicos": "TIER_3_PREMIUM",
+    "arbitragem_mediacao": "TIER_3_PREMIUM",
+    "ambiental": "TIER_3_PREMIUM",
+    "civel_geral": "TIER_2_STANDARD",
+    "consumidor": "TIER_2_STANDARD",
+    "familia_sucessoes": "TIER_2_STANDARD",
+    "imobiliario": "TIER_2_STANDARD",
+    "empresarial_societario": "TIER_2_STANDARD",
+    "trabalhista": "TIER_2_STANDARD",
+    "saude": "TIER_2_STANDARD",
+    "lgpd_privacidade": "TIER_2_STANDARD",
+    "propriedade_intelectual": "TIER_2_STANDARD",
+    "bancario_financeiro": "TIER_2_STANDARD"
+  },
+
+  "judiciais_base": {
+    "peticao_inicial": "TIER_2_STANDARD",
+    "contestacao": "TIER_2_STANDARD",
+    "replica": "TIER_2_STANDARD",
+    "impugnacao_contestacao": "TIER_2_STANDARD",
+    "embargos_declaracao": "TIER_2_STANDARD",
+    "agravo_interno": "TIER_2_STANDARD",
+    "tutela_urgencia": "TIER_2_STANDARD",
+    "tutela_evidencia": "TIER_2_STANDARD",
+    "cumprimento_sentenca": "TIER_2_STANDARD",
+    "impugnacao_cumprimento_sentenca": "TIER_2_STANDARD",
+    "execucao": "TIER_2_STANDARD",
+    "embargos_execucao": "TIER_2_STANDARD",
+    "excecao_pre_executividade": "TIER_2_STANDARD",
+    "habilitacao_credito": "TIER_2_STANDARD",
+    "memoriais": "TIER_2_STANDARD",
+    "impugnacao_laudo": "TIER_2_STANDARD"
+  },
+
+  "extrajudiciais_base": {
+    "requerimento_administrativo": "TIER_2_STANDARD",
+    "defesa_processo_administrativo": "TIER_2_STANDARD",
+    "recurso_administrativo": "TIER_2_STANDARD",
+    "representacao": "TIER_2_STANDARD",
+    "parecer_juridico": "TIER_2_STANDARD",
+    "minuta_contrato": "TIER_2_STANDARD",
+    "aditivo_contratual": "TIER_2_STANDARD",
+    "distrato": "TIER_2_STANDARD",
+    "acordo_extrajudicial": "TIER_2_STANDARD",
+    "politica_privacidade": "TIER_2_STANDARD",
+    "termos_uso": "TIER_2_STANDARD",
+    "codigo_conduta_compliance": "TIER_2_STANDARD"
+  },
+
+  "fallback_tier": "TIER_2_STANDARD"
+}

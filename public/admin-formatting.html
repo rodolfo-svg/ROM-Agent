@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administração de Formatação - ROM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f7fafc;
+      color: #1a202c;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #1a365d;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .back-link {
+      color: #1a365d;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      margin-bottom: 2rem;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .admin-nav {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .admin-nav a {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #2d3748;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .admin-nav a:hover {
+      background: #e2e8f0;
+    }
+
+    .admin-nav a.active {
+      background: #1a365d;
+      color: white;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .card h2 {
+      color: #1a365d;
+      margin-bottom: 1.5rem;
+      font-size: 1.25rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #2d3748;
+      font-size: 0.875rem;
+    }
+
+    .label-description {
+      font-size: 0.75rem;
+      color: #718096;
+      font-weight: 400;
+      margin-top: 0.25rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: #1a365d;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    .preset-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .preset-card {
+      padding: 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .preset-card:hover {
+      border-color: #1a365d;
+      box-shadow: 0 2px 8px rgba(26, 54, 93, 0.1);
+    }
+
+    .preset-card.selected {
+      border-color: #1a365d;
+      background: #f7fafc;
+    }
+
+    .preset-card h3 {
+      font-size: 1rem;
+      color: #1a365d;
+      margin-bottom: 0.25rem;
+    }
+
+    .preset-card p {
+      font-size: 0.75rem;
+      color: #718096;
+    }
+
+    .preset-details {
+      font-size: 0.75rem;
+      color: #718096;
+      margin-top: 0.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .preset-tag {
+      background: #e2e8f0;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #1a365d;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #2c5282;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e0;
+    }
+
+    .btn-danger {
+      background: #e53e3e;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #c53030;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .partner-selector {
+      margin-bottom: 2rem;
+    }
+
+    .partner-selector select {
+      font-size: 1rem;
+      padding: 1rem;
+    }
+
+    .alert {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      display: none;
+    }
+
+    .alert.success {
+      background: #c6f6d5;
+      color: #22543d;
+      border: 1px solid #9ae6b4;
+    }
+
+    .alert.error {
+      background: #fed7d7;
+      color: #742a2a;
+      border: 1px solid #fc8181;
+    }
+
+    .alert.show {
+      display: block;
+    }
+
+    .preview-section {
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 2rem;
+      background: white;
+      min-height: 400px;
+    }
+
+    .preview-title {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #1a365d;
+    }
+
+    .document-preview {
+      background: white;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 2rem;
+      min-height: 500px;
+    }
+
+    .section-divider {
+      border-top: 2px solid #e2e8f0;
+      margin: 2rem 0;
+      padding-top: 2rem;
+    }
+
+    .color-input-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .color-input-group input[type="color"] {
+      width: 60px;
+      height: 40px;
+      padding: 0.25rem;
+    }
+
+    .color-input-group input[type="text"] {
+      flex: 1;
+    }
+
+    .font-preview {
+      padding: 1rem;
+      background: #f7fafc;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+      border: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 1024px) {
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #718096;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">← Voltar para o Chat</a>
+
+    <div class="admin-nav">
+      <a href="admin-partners.html">🏢 Gerenciar Parceiros</a>
+      <a href="admin-formatting.html" class="active">⚙️ Configurar Formatação</a>
+    </div>
+
+    <h1>⚙️ Configuração de Formatação</h1>
+
+    <div id="alertBox" class="alert"></div>
+
+    <div class="card partner-selector">
+      <label for="partnerSelect">Selecionar Parceiro</label>
+      <select id="partnerSelect" onchange="loadPartnerTemplate()">
+        <option value="">Carregando...</option>
+      </select>
+    </div>
+
+    <div class="main-layout">
+      <!-- Coluna Esquerda: Presets -->
+      <div>
+        <div class="card">
+          <h2>📋 Presets de Formatação</h2>
+          <p style="font-size: 0.875rem; color: #718096; margin-bottom: 1rem;">
+            Escolha um preset base para começar. Você pode personalizá-lo depois.
+          </p>
+          <div id="presetList" class="preset-list">
+            <div class="loading">Carregando presets...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna Direita: Customizações -->
+      <div>
+        <div class="card">
+          <h2>🎨 Personalização</h2>
+
+          <form id="customizationForm">
+            <!-- Fonte -->
+            <div class="form-group">
+              <label>Fonte
+                <div class="label-description">Configure a fonte padrão do documento</div>
+              </label>
+              <div class="form-row">
+                <div>
+                  <label for="fontFamily">Família</label>
+                  <select id="fontFamily" name="font.family">
+                    <option value="Arial">Arial</option>
+                    <option value="Times New Roman">Times New Roman</option>
+                    <option value="Calibri">Calibri</option>
+                    <option value="Garamond">Garamond</option>
+                    <option value="Georgia">Georgia</option>
+                    <option value="Verdana">Verdana</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="fontSize">Tamanho (pt)</label>
+                  <input type="number" id="fontSize" name="font.size" min="8" max="24" value="12">
+                </div>
+                <div>
+                  <label for="fontColor">Cor</label>
+                  <div class="color-input-group">
+                    <input type="color" id="fontColor" name="font.color" value="#000000">
+                    <input type="text" id="fontColorHex" value="#000000" readonly>
+                  </div>
+                </div>
+              </div>
+              <div class="font-preview" id="fontPreview" style="font-family: Arial; font-size: 12pt; color: #000000;">
+                Exemplo de texto com a fonte selecionada
+              </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- Parágrafo -->
+            <div class="form-group">
+              <label>Parágrafo
+                <div class="label-description">Configure o espaçamento e alinhamento dos parágrafos</div>
+              </label>
+              <div class="form-row">
+                <div>
+                  <label for="paragraphAlignment">Alinhamento</label>
+                  <select id="paragraphAlignment" name="paragraph.alignment">
+                    <option value="left">Esquerda</option>
+                    <option value="center">Centro</option>
+                    <option value="right">Direita</option>
+                    <option value="justify">Justificado</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="lineSpacing">Entrelinhas</label>
+                  <input type="number" id="lineSpacing" name="paragraph.lineSpacing" min="1" max="3" step="0.1" value="1.5">
+                </div>
+                <div>
+                  <label for="firstLineIndent">Recuo 1ª linha (cm)</label>
+                  <input type="number" id="firstLineIndent" name="paragraph.firstLineIndent" min="0" max="5" step="0.25" value="1.25">
+                </div>
+              </div>
+              <div class="form-row">
+                <div>
+                  <label for="spaceBefore">Espaço antes (pt)</label>
+                  <input type="number" id="spaceBefore" name="paragraph.spaceBefore" min="0" max="24" value="0">
+                </div>
+                <div>
+                  <label for="spaceAfter">Espaço depois (pt)</label>
+                  <input type="number" id="spaceAfter" name="paragraph.spaceAfter" min="0" max="24" value="0">
+                </div>
+              </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- Margens -->
+            <div class="form-group">
+              <label>Margens da Página
+                <div class="label-description">Margens em centímetros</div>
+              </label>
+              <div class="form-row">
+                <div>
+                  <label for="marginTop">Superior (cm)</label>
+                  <input type="number" id="marginTop" name="margins.top" min="0" max="10" step="0.5" value="3.0">
+                </div>
+                <div>
+                  <label for="marginBottom">Inferior (cm)</label>
+                  <input type="number" id="marginBottom" name="margins.bottom" min="0" max="10" step="0.5" value="2.0">
+                </div>
+                <div>
+                  <label for="marginLeft">Esquerda (cm)</label>
+                  <input type="number" id="marginLeft" name="margins.left" min="0" max="10" step="0.5" value="3.0">
+                </div>
+                <div>
+                  <label for="marginRight">Direita (cm)</label>
+                  <input type="number" id="marginRight" name="margins.right" min="0" max="10" step="0.5" value="2.0">
+                </div>
+              </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- Títulos -->
+            <div class="form-group">
+              <label>Títulos e Subtítulos
+                <div class="label-description">Configure a formatação dos cabeçalhos</div>
+              </label>
+
+              <!-- H1 -->
+              <h4 style="margin-top: 1rem; margin-bottom: 0.5rem; color: #2d3748;">Título Principal (H1)</h4>
+              <div class="form-row">
+                <div>
+                  <label for="h1Size">Tamanho (pt)</label>
+                  <input type="number" id="h1Size" name="headings.h1.size" min="10" max="36" value="14">
+                </div>
+                <div>
+                  <label for="h1Bold">Negrito</label>
+                  <select id="h1Bold" name="headings.h1.bold">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="h1Uppercase">Maiúsculas</label>
+                  <select id="h1Uppercase" name="headings.h1.uppercase">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- H2 -->
+              <h4 style="margin-top: 1rem; margin-bottom: 0.5rem; color: #2d3748;">Subtítulo (H2)</h4>
+              <div class="form-row">
+                <div>
+                  <label for="h2Size">Tamanho (pt)</label>
+                  <input type="number" id="h2Size" name="headings.h2.size" min="10" max="36" value="13">
+                </div>
+                <div>
+                  <label for="h2Bold">Negrito</label>
+                  <select id="h2Bold" name="headings.h2.bold">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- H3 -->
+              <h4 style="margin-top: 1rem; margin-bottom: 0.5rem; color: #2d3748;">Sub-subtítulo (H3)</h4>
+              <div class="form-row">
+                <div>
+                  <label for="h3Size">Tamanho (pt)</label>
+                  <input type="number" id="h3Size" name="headings.h3.size" min="10" max="36" value="12">
+                </div>
+                <div>
+                  <label for="h3Bold">Negrito</label>
+                  <select id="h3Bold" name="headings.h3.bold">
+                    <option value="true">Sim</option>
+                    <option value="false">Não</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button type="submit" class="btn btn-primary">💾 Salvar Configurações</button>
+              <button type="button" class="btn btn-secondary" onclick="previewFormatting()">👁️ Visualizar</button>
+              <button type="button" class="btn btn-danger" onclick="resetTemplate()">🔄 Resetar para Padrão</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Preview -->
+        <div class="card">
+          <h2>👁️ Visualização</h2>
+          <div class="preview-section">
+            <div id="documentPreview" class="document-preview">
+              <p style="text-align: center; color: #718096; padding: 2rem;">
+                Clique em "Visualizar" para ver como ficará o documento
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentPartnerId = 'rom';
+    let currentPreset = 'oab';
+    let presets = [];
+    let partners = [];
+
+    // Carregar tudo ao iniciar
+    async function initialize() {
+      await loadPartners();
+      await loadPresets();
+      await loadPartnerTemplate();
+    }
+
+    // Carregar lista de parceiros
+    async function loadPartners() {
+      try {
+        const response = await fetch('/api/partners');
+        const data = await response.json();
+        partners = data.partners || [];
+
+        const select = document.getElementById('partnerSelect');
+        select.innerHTML = '<option value="rom">ROM (Padrão)</option>';
+
+        partners.forEach(partner => {
+          const option = document.createElement('option');
+          option.value = partner.id;
+          option.textContent = partner.name;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error('Erro ao carregar parceiros:', error);
+        showAlert('Erro ao carregar parceiros', 'error');
+      }
+    }
+
+    // Carregar presets disponíveis
+    async function loadPresets() {
+      try {
+        const response = await fetch('/api/formatting/presets');
+        const data = await response.json();
+        presets = data.presets || [];
+
+        const presetList = document.getElementById('presetList');
+        presetList.innerHTML = '';
+
+        presets.forEach(preset => {
+          const card = document.createElement('div');
+          card.className = 'preset-card';
+          card.onclick = () => selectPreset(preset.id);
+          card.innerHTML = `
+            <h3>${preset.name}</h3>
+            <p>${preset.description}</p>
+          `;
+          presetList.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Erro ao carregar presets:', error);
+        showAlert('Erro ao carregar presets', 'error');
+      }
+    }
+
+    // Selecionar preset
+    async function selectPreset(presetId) {
+      currentPreset = presetId;
+
+      // Atualizar UI
+      document.querySelectorAll('.preset-card').forEach(card => {
+        card.classList.remove('selected');
+      });
+      event.target.closest('.preset-card').classList.add('selected');
+
+      // Carregar detalhes do preset
+      try {
+        const response = await fetch(`/api/formatting/presets/${presetId}`);
+        const data = await response.json();
+        populateForm(data.preset);
+      } catch (error) {
+        console.error('Erro ao carregar preset:', error);
+      }
+    }
+
+    // Carregar template do parceiro
+    async function loadPartnerTemplate() {
+      currentPartnerId = document.getElementById('partnerSelect').value || 'rom';
+
+      try {
+        const response = await fetch(`/api/formatting/template/${currentPartnerId}`);
+        const data = await response.json();
+        populateForm(data.template);
+      } catch (error) {
+        console.error('Erro ao carregar template:', error);
+        showAlert('Erro ao carregar configurações', 'error');
+      }
+    }
+
+    // Preencher formulário
+    function populateForm(template) {
+      // Fonte
+      document.getElementById('fontFamily').value = template.font.family;
+      document.getElementById('fontSize').value = template.font.size;
+      document.getElementById('fontColor').value = template.font.color;
+      document.getElementById('fontColorHex').value = template.font.color;
+      updateFontPreview();
+
+      // Parágrafo
+      document.getElementById('paragraphAlignment').value = template.paragraph.alignment;
+      document.getElementById('lineSpacing').value = template.paragraph.lineSpacing;
+      document.getElementById('firstLineIndent').value = template.paragraph.firstLineIndent;
+      document.getElementById('spaceBefore').value = template.paragraph.spaceBefore;
+      document.getElementById('spaceAfter').value = template.paragraph.spaceAfter;
+
+      // Margens
+      document.getElementById('marginTop').value = template.margins.top;
+      document.getElementById('marginBottom').value = template.margins.bottom;
+      document.getElementById('marginLeft').value = template.margins.left;
+      document.getElementById('marginRight').value = template.margins.right;
+
+      // Títulos
+      document.getElementById('h1Size').value = template.headings.h1.size;
+      document.getElementById('h1Bold').value = template.headings.h1.bold;
+      document.getElementById('h1Uppercase').value = template.headings.h1.uppercase || false;
+
+      document.getElementById('h2Size').value = template.headings.h2.size;
+      document.getElementById('h2Bold').value = template.headings.h2.bold;
+
+      document.getElementById('h3Size').value = template.headings.h3.size;
+      document.getElementById('h3Bold').value = template.headings.h3.bold;
+    }
+
+    // Atualizar preview da fonte
+    function updateFontPreview() {
+      const preview = document.getElementById('fontPreview');
+      const family = document.getElementById('fontFamily').value;
+      const size = document.getElementById('fontSize').value;
+      const color = document.getElementById('fontColor').value;
+
+      preview.style.fontFamily = family;
+      preview.style.fontSize = size + 'pt';
+      preview.style.color = color;
+
+      document.getElementById('fontColorHex').value = color;
+    }
+
+    // Event listeners para preview
+    document.getElementById('fontFamily').addEventListener('change', updateFontPreview);
+    document.getElementById('fontSize').addEventListener('input', updateFontPreview);
+    document.getElementById('fontColor').addEventListener('input', updateFontPreview);
+
+    // Salvar configurações
+    document.getElementById('customizationForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = new FormData(e.target);
+      const customizations = {};
+
+      // Organizar dados por seção
+      formData.forEach((value, key) => {
+        const parts = key.split('.');
+        if (parts.length === 2) {
+          if (!customizations[parts[0]]) customizations[parts[0]] = {};
+          customizations[parts[0]][parts[1]] = parseValue(value);
+        } else if (parts.length === 3) {
+          if (!customizations[parts[0]]) customizations[parts[0]] = {};
+          if (!customizations[parts[0]][parts[1]]) customizations[parts[0]][parts[1]] = {};
+          customizations[parts[0]][parts[1]][parts[2]] = parseValue(value);
+        }
+      });
+
+      try {
+        const response = await fetch(`/api/formatting/template/${currentPartnerId}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            templateId: currentPreset,
+            customizations: customizations
+          })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showAlert('Configurações salvas com sucesso!', 'success');
+        } else {
+          showAlert('Erro ao salvar configurações', 'error');
+        }
+      } catch (error) {
+        console.error('Erro ao salvar:', error);
+        showAlert('Erro ao salvar configurações', 'error');
+      }
+    });
+
+    // Parse de valores
+    function parseValue(value) {
+      if (value === 'true') return true;
+      if (value === 'false') return false;
+      if (!isNaN(value) && value !== '') return parseFloat(value);
+      return value;
+    }
+
+    // Visualizar formatação
+    async function previewFormatting() {
+      try {
+        const response = await fetch(`/api/formatting/css/${currentPartnerId}`);
+        const css = await response.text();
+
+        const preview = document.getElementById('documentPreview');
+        preview.innerHTML = `
+          <style>${css}</style>
+          <div class="document-content">
+            <h1>Título Principal do Documento</h1>
+            <p>Este é um parágrafo de exemplo para demonstrar como ficará a formatação do documento. O texto está formatado de acordo com as configurações que você escolheu.</p>
+
+            <h2>Subtítulo de Seção</h2>
+            <p>Mais um parágrafo de exemplo. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+
+            <h3>Sub-subtítulo</h3>
+            <p>Parágrafo final com mais texto de exemplo para você visualizar como ficará o documento completo com todas as configurações aplicadas.</p>
+          </div>
+        `;
+
+        showAlert('Preview atualizado!', 'success');
+      } catch (error) {
+        console.error('Erro ao gerar preview:', error);
+        showAlert('Erro ao gerar preview', 'error');
+      }
+    }
+
+    // Resetar template
+    async function resetTemplate() {
+      if (!confirm('Tem certeza que deseja resetar para o template padrão? Todas as personalizações serão perdidas.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/formatting/template/${currentPartnerId}`, {
+          method: 'DELETE'
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showAlert('Template resetado com sucesso!', 'success');
+          await loadPartnerTemplate();
+        } else {
+          showAlert('Erro ao resetar template', 'error');
+        }
+      } catch (error) {
+        console.error('Erro ao resetar:', error);
+        showAlert('Erro ao resetar template', 'error');
+      }
+    }
+
+    // Mostrar alerta
+    function showAlert(message, type) {
+      const alertBox = document.getElementById('alertBox');
+      alertBox.textContent = message;
+      alertBox.className = `alert ${type} show`;
+
+      setTimeout(() => {
+        alertBox.classList.remove('show');
+      }, 5000);
+    }
+
+    // Inicializar ao carregar página
+    initialize();
+  </script>
+</body>
+</html>

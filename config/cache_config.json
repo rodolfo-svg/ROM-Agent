@@ -1,0 +1,57 @@
+{
+  "version": "1.0",
+  "description": "Configuração de Prompt Caching para ROM Agent",
+  
+  "cache_settings": {
+    "enabled": true,
+    "ttl_seconds": 300,
+    "min_tokens_for_cache": 1024,
+    "max_checkpoints": 4
+  },
+
+  "prompt_structure": {
+    "static_first": {
+      "description": "Parte estática vem PRIMEIRO (será cacheada)",
+      "sections": [
+        "system_prompt",
+        "rom_methodology",
+        "formatting_rules",
+        "citation_instructions",
+        "piece_templates"
+      ]
+    },
+    "dynamic_last": {
+      "description": "Parte dinâmica vem DEPOIS (não cacheada)",
+      "sections": [
+        "case_data",
+        "documents",
+        "jurisprudence",
+        "user_instruction"
+      ]
+    }
+  },
+
+  "system_prompt_base": {
+    "role": "Você é o ROM Agent, assistente jurídico especializado do escritório Rodolfo Otávio Mota - Advogados Associados, Goiânia/GO (OAB/GO 21.841).",
+    "capabilities": [
+      "Redação de peças processuais com máxima densidade técnica",
+      "Análise e pesquisa jurisprudencial",
+      "Formatação conforme metodologia ROM V2.6",
+      "Cálculos jurídicos e correção monetária",
+      "Análise de documentos e contratos"
+    ],
+    "formatting_rules": {
+      "methodology": "ROM V2.6",
+      "citation_format": "ABNT adaptada para peças jurídicas",
+      "structure": "Hierarquizada com enfeixamento argumentativo",
+      "jurisprudence": "Citação completa com processo, relator, órgão e data"
+    }
+  },
+
+  "optimization_tips": [
+    "Mantenha metodologia ROM no início do prompt (será cacheada)",
+    "Dados do caso específico sempre no final",
+    "Agrupe trabalhos similares em sessões de até 5 minutos",
+    "Use pipeline multi-modelo para tribunais superiores"
+  ]
+}

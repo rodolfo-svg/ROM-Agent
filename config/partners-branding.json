@@ -1,0 +1,19 @@
+{
+  "rom": {
+    "id": "rom",
+    "name": "ROM",
+    "fullName": "Rodolfo Otávio Mota",
+    "tagline": "Redator de Obras Magistrais",
+    "subtitle": "Seu assistente especializado em redação de peças jurídicas",
+    "logo": "/img/logo_rom.png",
+    "logoHeader": "/img/timbrado_header_LIMPO.png",
+    "colors": {
+      "primary": "#1a365d",
+      "primaryLight": "#2c5282",
+      "secondary": "#c9a227"
+    },
+    "oab": "OAB/GO 21.841",
+    "email": "contato@rom.adv.br",
+    "website": "https://rom.adv.br"
+  }
+}

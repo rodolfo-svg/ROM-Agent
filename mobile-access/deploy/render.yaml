@@ -1,0 +1,31 @@
+# ROM Agent - Deploy no Render.com
+#
+# COMO USAR:
+# 1. Crie conta em render.com
+# 2. Conecte seu GitHub
+# 3. Faça push deste repo para GitHub
+# 4. No Render, clique "New Web Service"
+# 5. Selecione o repositório
+# 6. O Render usará este arquivo automaticamente
+
+services:
+  - type: web
+    name: rom-agent
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run web
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_REGION
+        value: us-east-1
+    healthCheckPath: /api/info
+    autoDeploy: true

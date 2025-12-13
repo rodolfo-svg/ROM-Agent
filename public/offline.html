@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROM Agent - Offline</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .container {
+      text-align: center;
+      padding: 40px;
+    }
+    .logo {
+      font-size: 64px;
+      margin-bottom: 20px;
+    }
+    h1 {
+      color: #c9a227;
+      font-size: 28px;
+      margin-bottom: 16px;
+    }
+    p {
+      color: #a0a0a0;
+      font-size: 16px;
+      margin-bottom: 24px;
+      max-width: 400px;
+    }
+    button {
+      background: #c9a227;
+      color: #1a1a2e;
+      border: none;
+      padding: 14px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    button:hover {
+      background: #d4af37;
+      transform: translateY(-2px);
+    }
+    .status {
+      margin-top: 40px;
+      padding: 16px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">⚖️</div>
+    <h1>Sem Conexão</h1>
+    <p>O ROM Agent precisa de conexão com a internet para processar suas solicitações jurídicas.</p>
+    <button onclick="location.reload()">Tentar Novamente</button>
+    <div class="status">
+      <strong>ROM Agent</strong> - Redator de Obras Magistrais<br>
+      Escritório: Rodolfo Otávio Mota - Advogados Associados
+    </div>
+  </div>
+</body>
+</html>

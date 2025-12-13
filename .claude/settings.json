@@ -1,0 +1,132 @@
+{
+  "$schema": "https://claude.ai/schemas/claude-code-settings.json",
+  "name": "ROM - Redator de Obras Magistrais",
+  "version": "2.0.0",
+  "description": "Agente de IA para Redação de Peças Jurídicas com Excelência",
+
+  "model": {
+    "default": "claude-sonnet-4-20250514",
+    "fallback": "claude-3-5-sonnet-20241022",
+    "maxTokens": 200000,
+    "temperature": 0.7,
+    "extendedThinking": true
+  },
+
+  "permissions": {
+    "allowedTools": [
+      "Read", "Write", "Edit", "Glob", "Grep", "Bash",
+      "WebFetch", "WebSearch", "Task", "TodoWrite",
+      "AskUserQuestion", "NotebookEdit"
+    ],
+    "deniedTools": [],
+    "bashSandbox": false,
+    "allowNetworkAccess": true,
+    "allowFileSystemAccess": true
+  },
+
+  "shell": {
+    "type": "zsh",
+    "encoding": "utf-8",
+    "locale": "pt_BR.UTF-8",
+    "timezone": "America/Sao_Paulo",
+    "env": {
+      "LANG": "pt_BR.UTF-8",
+      "LC_ALL": "pt_BR.UTF-8",
+      "PYTHONIOENCODING": "utf-8"
+    }
+  },
+
+  "network": {
+    "proxy": null,
+    "timeout": 60000,
+    "retries": 3,
+    "allowedDomains": [
+      "*.jus.br",
+      "*.gov.br",
+      "*.jusbrasil.com.br",
+      "*.conjur.com.br",
+      "*.migalhas.com.br",
+      "*.jota.info",
+      "*.planalto.gov.br",
+      "*.senado.leg.br",
+      "*.camara.leg.br",
+      "*.stf.jus.br",
+      "*.stj.jus.br",
+      "*.tst.jus.br",
+      "*.cnj.jus.br",
+      "scholar.google.com",
+      "scielo.br",
+      "*.periodicos.capes.gov.br"
+    ]
+  },
+
+  "locale": {
+    "language": "pt-BR",
+    "region": "BR",
+    "dateFormat": "DD/MM/YYYY",
+    "timeFormat": "HH:mm:ss",
+    "currency": "BRL",
+    "numberFormat": {
+      "decimal": ",",
+      "thousands": "."
+    }
+  },
+
+  "paths": {
+    "workDir": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent",
+    "promptsDir": "/Users/rodolfootaviopereiradamotaoliveira/Library/CloudStorage/OneDrive-Pessoal/Prompt",
+    "kbDir": "/Users/rodolfootaviopereiradamotaoliveira/Library/CloudStorage/OneDrive-Pessoal/Prompt/KB_REDATOR_ROM",
+    "outputDir": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/output",
+    "templatesDir": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/templates",
+    "logsDir": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/logs"
+  },
+
+  "logging": {
+    "level": "info",
+    "format": "json",
+    "file": "logs/rom-agent.log",
+    "maxSize": "50MB",
+    "maxFiles": 10
+  },
+
+  "agents": {
+    "enabled": true,
+    "maxConcurrent": 5,
+    "defaultTimeout": 300000,
+    "subagentsDir": ".claude/agents"
+  },
+
+  "commands": {
+    "enabled": true,
+    "prefix": "/",
+    "commandsDir": ".claude/commands"
+  },
+
+  "hooks": {
+    "enabled": true,
+    "hooksDir": ".claude/hooks"
+  },
+
+  "memory": {
+    "conversationHistoryLimit": 100,
+    "contextWindowOptimization": true,
+    "autoSummarize": true,
+    "persistentMemory": true
+  },
+
+  "output": {
+    "defaultFormat": "markdown",
+    "pdfEngine": "pdfkit",
+    "docxEngine": "docx",
+    "includeTimestamp": true,
+    "includeWatermark": false
+  },
+
+  "legal": {
+    "jurisdiction": "BR",
+    "courts": ["STF", "STJ", "TST", "TSE", "STM", "TRF", "TJ", "TRT"],
+    "defaultCitationStyle": "ABNT",
+    "autoVerifyLegislation": true,
+    "autoCheckPrecedents": true
+  }
+}

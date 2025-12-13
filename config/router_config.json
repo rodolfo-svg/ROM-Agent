@@ -1,0 +1,311 @@
+{
+  "version": "3.0",
+  "description": "Configuração completa de Router Profiles - TODOS OS MODELOS",
+  
+  "available_models": {
+    "amazon": {
+      "nova-premier": {
+        "id": "us.amazon.nova-premier-v1:0",
+        "description": "Modelo mais avançado da Amazon",
+        "input_cost_per_1m": 2.50,
+        "output_cost_per_1m": 10.00,
+        "max_tokens": 32768,
+        "best_for": ["análise complexa", "raciocínio avançado"]
+      },
+      "nova-pro": {
+        "id": "us.amazon.nova-pro-v1:0",
+        "description": "Equilíbrio qualidade/custo",
+        "input_cost_per_1m": 0.80,
+        "output_cost_per_1m": 3.20,
+        "max_tokens": 16384,
+        "best_for": ["peças intermediárias", "análise geral"]
+      },
+      "nova-lite": {
+        "id": "us.amazon.nova-lite-v1:0",
+        "description": "Rápido e econômico",
+        "input_cost_per_1m": 0.06,
+        "output_cost_per_1m": 0.24,
+        "max_tokens": 8192,
+        "best_for": ["tarefas simples", "formatação", "triagem"]
+      },
+      "nova-micro": {
+        "id": "us.amazon.nova-micro-v1:0",
+        "description": "Ultra econômico",
+        "input_cost_per_1m": 0.035,
+        "output_cost_per_1m": 0.14,
+        "max_tokens": 4096,
+        "best_for": ["tarefas mínimas", "classificação"]
+      }
+    },
+    
+    "anthropic": {
+      "claude-opus-4.5": {
+        "id": "us.anthropic.claude-opus-4-5-20251101-v1:0",
+        "description": "Máxima qualidade Anthropic",
+        "input_cost_per_1m": 15.00,
+        "output_cost_per_1m": 75.00,
+        "max_tokens": 32768,
+        "best_for": ["STJ/STF", "casos complexíssimos", "pareceres premium"]
+      },
+      "claude-sonnet-4.5": {
+        "id": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+        "description": "Melhor custo-benefício Claude",
+        "input_cost_per_1m": 3.00,
+        "output_cost_per_1m": 15.00,
+        "max_tokens": 16384,
+        "best_for": ["apelações", "mandados", "peças complexas"]
+      },
+      "claude-haiku-4.5": {
+        "id": "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "description": "Claude rápido e barato",
+        "input_cost_per_1m": 0.80,
+        "output_cost_per_1m": 4.00,
+        "max_tokens": 8192,
+        "best_for": ["peças simples", "revisão rápida"]
+      },
+      "claude-sonnet-3.7": {
+        "id": "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+        "description": "Sonnet anterior (fallback)",
+        "input_cost_per_1m": 3.00,
+        "output_cost_per_1m": 15.00,
+        "max_tokens": 16384,
+        "best_for": ["fallback premium"]
+      },
+      "claude-sonnet-3.5": {
+        "id": "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+        "description": "Sonnet 3.5 v2",
+        "input_cost_per_1m": 3.00,
+        "output_cost_per_1m": 15.00,
+        "max_tokens": 8192,
+        "best_for": ["compatibilidade"]
+      },
+      "claude-haiku-3.5": {
+        "id": "us.anthropic.claude-3-5-haiku-20241022-v1:0",
+        "description": "Haiku 3.5",
+        "input_cost_per_1m": 0.80,
+        "output_cost_per_1m": 4.00,
+        "max_tokens": 8192,
+        "best_for": ["tarefas rápidas"]
+      }
+    },
+    
+    "meta": {
+      "llama-4-maverick": {
+        "id": "us.meta.llama4-maverick-17b-instruct-v1:0",
+        "description": "Llama 4 Maverick 17B",
+        "input_cost_per_1m": 0.24,
+        "output_cost_per_1m": 0.97,
+        "max_tokens": 8192,
+        "best_for": ["custo-benefício", "peças intermediárias"]
+      },
+      "llama-4-scout": {
+        "id": "us.meta.llama4-scout-17b-instruct-v1:0",
+        "description": "Llama 4 Scout 17B",
+        "input_cost_per_1m": 0.20,
+        "output_cost_per_1m": 0.60,
+        "max_tokens": 8192,
+        "best_for": ["triagem", "classificação"]
+      },
+      "llama-3.3-70b": {
+        "id": "us.meta.llama3-3-70b-instruct-v1:0",
+        "description": "Llama 3.3 70B",
+        "input_cost_per_1m": 0.72,
+        "output_cost_per_1m": 0.72,
+        "max_tokens": 8192,
+        "best_for": ["análise robusta"]
+      },
+      "llama-3.2-90b": {
+        "id": "us.meta.llama3-2-90b-instruct-v1:0",
+        "description": "Llama 3.2 90B (multimodal)",
+        "input_cost_per_1m": 0.72,
+        "output_cost_per_1m": 0.72,
+        "max_tokens": 8192,
+        "best_for": ["análise de imagens", "documentos escaneados"]
+      },
+      "llama-3.1-405b": {
+        "id": "us.meta.llama3-1-405b-instruct-v1:0",
+        "description": "Llama 3.1 405B (maior)",
+        "input_cost_per_1m": 2.40,
+        "output_cost_per_1m": 2.40,
+        "max_tokens": 8192,
+        "best_for": ["casos muito complexos"]
+      }
+    },
+    
+    "mistral": {
+      "large-3": {
+        "id": "mistral.mistral-large-2402-v1:0",
+        "description": "Mistral Large 3",
+        "input_cost_per_1m": 2.00,
+        "output_cost_per_1m": 6.00,
+        "max_tokens": 32768,
+        "best_for": ["análise multilíngue", "raciocínio"]
+      },
+      "pixtral": {
+        "id": "us.mistral.pixtral-large-2502-v1:0",
+        "description": "Pixtral (visão)",
+        "input_cost_per_1m": 2.00,
+        "output_cost_per_1m": 6.00,
+        "max_tokens": 16384,
+        "best_for": ["análise de documentos escaneados", "imagens"]
+      },
+      "ministral": {
+        "id": "mistral.ministral-3-8b-instruct",
+        "description": "Ministral 8B (compacto)",
+        "input_cost_per_1m": 0.10,
+        "output_cost_per_1m": 0.10,
+        "max_tokens": 8192,
+        "best_for": ["tarefas leves", "classificação"]
+      }
+    },
+    
+    "deepseek": {
+      "r1": {
+        "id": "us.deepseek.r1-v1:0",
+        "description": "DeepSeek R1 - Especialista em raciocínio",
+        "input_cost_per_1m": 1.00,
+        "output_cost_per_1m": 5.00,
+        "max_tokens": 16384,
+        "best_for": ["raciocínio jurídico", "análise lógica", "identificação de nulidades"]
+      }
+    },
+    
+    "cohere": {
+      "command-r-plus": {
+        "id": "cohere.command-r-plus-v1:0",
+        "description": "Command R+ (RAG otimizado)",
+        "input_cost_per_1m": 2.50,
+        "output_cost_per_1m": 10.00,
+        "max_tokens": 4096,
+        "best_for": ["busca semântica", "RAG", "pesquisa jurisprudencial"]
+      },
+      "command-r": {
+        "id": "cohere.command-r-v1:0",
+        "description": "Command R",
+        "input_cost_per_1m": 0.50,
+        "output_cost_per_1m": 1.50,
+        "max_tokens": 4096,
+        "best_for": ["busca", "classificação"]
+      }
+    }
+  },
+
+  "router_profiles": {
+    "FAST": {
+      "description": "Tarefas simples - máxima economia",
+      "primary_model": "us.amazon.nova-lite-v1:0",
+      "fallback_model": "us.amazon.nova-micro-v1:0",
+      "alternatives": [
+        "mistral.ministral-3-8b-instruct",
+        "us.meta.llama4-scout-17b-instruct-v1:0"
+      ],
+      "max_tokens": 4096,
+      "temperature": 0.3,
+      "use_cache": true,
+      "batch_eligible": true,
+      "estimated_cost_per_1m_tokens": 0.30
+    },
+    
+    "STANDARD": {
+      "description": "Peças padrão - custo-benefício",
+      "primary_model": "us.amazon.nova-pro-v1:0",
+      "fallback_model": "us.meta.llama4-maverick-17b-instruct-v1:0",
+      "alternatives": [
+        "us.anthropic.claude-haiku-4-5-20251001-v1:0",
+        "us.meta.llama3-3-70b-instruct-v1:0",
+        "cohere.command-r-v1:0"
+      ],
+      "max_tokens": 8192,
+      "temperature": 0.4,
+      "use_cache": true,
+      "batch_eligible": true,
+      "estimated_cost_per_1m_tokens": 2.00
+    },
+    
+    "PREMIUM": {
+      "description": "Peças complexas - alta qualidade",
+      "primary_model": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "fallback_model": "us.anthropic.claude-3-7-sonnet-20250219-v1:0",
+      "reasoning_model": "us.deepseek.r1-v1:0",
+      "alternatives": [
+        "mistral.mistral-large-2402-v1:0",
+        "us.amazon.nova-premier-v1:0",
+        "us.meta.llama3-1-405b-instruct-v1:0"
+      ],
+      "max_tokens": 16384,
+      "temperature": 0.5,
+      "use_cache": true,
+      "batch_eligible": false,
+      "estimated_cost_per_1m_tokens": 15.00
+    },
+    
+    "ULTRA": {
+      "description": "STJ/STF - máxima qualidade",
+      "primary_model": "us.anthropic.claude-opus-4-5-20251101-v1:0",
+      "fallback_model": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "preprocessing_model": "us.deepseek.r1-v1:0",
+      "review_model": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+      "alternatives": [
+        "us.amazon.nova-premier-v1:0",
+        "mistral.mistral-large-2402-v1:0"
+      ],
+      "max_tokens": 32768,
+      "temperature": 0.6,
+      "use_cache": true,
+      "batch_eligible": false,
+      "pipeline_stages": ["reasoning", "drafting", "review"],
+      "estimated_cost_per_1m_tokens": 60.00
+    },
+    
+    "VISION": {
+      "description": "Análise de documentos escaneados e imagens",
+      "primary_model": "us.mistral.pixtral-large-2502-v1:0",
+      "fallback_model": "us.meta.llama3-2-90b-instruct-v1:0",
+      "alternatives": [
+        "us.anthropic.claude-sonnet-4-5-20250929-v1:0"
+      ],
+      "max_tokens": 8192,
+      "temperature": 0.3,
+      "use_cache": false,
+      "batch_eligible": true,
+      "estimated_cost_per_1m_tokens": 4.00
+    },
+    
+    "RAG": {
+      "description": "Busca e pesquisa jurisprudencial",
+      "primary_model": "cohere.command-r-plus-v1:0",
+      "fallback_model": "cohere.command-r-v1:0",
+      "alternatives": [
+        "us.amazon.nova-pro-v1:0"
+      ],
+      "max_tokens": 4096,
+      "temperature": 0.2,
+      "use_cache": true,
+      "batch_eligible": true,
+      "estimated_cost_per_1m_tokens": 5.00
+    }
+  },
+
+  "mode_to_profile_mapping": {
+    "RAPIDO": "FAST",
+    "PROFISSIONAL": "STANDARD",
+    "PREMIUM": "PREMIUM",
+    "ULTRA": "ULTRA",
+    "VISAO": "VISION",
+    "PESQUISA": "RAG"
+  },
+  
+  "tool_to_profile_mapping": {
+    "transcreverAudio": "FAST",
+    "transcreverAudiencia": "STANDARD",
+    "analisarVideo": "STANDARD",
+    "analisarVideoProva": "PREMIUM",
+    "buscarJurisprudenciaSimilar": "RAG",
+    "analisarContratoEscaneado": "VISION",
+    "compararDocumentos": "STANDARD",
+    "removerFundo": "VISION",
+    "gerarImagem": "VISION"
+  },
+
+  "default_profile": "STANDARD"
+}

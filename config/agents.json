@@ -1,0 +1,332 @@
+{
+  "$schema": "https://claude.ai/schemas/agents-config.json",
+  "version": "2.0.0",
+
+  "mainAgent": {
+    "name": "ROM",
+    "fullName": "Redator de Obras Magistrais",
+    "role": "Agente Principal de Coordenação",
+    "model": "claude-sonnet-4-20250514",
+    "maxTokens": 200000,
+    "systemPrompt": "system_prompts/main.md"
+  },
+
+  "subagents": {
+    "analise-processual": {
+      "name": "Analista Processual",
+      "description": "Analisa processos judiciais com exaustão e perfeição",
+      "type": "analysis",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 150000,
+      "tools": ["file_read", "grep", "glob", "web_search", "web_fetch"],
+      "systemPrompt": "system_prompts/analise_processual.md",
+      "capabilities": [
+        "Análise completa de autos processuais",
+        "Identificação de partes, pedidos e causas de pedir",
+        "Cronologia processual detalhada",
+        "Identificação de nulidades e vícios",
+        "Análise de provas documentais e testemunhais"
+      ]
+    },
+
+    "resumo-executivo": {
+      "name": "Especialista em Resumo Executivo",
+      "description": "Gera resumos executivos perfeitos e irretocáveis",
+      "type": "summary",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 150000,
+      "tools": ["file_read", "grep", "web_search"],
+      "systemPrompt": "system_prompts/resumo_executivo.md",
+      "outputFormat": "structured",
+      "layers": {
+        "camada1": "Resumo Básico - Fatos e Direito",
+        "camada2": "Resumo Denso - Análise Aprofundada",
+        "camada3": "Resumo Aprimorado - Prequestionamento"
+      }
+    },
+
+    "jurisprudencia": {
+      "name": "Pesquisador de Jurisprudência",
+      "description": "Pesquisa e analisa jurisprudência de forma exaustiva",
+      "type": "research",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 100000,
+      "tools": ["web_search", "web_fetch", "grep"],
+      "systemPrompt": "system_prompts/jurisprudencia.md",
+      "sources": [
+        "STF", "STJ", "TST", "TSE", "STM",
+        "TRF1", "TRF2", "TRF3", "TRF4", "TRF5", "TRF6",
+        "TJSP", "TJRJ", "TJMG", "TJRS", "TJPR",
+        "JusBrasil", "Conjur"
+      ]
+    },
+
+    "legislacao": {
+      "name": "Especialista em Legislação",
+      "description": "Pesquisa e interpreta legislação nacional e internacional",
+      "type": "research",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 100000,
+      "tools": ["web_fetch", "grep", "file_read"],
+      "systemPrompt": "system_prompts/legislacao.md",
+      "databases": [
+        "Constituição Federal",
+        "Códigos (CC, CP, CPC, CPP, CLT, CDC, CTN)",
+        "Legislação Esparsa",
+        "Tratados Internacionais",
+        "Normas Infralegais"
+      ]
+    },
+
+    "leading-case": {
+      "name": "Analista de Leading Cases",
+      "description": "Identifica e analisa leading cases e precedentes vinculantes",
+      "type": "analysis",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 120000,
+      "tools": ["web_search", "web_fetch", "grep"],
+      "systemPrompt": "system_prompts/leading_case.md",
+      "precedentTypes": [
+        "Súmulas Vinculantes",
+        "Temas de Repercussão Geral",
+        "Recursos Repetitivos",
+        "IRDR",
+        "IAC",
+        "ADI", "ADC", "ADPF", "ADO"
+      ]
+    },
+
+    "prequestionamento": {
+      "name": "Especialista em Prequestionamento",
+      "description": "Elabora prequestionamento técnico para recursos superiores",
+      "type": "drafting",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 80000,
+      "tools": ["file_read", "grep"],
+      "systemPrompt": "system_prompts/prequestionamento.md"
+    },
+
+    "prazos": {
+      "name": "Controlador de Prazos",
+      "description": "Analisa prescrição, decadência e preclusão",
+      "type": "analysis",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 60000,
+      "tools": ["file_read", "bash"],
+      "systemPrompt": "system_prompts/prazos.md"
+    },
+
+    "redator-civel": {
+      "name": "Redator Cível",
+      "description": "Redige peças cíveis com excelência",
+      "type": "drafting",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 150000,
+      "tools": ["file_read", "file_write", "grep", "web_search"],
+      "systemPrompt": "system_prompts/redator_civel.md",
+      "documentTypes": [
+        "Petição Inicial",
+        "Contestação",
+        "Réplica",
+        "Impugnação",
+        "Embargos de Declaração",
+        "Apelação",
+        "Agravo de Instrumento",
+        "Recurso Especial",
+        "Recurso Extraordinário"
+      ]
+    },
+
+    "redator-criminal": {
+      "name": "Redator Criminal",
+      "description": "Redige peças criminais com técnica apurada",
+      "type": "drafting",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 150000,
+      "tools": ["file_read", "file_write", "grep", "web_search"],
+      "systemPrompt": "system_prompts/redator_criminal.md",
+      "documentTypes": [
+        "Habeas Corpus",
+        "Resposta à Acusação",
+        "Alegações Finais",
+        "Memoriais",
+        "Apelação Criminal",
+        "Revisão Criminal",
+        "Recurso em Sentido Estrito"
+      ]
+    },
+
+    "redator-trabalhista": {
+      "name": "Redator Trabalhista",
+      "description": "Redige peças trabalhistas especializadas",
+      "type": "drafting",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 150000,
+      "tools": ["file_read", "file_write", "grep", "web_search"],
+      "systemPrompt": "system_prompts/redator_trabalhista.md",
+      "documentTypes": [
+        "Reclamação Trabalhista",
+        "Contestação Trabalhista",
+        "Recurso Ordinário",
+        "Agravo de Petição",
+        "Recurso de Revista",
+        "Embargos à SDI"
+      ]
+    },
+
+    "redator-empresarial": {
+      "name": "Redator Empresarial",
+      "description": "Elabora documentos societários e empresariais",
+      "type": "drafting",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 100000,
+      "tools": ["file_read", "file_write", "grep"],
+      "systemPrompt": "system_prompts/redator_empresarial.md",
+      "documentTypes": [
+        "Contrato Social",
+        "Alteração Contratual",
+        "Estatuto Social",
+        "Ata de Assembleia",
+        "Acordo de Sócios",
+        "Memorando de Entendimentos"
+      ]
+    },
+
+    "contratos": {
+      "name": "Especialista em Contratos",
+      "description": "Elabora e analisa contratos de todas as espécies",
+      "type": "drafting",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 100000,
+      "tools": ["file_read", "file_write", "grep"],
+      "systemPrompt": "system_prompts/contratos.md",
+      "contractTypes": [
+        "Compra e Venda",
+        "Locação",
+        "Prestação de Serviços",
+        "Honorários",
+        "Parceria",
+        "Franquia",
+        "Distribuição",
+        "Sigilo (NDA)"
+      ]
+    },
+
+    "revisor-portugues": {
+      "name": "Revisor de Português Jurídico",
+      "description": "Revisa e aprimora português jurídico com perfeição",
+      "type": "revision",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 80000,
+      "tools": ["file_read", "file_edit"],
+      "systemPrompt": "system_prompts/revisor_portugues.md",
+      "aspects": [
+        "Ortografia",
+        "Concordância",
+        "Regência",
+        "Coesão",
+        "Coerência",
+        "Estilo Jurídico",
+        "Latinismos"
+      ]
+    },
+
+    "formatador": {
+      "name": "Formatador de Documentos",
+      "description": "Formata documentos com papel timbrado e padrão profissional",
+      "type": "formatting",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 50000,
+      "tools": ["file_read", "file_write", "bash"],
+      "systemPrompt": "system_prompts/formatador.md",
+      "formats": ["PDF", "DOCX", "MD", "HTML"]
+    },
+
+    "extrator": {
+      "name": "Extrator de Processos",
+      "description": "Extrai e processa PDFs de processos judiciais",
+      "type": "extraction",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 100000,
+      "tools": ["bash", "file_read", "file_write", "glob"],
+      "systemPrompt": "system_prompts/extrator.md",
+      "tools33": true,
+      "processors10": true
+    },
+
+    "calculista": {
+      "name": "Calculista Judicial",
+      "description": "Realiza cálculos judiciais e trabalhistas",
+      "type": "calculation",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 80000,
+      "tools": ["bash", "file_read", "file_write"],
+      "systemPrompt": "system_prompts/calculista.md",
+      "calculationTypes": [
+        "Correção Monetária",
+        "Juros de Mora",
+        "Multas",
+        "Verbas Trabalhistas",
+        "Liquidação de Sentença"
+      ]
+    },
+
+    "pesquisador-cientifico": {
+      "name": "Pesquisador Científico",
+      "description": "Pesquisa artigos científicos e doutrina",
+      "type": "research",
+      "model": "claude-sonnet-4-20250514",
+      "maxTokens": 100000,
+      "tools": ["web_search", "web_fetch"],
+      "systemPrompt": "system_prompts/pesquisador_cientifico.md",
+      "sources": [
+        "Google Scholar",
+        "SciELO",
+        "Periódicos CAPES",
+        "ResearchGate",
+        "Academia.edu"
+      ]
+    }
+  },
+
+  "workflows": {
+    "analise-completa": {
+      "name": "Análise Completa de Processo",
+      "description": "Workflow completo de análise processual",
+      "steps": [
+        {"agent": "extrator", "action": "extract"},
+        {"agent": "analise-processual", "action": "analyze"},
+        {"agent": "resumo-executivo", "action": "summarize", "layer": 3},
+        {"agent": "jurisprudencia", "action": "research"},
+        {"agent": "leading-case", "action": "identify"},
+        {"agent": "prazos", "action": "check"}
+      ]
+    },
+
+    "redacao-peca-civel": {
+      "name": "Redação de Peça Cível",
+      "description": "Workflow de redação cível",
+      "steps": [
+        {"agent": "analise-processual", "action": "analyze"},
+        {"agent": "legislacao", "action": "research"},
+        {"agent": "jurisprudencia", "action": "research"},
+        {"agent": "redator-civel", "action": "draft"},
+        {"agent": "revisor-portugues", "action": "revise"},
+        {"agent": "formatador", "action": "format"}
+      ]
+    },
+
+    "redacao-peca-criminal": {
+      "name": "Redação de Peça Criminal",
+      "description": "Workflow de redação criminal",
+      "steps": [
+        {"agent": "analise-processual", "action": "analyze"},
+        {"agent": "legislacao", "action": "research"},
+        {"agent": "jurisprudencia", "action": "research"},
+        {"agent": "redator-criminal", "action": "draft"},
+        {"agent": "revisor-portugues", "action": "revise"},
+        {"agent": "formatador", "action": "format"}
+      ]
+    }
+  }
+}

@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: rom-agent
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run web:enhanced
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: PORT
+        value: 10000
+    healthCheckPath: /api/info

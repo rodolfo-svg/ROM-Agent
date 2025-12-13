@@ -1,0 +1,349 @@
+{
+  "$schema": "https://claude.ai/schemas/cli-flags.json",
+  "version": "2.0.0",
+  "description": "Sinalizadores e flags do ROM Agent CLI",
+
+  "globalFlags": {
+    "--help": {
+      "aliases": ["-h"],
+      "description": "Exibe ajuda do comando",
+      "type": "boolean"
+    },
+    "--version": {
+      "aliases": ["-v"],
+      "description": "Exibe versão do ROM Agent",
+      "type": "boolean"
+    },
+    "--verbose": {
+      "aliases": ["-V"],
+      "description": "Modo verboso com logs detalhados",
+      "type": "boolean"
+    },
+    "--quiet": {
+      "aliases": ["-q"],
+      "description": "Modo silencioso (apenas erros)",
+      "type": "boolean"
+    },
+    "--config": {
+      "aliases": ["-c"],
+      "description": "Caminho para arquivo de configuração",
+      "type": "string",
+      "default": ".claude/settings.json"
+    },
+    "--model": {
+      "aliases": ["-m"],
+      "description": "Modelo a utilizar (sonnet, opus, haiku)",
+      "type": "string",
+      "default": "sonnet",
+      "choices": ["sonnet", "opus", "haiku"]
+    },
+    "--max-tokens": {
+      "aliases": ["-t"],
+      "description": "Número máximo de tokens na resposta",
+      "type": "number",
+      "default": 200000
+    },
+    "--temperature": {
+      "description": "Temperatura do modelo (0.0-1.0)",
+      "type": "number",
+      "default": 0.7
+    },
+    "--output": {
+      "aliases": ["-o"],
+      "description": "Arquivo de saída",
+      "type": "string"
+    },
+    "--format": {
+      "aliases": ["-f"],
+      "description": "Formato de saída (md, pdf, docx, html)",
+      "type": "string",
+      "default": "md",
+      "choices": ["md", "pdf", "docx", "html", "txt"]
+    },
+    "--no-color": {
+      "description": "Desabilita cores no terminal",
+      "type": "boolean"
+    },
+    "--json": {
+      "description": "Saída em formato JSON",
+      "type": "boolean"
+    }
+  },
+
+  "promptFlags": {
+    "--system": {
+      "aliases": ["-s"],
+      "description": "System prompt personalizado",
+      "type": "string"
+    },
+    "--system-file": {
+      "description": "Arquivo contendo system prompt",
+      "type": "string"
+    },
+    "--context": {
+      "description": "Contexto adicional para o prompt",
+      "type": "string"
+    },
+    "--context-file": {
+      "description": "Arquivo de contexto adicional",
+      "type": "string"
+    },
+    "--continue": {
+      "description": "Continuar conversa anterior",
+      "type": "boolean"
+    },
+    "--no-stream": {
+      "description": "Desabilita streaming da resposta",
+      "type": "boolean"
+    },
+    "--print-system": {
+      "description": "Exibe o system prompt utilizado",
+      "type": "boolean"
+    }
+  },
+
+  "agentFlags": {
+    "--agent": {
+      "aliases": ["-a"],
+      "description": "Subagente específico a utilizar",
+      "type": "string",
+      "choices": [
+        "analise-processual",
+        "resumo-executivo",
+        "jurisprudencia",
+        "leading-case",
+        "prequestionamento",
+        "prazos",
+        "redator-civel",
+        "redator-criminal",
+        "redator-trabalhista",
+        "contratos",
+        "revisor-portugues",
+        "extrator",
+        "calculista",
+        "pesquisador-cientifico"
+      ]
+    },
+    "--workflow": {
+      "aliases": ["-w"],
+      "description": "Workflow a executar",
+      "type": "string",
+      "choices": [
+        "analise-completa",
+        "redacao-civel",
+        "redacao-criminal"
+      ]
+    },
+    "--parallel": {
+      "description": "Executar agentes em paralelo",
+      "type": "boolean"
+    },
+    "--max-agents": {
+      "description": "Número máximo de agentes simultâneos",
+      "type": "number",
+      "default": 5
+    }
+  },
+
+  "toolFlags": {
+    "--allow-tools": {
+      "description": "Ferramentas permitidas (separadas por vírgula)",
+      "type": "string"
+    },
+    "--deny-tools": {
+      "description": "Ferramentas bloqueadas (separadas por vírgula)",
+      "type": "string"
+    },
+    "--no-bash": {
+      "description": "Desabilita ferramenta bash",
+      "type": "boolean"
+    },
+    "--no-web": {
+      "description": "Desabilita ferramentas web (fetch, search)",
+      "type": "boolean"
+    },
+    "--sandbox": {
+      "description": "Executa bash em sandbox",
+      "type": "boolean",
+      "default": true
+    },
+    "--timeout": {
+      "description": "Timeout para ferramentas (ms)",
+      "type": "number",
+      "default": 120000
+    }
+  },
+
+  "documentFlags": {
+    "--tipo-peca": {
+      "aliases": ["-p"],
+      "description": "Tipo de peça jurídica",
+      "type": "string"
+    },
+    "--camada": {
+      "aliases": ["-l"],
+      "description": "Camada do resumo executivo (1, 2, 3)",
+      "type": "number",
+      "default": 3,
+      "choices": [1, 2, 3]
+    },
+    "--timbrado": {
+      "description": "Incluir papel timbrado",
+      "type": "boolean",
+      "default": true
+    },
+    "--assinatura": {
+      "description": "Incluir bloco de assinatura",
+      "type": "boolean",
+      "default": true
+    },
+    "--data-automatica": {
+      "description": "Incluir data automática",
+      "type": "boolean",
+      "default": true
+    }
+  },
+
+  "pesquisaFlags": {
+    "--tribunal": {
+      "description": "Tribunal para pesquisa",
+      "type": "string",
+      "choices": [
+        "STF", "STJ", "TST", "TSE", "STM",
+        "TRF1", "TRF2", "TRF3", "TRF4", "TRF5", "TRF6",
+        "TJSP", "TJRJ", "TJMG", "TJRS", "TJPR"
+      ]
+    },
+    "--periodo": {
+      "description": "Período de pesquisa (ex: 2020-2024)",
+      "type": "string"
+    },
+    "--relator": {
+      "description": "Filtrar por relator",
+      "type": "string"
+    },
+    "--classe": {
+      "description": "Classe processual",
+      "type": "string"
+    },
+    "--area": {
+      "description": "Área do direito",
+      "type": "string",
+      "choices": [
+        "civil", "criminal", "trabalhista", "tributario",
+        "administrativo", "constitucional", "empresarial"
+      ]
+    }
+  },
+
+  "extracaoFlags": {
+    "--ferramentas": {
+      "description": "Ferramentas específicas (1-33)",
+      "type": "string"
+    },
+    "--processadores": {
+      "description": "Processadores específicos (1-10)",
+      "type": "string"
+    },
+    "--chunk-size": {
+      "description": "Tamanho dos chunks em tokens",
+      "type": "number",
+      "default": 50000
+    },
+    "--preservar-formatacao": {
+      "description": "Preservar formatação original",
+      "type": "boolean"
+    },
+    "--extrair-imagens": {
+      "description": "Extrair imagens do PDF",
+      "type": "boolean"
+    }
+  },
+
+  "commands": {
+    "rom": {
+      "description": "Comando principal do ROM Agent",
+      "subcommands": {
+        "chat": {
+          "description": "Iniciar chat interativo",
+          "flags": ["--model", "--max-tokens", "--temperature", "--system"]
+        },
+        "analisar": {
+          "description": "Analisar processo jurídico",
+          "flags": ["--agent", "--output", "--format", "--camada"]
+        },
+        "resumo": {
+          "description": "Gerar resumo executivo",
+          "flags": ["--camada", "--output", "--format"]
+        },
+        "redigir": {
+          "description": "Redigir peça jurídica",
+          "flags": ["--tipo-peca", "--timbrado", "--output", "--format"]
+        },
+        "pesquisar": {
+          "description": "Pesquisar jurisprudência",
+          "flags": ["--tribunal", "--periodo", "--area"]
+        },
+        "extrair": {
+          "description": "Extrair texto de PDF",
+          "flags": ["--ferramentas", "--processadores", "--output"]
+        },
+        "revisar": {
+          "description": "Revisar português jurídico",
+          "flags": ["--output"]
+        },
+        "contrato": {
+          "description": "Elaborar contrato",
+          "flags": ["--output", "--format"]
+        },
+        "config": {
+          "description": "Gerenciar configurações",
+          "subcommands": {
+            "show": "Exibir configuração atual",
+            "set": "Definir configuração",
+            "reset": "Restaurar padrões"
+          }
+        },
+        "agents": {
+          "description": "Gerenciar subagentes",
+          "subcommands": {
+            "list": "Listar subagentes",
+            "info": "Informações de subagente",
+            "invoke": "Invocar subagente específico"
+          }
+        }
+      }
+    }
+  },
+
+  "examples": [
+    {
+      "command": "rom chat",
+      "description": "Iniciar chat interativo"
+    },
+    {
+      "command": "rom analisar processo.pdf --camada 3",
+      "description": "Analisar processo com resumo Camada 3"
+    },
+    {
+      "command": "rom redigir --tipo-peca apelacao -o apelacao.docx",
+      "description": "Redigir apelação e salvar como DOCX"
+    },
+    {
+      "command": "rom pesquisar \"dano moral\" --tribunal STJ --periodo 2023-2024",
+      "description": "Pesquisar jurisprudência sobre dano moral no STJ"
+    },
+    {
+      "command": "rom extrair processo.pdf --output texto.txt",
+      "description": "Extrair texto de PDF com 33 ferramentas"
+    },
+    {
+      "command": "rom --agent resumo-executivo --camada 3",
+      "description": "Usar subagente de resumo executivo Camada 3"
+    },
+    {
+      "command": "rom --workflow analise-completa processo.pdf",
+      "description": "Executar workflow completo de análise"
+    }
+  ]
+}
