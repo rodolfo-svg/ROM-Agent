@@ -1730,9 +1730,18 @@
                             <!-- Free/Open Source Models -->
                             <optgroup label="💰 Gratuitos/Open Source">
                                 <option value="llama-3.3-70b">Llama 3.3 70B - Gratuito (Meta, open source)</option>
+                                <option value="llama-4-scout">Llama 4 Scout 17B - Gratuito (Meta, última geração)</option>
                                 <option value="mistral-large">Mistral Large - Gratuito (Europeu, open source)</option>
+                                <option value="deepseek-r1">DeepSeek R1 - Gratuito (Raciocínio avançado)</option>
                                 <option value="gemini-pro">Gemini Pro - Gratuito (Google)</option>
                                 <option value="mixtral-8x7b">Mixtral 8x7B - Gratuito (Open source eficiente)</option>
+                            </optgroup>
+
+                            <!-- Multi-Model Strategies -->
+                            <optgroup label="🔀 Múltiplas IAs (Ensemble)">
+                                <option value="multi-cascade">Cascade: Claude → DeepSeek (Validação cruzada)</option>
+                                <option value="multi-voting">Voting: Claude + DeepSeek + Llama (Consenso por votação)</option>
+                                <option value="multi-best">Best-of-N: 3 modelos, melhor resposta</option>
                             </optgroup>
 
                             <!-- Local Models -->
@@ -1832,48 +1841,86 @@
                 <!-- Download Dropdown -->
                 <div class="dropdown-container" style="position: relative;">
                     <button class="preview-btn preview-btn-primary" onclick="toggleDownloadMenu(event)" style="background: var(--gold-primary); color: white; font-weight: 600;">
-                        <span>📥</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
                         <span>Baixar</span>
                         <span class="dropdown-arrow" style="margin-left: 4px; font-size: 10px;">▼</span>
                     </button>
                     <div id="downloadMenu" class="dropdown-menu" style="display: none; position: absolute; bottom: 100%; left: 0; margin-bottom: 8px; background: var(--bg-secondary); border: 2px solid var(--gold-primary); border-radius: 8px; box-shadow: var(--shadow-lg); min-width: 200px; z-index: 1000;">
                         <button class="dropdown-item" onclick="downloadDOCX()" style="width: 100%; padding: 10px 16px; border: none; background: transparent; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); transition: all 0.15s;">
-                            <span>📄</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="12" y1="18" x2="12" y2="12"/>
+                                <line x1="9" y1="15" x2="15" y2="15"/>
+                            </svg>
                             <span style="flex: 1;">DOCX</span>
                             <span class="badge-recommended" style="background: var(--gold-primary); color: white; font-size: 9px; padding: 2px 6px; border-radius: 4px; font-weight: 600;">RECOMENDADO</span>
                         </button>
                         <button class="dropdown-item" onclick="downloadPDF()" style="width: 100%; padding: 10px 16px; border: none; background: transparent; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); transition: all 0.15s;">
-                            <span>📕</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                            </svg>
                             <span>PDF</span>
                         </button>
                         <button class="dropdown-item" onclick="downloadTXT()" style="width: 100%; padding: 10px 16px; border: none; background: transparent; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); transition: all 0.15s;">
-                            <span>📝</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                <polyline points="14 2 14 8 20 8"/>
+                                <line x1="16" y1="13" x2="8" y2="13"/>
+                                <line x1="16" y1="17" x2="8" y2="17"/>
+                                <polyline points="10 9 9 9 8 9"/>
+                            </svg>
                             <span>TXT</span>
                         </button>
                         <button class="dropdown-item" onclick="downloadHTML()" style="width: 100%; padding: 10px 16px; border: none; background: transparent; text-align: left; cursor: pointer; display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-primary); transition: all 0.15s;">
-                            <span>🌐</span>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="16 18 22 12 16 6"/>
+                                <polyline points="8 6 2 12 8 18"/>
+                            </svg>
                             <span>HTML</span>
                         </button>
                     </div>
                 </div>
 
                 <button class="preview-btn" onclick="copyContent()">
-                    <span>📋</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                    </svg>
                     <span>Copiar</span>
                 </button>
 
                 <button class="preview-btn" onclick="addToProject()">
-                    <span>📁</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/>
+                        <line x1="12" y1="11" x2="12" y2="17"/>
+                        <line x1="9" y1="14" x2="15" y2="14"/>
+                    </svg>
                     <span>Adicionar</span>
                 </button>
 
                 <button class="preview-btn" onclick="shareContent()">
-                    <span>📤</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3"/>
+                        <circle cx="6" cy="12" r="3"/>
+                        <circle cx="18" cy="19" r="3"/>
+                        <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                        <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                    </svg>
                     <span>Compartilhar</span>
                 </button>
 
                 <button class="preview-btn preview-btn-secondary" onclick="regenerateDocument()" style="color: var(--text-secondary);">
-                    <span>🔄</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="23 4 23 10 17 10"/>
+                        <polyline points="1 20 1 14 7 14"/>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
                     <span>Regenerar</span>
                 </button>
             </div>
