@@ -1,7 +1,7 @@
 {
   "version": "2.2.0",
   "build": "2024-12-13T14:00:00Z",
-  "commit": "pending",
+  "commit": "bc49f18",
   "features": [
     "Cache Inteligente (70% economia tokens)",
     "Validação de Qualidade Pré-Envio",
