@@ -30,6 +30,7 @@ import semanticSearch from '../lib/semantic-search.js';
 import documentVersioning from '../lib/versioning.js';
 import templatesManager from '../lib/templates-manager.js';
 import backupManager from '../lib/backup-manager.js';
+import conversationsManager from '../lib/conversations-manager.js';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
@@ -4136,6 +4137,194 @@ app.get('/api/backup/download/:filename', generalLimiter, async (req, res) => {
 });
 
 logger.info('✅ Phase 4 & 5 API endpoints configured');
+
+// ═══════════════════════════════════════════════════════════════
+// CONVERSATIONS API - Sistema de Histórico como Claude.ai
+// ═══════════════════════════════════════════════════════════════
+
+// Criar nova conversa
+app.post('/api/conversations/create', generalLimiter, (req, res) => {
+  try {
+    const userId = req.session.userId || 'anonymous';
+    const sessionId = req.session.id;
+
+    const conversationId = conversationsManager.createConversation(userId, sessionId);
+
+    logger.info(`New conversation created: ${conversationId}`);
+    res.json({ success: true, conversationId });
+  } catch (error) {
+    logger.error('Create conversation error:', error);
+    res.status(500).json({ error: 'Erro ao criar conversa' });
+  }
+});
+
+// Listar conversas (com paginação e busca)
+app.get('/api/conversations/list', generalLimiter, (req, res) => {
+  try {
+    const userId = req.session.userId || 'anonymous';
+    const { limit = 50, offset = 0, search = '' } = req.query;
+
+    const result = conversationsManager.listConversations(userId, {
+      limit: parseInt(limit),
+      offset: parseInt(offset),
+      search
+    });
+
+    logger.info(`Listed ${result.conversations.length} conversations for user ${userId}`);
+    res.json(result);
+  } catch (error) {
+    logger.error('List conversations error:', error);
+    res.status(500).json({ error: 'Erro ao listar conversas' });
+  }
+});
+
+// Listar conversas organizadas por data (Hoje, Ontem, etc.)
+app.get('/api/conversations/organized', generalLimiter, (req, res) => {
+  try {
+    const userId = req.session.userId || 'anonymous';
+    const organized = conversationsManager.organizeByDate(userId);
+
+    logger.info(`Organized conversations for user ${userId}`);
+    res.json({ success: true, organized });
+  } catch (error) {
+    logger.error('Organize conversations error:', error);
+    res.status(500).json({ error: 'Erro ao organizar conversas' });
+  }
+});
+
+// Obter conversa específica
+app.get('/api/conversations/:conversationId', generalLimiter, (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const conversation = conversationsManager.getConversation(conversationId);
+
+    if (!conversation) {
+      return res.status(404).json({ error: 'Conversa não encontrada' });
+    }
+
+    logger.info(`Retrieved conversation: ${conversationId}`);
+    res.json({ success: true, conversation });
+  } catch (error) {
+    logger.error('Get conversation error:', error);
+    res.status(500).json({ error: 'Erro ao obter conversa' });
+  }
+});
+
+// Renomear conversa
+app.put('/api/conversations/:conversationId/rename', generalLimiter, (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const { title } = req.body;
+
+    if (!title || title.trim().length === 0) {
+      return res.status(400).json({ error: 'Título não pode ser vazio' });
+    }
+
+    const success = conversationsManager.renameConversation(conversationId, title);
+
+    if (!success) {
+      return res.status(404).json({ error: 'Conversa não encontrada' });
+    }
+
+    logger.info(`Renamed conversation ${conversationId} to: ${title}`);
+    res.json({ success: true });
+  } catch (error) {
+    logger.error('Rename conversation error:', error);
+    res.status(500).json({ error: 'Erro ao renomear conversa' });
+  }
+});
+
+// Deletar conversa
+app.delete('/api/conversations/:conversationId', generalLimiter, (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const success = conversationsManager.deleteConversation(conversationId);
+
+    if (!success) {
+      return res.status(404).json({ error: 'Conversa não encontrada' });
+    }
+
+    logger.info(`Deleted conversation: ${conversationId}`);
+    res.json({ success: true });
+  } catch (error) {
+    logger.error('Delete conversation error:', error);
+    res.status(500).json({ error: 'Erro ao deletar conversa' });
+  }
+});
+
+// Deletar múltiplas conversas
+app.post('/api/conversations/delete-multiple', generalLimiter, (req, res) => {
+  try {
+    const { conversationIds } = req.body;
+
+    if (!Array.isArray(conversationIds)) {
+      return res.status(400).json({ error: 'conversationIds deve ser um array' });
+    }
+
+    const deleted = conversationsManager.deleteMultipleConversations(conversationIds);
+
+    logger.info(`Deleted ${deleted} conversations`);
+    res.json({ success: true, deleted });
+  } catch (error) {
+    logger.error('Delete multiple conversations error:', error);
+    res.status(500).json({ error: 'Erro ao deletar conversas' });
+  }
+});
+
+// Exportar conversa
+app.get('/api/conversations/:conversationId/export', generalLimiter, (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const exported = conversationsManager.exportConversation(conversationId);
+
+    if (!exported) {
+      return res.status(404).json({ error: 'Conversa não encontrada' });
+    }
+
+    // Define o nome do arquivo
+    const filename = `conversa-${conversationId}-${Date.now()}.json`;
+
+    logger.info(`Exported conversation: ${conversationId}`);
+    res.setHeader('Content-Type', 'application/json');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.json(exported);
+  } catch (error) {
+    logger.error('Export conversation error:', error);
+    res.status(500).json({ error: 'Erro ao exportar conversa' });
+  }
+});
+
+// Obter estatísticas de conversas
+app.get('/api/conversations/stats', generalLimiter, (req, res) => {
+  try {
+    const userId = req.session.userId || 'anonymous';
+    const stats = conversationsManager.getStats(userId);
+
+    logger.info(`Retrieved conversation stats for user ${userId}`);
+    res.json({ success: true, stats });
+  } catch (error) {
+    logger.error('Get conversation stats error:', error);
+    res.status(500).json({ error: 'Erro ao obter estatísticas' });
+  }
+});
+
+// Limpar conversas antigas
+app.post('/api/conversations/clean-old', generalLimiter, (req, res) => {
+  try {
+    const userId = req.session.userId || 'anonymous';
+    const { daysOld = 30 } = req.body;
+
+    const deleted = conversationsManager.cleanOldConversations(userId, daysOld);
+
+    logger.info(`Cleaned ${deleted} old conversations for user ${userId}`);
+    res.json({ success: true, deleted });
+  } catch (error) {
+    logger.error('Clean old conversations error:', error);
+    res.status(500).json({ error: 'Erro ao limpar conversas antigas' });
+  }
+});
+
+logger.info('✅ Conversations API endpoints configured');
 
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
