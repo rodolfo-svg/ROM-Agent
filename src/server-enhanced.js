@@ -319,6 +319,73 @@ Sempre cite as fontes corretamente e formate as referências em ABNT.`,
   }
 });
 
+// API - Chat com Streaming Real-Time (SSE)
+app.post('/api/chat-stream', async (req, res) => {
+  try {
+    const { message, modelo = 'amazon.nova-pro-v1:0' } = req.body;
+    const history = getHistory(req.session.id);
+
+    // Configurar SSE
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no'); // Nginx
+
+    console.log('🌊 [Stream] Iniciando streaming...', { modelo });
+
+    const { conversarStream } = await import('./modules/bedrock.js');
+
+    let textoCompleto = '';
+    const startTime = Date.now();
+
+    await conversarStream(
+      message,
+      (chunk) => {
+        textoCompleto += chunk;
+        res.write(`data: ${JSON.stringify({ type: 'chunk', text: chunk })}\n\n`);
+      },
+      {
+        modelo,
+        historico: history.slice(-10),
+        maxTokens: 4096,
+        temperature: 0.7
+      }
+    );
+
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+
+    // Enviar evento final
+    res.write(`data: ${JSON.stringify({
+      type: 'done',
+      fullText: textoCompleto,
+      elapsed: `${elapsed}s`,
+      modelo
+    })}\n\n`);
+    res.end();
+
+    // Adicionar ao histórico
+    history.push({
+      role: 'user',
+      content: message,
+      timestamp: new Date()
+    });
+
+    history.push({
+      role: 'assistant',
+      content: textoCompleto,
+      timestamp: new Date(),
+      modelo,
+      streaming: true
+    });
+
+    console.log(`✅ [Stream] Concluído em ${elapsed}s`);
+  } catch (error) {
+    console.error('❌ [Stream] Erro:', error);
+    res.write(`data: ${JSON.stringify({ type: 'error', error: error.message })}\n\n`);
+    res.end();
+  }
+});
+
 // API - Upload de arquivo
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   try {
@@ -3662,10 +3729,40 @@ function formatBytes(bytes, decimals = 2) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 
+// ====================================================================
+// PRELOAD DE MODELOS - Eliminar Cold Start
+// ====================================================================
+async function preloadModelos() {
+  console.log('🔥 Pré-aquecendo modelos Bedrock...');
+
+  const { conversar } = await import('./modules/bedrock.js');
+  const modelos = [
+    'amazon.nova-lite-v1:0',
+    'amazon.nova-pro-v1:0',
+    'anthropic.claude-haiku-4-5-20251001-v1:0'
+  ];
+
+  for (const modelo of modelos) {
+    try {
+      await conversar('ping', { modelo, maxTokens: 10 });
+      console.log(`✅ ${modelo} pré-aquecido`);
+    } catch (err) {
+      console.log(`⚠️ Erro ao pré-aquecer ${modelo}`);
+    }
+  }
+
+  console.log('✅ Preload concluído!');
+}
+
+// Keep-alive: repreload a cada 5min
+setInterval(async () => {
+  await preloadModelos();
+}, 5 * 60 * 1000);
+
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`
 ╔══════════════════════════════════════════════════════════════╗
 ║                                                              ║
@@ -3688,6 +3785,9 @@ app.listen(PORT, () => {
 ║                                                              ║
 ╚══════════════════════════════════════════════════════════════╝
 `);
+
+  // Pré-carregar modelos
+  await preloadModelos();
 });
 
 export default app;

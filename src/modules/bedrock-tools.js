@@ -577,26 +577,53 @@ Depois de receber os resultados, continue sua resposta normalmente incorporando 
 
     const conteudo = resposta.resposta;
 
-    // Verificar se a IA quer usar uma tool
-    const toolUseMatch = conteudo.match(/<tool_use>\s*<tool>(.*?)<\/tool>\s*<params>(.*?)<\/params>\s*<\/tool_use>/s);
+    // Verificar se a IA quer usar tools (detectar TODAS as tags tool_use)
+    const toolUseRegex = /<tool_use>\s*<tool>(.*?)<\/tool>\s*<params>(.*?)<\/params>\s*<\/tool_use>/gs;
+    const toolMatches = [...conteudo.matchAll(toolUseRegex)];
 
-    if (toolUseMatch) {
-      const toolName = toolUseMatch[1].trim();
-      let toolInput;
+    if (toolMatches.length > 0) {
+      // Executar tools em PARALELO (3-5x mais rápido)
+      console.log(`🚀 Executando ${toolMatches.length} tools em PARALELO...`);
 
-      try {
-        toolInput = JSON.parse(toolUseMatch[2].trim());
-      } catch (e) {
-        console.error('❌ [Tool Use] Erro ao parsear params:', e);
-        break;
-      }
+      const toolPromises = toolMatches.map(async (match) => {
+        const toolName = match[1].trim();
+        let toolInput;
 
-      // Executar tool
-      const toolResult = await executeTool(toolName, toolInput);
-      toolsUsadas.push({
-        name: toolName,
-        input: toolInput,
-        result: toolResult
+        try {
+          toolInput = JSON.parse(match[2].trim());
+        } catch (e) {
+          console.error('❌ [Tool Use] Erro ao parsear params:', e);
+          return {
+            toolName,
+            error: e.message,
+            result: { success: false, error: e.message, content: `Erro ao parsear parâmetros: ${e.message}` }
+          };
+        }
+
+        // Executar tool e capturar erros
+        const result = await executeTool(toolName, toolInput).catch(err => ({
+          success: false,
+          error: err.message,
+          content: `Erro ao executar ${toolName}: ${err.message}`
+        }));
+
+        return {
+          toolName,
+          toolInput,
+          result
+        };
+      });
+
+      // Aguardar TODAS as tools em paralelo
+      const toolResults = await Promise.all(toolPromises);
+
+      // Adicionar todas as tools usadas
+      toolResults.forEach(({ toolName, toolInput, result }) => {
+        toolsUsadas.push({
+          name: toolName,
+          input: toolInput,
+          result: result
+        });
       });
 
       // Adicionar resultado ao histórico
@@ -607,11 +634,15 @@ Depois de receber os resultados, continue sua resposta normalmente incorporando 
 
       conversaAtual.push({
         role: 'assistant',
-        content: `Vou buscar essa informação usando a ferramenta ${toolName}.`
+        content: `Vou buscar essas informações usando ${toolResults.length} ferramenta(s).`
       });
 
-      // Próxima iteração com resultado da tool
-      promptAtual = `Resultado da ferramenta ${toolName}:\n\n${toolResult.content}\n\nAgora responda ao usuário incorporando essas informações de forma natural.`;
+      // Próxima iteração com resultado de TODAS as tools
+      const allResults = toolResults.map(({ toolName, result }) =>
+        `**Resultado da ferramenta ${toolName}:**\n\n${result.content}`
+      ).join('\n\n---\n\n');
+
+      promptAtual = `${allResults}\n\nAgora responda ao usuário incorporando essas informações de forma natural.`;
 
     } else {
       // Não há mais tool use, retornar resposta final
