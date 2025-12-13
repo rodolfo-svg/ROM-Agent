@@ -1,8 +1,10 @@
 {
-  "version": "2.2.0",
-  "build": "2024-12-13T14:00:00Z",
-  "commit": "bc49f18",
+  "version": "2.3.0",
+  "build": "2024-12-13T15:30:00Z",
+  "commit": "6c7ab4d",
   "features": [
+    "Interface Estilo Claude AI (sidebar, purple theme)",
+    "Rate Limiter AWS Bedrock (10 req/min, 100 req/hora)",
     "Cache Inteligente (70% economia tokens)",
     "Validação de Qualidade Pré-Envio",
     "Peças Indistinguíveis de Produção Humana",
@@ -19,5 +21,5 @@
   ],
   "deployed": true,
   "render_deploy": "2024-12-13",
-  "optimization_status": "Fase 2/3 completa - Prompts Otimizados"
+  "optimization_status": "Fase 2/3 completa - Interface Claude AI Implementada"
 }
