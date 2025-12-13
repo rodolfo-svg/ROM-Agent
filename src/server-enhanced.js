@@ -1980,6 +1980,412 @@ app.post('/api/cache/clear', authSystem.authMiddleware(), authSystem.requireRole
   }
 });
 
+// ====================================================================
+// ROTAS DE API PARA EXPORTAÇÃO DE DOCUMENTOS
+// ====================================================================
+
+// Exportar para DOCX
+app.post('/api/export/docx', async (req, res) => {
+  try {
+    const { content, titulo = 'Documento ROM Agent', projectId } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ error: 'Conteúdo é obrigatório' });
+    }
+
+    const DOCXExporter = require('../lib/docx-exporter.cjs');
+    const exporter = new DOCXExporter();
+
+    // Converter conteúdo (assumindo HTML ou markdown)
+    const buffer = await exporter.createLegalDocument({
+      titulo,
+      conteudoHTML: content,
+      timbrado: {
+        escritorio: 'Rodolfo Otávio Mota Advogados Associados',
+        oab: 'OAB/MG',
+        endereco: 'Belo Horizonte - MG',
+        email: 'contato@rom.adv.br'
+      }
+    });
+
+    const filename = `${titulo.replace(/[^a-z0-9]/gi, '_')}_${Date.now()}.docx`;
+
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(buffer);
+
+    console.log(`✅ Documento DOCX exportado: ${filename}`);
+  } catch (error) {
+    console.error('❌ Erro ao exportar DOCX:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Exportar para PDF (usando html-pdf ou similar)
+app.post('/api/export/pdf', async (req, res) => {
+  try {
+    const { content, titulo = 'Documento ROM Agent' } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ error: 'Conteúdo é obrigatório' });
+    }
+
+    // Converter markdown para HTML se necessário
+    let htmlContent = content;
+    if (content.includes('##') || content.includes('**')) {
+      const { marked } = require('marked');
+      htmlContent = marked.parse(content);
+    }
+
+    // Template HTML para PDF
+    const htmlTemplate = `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: 'Times New Roman', serif;
+      font-size: 12pt;
+      line-height: 1.5;
+      margin: 3cm 2cm 2cm 3cm;
+      text-align: justify;
+    }
+    h1 { font-size: 14pt; text-align: center; margin-bottom: 1.5cm; }
+    h2 { font-size: 13pt; margin-top: 1cm; margin-bottom: 0.5cm; }
+    p { margin-bottom: 0.5cm; text-indent: 2cm; }
+  </style>
+</head>
+<body>
+  <h1>${titulo}</h1>
+  ${htmlContent}
+</body>
+</html>`;
+
+    // Por enquanto, retornar HTML (pode-se usar puppeteer ou wkhtmltopdf no futuro)
+    const filename = `${titulo.replace(/[^a-z0-9]/gi, '_')}_${Date.now()}.html`;
+
+    res.setHeader('Content-Type', 'text/html');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(htmlTemplate);
+
+    console.log(`✅ Documento HTML/PDF exportado: ${filename}`);
+  } catch (error) {
+    console.error('❌ Erro ao exportar PDF:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Exportar para TXT
+app.post('/api/export/txt', (req, res) => {
+  try {
+    const { content, titulo = 'Documento ROM Agent' } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ error: 'Conteúdo é obrigatório' });
+    }
+
+    // Remover markdown e HTML
+    let txtContent = content
+      .replace(/<[^>]*>/g, '') // Remove HTML tags
+      .replace(/#{1,6}\s/g, '') // Remove markdown headers
+      .replace(/\*\*(.*?)\*\*/g, '$1') // Remove bold
+      .replace(/\*(.*?)\*/g, '$1') // Remove italic
+      .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove links
+      .trim();
+
+    // Adicionar título
+    txtContent = `${titulo.toUpperCase()}\n${'='.repeat(titulo.length)}\n\n${txtContent}`;
+
+    const filename = `${titulo.replace(/[^a-z0-9]/gi, '_')}_${Date.now()}.txt`;
+
+    res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(txtContent);
+
+    console.log(`✅ Documento TXT exportado: ${filename}`);
+  } catch (error) {
+    console.error('❌ Erro ao exportar TXT:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Exportar para HTML
+app.post('/api/export/html', (req, res) => {
+  try {
+    const { content, titulo = 'Documento ROM Agent' } = req.body;
+
+    if (!content) {
+      return res.status(400).json({ error: 'Conteúdo é obrigatório' });
+    }
+
+    // Converter markdown para HTML se necessário
+    let htmlContent = content;
+    if (content.includes('##') || content.includes('**')) {
+      const { marked } = require('marked');
+      htmlContent = marked.parse(content);
+    }
+
+    // Template HTML profissional
+    const htmlDocument = `
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${titulo}</title>
+  <style>
+    body {
+      font-family: 'Times New Roman', serif;
+      font-size: 12pt;
+      line-height: 1.5;
+      max-width: 21cm;
+      margin: 0 auto;
+      padding: 3cm 2cm 2cm 3cm;
+      background: #fff;
+      color: #000;
+      text-align: justify;
+    }
+    h1 {
+      font-size: 14pt;
+      text-align: center;
+      margin-bottom: 1.5cm;
+      text-transform: uppercase;
+    }
+    h2 {
+      font-size: 13pt;
+      margin-top: 1cm;
+      margin-bottom: 0.5cm;
+    }
+    p {
+      margin-bottom: 0.5cm;
+      text-indent: 2cm;
+    }
+    blockquote {
+      margin-left: 4cm;
+      margin-right: 0;
+      font-style: italic;
+      border-left: 3px solid #ccc;
+      padding-left: 1cm;
+    }
+    @media print {
+      body {
+        margin: 3cm 2cm 2cm 3cm;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>${titulo}</h1>
+  ${htmlContent}
+
+  <footer style="margin-top: 3cm; text-align: center; font-size: 10pt; color: #666;">
+    <p>Documento gerado por ROM Agent - ${new Date().toLocaleDateString('pt-BR')}</p>
+  </footer>
+</body>
+</html>`;
+
+    const filename = `${titulo.replace(/[^a-z0-9]/gi, '_')}_${Date.now()}.html`;
+
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(htmlDocument);
+
+    console.log(`✅ Documento HTML exportado: ${filename}`);
+  } catch (error) {
+    console.error('❌ Erro ao exportar HTML:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ====================================================================
+// ROTAS DE API PARA ESTRATÉGIAS MULTI-MODELO
+// ====================================================================
+
+// Importar estratégias do intelligent-router
+const {
+  cascadeStrategy,
+  votingStrategy,
+  evaluateConfidence
+} = require('../lib/intelligent-router.cjs');
+
+// Estratégia Cascade: modelo rápido → premium se necessário
+app.post('/api/chat/cascade', async (req, res) => {
+  try {
+    const { message } = req.body;
+    const history = getHistory(req.session.id);
+
+    if (!message || !message.trim()) {
+      return res.status(400).json({ error: 'Mensagem vazia' });
+    }
+
+    console.log('🔀 [Cascade] Iniciando estratégia cascade...');
+
+    const { conversar } = await import('./modules/bedrock.js');
+
+    const result = await cascadeStrategy(message, '', conversar);
+
+    // Adicionar ao histórico
+    history.push({
+      role: 'user',
+      content: message,
+      timestamp: new Date()
+    });
+
+    history.push({
+      role: 'assistant',
+      content: result.response.resposta,
+      strategy: result.strategy,
+      model: result.routing.model,
+      confidence: result.confidence,
+      timestamp: new Date()
+    });
+
+    res.json({
+      response: result.response.resposta,
+      strategy: result.strategy,
+      model: result.routing.model,
+      confidence: result.confidence,
+      savings: result.routing.savingsPercent || '0%'
+    });
+
+  } catch (error) {
+    console.error('❌ [Cascade] Erro:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Estratégia Voting: múltiplos modelos votam
+app.post('/api/chat/voting', async (req, res) => {
+  try {
+    const { message, numModels = 3 } = req.body;
+    const history = getHistory(req.session.id);
+
+    if (!message || !message.trim()) {
+      return res.status(400).json({ error: 'Mensagem vazia' });
+    }
+
+    console.log(`🗳️ [Voting] Iniciando votação com ${numModels} modelos...`);
+
+    const { conversar } = await import('./modules/bedrock.js');
+
+    const result = await votingStrategy(message, '', conversar, numModels);
+
+    // Adicionar ao histórico
+    history.push({
+      role: 'user',
+      content: message,
+      timestamp: new Date()
+    });
+
+    history.push({
+      role: 'assistant',
+      content: result.winner.response.resposta,
+      strategy: result.strategy,
+      model: result.winner.model,
+      score: result.winner.score,
+      alternatives: result.alternatives.map(alt => ({
+        model: alt.model,
+        score: alt.score
+      })),
+      timestamp: new Date()
+    });
+
+    res.json({
+      response: result.winner.response.resposta,
+      strategy: result.strategy,
+      model: result.winner.model,
+      score: result.winner.score,
+      alternatives: result.alternatives.map(alt => ({
+        model: alt.model,
+        score: alt.score
+      })),
+      consensus: result.consensus
+    });
+
+  } catch (error) {
+    console.error('❌ [Voting] Erro:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Estratégia Best-of-N: gera N respostas, retorna melhor
+app.post('/api/chat/best-of-n', async (req, res) => {
+  try {
+    const { message, n = 3, modelo = 'amazon.nova-pro-v1:0' } = req.body;
+    const history = getHistory(req.session.id);
+
+    if (!message || !message.trim()) {
+      return res.status(400).json({ error: 'Mensagem vazia' });
+    }
+
+    console.log(`🎯 [Best-of-N] Gerando ${n} respostas e selecionando a melhor...`);
+
+    const { conversar } = await import('./modules/bedrock.js');
+    const { evaluateResponseQuality } = require('../lib/intelligent-router.cjs');
+
+    // Gerar N respostas
+    const responses = await Promise.all(
+      Array(n).fill(null).map(() =>
+        conversar(message, {
+          modelo,
+          historico: history.slice(-10),
+          maxTokens: 4096,
+          temperature: 0.7
+        })
+      )
+    );
+
+    // Avaliar qualidade de cada resposta
+    const scored = responses.map((resp, idx) => ({
+      response: resp,
+      score: evaluateResponseQuality(resp.resposta),
+      index: idx + 1
+    }));
+
+    // Ordenar por score
+    scored.sort((a, b) => b.score - a.score);
+
+    const winner = scored[0];
+
+    // Adicionar ao histórico
+    history.push({
+      role: 'user',
+      content: message,
+      timestamp: new Date()
+    });
+
+    history.push({
+      role: 'assistant',
+      content: winner.response.resposta,
+      strategy: 'best-of-n',
+      model: modelo,
+      score: winner.score,
+      alternatives: scored.slice(1).map(s => ({
+        score: s.score,
+        index: s.index
+      })),
+      timestamp: new Date()
+    });
+
+    res.json({
+      response: winner.response.resposta,
+      strategy: 'best-of-n',
+      model: modelo,
+      score: winner.score,
+      totalGenerated: n,
+      alternatives: scored.slice(1).map(s => ({
+        score: s.score,
+        index: s.index
+      }))
+    });
+
+  } catch (error) {
+    console.error('❌ [Best-of-N] Erro:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // HTML da interface melhorada
 function getEnhancedHTML() {
   return `
