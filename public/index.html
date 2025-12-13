@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROM Agent v2.5.0 - Assistente Jurídico IA</title>
+    <title>ROM Agent v2.6.0 - Sistema de Projetos Inteligente</title>
 
     <!-- Marked.js for Markdown rendering -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
@@ -111,7 +111,7 @@
         }
 
         /* ============================================
-           SIDEBAR (280px fixa)
+           SIDEBAR (280px fixa) - PROJETOS
            ============================================ */
         .sidebar {
             width: var(--sidebar-width);
@@ -157,6 +157,14 @@
             box-shadow: var(--shadow-gold);
         }
 
+        .logo-img {
+            width: 42px;
+            height: 42px;
+            object-fit: contain;
+            border-radius: 10px;
+            box-shadow: var(--shadow-gold);
+        }
+
         .logo-text {
             font-size: 20px;
             font-weight: 600;
@@ -167,15 +175,15 @@
             background-clip: text;
         }
 
-        .new-chat-btn {
+        .btn-new-project {
             width: 100%;
-            padding: var(--spacing-sm) var(--spacing-md);
+            padding: var(--spacing-md);
             background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -185,74 +193,115 @@
             box-shadow: var(--shadow-gold);
         }
 
-        .new-chat-btn:hover {
+        .btn-new-project:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(212, 175, 55, 0.4);
+            box-shadow: 0 6px 24px rgba(212, 175, 55, 0.5);
         }
 
-        .new-chat-btn:active {
+        .btn-new-project:active {
             transform: translateY(0);
         }
 
-        /* Conversations List */
-        .conversations-container {
+        /* Projects List */
+        .projects-container {
             flex: 1;
             overflow-y: auto;
-            padding: var(--spacing-sm);
+            padding: var(--spacing-md) var(--spacing-sm);
         }
 
-        .conversations-container::-webkit-scrollbar {
+        .projects-container::-webkit-scrollbar {
             width: 6px;
         }
 
-        .conversations-container::-webkit-scrollbar-track {
+        .projects-container::-webkit-scrollbar-track {
             background: transparent;
         }
 
-        .conversations-container::-webkit-scrollbar-thumb {
+        .projects-container::-webkit-scrollbar-thumb {
             background: var(--gold-primary);
             border-radius: 3px;
         }
 
-        .conversations-container::-webkit-scrollbar-thumb:hover {
+        .projects-container::-webkit-scrollbar-thumb:hover {
             background: var(--gold-dark);
         }
 
-        .conversation-item {
-            padding: var(--spacing-sm) var(--spacing-md);
-            margin-bottom: var(--spacing-xs);
-            border-radius: 8px;
+        .projects-header {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-tertiary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--spacing-md);
+            padding: 0 var(--spacing-sm);
+        }
+
+        .project-card {
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            border-radius: 12px;
             cursor: pointer;
             transition: all var(--transition-fast);
-            border: 1px solid transparent;
-        }
-
-        .conversation-item:hover {
+            border: 2px solid transparent;
             background: var(--bg-tertiary);
-            border-color: var(--gold-primary);
+            display: flex;
+            gap: var(--spacing-sm);
         }
 
-        .conversation-item.active {
+        .project-card:hover {
+            border-color: var(--gold-primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .project-card.active {
             background: var(--champagne);
             border-color: var(--gold-primary);
-            box-shadow: var(--shadow-sm);
+            box-shadow: var(--shadow-gold);
         }
 
-        .conversation-title {
+        .project-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--gold-primary);
+            flex-shrink: 0;
+            margin-top: 4px;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .project-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .project-info h4 {
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             color: var(--text-primary);
             margin-bottom: var(--spacing-xs);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .conversation-date {
-            font-size: 12px;
+        .project-meta {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-xs);
+            flex-wrap: wrap;
+        }
+
+        .project-meta span {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            background: var(--bg-secondary);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .project-time {
+            font-size: 11px;
             color: var(--text-tertiary);
         }
 
@@ -260,6 +309,9 @@
         .sidebar-footer {
             padding: var(--spacing-md);
             border-top: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
         }
 
         .sidebar-nav-btn {
@@ -269,14 +321,13 @@
             color: var(--text-primary);
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: var(--spacing-sm);
             transition: all var(--transition-fast);
-            margin-bottom: var(--spacing-sm);
         }
 
         .sidebar-nav-btn:hover {
@@ -292,7 +343,7 @@
             color: var(--text-primary);
             border: none;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
             display: flex;
@@ -350,7 +401,7 @@
             display: inline-flex;
             align-items: center;
             gap: var(--spacing-xs);
-            padding: 6px 12px;
+            padding: 6px 14px;
             background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
             color: white;
             border-radius: 20px;
@@ -370,7 +421,7 @@
             background: transparent;
             border: 1px solid var(--gold-primary);
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             color: var(--gold-primary);
             cursor: pointer;
@@ -386,48 +437,379 @@
             box-shadow: var(--shadow-gold);
         }
 
-        .file-input {
+        /* ============================================
+           PROJECT VIEW - Área Principal
+           ============================================ */
+        .project-view {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-lg);
             display: none;
         }
 
+        .project-view.active {
+            display: block;
+        }
+
+        .project-view::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .project-view::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .project-view::-webkit-scrollbar-thumb {
+            background: var(--gold-primary);
+            border-radius: 4px;
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 2px solid var(--gold-primary);
+        }
+
+        .project-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .project-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        /* Analysis Panel */
+        .analysis-panel {
+            background: var(--bg-secondary);
+            border: 2px solid var(--gold-primary);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .analysis-panel h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: var(--spacing-md);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .analysis-result {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .stat {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .suggestion {
+            background: var(--champagne);
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            border-left: 4px solid var(--gold-primary);
+        }
+
+        .suggestion h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--gold-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .instrument-card {
+            background: white;
+            padding: var(--spacing-md);
+            border-radius: 8px;
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .instrument-card h4 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .instrument-card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .suggestion-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        .btn-confirm {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(212, 175, 55, 0.5);
+        }
+
+        .btn-modify {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: transparent;
+            color: var(--gold-primary);
+            border: 2px solid var(--gold-primary);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-modify:hover {
+            background: var(--gold-primary);
+            color: white;
+        }
+
+        /* Documents Panel */
+        .documents-panel {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .documents-panel h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .documents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .doc-card {
+            background: var(--bg-tertiary);
+            padding: var(--spacing-md);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            gap: var(--spacing-sm);
+            transition: all var(--transition-fast);
+            cursor: pointer;
+        }
+
+        .doc-card:hover {
+            border-color: var(--gold-primary);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .doc-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .doc-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .doc-info h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-xs);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .doc-info p {
+            font-size: 11px;
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .doc-status {
+            font-size: 11px;
+            color: #10b981;
+            font-weight: 500;
+        }
+
+        .btn-upload-more {
+            width: 100%;
+            padding: var(--spacing-md);
+            background: var(--bg-tertiary);
+            color: var(--gold-primary);
+            border: 2px dashed var(--gold-primary);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-upload-more:hover {
+            background: var(--champagne);
+            border-style: solid;
+        }
+
+        /* Project Chat */
+        .project-chat {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            height: 400px;
+        }
+
+        .project-chat h2 {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-md);
+        }
+
+        .messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background: var(--gold-primary);
+            border-radius: 3px;
+        }
+
+        .input-area-project {
+            display: flex;
+            gap: var(--spacing-sm);
+            align-items: flex-end;
+        }
+
+        .input-area-project textarea {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-primary);
+            resize: none;
+            min-height: 40px;
+            max-height: 120px;
+            font-family: inherit;
+        }
+
+        .input-area-project textarea:focus {
+            outline: none;
+            border-color: var(--gold-primary);
+        }
+
+        .input-area-project button {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-area-project button:hover {
+            transform: translateY(-2px);
+        }
+
         /* ============================================
-           EMPTY STATE
+           EMPTY STATE - WELCOME
            ============================================ */
-        .empty-state {
+        .empty-state-welcome {
             flex: 1;
             overflow-y: auto;
             padding: var(--spacing-xl);
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
         }
 
-        .empty-state::-webkit-scrollbar {
+        .empty-state-welcome.hidden {
+            display: none;
+        }
+
+        .empty-state-welcome::-webkit-scrollbar {
             width: 8px;
         }
 
-        .empty-state::-webkit-scrollbar-track {
+        .empty-state-welcome::-webkit-scrollbar-track {
             background: transparent;
         }
 
-        .empty-state::-webkit-scrollbar-thumb {
+        .empty-state-welcome::-webkit-scrollbar-thumb {
             background: var(--gold-primary);
             border-radius: 4px;
         }
 
-        .empty-state-header {
+        .welcome-content {
             text-align: center;
-            margin-bottom: var(--spacing-xl);
             max-width: 600px;
         }
 
-        .empty-state-icon {
-            font-size: 64px;
-            margin-bottom: var(--spacing-md);
-            opacity: 0.9;
+        .welcome-icon {
+            font-size: 72px;
+            margin-bottom: var(--spacing-lg);
         }
 
-        .empty-state-title {
+        .welcome-title {
             font-size: 32px;
             font-weight: 700;
             color: var(--text-primary);
@@ -438,214 +820,87 @@
             background-clip: text;
         }
 
-        .empty-state-badge {
-            display: inline-block;
-            padding: var(--spacing-xs) var(--spacing-md);
-            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
-            color: white;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            box-shadow: var(--shadow-gold);
+        .welcome-subtitle {
+            font-size: 16px;
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-xl);
         }
 
-        /* Suggestions Grid - 12 PEÇAS */
-        .suggestions-grid {
+        .welcome-features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: var(--spacing-md);
-            width: 100%;
-            max-width: 1200px;
-            margin-bottom: var(--spacing-xl);
+            margin-top: var(--spacing-xl);
         }
 
-        .suggestion-card {
-            padding: var(--spacing-md);
+        .feature-card {
             background: var(--bg-secondary);
+            padding: var(--spacing-lg);
             border: 2px solid var(--border-color);
             border-radius: 12px;
-            cursor: pointer;
             transition: all var(--transition-fast);
-            box-shadow: var(--shadow-sm);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
         }
 
-        .suggestion-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-gold);
+        .feature-card:hover {
             border-color: var(--gold-primary);
-            background: var(--champagne);
-        }
-
-        .suggestion-card:active {
-            transform: translateY(0);
-        }
-
-        .suggestion-icon {
-            font-size: 28px;
-            flex-shrink: 0;
-        }
-
-        .suggestion-text {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        /* Quick Tools Section - 4 FERRAMENTAS */
-        .quick-tools-section {
-            width: 100%;
-            max-width: 1200px;
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .section-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--gold-primary);
-            margin-bottom: var(--spacing-md);
-            text-align: center;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .quick-tools-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: var(--spacing-md);
-        }
-
-        .quick-tool-card {
-            padding: var(--spacing-lg);
-            background: var(--bg-secondary);
-            border: 3px solid var(--gold-primary);
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            text-align: center;
-            box-shadow: var(--shadow-md);
-        }
-
-        .quick-tool-card:hover {
-            transform: translateY(-4px);
             box-shadow: var(--shadow-gold);
-            background: var(--champagne);
+            transform: translateY(-2px);
         }
 
-        .quick-tool-icon {
-            font-size: 48px;
+        .feature-icon {
+            font-size: 36px;
             margin-bottom: var(--spacing-sm);
         }
 
-        .quick-tool-title {
+        .feature-title {
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 600;
             color: var(--gold-primary);
             margin-bottom: var(--spacing-xs);
         }
 
-        .quick-tool-desc {
+        .feature-desc {
             font-size: 13px;
             color: var(--text-secondary);
         }
 
-        /* Complexity Selector - 3 NÍVEIS */
-        .complexity-section {
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: var(--spacing-xl);
-        }
-
-        .complexity-options {
-            display: flex;
-            gap: var(--spacing-md);
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .complexity-option {
-            flex: 1;
-            min-width: 150px;
-        }
-
-        .complexity-option input[type="radio"] {
-            display: none;
-        }
-
-        .complexity-label {
-            display: block;
-            padding: var(--spacing-md);
-            background: var(--bg-secondary);
-            border: 2px solid var(--border-color);
-            border-radius: 12px;
-            text-align: center;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .complexity-option input[type="radio"]:checked + .complexity-label {
-            border-color: var(--gold-primary);
-            background: var(--champagne);
-            color: var(--gold-primary);
-            box-shadow: var(--shadow-gold);
-        }
-
-        .complexity-label:hover {
-            border-color: var(--gold-primary);
-            transform: translateY(-2px);
-        }
-
         /* ============================================
-           CHAT AREA
+           MODAL - NOVO PROJETO
            ============================================ */
-        .chat-container {
+        .modal {
             display: none;
-            flex: 1;
-            flex-direction: column;
-            overflow: hidden;
-        }
-
-        .chat-container.active {
-            display: flex;
-        }
-
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
             padding: var(--spacing-lg);
+        }
+
+        .modal.active {
             display: flex;
-            flex-direction: column;
-            gap: var(--spacing-lg);
         }
 
-        .messages-container::-webkit-scrollbar {
-            width: 8px;
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.3s ease;
         }
 
-        .messages-container::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .messages-container::-webkit-scrollbar-thumb {
-            background: var(--gold-primary);
-            border-radius: 4px;
-        }
-
-        .message {
-            display: flex;
-            gap: var(--spacing-md);
-            max-width: 900px;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
+        @keyframes modalSlideIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(-20px);
             }
             to {
                 opacity: 1;
@@ -653,234 +908,219 @@
             }
         }
 
-        .message.user {
-            align-self: flex-end;
-            flex-direction: row-reverse;
+        .modal-header {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-bottom: 2px solid var(--gold-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .message-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            flex-shrink: 0;
+        .modal-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            font-size: 28px;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 16px;
-            box-shadow: var(--shadow-md);
-        }
-
-        .message.user .message-avatar {
-            background: linear-gradient(135deg, var(--gold-primary), var(--bronze));
-        }
-
-        .message.assistant .message-avatar {
-            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
-        }
-
-        .message-content {
-            flex: 1;
-            padding: var(--spacing-md) var(--spacing-lg);
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .message.user .message-content {
-            background: var(--champagne);
-            border-color: var(--gold-primary);
-        }
-
-        .message-content p {
-            margin-bottom: var(--spacing-sm);
-        }
-
-        .message-content p:last-child {
-            margin-bottom: 0;
-        }
-
-        .message-content code {
-            background: var(--bg-tertiary);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 13px;
-            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
-        }
-
-        .message-content pre {
-            background: var(--bg-tertiary);
-            padding: var(--spacing-md);
             border-radius: 8px;
-            overflow-x: auto;
-            margin: var(--spacing-sm) 0;
         }
 
-        .message-content pre code {
-            background: none;
-            padding: 0;
+        .modal-close:hover {
+            background: var(--bg-tertiary);
+            color: var(--gold-primary);
         }
 
-        .message-content ul,
-        .message-content ol {
-            margin-left: var(--spacing-lg);
+        .modal-body {
+            padding: var(--spacing-xl);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
             margin-bottom: var(--spacing-sm);
         }
 
-        .message-content li {
-            margin-bottom: var(--spacing-xs);
-        }
-
-        .message-content blockquote {
-            border-left: 3px solid var(--gold-primary);
-            padding-left: var(--spacing-md);
-            margin: var(--spacing-sm) 0;
-            color: var(--text-secondary);
-            font-style: italic;
-        }
-
-        /* Loading Animation */
-        .loading-message {
-            display: flex;
-            gap: var(--spacing-md);
-            max-width: 900px;
-        }
-
-        .loading-dots {
-            display: flex;
-            gap: 6px;
-            padding: var(--spacing-md) var(--spacing-lg);
-        }
-
-        .loading-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--gold-primary);
-            border-radius: 50%;
-            animation: bounce 1.4s infinite ease-in-out;
-        }
-
-        .loading-dot:nth-child(1) {
-            animation-delay: -0.32s;
-        }
-
-        .loading-dot:nth-child(2) {
-            animation-delay: -0.16s;
-        }
-
-        @keyframes bounce {
-            0%, 80%, 100% {
-                transform: scale(0.8);
-                opacity: 0.5;
-            }
-            40% {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        /* ============================================
-           INPUT AREA
-           ============================================ */
-        .input-area {
-            background: var(--bg-secondary);
-            border-top: 2px solid var(--gold-primary);
-            padding: var(--spacing-lg);
-            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .input-container {
-            max-width: 900px;
-            margin: 0 auto;
-            display: flex;
-            gap: var(--spacing-sm);
-            align-items: flex-end;
-        }
-
-        .input-wrapper {
-            flex: 1;
-            position: relative;
-            background: var(--bg-primary);
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--bg-tertiary);
             border: 2px solid var(--border-color);
-            border-radius: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            color: var(--text-primary);
+            font-family: inherit;
             transition: all var(--transition-fast);
-            display: flex;
-            align-items: flex-end;
-            padding: var(--spacing-sm);
         }
 
-        .input-wrapper:focus-within {
+        .form-group input[type="text"]:focus,
+        .form-group textarea:focus {
+            outline: none;
             border-color: var(--gold-primary);
             box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
         }
 
-        .attach-btn {
-            background: transparent;
-            border: none;
-            font-size: 20px;
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .upload-zone {
+            border: 3px dashed var(--gold-primary);
+            border-radius: 12px;
+            padding: var(--spacing-xl);
+            text-align: center;
+            background: var(--bg-tertiary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .upload-zone:hover {
+            background: var(--champagne);
+            border-color: var(--gold-dark);
+        }
+
+        .upload-zone.dragover {
+            background: var(--champagne);
+            border-color: var(--gold-dark);
+            transform: scale(1.02);
+        }
+
+        .upload-zone p {
+            margin-bottom: var(--spacing-sm);
             color: var(--text-secondary);
-            cursor: pointer;
-            padding: var(--spacing-sm);
-            transition: all var(--transition-fast);
-            align-self: flex-end;
+            font-size: 14px;
         }
 
-        .attach-btn:hover {
-            color: var(--gold-primary);
-            transform: scale(1.1);
-        }
-
-        .message-input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            font-size: 15px;
-            color: var(--text-primary);
-            resize: none;
-            min-height: 24px;
-            max-height: 200px;
-            line-height: 1.5;
-            padding: var(--spacing-sm);
-            font-family: inherit;
-        }
-
-        .message-input::placeholder {
-            color: var(--text-tertiary);
-        }
-
-        .send-btn {
-            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
-            border: none;
+        .btn-upload {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: var(--gold-primary);
             color: white;
-            font-size: 20px;
-            width: 44px;
-            height: 44px;
-            border-radius: 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
             cursor: pointer;
             transition: all var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            box-shadow: var(--shadow-gold);
-            font-weight: 700;
         }
 
-        .send-btn:hover:not(:disabled) {
+        .btn-upload:hover {
+            background: var(--gold-dark);
+            transform: translateY(-1px);
+        }
+
+        .upload-hint {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-top: var(--spacing-sm);
+        }
+
+        .form-group label input[type="checkbox"] {
+            margin-right: var(--spacing-xs);
+        }
+
+        .modal-footer {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: flex-end;
+        }
+
+        .btn-cancel {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .btn-cancel:hover {
+            background: var(--bg-tertiary);
+            border-color: var(--text-tertiary);
+        }
+
+        .btn-create {
+            padding: var(--spacing-sm) var(--spacing-xl);
+            background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-gold);
+        }
+
+        .btn-create:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 24px rgba(212, 175, 55, 0.5);
         }
 
-        .send-btn:active:not(:disabled) {
-            transform: translateY(0);
+        /* ============================================
+           RESIZE HANDLE - ARRAST\u00c1VEL
+           ============================================ */
+        .resize-handle {
+            width: 6px;
+            cursor: col-resize;
+            background: var(--border-color);
+            position: relative;
+            flex-shrink: 0;
+            transition: background var(--transition-fast);
+            z-index: 10;
         }
 
-        .send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+        .resize-handle:hover {
+            background: var(--gold-primary);
+        }
+
+        .resize-handle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 3px;
+            height: 40px;
+            background: var(--gold-primary);
+            border-radius: 10px;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+
+        .resize-handle:hover::before {
+            opacity: 1;
+        }
+
+        .resize-handle.resizing {
+            background: var(--gold-primary);
+        }
+
+        .resize-handle.resizing::before {
+            opacity: 1;
         }
 
         /* ============================================
@@ -889,11 +1129,13 @@
         .preview-panel {
             flex: 4;
             max-width: 600px;
+            min-width: 300px;
             background: var(--bg-tertiary);
             border-left: 2px solid var(--gold-primary);
             display: none;
             flex-direction: column;
             overflow: hidden;
+            transition: flex var(--transition-normal);
         }
 
         .preview-panel.active {
@@ -1037,10 +1279,6 @@
             box-shadow: var(--shadow-gold);
         }
 
-        .preview-btn:active {
-            transform: translateY(0);
-        }
-
         /* ============================================
            TOAST NOTIFICATIONS
            ============================================ */
@@ -1097,12 +1335,6 @@
         /* ============================================
            RESPONSIVE DESIGN
            ============================================ */
-        @media (max-width: 1400px) {
-            .preview-panel {
-                max-width: 500px;
-            }
-        }
-
         @media (max-width: 1200px) {
             .main-content {
                 flex: 7;
@@ -1110,16 +1342,6 @@
 
             .preview-panel {
                 flex: 3;
-            }
-        }
-
-        @media (max-width: 1024px) {
-            .suggestions-grid {
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            }
-
-            .quick-tools-grid {
-                grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             }
         }
 
@@ -1144,47 +1366,6 @@
                 padding: var(--spacing-sm) var(--spacing-md);
             }
 
-            .header-btn {
-                font-size: 13px;
-                padding: var(--spacing-xs) var(--spacing-sm);
-            }
-
-            .empty-state {
-                padding: var(--spacing-lg) var(--spacing-md);
-            }
-
-            .empty-state-title {
-                font-size: 24px;
-            }
-
-            .suggestions-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .quick-tools-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .complexity-options {
-                flex-direction: column;
-            }
-
-            .complexity-option {
-                min-width: auto;
-            }
-
-            .messages-container {
-                padding: var(--spacing-md);
-            }
-
-            .message {
-                max-width: 100%;
-            }
-
-            .input-area {
-                padding: var(--spacing-md);
-            }
-
             .preview-panel {
                 position: fixed;
                 top: 0;
@@ -1193,33 +1374,13 @@
                 max-width: 90%;
                 z-index: 500;
             }
-        }
 
-        @media (max-width: 480px) {
-            .logo-text {
-                font-size: 16px;
+            .documents-grid {
+                grid-template-columns: 1fr;
             }
 
-            .empty-state-title {
-                font-size: 20px;
-            }
-
-            .empty-state-icon {
-                font-size: 48px;
-            }
-
-            .section-title {
-                font-size: 16px;
-            }
-
-            .message-avatar {
-                width: 32px;
-                height: 32px;
-                font-size: 14px;
-            }
-
-            .message-content {
-                padding: var(--spacing-sm) var(--spacing-md);
+            .welcome-features {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -1232,6 +1393,17 @@
 
         .fade-in {
             animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Overlay for mobile sidebar */
@@ -1258,7 +1430,6 @@
             border-radius: 50%;
             background: var(--gold-primary);
             display: inline-block;
-            margin-left: var(--spacing-xs);
             animation: pulse 2s infinite;
         }
 
@@ -1272,6 +1443,10 @@
                 box-shadow: 0 0 0 10px rgba(212, 175, 55, 0);
             }
         }
+
+        .file-input {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -1284,24 +1459,27 @@
     <!-- App Container -->
     <div class="app-container">
         <!-- ============================================
-             SIDEBAR (280px fixa)
+             SIDEBAR (280px fixa) - PROJETOS
              ============================================ -->
         <aside class="sidebar" id="sidebar">
             <!-- Sidebar Header -->
             <div class="sidebar-header">
                 <div class="logo-container">
-                    <div class="logo">R</div>
+                    <img src="/img/logo_rom.png" alt="ROM Agent Logo" class="logo-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    <div class="logo" style="display:none;">R</div>
                     <span class="logo-text">ROM Agent</span>
                 </div>
-                <button class="new-chat-btn" onclick="newChat()">
-                    <span>+</span>
-                    <span>Nova Conversa</span>
+                <button class="btn-new-project" onclick="openNewProjectModal()">
+                    + Novo Projeto
                 </button>
             </div>
 
-            <!-- Conversations List -->
-            <div class="conversations-container" id="conversationsList">
-                <!-- Conversations will be loaded here -->
+            <!-- Projects List -->
+            <div class="projects-container" id="projectsContainer">
+                <h3 class="projects-header">📁 PROJETOS (5)</h3>
+                <div id="projectsList">
+                    <!-- Projects will be loaded here -->
+                </div>
             </div>
 
             <!-- Sidebar Footer -->
@@ -1309,6 +1487,14 @@
                 <button class="sidebar-nav-btn" onclick="openDashboard()">
                     <span>📊</span>
                     <span>Dashboard</span>
+                </button>
+                <button class="sidebar-nav-btn" onclick="openPromptsEditor()">
+                    <span>📝</span>
+                    <span>Gerenciar Prompts</span>
+                </button>
+                <button class="sidebar-nav-btn" onclick="openTools()">
+                    <span>🔧</span>
+                    <span>Ferramentas</span>
                 </button>
                 <button class="sidebar-nav-btn" onclick="openSettings()">
                     <span>⚙️</span>
@@ -1332,166 +1518,150 @@
                         ☰
                     </button>
                     <span class="version-badge">
-                        ⚖️ ROM Agent v2.5.0
+                        ⚖️ ROM Agent v2.6.0
                         <span class="status-indicator"></span>
                     </span>
                 </div>
                 <div class="header-actions">
-                    <button class="header-btn" onclick="document.getElementById('fileInput').click()">
-                        <span>📤</span>
-                        <span>Upload</span>
-                    </button>
-                    <input type="file" id="fileInput" class="file-input" onchange="handleFileUpload(event)" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png">
-
-                    <button class="header-btn" onclick="clearChat()">
-                        <span>🗑️</span>
-                        <span>Limpar</span>
+                    <button class="header-btn" onclick="openHelp()">
+                        <span>❓</span>
+                        <span>Ajuda</span>
                     </button>
                 </div>
             </header>
 
-            <!-- Empty State -->
-            <div class="empty-state" id="emptyState">
-                <div class="empty-state-header">
-                    <div class="empty-state-icon">⚖️</div>
-                    <h1 class="empty-state-title">ROM Agent</h1>
-                    <span class="empty-state-badge">v2.5.0 - Interface Completa</span>
-                </div>
+            <!-- Empty State - Welcome -->
+            <div class="empty-state-welcome" id="emptyStateWelcome">
+                <div class="welcome-content">
+                    <div class="welcome-icon">⚖️</div>
+                    <h1 class="welcome-title">ROM Agent v2.6.0</h1>
+                    <p class="welcome-subtitle">Sistema de Projetos Inteligente - Crie um projeto e deixe a IA sugerir o melhor instrumento jurídico</p>
 
-                <!-- Suggestions Grid - 12 PEÇAS JURÍDICAS -->
-                <div class="suggestions-grid">
-                    <div class="suggestion-card" onclick="useSuggestion('Petição Inicial')">
-                        <span class="suggestion-icon">📝</span>
-                        <span class="suggestion-text">Petição Inicial</span>
-                    </div>
-                    <div class="suggestion-card" onclick="useSuggestion('Recurso de Apelação')">
-                        <span class="suggestion-icon">📋</span>
-                        <span class="suggestion-text">Recurso de Apelação</span>
-                    </div>
-                    <div class="suggestion-card" onclick="useSuggestion('Agravo de Instrumento')">
-                        <span class="suggestion-icon">⚡</span>
-                        <span class="suggestion-text">Agravo de Instrumento</span>
-                    </div>
-                    <div class="suggestion-card" onclick="useSuggestion('Habeas Corpus')">
-                        <span class="suggestion-icon">⚖️</span>
-                        <span class="suggestion-text">Habeas Corpus</span>
-                    </div>
-                    <div class="suggestion-card" onclick="useSuggestion('Mandado de Segurança')">
-                        <span class="suggestion-icon">📄</span>
-                        <span class="suggestion-text">Mandado de Segurança</span>
-                    </div>
-                    <div class="suggestion-card" onclick="useSuggestion('Consulta DataJud')">
-                        <span class="suggestion-icon">🔍</span>
-                        <span class="suggestion-text">Consulta DataJud</span>
-                    </div>
-                    <div class="suggestion-card" onclick="useSuggestion('Contraminuta/Contrarrazões')">
-                        <span class="suggestion-icon">📊</span>
-                        <span class="suggestion-text">Contraminuta/Contrarrazões</span>
-                    </div>
-                    <div class="suggestion-card" onclick="useSuggestion('Parecer Jurídico')">
-                        <span class="suggestion-icon">✍️</span>
-                        <span class="suggestion-text">Parecer Jurídico</span>
-                    </div>
-                    <div class="suggestion-card" onclick="useSuggestion('Embargos de Declaração')">
-                        <span class="suggestion-icon">🎯</span>
-                        <span class="suggestion-text">Embargos de Declaração</span>
-                    </div>
-                    <div class="suggestion-card" onclick="useSuggestion('Memorial Jurídico')">
-                        <span class="suggestion-icon">📑</span>
-                        <span class="suggestion-text">Memorial Jurídico</span>
-                    </div>
-                    <div class="suggestion-card" onclick="useSuggestion('Tutela Provisória')">
-                        <span class="suggestion-icon">⚡</span>
-                        <span class="suggestion-text">Tutela Provisória</span>
-                    </div>
-                    <div class="suggestion-card" onclick="useSuggestion('Réplica/Tréplica')">
-                        <span class="suggestion-icon">📝</span>
-                        <span class="suggestion-text">Réplica/Tréplica</span>
-                    </div>
-                </div>
-
-                <!-- Quick Tools Section - 4 FERRAMENTAS RÁPIDAS -->
-                <div class="quick-tools-section">
-                    <h2 class="section-title">Ferramentas Rápidas</h2>
-                    <div class="quick-tools-grid">
-                        <div class="quick-tool-card" onclick="quickTool('extract')">
-                            <div class="quick-tool-icon">📊</div>
-                            <div class="quick-tool-title">Extrair Dados de Processo</div>
-                            <div class="quick-tool-desc">PDF → JSON</div>
-                        </div>
-                        <div class="quick-tool-card" onclick="quickTool('jurisprudence')">
-                            <div class="quick-tool-icon">⚖️</div>
-                            <div class="quick-tool-title">Analisar Jurisprudência</div>
-                            <div class="quick-tool-desc">STF/STJ/Tribunais</div>
-                        </div>
-                        <div class="quick-tool-card" onclick="quickTool('kb-upload')">
-                            <div class="quick-tool-icon">📚</div>
-                            <div class="quick-tool-title">Upload Massa KB</div>
-                            <div class="quick-tool-desc">Múltiplos arquivos</div>
-                        </div>
-                        <div class="quick-tool-card" onclick="quickTool('spell-check')">
-                            <div class="quick-tool-icon">✅</div>
-                            <div class="quick-tool-title">Correção Ortográfica</div>
-                            <div class="quick-tool-desc">Revisão avançada</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Complexity Selector - 3 NÍVEIS -->
-                <div class="complexity-section">
-                    <h2 class="section-title">Nível de Complexidade</h2>
-                    <div class="complexity-options">
-                        <div class="complexity-option">
-                            <input type="radio" id="simple" name="complexity" value="simple">
-                            <label for="simple" class="complexity-label">
-                                <div>○ Simples</div>
-                            </label>
-                        </div>
-                        <div class="complexity-option">
-                            <input type="radio" id="intermediate" name="complexity" value="intermediate" checked>
-                            <label for="intermediate" class="complexity-label">
-                                <div>● Intermediário</div>
-                            </label>
-                        </div>
-                        <div class="complexity-option">
-                            <input type="radio" id="advanced" name="complexity" value="advanced">
-                            <label for="advanced" class="complexity-label">
-                                <div>○ Avançado</div>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Chat Container -->
-            <div class="chat-container" id="chatContainer">
-                <div class="messages-container" id="messagesContainer">
-                    <!-- Messages will be loaded here -->
-                </div>
-            </div>
-
-            <!-- Input Area -->
-            <div class="input-area">
-                <div class="input-container">
-                    <div class="input-wrapper">
-                        <button class="attach-btn" onclick="document.getElementById('fileInput').click()">
-                            📎
-                        </button>
-                        <textarea
-                            id="messageInput"
-                            class="message-input"
-                            placeholder="Digite sua mensagem ou escolha uma sugestão acima..."
-                            rows="1"
-                            onkeydown="handleKeyDown(event)"
-                            oninput="handleInputChange(this)"
-                        ></textarea>
-                    </div>
-                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                        →
+                    <button class="btn-new-project" onclick="openNewProjectModal()" style="margin: 20px auto; max-width: 300px;">
+                        + Criar Primeiro Projeto
                     </button>
+
+                    <div class="welcome-features">
+                        <div class="feature-card">
+                            <div class="feature-icon">🧠</div>
+                            <div class="feature-title">Análise Inteligente</div>
+                            <div class="feature-desc">IA analisa seus documentos e sugere automaticamente o instrumento jurídico adequado</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📚</div>
+                            <div class="feature-title">KB por Projeto</div>
+                            <div class="feature-desc">Cada projeto tem sua própria base de conhecimento isolada e segura</div>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🔧</div>
+                            <div class="feature-title">33 Ferramentas</div>
+                            <div class="feature-desc">Extração automática de contratos, processos, sentenças e muito mais</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Project View -->
+            <div class="project-view" id="projectView">
+                <!-- Project Header -->
+                <div class="project-header">
+                    <h1 id="projectTitle">📁 Caso Silva vs Empresa X</h1>
+                    <div class="project-actions">
+                        <button class="header-btn" onclick="exportProject()">
+                            <span>📤</span>
+                            <span>Export</span>
+                        </button>
+                        <button class="header-btn" onclick="deleteProject()">
+                            <span>🗑️</span>
+                            <span>Excluir</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Analysis Panel -->
+                <div class="analysis-panel" id="analysisPanel">
+                    <h2>📊 ANÁLISE INTELIGENTE</h2>
+                    <div class="analysis-result">
+                        <div class="stat">✅ 12 documentos analisados</div>
+                        <div class="suggestion">
+                            <h3>⚖️ Instrumento Sugerido:</h3>
+                            <div class="instrument-card">
+                                <h4>Petição Inicial - Indenização Trabalhista</h4>
+                                <p><strong>Confiança:</strong> 95%</p>
+                                <p><strong>Motivo:</strong> Documentos indicam rescisão irregular com não pagamento de verbas rescisórias. Identificados contrato de trabalho, recibos de pagamento e evidências de demissão sem justa causa.</p>
+                            </div>
+                            <div class="suggestion-actions">
+                                <button class="btn-confirm" onclick="confirmSuggestion()">
+                                    ✓ Confirmar e Redigir
+                                </button>
+                                <button class="btn-modify" onclick="modifySuggestion()">
+                                    Modificar Sugestão
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents Panel -->
+                <div class="documents-panel">
+                    <h2>📝 DOCUMENTOS (12)</h2>
+                    <div class="documents-grid" id="documentsGrid">
+                        <div class="doc-card">
+                            <div class="doc-icon">📄</div>
+                            <div class="doc-info">
+                                <h4>contrato_trabalho.pdf</h4>
+                                <p>2.5 MB • Hoje 14:00</p>
+                                <span class="doc-status">✓ Extraído</span>
+                            </div>
+                        </div>
+                        <div class="doc-card">
+                            <div class="doc-icon">📄</div>
+                            <div class="doc-info">
+                                <h4>recibos_salario.pdf</h4>
+                                <p>1.8 MB • Hoje 14:05</p>
+                                <span class="doc-status">✓ Extraído</span>
+                            </div>
+                        </div>
+                        <div class="doc-card">
+                            <div class="doc-icon">🖼️</div>
+                            <div class="doc-info">
+                                <h4>prints_demissao.jpg</h4>
+                                <p>3.2 MB • Hoje 14:10</p>
+                                <span class="doc-status">✓ OCR Aplicado</span>
+                            </div>
+                        </div>
+                        <div class="doc-card">
+                            <div class="doc-icon">📄</div>
+                            <div class="doc-info">
+                                <h4>carta_rescisao.pdf</h4>
+                                <p>890 KB • Hoje 14:12</p>
+                                <span class="doc-status">✓ Extraído</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-upload-more" onclick="uploadMoreDocuments()">
+                        + Upload Mais Documentos
+                    </button>
+                </div>
+
+                <!-- Project Chat -->
+                <div class="project-chat">
+                    <h2>💬 CHAT DO PROJETO</h2>
+                    <div class="messages" id="projectMessages">
+                        <p style="text-align: center; color: var(--text-tertiary); font-size: 13px;">
+                            Faça perguntas sobre o caso...
+                        </p>
+                    </div>
+                    <div class="input-area-project">
+                        <textarea placeholder="Pergunte algo sobre o caso..." id="projectChatInput" rows="1"></textarea>
+                        <button onclick="sendProjectMessage()">→</button>
+                    </div>
                 </div>
             </div>
         </main>
+
+        <!-- Resize Handle -->
+        <div class="resize-handle" id="resizeHandle" title="Arraste para redimensionar"></div>
 
         <!-- ============================================
              PREVIEW PANEL (40% flex) - PAPEL TIMBRADO
@@ -1548,52 +1718,132 @@
         </aside>
     </div>
 
+    <!-- ============================================
+         MODAL - NOVO PROJETO
+         ============================================ -->
+    <div id="newProjectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Criar Novo Projeto</h2>
+                <button class="modal-close" onclick="closeNewProjectModal()">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Nome -->
+                <div class="form-group">
+                    <label>Nome do Projeto *</label>
+                    <input type="text" id="projectName" placeholder="Ex: Caso Silva vs Empresa X">
+                </div>
+
+                <!-- Descrição -->
+                <div class="form-group">
+                    <label>Descrição (opcional)</label>
+                    <textarea id="projectDescription" placeholder="Ação trabalhista rescisão irregular..."></textarea>
+                </div>
+
+                <!-- Upload -->
+                <div class="form-group">
+                    <label>Upload de Documentos</label>
+                    <div class="upload-zone" id="uploadZone">
+                        <p>📤 Arraste arquivos aqui ou</p>
+                        <button class="btn-upload" type="button" onclick="document.getElementById('modalFileInput').click()">Clique para selecionar</button>
+                        <p class="upload-hint">PDF, DOCX, TXT, Imagens</p>
+                    </div>
+                    <input type="file" id="modalFileInput" class="file-input" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png">
+                </div>
+
+                <!-- Opções -->
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="autoAnalyze" checked> Analisar automaticamente
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="suggestInstrument" checked> Sugerir instrumento jurídico
+                    </label>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeNewProjectModal()">Cancelar</button>
+                <button class="btn-create" onclick="createProject()">Criar Projeto</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // ============================================
         // STATE MANAGEMENT
         // ============================================
-        let currentConversationId = null;
-        let conversations = [];
+        let currentProjectId = null;
+        let projects = [];
         let uploadedFiles = [];
         let isLoading = false;
-        let selectedComplexity = 'intermediate';
-        let isTyping = false;
-        let typingTimer = null;
 
         // ============================================
         // INITIALIZATION
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
-            loadConversations();
+            loadProjects();
             setupEventListeners();
             checkTheme();
-            loadBranding();
         });
 
         function initializeApp() {
-            console.log('%c ROM Agent v2.5.0 ', 'background: linear-gradient(135deg, #D4AF37, #B8860B); color: white; font-size: 20px; padding: 10px; border-radius: 5px; font-weight: bold;');
-            console.log('%c Assistente Jurídico IA - Interface Completa com Papel Timbrado ', 'background: #F7E7CE; color: #1C1C1C; font-size: 14px; padding: 5px;');
+            console.log('%c ROM Agent v2.6.0 ', 'background: linear-gradient(135deg, #D4AF37, #B8860B); color: white; font-size: 20px; padding: 10px; border-radius: 5px; font-weight: bold;');
+            console.log('%c Sistema de Projetos Inteligente ', 'background: #F7E7CE; color: #1C1C1C; font-size: 14px; padding: 5px;');
             console.log('');
             console.log('✨ Sistema inicializado com sucesso!');
             console.log('🎨 Cores: Dourado Elegante (#D4AF37)');
             console.log('📐 Layout: Split View 3 Colunas (280px | 60% | 40%)');
-            console.log('📄 Preview: Papel Timbrado com tempo real');
+            console.log('📁 Sistema: Projetos Inteligentes com KB isolado');
+            console.log('🧠 IA: Análise automática e sugestão de instrumentos');
             console.log('');
-
-            const savedComplexity = localStorage.getItem('complexity') || 'intermediate';
-            document.getElementById(savedComplexity).checked = true;
-            selectedComplexity = savedComplexity;
         }
 
         function setupEventListeners() {
-            // Complexity selector
-            document.querySelectorAll('input[name="complexity"]').forEach(radio => {
-                radio.addEventListener('change', function() {
-                    selectedComplexity = this.value;
-                    localStorage.setItem('complexity', this.value);
-                    showToast('Complexidade alterada', `Nível ${this.value} selecionado`, 'success');
-                });
+            // Drag & Drop for upload zone
+            const uploadZone = document.getElementById('uploadZone');
+            const fileInput = document.getElementById('modalFileInput');
+
+            uploadZone.addEventListener('click', () => fileInput.click());
+
+            uploadZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadZone.classList.add('dragover');
+            });
+
+            uploadZone.addEventListener('dragleave', () => {
+                uploadZone.classList.remove('dragover');
+            });
+
+            uploadZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadZone.classList.remove('dragover');
+                const files = Array.from(e.dataTransfer.files);
+                handleModalFileUpload(files);
+            });
+
+            fileInput.addEventListener('change', (e) => {
+                const files = Array.from(e.target.files);
+                handleModalFileUpload(files);
+            });
+
+            // Auto-resize project chat textarea
+            const projectChatInput = document.getElementById('projectChatInput');
+            projectChatInput.addEventListener('input', function() {
+                this.style.height = 'auto';
+                this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            });
+
+            // Enter to send (Shift+Enter for new line)
+            projectChatInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendProjectMessage();
+                }
             });
 
             // Window resize
@@ -1601,6 +1851,23 @@
                 if (window.innerWidth > 768) {
                     document.getElementById('sidebar').classList.remove('hidden');
                     document.getElementById('sidebarOverlay').classList.remove('active');
+                }
+            });
+
+            // Initialize Resize Handle
+            initResizeHandle();
+
+            // Close modal on ESC
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeNewProjectModal();
+                }
+            });
+
+            // Close modal on outside click
+            document.getElementById('newProjectModal').addEventListener('click', (e) => {
+                if (e.target.id === 'newProjectModal') {
+                    closeNewProjectModal();
                 }
             });
         }
@@ -1650,247 +1917,435 @@
             overlay.classList.toggle('active');
         }
 
-        function loadConversations() {
-            const mockConversations = [
-                {
-                    id: '1',
-                    title: '📝 Petição Inicial - Caso Silva',
-                    date: 'Hoje, 14:30',
-                    icon: '📝'
-                },
-                {
-                    id: '2',
-                    title: '📋 Recurso de Apelação',
-                    date: 'Ontem, 10:15',
-                    icon: '📋'
-                },
-                {
-                    id: '3',
-                    title: '🔍 Consulta DataJud - Processo 123',
-                    date: '11 Dez, 16:45',
-                    icon: '🔍'
-                },
-                {
-                    id: '4',
-                    title: '⚖️ Habeas Corpus',
-                    date: '10 Dez, 09:20',
-                    icon: '⚖️'
-                },
-                {
-                    id: '5',
-                    title: '✍️ Parecer Jurídico',
-                    date: '9 Dez, 15:30',
-                    icon: '✍️'
-                }
-            ];
+        // ============================================
+        // RESIZE HANDLE FOR PREVIEW PANEL
+        // ============================================
+        function initResizeHandle() {
+            const resizeHandle = document.getElementById('resizeHandle');
+            const mainContent = document.querySelector('.main-content');
+            const previewPanel = document.getElementById('previewPanel');
+            let isResizing = false;
+            let startX = 0;
+            let startMainWidth = 0;
+            let startPreviewWidth = 0;
 
-            conversations = mockConversations;
-            renderConversations();
+            if (!resizeHandle || !mainContent || !previewPanel) return;
+
+            resizeHandle.addEventListener('mousedown', (e) => {
+                isResizing = true;
+                startX = e.clientX;
+                startMainWidth = mainContent.offsetWidth;
+                startPreviewWidth = previewPanel.offsetWidth;
+
+                resizeHandle.classList.add('resizing');
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (!isResizing) return;
+
+                const deltaX = e.clientX - startX;
+                const newMainWidth = startMainWidth + deltaX;
+                const newPreviewWidth = startPreviewWidth - deltaX;
+
+                // Limites m\u00ednimos e m\u00e1ximos
+                const containerWidth = mainContent.parentElement.offsetWidth - 286; // sidebar width
+                const minMainWidth = containerWidth * 0.3; // 30% m\u00ednimo
+                const maxMainWidth = containerWidth * 0.8; // 80% m\u00e1ximo
+                const minPreviewWidth = 300;
+
+                if (newMainWidth >= minMainWidth && newMainWidth <= maxMainWidth && newPreviewWidth >= minPreviewWidth) {
+                    mainContent.style.flex = `0 0 ${newMainWidth}px`;
+                    previewPanel.style.flex = `0 0 ${newPreviewWidth}px`;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isResizing) {
+                    isResizing = false;
+                    resizeHandle.classList.remove('resizing');
+                    document.body.style.cursor = '';
+                    document.body.style.userSelect = '';
+                }
+            });
         }
 
-        function renderConversations() {
-            const container = document.getElementById('conversationsList');
+        // ============================================
+        // PROJECTS MANAGEMENT
+        // ============================================
+        async function loadProjects() {
+            try {
+                const response = await fetch('/api/projects/list');
+                if (response.ok) {
+                    projects = await response.json();
+                } else {
+                    // Mock data for demonstration
+                    projects = [
+                        {
+                            id: '1',
+                            name: 'Caso Silva vs Empresa X',
+                            documents: 12,
+                            type: 'Petição Inicial',
+                            icon: '⚖️',
+                            lastModified: 'Hoje, 14:30',
+                            status: 'active'
+                        },
+                        {
+                            id: '2',
+                            name: 'Indenização Danos Morais',
+                            documents: 8,
+                            type: 'Recurso Apelação',
+                            icon: '📋',
+                            lastModified: 'Ontem, 16:45',
+                            status: 'inactive'
+                        },
+                        {
+                            id: '3',
+                            name: 'HC João da Silva',
+                            documents: 5,
+                            type: 'Habeas Corpus',
+                            icon: '⚖️',
+                            lastModified: '3 dias atrás',
+                            status: 'inactive'
+                        },
+                        {
+                            id: '4',
+                            name: 'Execução Fiscal',
+                            documents: 15,
+                            type: 'Embargos',
+                            icon: '📊',
+                            lastModified: '1 semana atrás',
+                            status: 'inactive'
+                        },
+                        {
+                            id: '5',
+                            name: 'Divórcio Consensual',
+                            documents: 6,
+                            type: 'Petição Inicial',
+                            icon: '📝',
+                            lastModified: '2 semanas atrás',
+                            status: 'inactive'
+                        }
+                    ];
+                }
+                renderProjects();
+            } catch (error) {
+                console.error('Error loading projects:', error);
+                showToast('Erro', 'Não foi possível carregar os projetos', 'error');
+            }
+        }
 
-            if (conversations.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-tertiary);">Nenhuma conversa ainda</div>';
+        function renderProjects() {
+            const container = document.getElementById('projectsList');
+
+            if (projects.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-tertiary); font-size: 13px;">Nenhum projeto ainda</div>';
                 return;
             }
 
-            container.innerHTML = conversations.map(conv => `
-                <div class="conversation-item ${conv.id === currentConversationId ? 'active' : ''}"
-                     onclick="selectConversation('${conv.id}')"
-                     data-id="${conv.id}">
-                    <div class="conversation-title">
-                        <span>${conv.icon}</span>
-                        <span>${conv.title}</span>
+            container.innerHTML = projects.map(project => `
+                <div class="project-card ${project.id === currentProjectId ? 'active' : ''}"
+                     onclick="selectProject('${project.id}')"
+                     data-id="${project.id}">
+                    <div class="project-status"></div>
+                    <div class="project-info">
+                        <h4>${project.name}</h4>
+                        <div class="project-meta">
+                            <span>📄 ${project.documents} documentos</span>
+                            <span>${project.icon} ${project.type}</span>
+                        </div>
+                        <div class="project-time">${project.lastModified}</div>
                     </div>
-                    <div class="conversation-date">${conv.date}</div>
                 </div>
             `).join('');
         }
 
-        function selectConversation(id) {
-            currentConversationId = id;
-            renderConversations();
-            loadConversationMessages(id);
+        async function selectProject(id) {
+            currentProjectId = id;
+            const project = projects.find(p => p.id === id);
 
-            document.getElementById('emptyState').style.display = 'none';
-            document.getElementById('chatContainer').classList.add('active');
+            if (!project) return;
 
+            // Update UI
+            renderProjects();
+            document.getElementById('emptyStateWelcome').classList.add('hidden');
+            document.getElementById('projectView').classList.add('active');
+            document.getElementById('projectTitle').textContent = `📁 ${project.name}`;
+
+            // Load project data
+            try {
+                const response = await fetch(`/api/projects/${id}`);
+                if (response.ok) {
+                    const data = await response.json();
+                    renderProjectData(data);
+                }
+            } catch (error) {
+                console.error('Error loading project:', error);
+            }
+
+            // Show preview
+            showPreview();
+
+            // Close sidebar on mobile
             if (window.innerWidth <= 768) {
                 toggleSidebar();
             }
+
+            showToast('Projeto aberto', project.name, 'success');
         }
 
-        function newChat() {
-            currentConversationId = null;
-            document.getElementById('messagesContainer').innerHTML = '';
-            document.getElementById('emptyState').style.display = 'flex';
-            document.getElementById('chatContainer').classList.remove('active');
-            document.getElementById('messageInput').value = '';
-            uploadedFiles = [];
-
-            // Hide preview on new chat
-            hidePreview();
-
-            renderConversations();
-            showToast('Nova conversa', 'Conversa iniciada', 'success');
-        }
-
-        function clearChat() {
-            if (confirm('Deseja limpar esta conversa?')) {
-                document.getElementById('messagesContainer').innerHTML = '';
-                hidePreview();
-                showToast('Chat limpo', 'Conversa foi limpa', 'success');
-            }
-        }
-
-        // ============================================
-        // CHAT MANAGEMENT
-        // ============================================
-        function loadConversationMessages(id) {
-            const mockMessages = [
-                {
-                    role: 'user',
-                    content: 'Preciso elaborar uma petição inicial para um caso de danos morais.'
-                },
-                {
-                    role: 'assistant',
-                    content: `Entendi! Vou ajudá-lo a elaborar uma **petição inicial** para danos morais.
-
-Para criar uma petição completa e adequada, preciso de algumas informações:
-
-1. **Qualificação das partes**
-   - Nome completo do autor
-   - CPF/CNPJ
-   - Endereço completo
-   - Profissão
-
-2. **Sobre o réu**
-   - Nome/razão social
-   - CPF/CNPJ
-   - Endereço
-
-3. **Fatos relevantes**
-   - O que aconteceu?
-   - Quando ocorreu?
-   - Há provas (documentos, testemunhas)?
-
-4. **Danos**
-   - Qual foi o prejuízo moral?
-   - Valor estimado da indenização
-
-5. **Competência**
-   - Qual vara/foro deve julgar?
-
-Com essas informações, posso elaborar uma petição completa seguindo as normas do CPC.`
-                }
-            ];
-
-            const container = document.getElementById('messagesContainer');
-            container.innerHTML = '';
-
-            mockMessages.forEach(msg => {
-                appendMessage(msg.role, msg.content, false);
-            });
-
-            scrollToBottom();
-
-            // Show preview with mock content
-            showPreview();
-            updatePreview('<h1>PETIÇÃO INICIAL</h1><p>Este é um exemplo de preview em tempo real do documento sendo elaborado...</p>');
-        }
-
-        function appendMessage(role, content, animate = true) {
-            const container = document.getElementById('messagesContainer');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${role} ${animate ? 'fade-in' : ''}`;
-
-            const avatar = document.createElement('div');
-            avatar.className = 'message-avatar';
-            avatar.textContent = role === 'user' ? 'U' : 'R';
-
-            const contentDiv = document.createElement('div');
-            contentDiv.className = 'message-content';
-
-            if (typeof marked !== 'undefined') {
-                contentDiv.innerHTML = marked.parse(content);
-            } else {
-                contentDiv.textContent = content;
-            }
-
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(contentDiv);
-            container.appendChild(messageDiv);
-
-            if (animate) {
-                scrollToBottom();
-            }
-        }
-
-        function showLoadingMessage() {
-            const container = document.getElementById('messagesContainer');
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'loading-message';
-            loadingDiv.id = 'loadingMessage';
-
-            loadingDiv.innerHTML = `
-                <div class="message-avatar" style="background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));">R</div>
-                <div class="message-content">
-                    <div class="loading-dots">
-                        <div class="loading-dot"></div>
-                        <div class="loading-dot"></div>
-                        <div class="loading-dot"></div>
+        function renderProjectData(data) {
+            // Update documents grid
+            if (data.documents) {
+                const grid = document.getElementById('documentsGrid');
+                grid.innerHTML = data.documents.map(doc => `
+                    <div class="doc-card">
+                        <div class="doc-icon">${doc.icon || '📄'}</div>
+                        <div class="doc-info">
+                            <h4>${doc.name}</h4>
+                            <p>${doc.size} • ${doc.date}</p>
+                            <span class="doc-status">${doc.status}</span>
+                        </div>
                     </div>
-                </div>
+                `).join('');
+            }
+
+            // Update analysis if available
+            if (data.analysis) {
+                // Update analysis panel with real data
+            }
+        }
+
+        // ============================================
+        // MODAL - NOVO PROJETO
+        // ============================================
+        function openNewProjectModal() {
+            document.getElementById('newProjectModal').classList.add('active');
+            document.getElementById('projectName').focus();
+        }
+
+        function closeNewProjectModal() {
+            document.getElementById('newProjectModal').classList.remove('active');
+            document.getElementById('projectName').value = '';
+            document.getElementById('projectDescription').value = '';
+            document.getElementById('modalFileInput').value = '';
+            uploadedFiles = [];
+        }
+
+        function handleModalFileUpload(files) {
+            if (files.length === 0) return;
+
+            uploadedFiles = [...uploadedFiles, ...files];
+            showToast('Arquivos adicionados', `${files.length} arquivo(s) adicionado(s)`, 'success');
+
+            // Update upload zone UI
+            const uploadZone = document.getElementById('uploadZone');
+            uploadZone.innerHTML = `
+                <p>✅ ${uploadedFiles.length} arquivo(s) selecionado(s)</p>
+                <button class="btn-upload" type="button" onclick="document.getElementById('modalFileInput').click()">Adicionar mais</button>
             `;
-
-            container.appendChild(loadingDiv);
-            scrollToBottom();
         }
 
-        function removeLoadingMessage() {
-            const loading = document.getElementById('loadingMessage');
-            if (loading) {
-                loading.remove();
-            }
-        }
+        async function createProject() {
+            const name = document.getElementById('projectName').value.trim();
+            const description = document.getElementById('projectDescription').value.trim();
+            const autoAnalyze = document.getElementById('autoAnalyze').checked;
+            const suggestInstrument = document.getElementById('suggestInstrument').checked;
 
-        async function sendMessage() {
-            const input = document.getElementById('messageInput');
-            const message = input.value.trim();
-
-            if (!message && uploadedFiles.length === 0) return;
-            if (isLoading) return;
-
-            if (document.getElementById('emptyState').style.display !== 'none') {
-                document.getElementById('emptyState').style.display = 'none';
-                document.getElementById('chatContainer').classList.add('active');
+            if (!name) {
+                showToast('Erro', 'Nome do projeto é obrigatório', 'error');
+                return;
             }
 
-            appendMessage('user', message);
-            input.value = '';
-            autoResize(input);
-
-            isLoading = true;
-            document.getElementById('sendBtn').disabled = true;
-            showLoadingMessage();
-
-            // Show preview when sending message
-            showPreview();
+            showToast('Criando projeto', 'Aguarde...', 'success');
 
             try {
-                const response = await fetch('/api/chat', {
+                // Create project
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('description', description);
+                formData.append('autoAnalyze', autoAnalyze);
+                formData.append('suggestInstrument', suggestInstrument);
+
+                uploadedFiles.forEach(file => {
+                    formData.append('files', file);
+                });
+
+                const response = await fetch('/api/projects/create', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao criar projeto');
+                }
+
+                const data = await response.json();
+
+                closeNewProjectModal();
+                await loadProjects();
+                selectProject(data.projectId);
+
+                showToast('Sucesso', 'Projeto criado com sucesso!', 'success');
+
+                // If auto-analyze is enabled, trigger analysis
+                if (autoAnalyze && uploadedFiles.length > 0) {
+                    analyzeProject(data.projectId);
+                }
+
+            } catch (error) {
+                console.error('Error creating project:', error);
+                showToast('Erro', 'Não foi possível criar o projeto', 'error');
+            }
+        }
+
+        async function uploadMoreDocuments() {
+            if (!currentProjectId) return;
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.multiple = true;
+            input.accept = '.pdf,.doc,.docx,.txt,.jpg,.jpeg,.png';
+
+            input.onchange = async (e) => {
+                const files = Array.from(e.target.files);
+                if (files.length === 0) return;
+
+                showToast('Upload', 'Enviando documentos...', 'success');
+
+                try {
+                    const formData = new FormData();
+                    files.forEach(file => {
+                        formData.append('files', file);
+                    });
+
+                    const response = await fetch(`/api/projects/${currentProjectId}/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Erro no upload');
+                    }
+
+                    const data = await response.json();
+                    showToast('Sucesso', `${files.length} documento(s) enviado(s)`, 'success');
+
+                    // Reload project
+                    selectProject(currentProjectId);
+
+                } catch (error) {
+                    console.error('Upload error:', error);
+                    showToast('Erro', 'Falha no upload dos documentos', 'error');
+                }
+            };
+
+            input.click();
+        }
+
+        async function analyzeProject(projectId) {
+            showToast('Analisando', 'IA analisando documentos...', 'success');
+
+            try {
+                const response = await fetch(`/api/projects/${projectId}/analyze`, {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro na análise');
+                }
+
+                const data = await response.json();
+                showToast('Análise concluída', 'Sugestão disponível', 'success');
+
+                // Update UI with analysis results
+                renderProjectData(data);
+
+            } catch (error) {
+                console.error('Analysis error:', error);
+                showToast('Erro', 'Falha na análise', 'error');
+            }
+        }
+
+        async function confirmSuggestion() {
+            if (!currentProjectId) return;
+
+            showToast('Confirmando', 'Iniciando redação...', 'success');
+
+            try {
+                const response = await fetch(`/api/projects/${currentProjectId}/confirm`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        message: message,
-                        conversationId: currentConversationId,
-                        complexity: selectedComplexity,
-                        files: uploadedFiles
+                        suggestionId: 'default'
                     })
+                });
+
+                if (!response.ok) {
+                    throw new Error('Erro ao confirmar');
+                }
+
+                const data = await response.json();
+
+                // Update preview with drafted document
+                updatePreview(data.document);
+                showPreview();
+
+                showToast('Sucesso', 'Documento redigido!', 'success');
+
+            } catch (error) {
+                console.error('Confirm error:', error);
+                showToast('Erro', 'Não foi possível redigir o documento', 'error');
+            }
+        }
+
+        function modifySuggestion() {
+            showToast('Modificar', 'Funcionalidade em desenvolvimento', 'success');
+        }
+
+        function exportProject() {
+            showToast('Export', 'Funcionalidade em desenvolvimento', 'success');
+        }
+
+        function deleteProject() {
+            if (!currentProjectId) return;
+
+            if (confirm('Deseja realmente excluir este projeto?')) {
+                showToast('Excluindo', 'Projeto excluído', 'success');
+                // Implement delete logic
+            }
+        }
+
+        // ============================================
+        // PROJECT CHAT
+        // ============================================
+        async function sendProjectMessage() {
+            const input = document.getElementById('projectChatInput');
+            const message = input.value.trim();
+
+            if (!message || !currentProjectId) return;
+
+            const messagesContainer = document.getElementById('projectMessages');
+
+            // Add user message
+            const userMsg = document.createElement('div');
+            userMsg.style.cssText = 'background: var(--champagne); padding: 8px 12px; border-radius: 8px; margin-bottom: 8px;';
+            userMsg.textContent = message;
+            messagesContainer.appendChild(userMsg);
+
+            input.value = '';
+            input.style.height = 'auto';
+
+            try {
+                const response = await fetch(`/api/projects/${currentProjectId}/chat`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message })
                 });
 
                 if (!response.ok) {
@@ -1899,41 +2354,23 @@ Com essas informações, posso elaborar uma petição completa seguindo as norma
 
                 const data = await response.json();
 
-                removeLoadingMessage();
-                appendMessage('assistant', data.response);
+                // Add assistant message
+                const assistantMsg = document.createElement('div');
+                assistantMsg.style.cssText = 'background: var(--bg-tertiary); padding: 8px 12px; border-radius: 8px; margin-bottom: 8px;';
+                assistantMsg.textContent = data.response;
+                messagesContainer.appendChild(assistantMsg);
 
-                // Update preview with response
-                updatePreview(data.preview || data.response);
-
-                if (!currentConversationId && data.conversationId) {
-                    currentConversationId = data.conversationId;
-                    loadConversations();
-                }
-
-                uploadedFiles = [];
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
             } catch (error) {
-                console.error('Error sending message:', error);
-                removeLoadingMessage();
-                appendMessage('assistant', '❌ Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente.');
+                console.error('Chat error:', error);
                 showToast('Erro', 'Não foi possível enviar a mensagem', 'error');
-            } finally {
-                isLoading = false;
-                document.getElementById('sendBtn').disabled = false;
             }
         }
 
-        function useSuggestion(text) {
-            const input = document.getElementById('messageInput');
-            input.value = `Ajude-me com: ${text}`;
-            input.focus();
-            autoResize(input);
-
-            document.querySelector('.input-area').scrollIntoView({ behavior: 'smooth' });
-        }
-
         // ============================================
-        // PREVIEW PANEL - PAPEL TIMBRADO
+        // PREVIEW PANEL
         // ============================================
         function showPreview() {
             const preview = document.getElementById('previewPanel');
@@ -1961,30 +2398,12 @@ Com essas informações, posso elaborar uma petição completa seguindo as norma
             content.innerHTML = html;
         }
 
-        async function loadBranding() {
-            try {
-                const response = await fetch('/api/branding');
-                if (response.ok) {
-                    const data = await response.json();
-
-                    // Update footer with branding data
-                    const footer = document.getElementById('letterheadFooter');
-                    if (data.footer) {
-                        footer.innerHTML = data.footer;
-                    }
-                }
-            } catch (error) {
-                console.log('Using default branding');
-            }
-        }
-
         async function downloadPDF() {
             showToast('PDF', 'Gerando PDF...', 'success');
 
             try {
                 const element = document.getElementById('paperLetterhead');
 
-                // Use html2canvas + jsPDF
                 if (typeof html2canvas !== 'undefined' && typeof window.jspdf !== 'undefined') {
                     const canvas = await html2canvas(element, {
                         scale: 2,
@@ -1997,7 +2416,7 @@ Com essas informações, posso elaborar uma petição completa seguindo as norma
                     const pdfHeight = pdf.internal.pageSize.getHeight();
 
                     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-                    pdf.save('documento_rom_agent.pdf');
+                    pdf.save(`projeto_${currentProjectId}_${Date.now()}.pdf`);
 
                     showToast('Sucesso', 'PDF gerado com sucesso!', 'success');
                 } else {
@@ -2025,122 +2444,31 @@ Com essas informações, posso elaborar uma petição completa seguindo as norma
         }
 
         // ============================================
-        // INPUT HANDLING
+        // NAVIGATION
         // ============================================
-        function handleInputChange(textarea) {
-            autoResize(textarea);
-
-            // Clear existing timer
-            clearTimeout(typingTimer);
-
-            // Show preview when user starts typing
-            if (textarea.value.trim().length > 0) {
-                showPreview();
-
-                // Update preview in real-time after user stops typing
-                typingTimer = setTimeout(() => {
-                    const content = textarea.value;
-                    if (content.trim()) {
-                        updatePreview(`<p style="text-align: center; color: #999; font-style: italic;">Preview do conteúdo...</p><p>${content}</p>`);
-                    }
-                }, 1000);
-            } else {
-                // Optionally hide preview when input is empty
-                // hidePreview();
-            }
-        }
-
-        // ============================================
-        // FILE UPLOAD
-        // ============================================
-        async function handleFileUpload(event) {
-            const files = Array.from(event.target.files);
-
-            if (files.length === 0) return;
-
-            showToast('Upload', 'Enviando arquivos...', 'success');
-
-            try {
-                const formData = new FormData();
-                files.forEach(file => {
-                    formData.append('files', file);
-                });
-
-                const response = await fetch('/api/upload', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (!response.ok) {
-                    throw new Error('Erro no upload');
-                }
-
-                const data = await response.json();
-                uploadedFiles = [...uploadedFiles, ...data.files];
-
-                showToast('Sucesso', `${files.length} arquivo(s) enviado(s)`, 'success');
-
-                files.forEach(file => {
-                    console.log('Uploaded:', file.name);
-                });
-
-            } catch (error) {
-                console.error('Upload error:', error);
-                showToast('Erro', 'Falha no upload dos arquivos', 'error');
-            }
-
-            event.target.value = '';
-        }
-
-        // ============================================
-        // TOOLS & ACTIONS
-        // ============================================
-        function quickTool(tool) {
-            const toolPrompts = {
-                'extract': 'Quero extrair dados de um processo judicial. Por favor, me oriente sobre como proceder.',
-                'jurisprudence': 'Preciso analisar jurisprudência sobre um tema específico. Como posso fazer isso?',
-                'kb-upload': 'Gostaria de fazer upload em massa de documentos para a base de conhecimento.',
-                'spell-check': 'Preciso revisar um texto jurídico. Pode me ajudar com a correção ortográfica e gramatical?'
-            };
-
-            const input = document.getElementById('messageInput');
-            input.value = toolPrompts[tool];
-            input.focus();
-            autoResize(input);
-
-            document.querySelector('.input-area').scrollIntoView({ behavior: 'smooth' });
-        }
-
         function openDashboard() {
-            showToast('Dashboard', 'Funcionalidade em desenvolvimento', 'success');
+            window.location.href = '/dashboard-v2.html';
+        }
+
+        function openPromptsEditor() {
+            window.location.href = '/prompts-editor.html';
+        }
+
+        function openTools() {
+            showToast('Ferramentas', 'Acesso às 33 ferramentas de extração', 'success');
         }
 
         function openSettings() {
             showToast('Configurações', 'Funcionalidade em desenvolvimento', 'success');
         }
 
+        function openHelp() {
+            showToast('Ajuda', 'Bem-vindo ao Sistema de Projetos Inteligente!', 'success');
+        }
+
         // ============================================
         // UTILITY FUNCTIONS
         // ============================================
-        function autoResize(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
-        }
-
-        function handleKeyDown(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendMessage();
-            }
-        }
-
-        function scrollToBottom() {
-            const container = document.getElementById('messagesContainer');
-            setTimeout(() => {
-                container.scrollTop = container.scrollHeight;
-            }, 100);
-        }
-
         function showToast(title, message, type = 'success') {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
@@ -2165,24 +2493,22 @@ Com essas informações, posso elaborar uma petição completa seguindo as norma
         // KEYBOARD SHORTCUTS
         // ============================================
         document.addEventListener('keydown', function(e) {
-            if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+            // Ctrl/Cmd + N - Novo Projeto
+            if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
                 e.preventDefault();
-                newChat();
+                openNewProjectModal();
             }
 
+            // Ctrl/Cmd + B - Toggle Sidebar
             if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
                 e.preventDefault();
                 toggleSidebar();
             }
 
+            // Ctrl/Cmd + P - Toggle Preview
             if ((e.ctrlKey || e.metaKey) && e.key === 'p') {
                 e.preventDefault();
                 togglePreview();
-            }
-
-            if ((e.ctrlKey || e.metaKey) && e.key === '/') {
-                e.preventDefault();
-                document.getElementById('messageInput').focus();
             }
         });
 
@@ -2202,18 +2528,20 @@ Com essas informações, posso elaborar uma petição completa seguindo as norma
         // CONSOLE WELCOME MESSAGE
         // ============================================
         console.log('');
-        console.log('Atalhos de teclado:');
-        console.log('  Ctrl/Cmd + K - Nova conversa');
+        console.log('⚡ Atalhos de teclado:');
+        console.log('  Ctrl/Cmd + N - Novo projeto');
         console.log('  Ctrl/Cmd + B - Toggle sidebar');
         console.log('  Ctrl/Cmd + P - Toggle preview');
-        console.log('  Ctrl/Cmd + / - Focar no input');
         console.log('');
         console.log('📋 APIs Backend:');
-        console.log('  POST /api/chat - Enviar mensagem');
-        console.log('  POST /api/upload - Upload arquivo');
-        console.log('  GET /api/history - Histórico');
-        console.log('  POST /api/clear - Limpar');
-        console.log('  GET /api/branding - Dados timbrado');
+        console.log('  POST /api/projects/create - Criar projeto');
+        console.log('  GET  /api/projects/list - Listar projetos');
+        console.log('  GET  /api/projects/:id - Detalhes do projeto');
+        console.log('  POST /api/projects/:id/upload - Upload documentos');
+        console.log('  POST /api/projects/:id/analyze - Analisar projeto');
+        console.log('  POST /api/projects/:id/confirm - Confirmar sugestão');
+        console.log('  POST /api/projects/:id/chat - Chat do projeto');
+        console.log('  DELETE /api/projects/:id - Excluir projeto');
         console.log('');
     </script>
 </body>
