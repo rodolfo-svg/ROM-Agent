@@ -1,14 +1,16 @@
 {
-  "version": "2.3.0",
-  "build": "2024-12-13T15:30:00Z",
-  "commit": "6c7ab4d",
+  "version": "2.4.0",
+  "build": "2024-12-13T16:30:00Z",
+  "commit": "15ac685",
   "features": [
-    "Interface Estilo Claude AI (sidebar, purple theme)",
+    "Integração Completa AWS + GitHub + Render",
+    "Interface Estilo Claude AI (todas as páginas)",
+    "Render.yaml Otimizado (auto-deploy, health check)",
+    "Dockerfile Multi-Stage (segurança, menor imagem)",
     "Rate Limiter AWS Bedrock (10 req/min, 100 req/hora)",
     "Cache Inteligente (70% economia tokens)",
     "Validação de Qualidade Pré-Envio",
     "Peças Indistinguíveis de Produção Humana",
-    "Análise Completa de Prompts",
     "Técnicas de Persuasão Jurídica (11 técnicas)",
     "Recurso de Apelação Completo (809 linhas)",
     "Agravo de Instrumento Completo (672 linhas)",
@@ -19,7 +21,14 @@
     "Auth JWT Completo",
     "DataJud CNJ/STF"
   ],
+  "infrastructure": {
+    "aws": "Bedrock Claude Sonnet 4.5",
+    "hosting": "Render.com (auto-deploy)",
+    "repository": "GitHub (main branch)",
+    "domain": "iarom.com.br (pronto para DNS)",
+    "ci_cd": "GitHub Actions (workflow preparado)"
+  },
   "deployed": true,
   "render_deploy": "2024-12-13",
-  "optimization_status": "Fase 2/3 completa - Interface Claude AI Implementada"
+  "optimization_status": "Fase 3/3 completa - Infraestrutura Completa"
 }
