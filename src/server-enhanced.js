@@ -25,6 +25,8 @@ import dotenv from 'dotenv';
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
 const IntegradorSistema = require('../lib/integrador-sistema.js');
+const PromptsManager = require('../lib/prompts-manager.js');
+const PromptsVersioning = require('../lib/prompts-versioning.js');
 
 dotenv.config();
 
@@ -35,6 +37,10 @@ integrador.inicializar().then(() => {
 }).catch(err => {
   console.error('❌ Erro ao inicializar sistema:', err);
 });
+
+// Inicializar gerenciador de prompts multi-tenant
+const promptsManager = new PromptsManager();
+const promptsVersioning = new PromptsVersioning();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -803,6 +809,194 @@ app.delete('/api/prompts/system/:promptId', (req, res) => {
     res.json({ success: true });
   } catch (error) {
     console.error('Erro ao deletar prompt:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ====================================================================
+// ROTAS DE API PARA GERENCIAMENTO MULTI-TENANT DE PROMPTS
+// ====================================================================
+
+// Helper para obter user info da sessão (mock - implementar auth real)
+function getUserInfo(req) {
+  // TODO: Implementar autenticação real
+  // Por enquanto, usar dados da sessão ou query params para testes
+  return {
+    userId: req.session.userId || req.query.userId || 'user-001',
+    partnerId: req.session.partnerId || req.query.partnerId || 'rom',
+    role: req.session.userRole || req.query.role || 'master_admin' // master_admin, partner_admin, user
+  };
+}
+
+// Listar todos os prompts disponíveis (global + partner-specific)
+app.get('/api/v2/prompts', (req, res) => {
+  try {
+    const { partnerId, role } = getUserInfo(req);
+    const prompts = promptsManager.listarPrompts(partnerId, role);
+    res.json(prompts);
+  } catch (error) {
+    console.error('Erro ao listar prompts:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Obter um prompt específico (com prioridade partner > global)
+app.get('/api/v2/prompts/:promptId', (req, res) => {
+  try {
+    const { promptId } = req.params;
+    const { partnerId } = getUserInfo(req);
+    const prompt = promptsManager.obterPrompt(promptId, partnerId);
+    res.json(prompt);
+  } catch (error) {
+    console.error('Erro ao obter prompt:', error);
+    if (error.message.includes('não encontrado')) {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// Salvar/atualizar prompt (global ou partner-specific conforme permissões)
+app.put('/api/v2/prompts/:promptId', (req, res) => {
+  try {
+    const { promptId } = req.params;
+    const { content, type } = req.body; // type: 'global' ou 'partner'
+    const { partnerId, role } = getUserInfo(req);
+
+    const targetPartnerId = type === 'global' ? null : partnerId;
+    const result = promptsManager.salvarPrompt(promptId, content, targetPartnerId, role);
+
+    res.json(result);
+  } catch (error) {
+    console.error('Erro ao salvar prompt:', error);
+    if (error.message.includes('permiss') || error.message.includes('apenas')) {
+      res.status(403).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// Criar override de um prompt global para o parceiro
+app.post('/api/v2/prompts/:promptId/override', (req, res) => {
+  try {
+    const { promptId } = req.params;
+    const { partnerId, role } = getUserInfo(req);
+
+    const result = promptsManager.criarOverride(promptId, partnerId, role);
+    res.json(result);
+  } catch (error) {
+    console.error('Erro ao criar override:', error);
+    if (error.message.includes('permiss') || error.message.includes('apenas')) {
+      res.status(403).json({ error: error.message });
+    } else if (error.message.includes('não encontrado')) {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// Remover override e voltar a usar prompt global
+app.delete('/api/v2/prompts/:promptId/override', (req, res) => {
+  try {
+    const { promptId } = req.params;
+    const { partnerId, role } = getUserInfo(req);
+
+    const result = promptsManager.removerOverride(promptId, partnerId, role);
+    res.json(result);
+  } catch (error) {
+    console.error('Erro ao remover override:', error);
+    if (error.message.includes('permiss') || error.message.includes('apenas')) {
+      res.status(403).json({ error: error.message });
+    } else if (error.message.includes('não encontrado')) {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// Obter estatísticas de prompts do parceiro
+app.get('/api/v2/prompts-stats', (req, res) => {
+  try {
+    const { partnerId } = getUserInfo(req);
+    const stats = promptsManager.obterEstatisticas(partnerId);
+    res.json(stats);
+  } catch (error) {
+    console.error('Erro ao obter estatísticas:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ====================================================================
+// ROTAS DE API PARA VERSIONAMENTO E NOTIFICAÇÕES
+// ====================================================================
+
+// Obter notificações de atualizações de prompts globais
+app.get('/api/v2/prompts/notifications', (req, res) => {
+  try {
+    const { partnerId } = getUserInfo(req);
+    const onlyUnread = req.query.unread === 'true';
+    const notifications = promptsVersioning.obterNotificacoesParceiro(partnerId, onlyUnread);
+    res.json({ notifications });
+  } catch (error) {
+    console.error('Erro ao obter notificações:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Marcar notificação como lida
+app.put('/api/v2/prompts/notifications/:notificationId/read', (req, res) => {
+  try {
+    const { notificationId } = req.params;
+    const result = promptsVersioning.marcarComoLida(notificationId);
+    res.json(result);
+  } catch (error) {
+    console.error('Erro ao marcar notificação:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Sincronizar override com versão global
+app.post('/api/v2/prompts/:promptId/sync', (req, res) => {
+  try {
+    const { promptId } = req.params;
+    const { partnerId } = getUserInfo(req);
+    const result = promptsVersioning.sincronizarComGlobal(promptId, partnerId);
+    res.json(result);
+  } catch (error) {
+    console.error('Erro ao sincronizar:', error);
+    if (error.message.includes('não encontrado')) {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// Comparar override com versão global
+app.get('/api/v2/prompts/:promptId/compare', (req, res) => {
+  try {
+    const { promptId } = req.params;
+    const { partnerId } = getUserInfo(req);
+    const comparison = promptsVersioning.compararComGlobal(promptId, partnerId);
+    res.json(comparison);
+  } catch (error) {
+    console.error('Erro ao comparar:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Obter changelog de um prompt
+app.get('/api/v2/prompts/:promptId/changelog', (req, res) => {
+  try {
+    const { promptId } = req.params;
+    const changelog = promptsVersioning.obterChangelog(promptId);
+    res.json(changelog);
+  } catch (error) {
+    console.error('Erro ao obter changelog:', error);
     res.status(500).json({ error: error.message });
   }
 });
