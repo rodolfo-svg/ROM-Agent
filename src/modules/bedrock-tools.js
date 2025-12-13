@@ -9,7 +9,12 @@
  * @version 1.0.0
  */
 
-import { pesquisarJurisprudencia } from './jurisprudencia.js';
+import {
+  pesquisarJurisprudencia,
+  pesquisarJusbrasil,
+  pesquisarDatajud,
+  pesquisarSumulas
+} from './jurisprudencia.js';
 
 // ============================================================
 // DEFINIÇÃO DAS TOOLS
@@ -43,6 +48,70 @@ export const BEDROCK_TOOLS = [
             }
           },
           required: ['termo']
+        }
+      }
+    }
+  },
+  {
+    toolSpec: {
+      name: 'pesquisar_jusbrasil',
+      description: 'Pesquisa jurisprudência e doutrina no Jusbrasil, maior banco de dados jurídicos do Brasil. Use para encontrar acórdãos, artigos jurídicos, notícias e peças processuais. Fonte oficial e confiável.',
+      inputSchema: {
+        json: {
+          type: 'object',
+          properties: {
+            termo: {
+              type: 'string',
+              description: 'Termo de busca jurídica (ex: "usucapião", "IPTU")'
+            },
+            limite: {
+              type: 'number',
+              description: 'Número máximo de resultados (padrão: 10)',
+              default: 10
+            }
+          },
+          required: ['termo']
+        }
+      }
+    }
+  },
+  {
+    toolSpec: {
+      name: 'consultar_cnj_datajud',
+      description: 'Consulta processo judicial específico na base do CNJ DataJud (Conselho Nacional de Justiça). Use quando tiver um número de processo e precisar de informações oficiais sobre ele. Fonte 100% oficial e verificável.',
+      inputSchema: {
+        json: {
+          type: 'object',
+          properties: {
+            numeroProcesso: {
+              type: 'string',
+              description: 'Número do processo no formato CNJ (ex: "0000000-00.0000.0.00.0000")'
+            }
+          },
+          required: ['numeroProcesso']
+        }
+      }
+    }
+  },
+  {
+    toolSpec: {
+      name: 'pesquisar_sumulas',
+      description: 'Pesquisa súmulas dos tribunais superiores (STF, STJ, TST, TSE). Use quando precisar de orientações jurisprudenciais consolidadas sobre determinado tema. Fontes oficiais.',
+      inputSchema: {
+        json: {
+          type: 'object',
+          properties: {
+            tema: {
+              type: 'string',
+              description: 'Tema ou palavras-chave para buscar súmulas (ex: "prescrição", "honorários advocatícios")'
+            },
+            tribunal: {
+              type: 'string',
+              description: 'Tribunal específico (opcional). Valores: "STF", "STJ", "TST", "TSE"',
+              enum: ['STF', 'STJ', 'TST', 'TSE', null]
+            }
+          },
+          required: ['tema']
         }
       }
     }
@@ -139,6 +208,138 @@ export async function executeTool(toolName, toolInput) {
         };
       }
 
+      case 'pesquisar_jusbrasil': {
+        const { termo, limite = 10 } = toolInput;
+
+        console.log(`🔍 [Jusbrasil] Pesquisando: ${termo}`);
+
+        const resultado = await pesquisarJusbrasil(termo, { limite });
+
+        if (!resultado.sucesso) {
+          return {
+            success: false,
+            error: resultado.erro,
+            content: `Erro ao buscar no Jusbrasil: ${resultado.erro}`
+          };
+        }
+
+        // Formatar resultado
+        let respostaFormatada = `\n📚 **Jusbrasil - "${termo}"** (${resultado.totalEncontrados} resultados)\n\n`;
+
+        resultado.resultados.slice(0, 5).forEach((item, idx) => {
+          respostaFormatada += `**[${idx + 1}] ${item.titulo || 'Documento'}**\n`;
+          respostaFormatada += `Tribunal: ${item.tribunal || 'Não informado'}\n`;
+          respostaFormatada += `Data: ${item.data || 'Não informada'}\n`;
+          if (item.ementa) {
+            respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
+          }
+          if (item.link) respostaFormatada += `Link: ${item.link}\n`;
+          respostaFormatada += '\n';
+        });
+
+        console.log(`✅ [Jusbrasil] ${resultado.totalEncontrados} resultados encontrados`);
+
+        return {
+          success: true,
+          content: respostaFormatada,
+          metadata: {
+            termo,
+            fonte: 'Jusbrasil',
+            totalResultados: resultado.totalEncontrados
+          }
+        };
+      }
+
+      case 'consultar_cnj_datajud': {
+        const { numeroProcesso } = toolInput;
+
+        console.log(`🏛️ [CNJ DataJud] Consultando processo: ${numeroProcesso}`);
+
+        const resultado = await pesquisarDatajud(numeroProcesso);
+
+        if (!resultado.sucesso) {
+          return {
+            success: false,
+            error: resultado.erro,
+            content: `Erro ao consultar CNJ DataJud: ${resultado.erro}`
+          };
+        }
+
+        // Formatar resultado
+        let respostaFormatada = `\n🏛️ **CNJ DataJud - Processo ${numeroProcesso}**\n\n`;
+
+        if (resultado.processo) {
+          const proc = resultado.processo;
+          respostaFormatada += `**Classe**: ${proc.classe || 'Não informada'}\n`;
+          respostaFormatada += `**Assunto**: ${proc.assunto || 'Não informado'}\n`;
+          respostaFormatada += `**Órgão Julgador**: ${proc.orgaoJulgador || 'Não informado'}\n`;
+          respostaFormatada += `**Data de Distribuição**: ${proc.dataDistribuicao || 'Não informada'}\n`;
+
+          if (proc.movimentacoes && proc.movimentacoes.length > 0) {
+            respostaFormatada += `\n**Últimas Movimentações**:\n`;
+            proc.movimentacoes.slice(0, 3).forEach((mov, idx) => {
+              respostaFormatada += `${idx + 1}. ${mov.data || ''} - ${mov.descricao || ''}\n`;
+            });
+          }
+        }
+
+        respostaFormatada += '\n✅ **Fonte**: CNJ DataJud (Oficial)\n';
+
+        console.log(`✅ [CNJ DataJud] Consulta realizada com sucesso`);
+
+        return {
+          success: true,
+          content: respostaFormatada,
+          metadata: {
+            numeroProcesso,
+            fonte: 'CNJ DataJud (Oficial)'
+          }
+        };
+      }
+
+      case 'pesquisar_sumulas': {
+        const { tema, tribunal } = toolInput;
+
+        console.log(`📋 [Súmulas] Pesquisando: ${tema}${tribunal ? ` (${tribunal})` : ''}`);
+
+        const resultado = await pesquisarSumulas(tema, { tribunal });
+
+        if (!resultado.sucesso) {
+          return {
+            success: false,
+            error: resultado.erro,
+            content: `Erro ao buscar súmulas: ${resultado.erro}`
+          };
+        }
+
+        // Formatar resultado
+        let respostaFormatada = `\n📋 **Súmulas sobre "${tema}"**${tribunal ? ` - ${tribunal}` : ''}\n\n`;
+
+        if (resultado.sumulas && resultado.sumulas.length > 0) {
+          resultado.sumulas.forEach((sumula, idx) => {
+            respostaFormatada += `**Súmula ${sumula.numero || ''} - ${sumula.tribunal || ''}**\n`;
+            if (sumula.vinculante) respostaFormatada += `⚠️ VINCULANTE\n`;
+            respostaFormatada += `${sumula.texto || ''}\n\n`;
+          });
+        } else {
+          respostaFormatada += 'Nenhuma súmula encontrada para este tema.\n';
+        }
+
+        respostaFormatada += '\n✅ **Fonte**: Tribunais Superiores (Oficial)\n';
+
+        console.log(`✅ [Súmulas] ${resultado.sumulas?.length || 0} súmulas encontradas`);
+
+        return {
+          success: true,
+          content: respostaFormatada,
+          metadata: {
+            tema,
+            tribunal,
+            totalSumulas: resultado.sumulas?.length || 0
+          }
+        };
+      }
+
       default:
         throw new Error(`Tool não implementada: ${toolName}`);
     }
@@ -191,19 +392,39 @@ export async function conversarComTools(prompt, options = {}) {
     // Chamar Bedrock (sem tool use nativo ainda - faremos manual)
     const systemPromptComTools = `${systemPrompt || ''}
 
-FERRAMENTAS DISPONÍVEIS:
+FERRAMENTAS DISPONÍVEIS (FONTES OFICIAIS E VERIFICÁVEIS):
 
-1. **pesquisar_jurisprudencia**: Pesquisa jurisprudência nos tribunais brasileiros
+1. **pesquisar_jurisprudencia**: Pesquisa jurisprudência nos tribunais brasileiros (STF, STJ, CNJ DataJud)
    Parâmetros:
    - termo (obrigatório): string - termo de busca
    - tribunal (opcional): "STF" | "STJ" | "TST" | "TSE"
    - limite (opcional): número (padrão: 5)
 
-IMPORTANTE: Quando você precisar buscar jurisprudência, responda EXATAMENTE no formato:
+2. **pesquisar_jusbrasil**: Pesquisa no Jusbrasil (maior banco de dados jurídicos do Brasil)
+   Parâmetros:
+   - termo (obrigatório): string - termo de busca jurídica
+   - limite (opcional): número (padrão: 10)
+
+3. **consultar_cnj_datajud**: Consulta processo específico no CNJ DataJud (fonte 100% oficial)
+   Parâmetros:
+   - numeroProcesso (obrigatório): string - número do processo CNJ
+
+4. **pesquisar_sumulas**: Pesquisa súmulas dos tribunais superiores (STF, STJ, TST, TSE)
+   Parâmetros:
+   - tema (obrigatório): string - tema ou palavras-chave
+   - tribunal (opcional): "STF" | "STJ" | "TST" | "TSE"
+
+IMPORTANTE: Quando precisar usar uma ferramenta, responda EXATAMENTE no formato:
 <tool_use>
-<tool>pesquisar_jurisprudencia</tool>
-<params>{"termo": "...", "tribunal": "...", "limite": 5}</params>
+<tool>nome_da_ferramenta</tool>
+<params>{"parametro": "valor"}</params>
 </tool_use>
+
+Escolha a ferramenta mais apropriada para cada necessidade:
+- Jurisprudência geral → pesquisar_jurisprudencia
+- Busca ampla (doutrina, artigos) → pesquisar_jusbrasil
+- Consultar processo específico → consultar_cnj_datajud
+- Súmulas e orientações consolidadas → pesquisar_sumulas
 
 Depois de receber os resultados, continue sua resposta normalmente incorporando as informações.`;
 
