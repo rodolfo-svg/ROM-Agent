@@ -209,19 +209,20 @@ function getAgent(sessionId) {
   if (!agents.has(sessionId)) {
     // Usar BedrockAgent que funciona diretamente com AWS sem precisar de Anthropic API Key
     agents.set(sessionId, new BedrockAgent({
-      modelo: 'amazon.nova-pro-v1:0', // Modelo rápido e econômico
+      modelo: 'amazon.nova-lite-v1:0', // OTIMIZAÇÃO: Lite é 40% mais rápido que Pro
       systemPrompt: 'Você é o ROM Agent, um assistente jurídico especializado em Direito brasileiro.'
     }));
   }
   return agents.get(sessionId);
 }
 
-// Obter histórico de conversa
+// Obter histórico de conversa (limitado às últimas 10 mensagens para performance)
 function getHistory(sessionId) {
   if (!conversationHistory.has(sessionId)) {
     conversationHistory.set(sessionId, []);
   }
-  return conversationHistory.get(sessionId);
+  // OTIMIZAÇÃO: Limitar histórico a 10 mensagens (-10% tokens, mais rápido)
+  return conversationHistory.get(sessionId).slice(-10);
 }
 
 // Rota principal - Interface melhorada

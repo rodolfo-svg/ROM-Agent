@@ -57,5 +57,28 @@
     "createdAt": "2025-12-14T18:10:35.556Z",
     "updatedAt": "2025-12-14T18:10:38.736Z",
     "messageCount": 2
+  },
+  "conv_1765736277531_izdejk": {
+    "id": "conv_1765736277531_izdejk",
+    "userId": "anonymous",
+    "sessionId": "mki5GKtHHYsoJ7CPTrmBA1__e94E3mVi",
+    "projectId": null,
+    "title": "teste rápido",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "teste rápido",
+        "timestamp": "2025-12-14T18:17:57.532Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Claro! Vamos fazer um pequeno teste rápido sobre Direito brasileiro para verificar seu conhecimento. Aqui estão algumas perguntas:\n\n### Perguntas\n\n1. **Qual é a norma fundamental do Brasil?**\n   - a) Código Civil\n   - b) Constituição Federal\n   - c) Código Penal\n   - d) Código de Processo Civil\n\n2. **Qual é o órgão máximo do Poder Judiciário no Brasil?**\n   - a) Supremo Tribunal Federal (STF)\n   - b) Superior Tribunal de Justiça (STJ)\n   - c) Tribunal Superior do Trabalho (TST)\n   - d) Tribunal de Justiça do Estado\n\n3. **O que significa a expressão \"nullum crimen, nulla poena sine praevia lege scripta\"?**\n   - a) Nenhuma pena sem culpa\n   - b) Nenhuma pena sem julgamento prévio\n   - c) Nenhum crime ou pena sem lei prévia escrita\n   - d) Nenhuma pena sem crime\n\n4. **Qual é o princípio constitucional que garante a todos o direito de peticionar aos Poderes Públicos em defesa de direitos ou contra ilegalidade ou abuso de poder?**\n   - a) Princípio da Legalidade\n   - b) Princípio do Direito de Petição\n   - c) Princípio da Isonomia\n   - d) Princípio da Moralidade\n\n5. **Qual é a função do Ministério Público?**\n   - a) Defender os réus em processos criminais\n   - b) Representar o Estado em juízo\n   - c) Defender os interesses privados em juízo\n   - d) Promover o respeito aos direitos constitucionais e legais, zelar pelo efetivo respeito dos Poderes Públicos e dos serviços de relevância pública\n\n### Respostas\n\n1. **b) Constituição Federal**\n2. **a) Supremo Tribunal Federal (STF)**\n3. **c) Nenhum crime ou pena sem lei prévia escrita**\n4. **b) Princípio do Direito de Petição**\n5. **d) Promover o respeito aos direitos constitucionais e legais, zelar pelo efetivo respeito dos Poderes Públicos e dos serviços de relevância pública**\n\nEspero que tenha gostado do teste! Se tiver mais dúvidas ou quiser aprofundar em algum tópico específico, estou à disposição.",
+        "timestamp": "2025-12-14T18:18:03.765Z"
+      }
+    ],
+    "createdAt": "2025-12-14T18:17:57.531Z",
+    "updatedAt": "2025-12-14T18:18:03.765Z",
+    "messageCount": 2
   }
 }
