@@ -1786,7 +1786,7 @@ Memória: ${data.memory?.heapUsed}
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
             try {
-                const response = await fetch('/api/kb/upload', {
+                const response = await fetch('/api/upload-documents', {
                     method: 'POST',
                     body: formData
                 });
@@ -1799,14 +1799,26 @@ Memória: ${data.memory?.heapUsed}
                 // Show result
                 const resultMsg = document.createElement('div');
                 resultMsg.className = 'message';
-                if (result.success || result.processed) {
+                if (result.success && result.extractions) {
+                    // Mostrar resumo da extração
+                    let extractionSummary = '';
+                    result.extractions.forEach(ext => {
+                        if (ext.data) {
+                            extractionSummary += `\n📄 ${ext.filename}:\n`;
+                            if (ext.data['Tipo de Documento']) extractionSummary += `• Tipo: ${ext.data['Tipo de Documento']}\n`;
+                            if (ext.data['Número do Processo']) extractionSummary += `• Processo: ${ext.data['Número do Processo']}\n`;
+                            if (ext.textLength) extractionSummary += `• Texto extraído: ${ext.textLength} caracteres\n`;
+                        }
+                    });
+
                     resultMsg.innerHTML = `
                         <div class="message-avatar">✅</div>
                         <div class="message-content">
                             <div style="color: var(--text-primary);"><strong>Upload concluído!</strong></div>
                             <div style="color: var(--text-secondary); margin-top: 8px;">
-                                ${result.processed || files.length} arquivo(s) adicionado(s) ao Knowledge Base.
+                                ${result.message || `${result.filesCount} arquivo(s) processado(s) com sucesso`}
                             </div>
+                            ${extractionSummary ? `<pre style="margin-top: 8px; font-size: 12px; white-space: pre-wrap;">${extractionSummary}</pre>` : ''}
                         </div>
                     `;
                 } else {
