@@ -2,10 +2,26 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>ROM Agent</title>
+
+    <!-- PWA Support -->
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#2F2F2F">
+
+    <!-- iOS Specific -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ROM Agent">
+
+    <!-- Android Specific -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="ROM Agent">
+
+    <!-- Prevent zoom on double tap (iOS) -->
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Markdown Parser -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         * {
@@ -33,6 +49,15 @@
             color: var(--text-primary);
             height: 100vh;
             overflow: hidden;
+            /* iOS Safari viewport fix */
+            min-height: -webkit-fill-available;
+            /* Smooth scroll */
+            -webkit-overflow-scrolling: touch;
+            /* Prevent text size adjustment on iOS */
+            -webkit-text-size-adjust: 100%;
+            /* Safe area for notch (iPhone X+) */
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
         }
 
         .app {
@@ -67,6 +92,10 @@
             align-items: center;
             gap: 8px;
             transition: background 0.15s;
+            /* Touch optimization */
+            min-height: 44px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .new-chat-btn:hover {
@@ -413,6 +442,13 @@
             cursor: pointer;
             transition: all 0.15s;
             font-size: 13px;
+            /* Touch optimization */
+            min-height: 44px;
+            min-width: 44px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         .action-btn:hover {
