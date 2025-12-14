@@ -1,0 +1,61 @@
+{
+  "conv_1765735452215_yczf6": {
+    "id": "conv_1765735452215_yczf6",
+    "userId": "anonymous",
+    "sessionId": "H_CjFKujuwvPhWqKgG2Y_zKZ_xtwh6nI",
+    "projectId": null,
+    "title": "Nova Conversa",
+    "titleGenerated": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Olá ROM Agent, teste rápido",
+        "timestamp": "2025-12-14T18:04:12.216Z"
+      }
+    ],
+    "createdAt": "2025-12-14T18:04:12.215Z",
+    "updatedAt": "2025-12-14T18:04:12.216Z",
+    "messageCount": 1
+  },
+  "conv_1765735531816_69rbr": {
+    "id": "conv_1765735531816_69rbr",
+    "userId": "anonymous",
+    "sessionId": "YTqQZdK8GhbZRoCMWozDBgpr5cv3tA9H",
+    "projectId": null,
+    "title": "Nova Conversa",
+    "titleGenerated": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Olá ROM Agent, este é um teste do sistema de conversas",
+        "timestamp": "2025-12-14T18:05:31.816Z"
+      }
+    ],
+    "createdAt": "2025-12-14T18:05:31.816Z",
+    "updatedAt": "2025-12-14T18:05:31.816Z",
+    "messageCount": 1
+  },
+  "conv_1765735835556_4mp24a": {
+    "id": "conv_1765735835556_4mp24a",
+    "userId": "anonymous",
+    "sessionId": "HtUQKo-RdMEXiGyjgz1Tib6dPgtrlZVw",
+    "projectId": null,
+    "title": "Olá, teste rápido do ROM Agent",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Olá, teste rápido do ROM Agent",
+        "timestamp": "2025-12-14T18:10:35.556Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Olá! Estou aqui para ajudar com questões relacionadas ao Direito brasileiro. Vamos fazer um teste rápido para ver como posso auxiliar. Sinta-se à vontade para fazer qualquer pergunta jurídica ou solicitar esclarecimentos sobre tópicos legais. Como prefere começar? Aqui estão algumas opções para iniciar:\n\n1. **Direito Constitucional**: Perguntas sobre a Constituição Federal, direitos fundamentais, etc.\n2. **Direito Civil**: Questões sobre contratos, responsabilidade civil, família, sucessões, etc.\n3. **Direito Penal**: Dúvidas sobre crimes, penas, processo penal, etc.\n4. **Direito Trabalhista**: Consultas sobre direitos trabalhistas, CLT, sindicatos, etc.\n5. **Direito Processual**: Questões sobre processo civil, processo penal, etc.\n6. **Direito Empresarial**: Dúvidas sobre sociedades empresariais, falências, recuperações judiciais, etc.\n7. **Direito Tributário**: Perguntas sobre impostos, contribuições, etc.\n8. **Direito Ambiental**: Consultas sobre legislação ambiental, crimes ambientais, etc.\n\nEscolha uma área ou faça uma pergunta específica!",
+        "timestamp": "2025-12-14T18:10:38.736Z"
+      }
+    ],
+    "createdAt": "2025-12-14T18:10:35.556Z",
+    "updatedAt": "2025-12-14T18:10:38.736Z",
+    "messageCount": 2
+  }
+}

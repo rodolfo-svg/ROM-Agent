@@ -18,6 +18,7 @@ import multer from 'multer';
 import session from 'express-session';
 import fs from 'fs';
 import { ROMAgent, CONFIG } from './index.js';
+import { BedrockAgent } from './modules/bedrock.js';
 import partnersBranding from '../lib/partners-branding.js';
 import formattingTemplates from '../lib/formatting-templates.js';
 import { extractDocument } from '../lib/extractor-pipeline.js';
@@ -203,13 +204,14 @@ const agents = new Map();
 // Armazenar histórico de conversas
 const conversationHistory = new Map();
 
-// Inicializar agente para sessão
+// Inicializar agente para sessão (usando Bedrock)
 function getAgent(sessionId) {
   if (!agents.has(sessionId)) {
-    const apiKey = process.env.ANTHROPIC_API_KEY;
-    if (apiKey) {
-      agents.set(sessionId, new ROMAgent(apiKey));
-    }
+    // Usar BedrockAgent que funciona diretamente com AWS sem precisar de Anthropic API Key
+    agents.set(sessionId, new BedrockAgent({
+      modelo: 'amazon.nova-pro-v1:0', // Modelo rápido e econômico
+      systemPrompt: 'Você é o ROM Agent, um assistente jurídico especializado em Direito brasileiro.'
+    }));
   }
   return agents.get(sessionId);
 }
@@ -293,8 +295,14 @@ app.post('/api/chat', async (req, res) => {
       content: message
     });
 
-    // Processar com agente
-    const resposta = await agent.processar(message);
+    // Processar com agente Bedrock
+    const resultado = await agent.enviar(message);
+
+    if (!resultado.sucesso) {
+      return res.status(500).json({ error: resultado.erro || 'Erro ao processar mensagem' });
+    }
+
+    const resposta = resultado.resposta;
 
     // Adicionar resposta ao histórico em memória
     history.push({ role: 'assistant', content: resposta, timestamp: new Date() });
