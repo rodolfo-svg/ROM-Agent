@@ -3618,10 +3618,15 @@ app.get('/api/projects/:id', (req, res) => {
   }
 });
 
-// POST /api/projects/create - Criar novo projeto
+// POST /api/projects/create - Criar novo projeto (igual Claude.ai)
 app.post('/api/projects/create', (req, res) => {
   try {
-    const { name, description } = req.body;
+    const {
+      name,
+      description,
+      customInstructions,
+      kbMaxSizeMB = 500 // 500MB padrão (5x maior que Claude.ai 100MB)
+    } = req.body;
 
     if (!name || !name.trim()) {
       return res.status(400).json({ error: 'Nome do projeto é obrigatório' });
@@ -3634,6 +3639,15 @@ app.post('/api/projects/create', (req, res) => {
       id: projectId,
       name: name.trim(),
       description: description ? description.trim() : '',
+
+      // Custom Instructions específicas do projeto (igual Claude.ai)
+      customInstructions: customInstructions ? customInstructions.trim() : '',
+
+      // KB com maior capacidade
+      kbMaxSizeMB: kbMaxSizeMB,
+      kbCurrentSizeMB: 0,
+      kbUsagePercent: 0,
+
       documents: 0,
       type: null, // Will be set after analysis
       icon: '📁',
@@ -3642,11 +3656,19 @@ app.post('/api/projects/create', (req, res) => {
       status: 'active',
       uploadedFiles: [],
       analysis: null,
-      chatHistory: []
+      chatHistory: [],
+
+      // Configurações avançadas (igual Claude.ai)
+      settings: {
+        autoAnalyze: true, // Analisar docs automaticamente
+        smartSuggestions: true, // Sugestões inteligentes de peças
+        modelPreference: 'amazon.nova-pro-v1:0', // Modelo preferido
+        temperature: 0.7 // Criatividade/consistência
+      }
     };
 
     saveProject(project);
-    console.log(`✅ Projeto criado: ${project.name} (ID: ${projectId})`);
+    console.log(`✅ Projeto criado: ${project.name} (ID: ${projectId}, KB: ${kbMaxSizeMB}MB)`);
 
     res.json({
       success: true,
@@ -3658,7 +3680,7 @@ app.post('/api/projects/create', (req, res) => {
   }
 });
 
-// POST /api/projects/:id/upload - Upload de documentos (SEM GASTAR TOKENS)
+// POST /api/projects/:id/upload - Upload de documentos com KB tracking (SEM GASTAR TOKENS)
 app.post('/api/projects/:id/upload', upload.array('files', 20), async (req, res) => {
   try {
     const { id } = req.params;
@@ -3670,6 +3692,23 @@ app.post('/api/projects/:id/upload', upload.array('files', 20), async (req, res)
 
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
+    }
+
+    // Calcular tamanho total dos novos arquivos
+    const newFilesSizeMB = req.files.reduce((sum, file) => sum + file.size, 0) / (1024 * 1024);
+    const projectedTotalMB = (project.kbCurrentSizeMB || 0) + newFilesSizeMB;
+
+    // Verificar se excede o limite do KB
+    const kbMaxMB = project.kbMaxSizeMB || 500;
+    if (projectedTotalMB > kbMaxMB) {
+      return res.status(413).json({
+        error: 'Limite de KB excedido',
+        message: `Upload de ${newFilesSizeMB.toFixed(2)}MB excederia o limite de ${kbMaxMB}MB (uso atual: ${(project.kbCurrentSizeMB || 0).toFixed(2)}MB)`,
+        currentUsageMB: project.kbCurrentSizeMB || 0,
+        maxSizeMB: kbMaxMB,
+        attemptedUploadMB: newFilesSizeMB,
+        projectedTotalMB: projectedTotalMB.toFixed(2)
+      });
     }
 
     // Add uploaded files to project
@@ -3684,15 +3723,26 @@ app.post('/api/projects/:id/upload', upload.array('files', 20), async (req, res)
 
     project.uploadedFiles.push(...uploadedFiles);
     project.documents = project.uploadedFiles.length;
+
+    // Atualizar KB usage
+    project.kbCurrentSizeMB = projectedTotalMB;
+    project.kbUsagePercent = Math.round((projectedTotalMB / kbMaxMB) * 100);
+
     project.lastModified = new Date().toISOString();
 
     saveProject(project);
-    console.log(`✅ ${uploadedFiles.length} documentos enviados para projeto ${id}`);
+    console.log(`✅ ${uploadedFiles.length} documentos enviados para projeto ${id} (KB: ${project.kbCurrentSizeMB.toFixed(2)}/${kbMaxMB}MB - ${project.kbUsagePercent}%)`);
 
     res.json({
       success: true,
       project,
-      uploadedFiles
+      uploadedFiles,
+      kbUsage: {
+        currentMB: project.kbCurrentSizeMB.toFixed(2),
+        maxMB: kbMaxMB,
+        usagePercent: project.kbUsagePercent,
+        remainingMB: (kbMaxMB - project.kbCurrentSizeMB).toFixed(2)
+      }
     });
   } catch (error) {
     console.error('Erro ao fazer upload:', error);

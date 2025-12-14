@@ -77,9 +77,12 @@
         .sidebar-header {
             padding: 14px 12px;
             border-bottom: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .new-chat-btn {
+        .new-chat-btn, .new-project-btn {
             width: 100%;
             padding: 10px 14px;
             background: transparent;
@@ -91,15 +94,27 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            transition: background 0.15s;
+            transition: all 0.15s;
             /* Touch optimization */
             min-height: 44px;
             touch-action: manipulation;
             -webkit-tap-highlight-color: transparent;
         }
 
-        .new-chat-btn:hover {
+        .new-chat-btn:hover, .new-project-btn:hover {
             background: var(--bg-2);
+        }
+
+        .new-project-btn {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border-color: rgba(139, 92, 246, 0.3);
+            color: #8b5cf6;
+            font-weight: 500;
+        }
+
+        .new-project-btn:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+            border-color: rgba(139, 92, 246, 0.5);
         }
 
         .sidebar-nav {
@@ -752,6 +767,13 @@
                         <path d="M8 3.5a.5.5 0 01.5.5v3.5H12a.5.5 0 010 1H8.5V12a.5.5 0 01-1 0V8.5H4a.5.5 0 010-1h3.5V4a.5.5 0 01.5-.5z"/>
                     </svg>
                     Nova conversa
+                </button>
+                <button class="new-project-btn" onclick="openNewProjectModal()" title="Criar Novo Projeto (estilo Claude.ai)">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M2.5 3A1.5 1.5 0 001 4.5v7A1.5 1.5 0 002.5 13h11a1.5 1.5 0 001.5-1.5v-7A1.5 1.5 0 0013.5 3h-11zM2 4.5a.5.5 0 01.5-.5h11a.5.5 0 01.5.5V6H2V4.5zm12 7a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5V7h12v4.5z"/>
+                        <path d="M8 3.5a.5.5 0 01.5.5v3.5H12a.5.5 0 010 1H8.5V12a.5.5 0 01-1 0V8.5H4a.5.5 0 010-1h3.5V4a.5.5 0 01.5-.5z"/>
+                    </svg>
+                    Novo Projeto
                 </button>
             </div>
 
@@ -1920,5 +1942,314 @@ Memória: ${data.memory?.heapUsed}
         loadHistory();
         loadConversations(); // Load conversations sidebar
     </script>
+    <!-- ============================================ -->
+    <!-- MODAL: NOVO PROJETO (estilo Claude.ai)     -->
+    <!-- ============================================ -->
+    <div id="newProjectModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Novo Projeto</h2>
+                <button class="modal-close" onclick="closeNewProjectModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <form id="newProjectForm" onsubmit="createNewProject(event)">
+                    <!-- Nome do Projeto -->
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="projectName" style="display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-primary);">
+                            Nome do Projeto <span style="color: #ef4444;">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="projectName"
+                            name="projectName"
+                            required
+                            placeholder="Ex: Ação de Indenização - Cliente XYZ"
+                            style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; background: var(--bg-1); color: var(--text-primary);"
+                        />
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="projectDescription" style="display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-primary);">
+                            Descrição (opcional)
+                        </label>
+                        <textarea
+                            id="projectDescription"
+                            name="projectDescription"
+                            rows="3"
+                            placeholder="Breve descrição do projeto..."
+                            style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; resize: vertical; background: var(--bg-1); color: var(--text-primary); font-family: inherit;"
+                        ></textarea>
+                    </div>
+
+                    <!-- Custom Instructions (estilo Claude.ai) -->
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="projectInstructions" style="display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-primary);">
+                            Custom Instructions
+                            <span style="font-weight: 400; color: var(--text-secondary); font-size: 13px; margin-left: 4px;">(como Claude.ai Projects)</span>
+                        </label>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px 0;">
+                            Instruções específicas para este projeto. O assistente seguirá estas diretrizes ao trabalhar neste projeto.
+                        </p>
+                        <textarea
+                            id="projectInstructions"
+                            name="projectInstructions"
+                            rows="8"
+                            placeholder="Ex: Para este projeto, sempre cite jurisprudência do STJ de 2020-2024. Use tom formal. Priorize precedentes vinculantes..."
+                            style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; resize: vertical; background: var(--bg-1); color: var(--text-primary); font-family: 'Consolas', 'Monaco', 'Courier New', monospace; line-height: 1.6;"
+                        ></textarea>
+                    </div>
+
+                    <!-- Tamanho do Knowledge Base -->
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="projectKBSize" style="display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-primary);">
+                            Tamanho do Knowledge Base
+                            <span style="font-weight: 400; color: var(--text-secondary); font-size: 13px; margin-left: 4px;">(ROM Agent: até 500MB vs Claude.ai: 100MB)</span>
+                        </label>
+                        <select
+                            id="projectKBSize"
+                            name="projectKBSize"
+                            style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; background: var(--bg-1); color: var(--text-primary); cursor: pointer;"
+                        >
+                            <option value="100">100 MB (padrão Claude.ai)</option>
+                            <option value="250">250 MB (2.5x Claude.ai)</option>
+                            <option value="500" selected>500 MB (5x Claude.ai - Recomendado)</option>
+                        </select>
+                    </div>
+
+                    <!-- Configurações Avançadas (colapsável) -->
+                    <details class="form-group" style="margin-bottom: 20px; border: 1px solid var(--border); border-radius: 6px; padding: 12px; background: var(--bg-2);">
+                        <summary style="cursor: pointer; font-weight: 500; color: var(--text-primary); padding: 4px 0; user-select: none;">
+                            ⚙️ Configurações Avançadas
+                        </summary>
+                        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                            <!-- Auto-análise -->
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input
+                                        type="checkbox"
+                                        id="projectAutoAnalyze"
+                                        name="projectAutoAnalyze"
+                                        checked
+                                        style="width: 18px; height: 18px; cursor: pointer;"
+                                    />
+                                    <span style="color: var(--text-primary); font-size: 14px;">
+                                        Analisar documentos automaticamente
+                                    </span>
+                                </label>
+                                <p style="font-size: 12px; color: var(--text-tertiary); margin: 4px 0 0 26px;">
+                                    Identifica automaticamente o tipo de documento e sugere peças jurídicas apropriadas
+                                </p>
+                            </div>
+
+                            <!-- Sugestões inteligentes -->
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input
+                                        type="checkbox"
+                                        id="projectSmartSuggestions"
+                                        name="projectSmartSuggestions"
+                                        checked
+                                        style="width: 18px; height: 18px; cursor: pointer;"
+                                    />
+                                    <span style="color: var(--text-primary); font-size: 14px;">
+                                        Habilitar sugestões inteligentes
+                                    </span>
+                                </label>
+                                <p style="font-size: 12px; color: var(--text-tertiary); margin: 4px 0 0 26px;">
+                                    Sugestões contextuais de peças, argumentos e jurisprudência relevante
+                                </p>
+                            </div>
+
+                            <!-- Modelo preferido -->
+                            <div style="margin-bottom: 16px;">
+                                <label for="projectModel" style="display: block; font-weight: 500; margin-bottom: 6px; color: var(--text-primary); font-size: 14px;">
+                                    Modelo de IA preferido
+                                </label>
+                                <select
+                                    id="projectModel"
+                                    name="projectModel"
+                                    style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 13px; background: var(--bg-1); color: var(--text-primary);"
+                                >
+                                    <option value="amazon.nova-lite-v1:0">Amazon Nova Lite (rápido, econômico)</option>
+                                    <option value="amazon.nova-pro-v1:0" selected>Amazon Nova Pro (equilibrado - recomendado)</option>
+                                    <option value="anthropic.claude-haiku-4-5-20251001-v1:0">Claude Haiku 4.5 (ultra-rápido)</option>
+                                    <option value="anthropic.claude-sonnet-4-5-20251001-v1:0">Claude Sonnet 4.5 (máxima qualidade)</option>
+                                </select>
+                            </div>
+
+                            <!-- Temperature -->
+                            <div>
+                                <label for="projectTemperature" style="display: block; font-weight: 500; margin-bottom: 6px; color: var(--text-primary); font-size: 14px;">
+                                    Criatividade (Temperature): <span id="tempValue">0.7</span>
+                                </label>
+                                <input
+                                    type="range"
+                                    id="projectTemperature"
+                                    name="projectTemperature"
+                                    min="0"
+                                    max="1"
+                                    step="0.1"
+                                    value="0.7"
+                                    oninput="document.getElementById('tempValue').textContent = this.value"
+                                    style="width: 100%; cursor: pointer;"
+                                />
+                                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">
+                                    <span>0.0 (Consistente)</span>
+                                    <span>1.0 (Criativo)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Botões -->
+                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                        <button
+                            type="button"
+                            onclick="closeNewProjectModal()"
+                            style="padding: 10px 24px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--text-primary); cursor: pointer; font-size: 14px;"
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="submit"
+                            id="createProjectBtn"
+                            style="padding: 10px 24px; border: none; border-radius: 6px; background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%); color: white; cursor: pointer; font-size: 14px; font-weight: 500;"
+                        >
+                            Criar Projeto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript para Novo Projeto -->
+    <script>
+        // Abrir modal de novo projeto
+        function openNewProjectModal() {
+            const modal = document.getElementById('newProjectModal');
+            modal.classList.add('active');
+            document.getElementById('projectName').focus();
+        }
+
+        // Fechar modal
+        function closeNewProjectModal() {
+            const modal = document.getElementById('newProjectModal');
+            modal.classList.remove('active');
+            document.getElementById('newProjectForm').reset();
+        }
+
+        // Criar novo projeto
+        async function createNewProject(event) {
+            event.preventDefault();
+
+            const btn = document.getElementById('createProjectBtn');
+            const originalText = btn.textContent;
+            btn.textContent = 'Criando...';
+            btn.disabled = true;
+
+            try {
+                const formData = {
+                    name: document.getElementById('projectName').value.trim(),
+                    description: document.getElementById('projectDescription').value.trim(),
+                    customInstructions: document.getElementById('projectInstructions').value.trim(),
+                    kbMaxSizeMB: parseInt(document.getElementById('projectKBSize').value),
+                    settings: {
+                        autoAnalyze: document.getElementById('projectAutoAnalyze').checked,
+                        smartSuggestions: document.getElementById('projectSmartSuggestions').checked,
+                        modelPreference: document.getElementById('projectModel').value,
+                        temperature: parseFloat(document.getElementById('projectTemperature').value)
+                    }
+                };
+
+                const response = await fetch('/api/projects/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success && result.project) {
+                    // Sucesso!
+                    showNotification(`Projeto "${result.project.name}" criado com sucesso!`, 'success');
+                    closeNewProjectModal();
+
+                    // Recarregar lista de projetos (se estiver na view de projetos)
+                    if (typeof loadProjects === 'function') {
+                        await loadProjects();
+                    }
+
+                    // Opcional: abrir o projeto recém-criado
+                    console.log('Projeto criado:', result.project);
+                } else {
+                    throw new Error(result.error || 'Erro ao criar projeto');
+                }
+
+            } catch (error) {
+                console.error('Erro ao criar projeto:', error);
+                showNotification(error.message || 'Erro ao criar projeto. Tente novamente.', 'error');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Fechar modal ao clicar fora
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('newProjectModal');
+            if (e.target === modal) {
+                closeNewProjectModal();
+            }
+        });
+
+        // Fechar modal com ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('newProjectModal');
+                if (modal && modal.classList.contains('active')) {
+                    closeNewProjectModal();
+                }
+            }
+        });
+
+        // Função auxiliar para notificações
+        function showNotification(message, type = 'info') {
+            // Criar elemento de notificação
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 24px;
+                border-radius: 8px;
+                color: white;
+                font-size: 14px;
+                z-index: 10000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                animation: slideInRight 0.3s ease;
+                max-width: 400px;
+            `;
+
+            // Cores por tipo
+            const colors = {
+                success: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                error: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                info: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
+            };
+            notification.style.background = colors[type] || colors.info;
+
+            document.body.appendChild(notification);
+
+            // Remover após 5 segundos
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        }
+    </script>
+
 </body>
 </html>
