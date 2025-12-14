@@ -3625,7 +3625,8 @@ app.post('/api/projects/create', (req, res) => {
       name,
       description,
       customInstructions,
-      kbMaxSizeMB = 500 // 500MB padrão (5x maior que Claude.ai 100MB)
+      kbMaxSizeMB = 500, // 500MB padrão (5x maior que Claude.ai 100MB)
+      settings = {}
     } = req.body;
 
     if (!name || !name.trim()) {
@@ -3644,7 +3645,7 @@ app.post('/api/projects/create', (req, res) => {
       customInstructions: customInstructions ? customInstructions.trim() : '',
 
       // KB com maior capacidade
-      kbMaxSizeMB: kbMaxSizeMB,
+      kbMaxSizeMB: Number(kbMaxSizeMB) || 500,
       kbCurrentSizeMB: 0,
       kbUsagePercent: 0,
 
@@ -3658,17 +3659,17 @@ app.post('/api/projects/create', (req, res) => {
       analysis: null,
       chatHistory: [],
 
-      // Configurações avançadas (igual Claude.ai)
+      // Configurações avançadas (igual Claude.ai) - Usar settings do body ou defaults
       settings: {
-        autoAnalyze: true, // Analisar docs automaticamente
-        smartSuggestions: true, // Sugestões inteligentes de peças
-        modelPreference: 'amazon.nova-pro-v1:0', // Modelo preferido
-        temperature: 0.7 // Criatividade/consistência
+        autoAnalyze: settings.autoAnalyze !== undefined ? settings.autoAnalyze : true,
+        smartSuggestions: settings.smartSuggestions !== undefined ? settings.smartSuggestions : true,
+        modelPreference: settings.modelPreference || 'amazon.nova-pro-v1:0',
+        temperature: settings.temperature !== undefined ? Number(settings.temperature) : 0.7
       }
     };
 
     saveProject(project);
-    console.log(`✅ Projeto criado: ${project.name} (ID: ${projectId}, KB: ${kbMaxSizeMB}MB)`);
+    console.log(`✅ Projeto criado: ${project.name} (ID: ${projectId}, KB: ${kbMaxSizeMB}MB, CustomInstructions: ${customInstructions ? 'Sim' : 'Não'})`);
 
     res.json({
       success: true,

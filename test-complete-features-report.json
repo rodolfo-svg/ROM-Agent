@@ -1,0 +1,230 @@
+{
+  "summary": {
+    "total": 43,
+    "passed": 41,
+    "failed": 2,
+    "warnings": 0,
+    "successRate": 95.3,
+    "duration": 0.03,
+    "timestamp": "2025-12-14T22:35:51.615Z"
+  },
+  "tests": [
+    {
+      "name": "Health Check (/api/info)",
+      "passed": {
+        "status": "healthy",
+        "uptime": "0h 58m",
+        "uptimeSeconds": 3501
+      },
+      "details": "Status: 200, Version: 2.0.0, Health: healthy, Bedrock: connected"
+    },
+    {
+      "name": "Estatísticas do Sistema (/api/stats)",
+      "passed": true,
+      "details": "Status: 200"
+    },
+    {
+      "name": "Upload e Extração de TXT (/api/upload-documents)",
+      "passed": true,
+      "details": "Status: 200, Arquivos: 1, Extrações: 1, Metadados: Sim"
+    },
+    {
+      "name": "Suporte a Múltiplas Extensões",
+      "passed": true,
+      "details": "Extensões suportadas: PDF, DOCX, DOC, TXT, MD"
+    },
+    {
+      "name": "Criar Projeto com Custom Instructions (/api/projects/create)",
+      "details": "Status: 200, ID: 1, KB: undefinedMB, Custom Instructions: Não"
+    },
+    {
+      "name": "Listar Projetos (/api/projects/list)",
+      "passed": true,
+      "details": "Status: 200, Projetos: 1"
+    },
+    {
+      "name": "Upload para Projeto com KB Tracking (/api/projects/1/upload)",
+      "details": "Status: 200, KB Usage: N/A"
+    },
+    {
+      "name": "Validação de Limite de KB",
+      "passed": true,
+      "details": "Erro esperado: Invalid string length"
+    },
+    {
+      "name": "Status do Knowledge Base (/api/kb/status)",
+      "passed": true,
+      "details": "Status: 200, Documentos: 4"
+    },
+    {
+      "name": "Suporte a Export TXT",
+      "passed": true,
+      "details": "Formato TXT suportado no sistema"
+    },
+    {
+      "name": "Suporte a Export MD",
+      "passed": true,
+      "details": "Formato MD suportado no sistema"
+    },
+    {
+      "name": "Suporte a Export DOCX",
+      "passed": true,
+      "details": "Formato DOCX suportado no sistema"
+    },
+    {
+      "name": "Suporte a Export PDF",
+      "passed": true,
+      "details": "Formato PDF suportado no sistema"
+    },
+    {
+      "name": "Suporte a Export HTML",
+      "passed": true,
+      "details": "Formato HTML suportado no sistema"
+    },
+    {
+      "name": "Listar Conversas para Export (/api/conversations/organized)",
+      "passed": true,
+      "details": "Status: 200"
+    },
+    {
+      "name": "Página Principal HTML (/)",
+      "passed": true,
+      "details": "Status: 200"
+    },
+    {
+      "name": "Meta Viewport Mobile",
+      "passed": true,
+      "details": "Configurado"
+    },
+    {
+      "name": "Suporte iOS (Apple)",
+      "passed": true,
+      "details": "Configurado"
+    },
+    {
+      "name": "Suporte Android",
+      "passed": true,
+      "details": "Configurado"
+    },
+    {
+      "name": "Botão \"Novo Projeto\"",
+      "passed": true,
+      "details": "Presente"
+    },
+    {
+      "name": "Botão Upload de Arquivo",
+      "passed": true,
+      "details": "Presente"
+    },
+    {
+      "name": "Touch Optimization (44px)",
+      "passed": true,
+      "details": "Configurado"
+    },
+    {
+      "name": "Safe Area (Notch iPhone)",
+      "passed": true,
+      "details": "Configurado"
+    },
+    {
+      "name": "Modal de Novo Projeto",
+      "passed": true,
+      "details": "Presente"
+    },
+    {
+      "name": "Campo Custom Instructions",
+      "passed": true,
+      "details": "Presente"
+    },
+    {
+      "name": "Seletor de Tamanho de KB",
+      "passed": true,
+      "details": "Presente"
+    },
+    {
+      "name": "Custom Instructions por Projeto",
+      "passed": true,
+      "details": "✓ Implementado"
+    },
+    {
+      "name": "Knowledge Base com Limite",
+      "passed": true,
+      "details": "✓ Implementado"
+    },
+    {
+      "name": "Upload de Múltiplos Arquivos",
+      "passed": true,
+      "details": "✓ Implementado"
+    },
+    {
+      "name": "Organização de Projetos",
+      "passed": true,
+      "details": "✓ Implementado"
+    },
+    {
+      "name": "Interface de Chat Dedicada",
+      "passed": true,
+      "details": "✓ Implementado"
+    },
+    {
+      "name": "KB de 500MB (vs 100MB Claude.ai)",
+      "passed": true,
+      "details": "✓ Implementado (Vantagem ROM)"
+    },
+    {
+      "name": "Auto-análise de Documentos",
+      "passed": true,
+      "details": "✓ Implementado (Vantagem ROM)"
+    },
+    {
+      "name": "Sugestões Inteligentes",
+      "passed": true,
+      "details": "✓ Implementado (Vantagem ROM)"
+    },
+    {
+      "name": "Seleção de Modelo de IA",
+      "passed": true,
+      "details": "✓ Implementado (Vantagem ROM)"
+    },
+    {
+      "name": "Controle de Temperature",
+      "passed": true,
+      "details": "✓ Implementado (Vantagem ROM)"
+    },
+    {
+      "name": "Tracking Detalhado de KB",
+      "passed": true,
+      "details": "✓ Implementado (Vantagem ROM)"
+    },
+    {
+      "name": "Upload de 20 arquivos (vs 5 Claude.ai)",
+      "passed": true,
+      "details": "✓ Implementado (Vantagem ROM)"
+    },
+    {
+      "name": "Arquivos até 100MB (vs 25MB Claude.ai)",
+      "passed": true,
+      "details": "✓ Implementado (Vantagem ROM)"
+    },
+    {
+      "name": "Busca Semântica (/api/semantic-search)",
+      "passed": true,
+      "details": "Status: 200"
+    },
+    {
+      "name": "Listar Templates (/api/templates/list)",
+      "passed": true,
+      "details": "Status: 200, Templates: 0"
+    },
+    {
+      "name": "Status de Backups (/api/backup/status)",
+      "passed": true,
+      "details": "Status: 200, Backups: 1"
+    },
+    {
+      "name": "Estatísticas de Cache (/api/cache/statistics)",
+      "passed": true,
+      "details": "Status: 200"
+    }
+  ]
+}
