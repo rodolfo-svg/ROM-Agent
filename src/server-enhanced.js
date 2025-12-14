@@ -3579,13 +3579,59 @@ function getEnhancedHTML() {
 // PROJECTS SYSTEM API ROUTES
 // ============================================
 
-// In-memory projects store (in production, use database)
+// In-memory projects store with file persistence
 const projectsStore = new Map();
 let projectIdCounter = 1;
+
+// Projects data file path
+const projectsFilePath = path.join(process.cwd(), 'data', 'projects.json');
+
+// Load projects from file
+function loadProjectsFromFile() {
+  try {
+    if (fs.existsSync(projectsFilePath)) {
+      const data = fs.readFileSync(projectsFilePath, 'utf8');
+      const projects = JSON.parse(data);
+
+      // Restore projects to Map
+      projects.forEach(project => {
+        projectsStore.set(project.id, project);
+        // Update counter to avoid ID collision
+        const projectNum = parseInt(project.id);
+        if (!isNaN(projectNum) && projectNum >= projectIdCounter) {
+          projectIdCounter = projectNum + 1;
+        }
+      });
+
+      console.log(`✅ ${projects.length} projetos carregados de ${projectsFilePath}`);
+    } else {
+      console.log('ℹ️ Nenhum arquivo de projetos encontrado, iniciando vazio');
+    }
+  } catch (error) {
+    console.error('⚠️ Erro ao carregar projetos:', error);
+  }
+}
+
+// Save projects to file
+function saveProjectsToFile() {
+  try {
+    const dataDir = path.join(process.cwd(), 'data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+
+    const projects = Array.from(projectsStore.values());
+    fs.writeFileSync(projectsFilePath, JSON.stringify(projects, null, 2));
+    console.log(`💾 ${projects.length} projetos salvos em ${projectsFilePath}`);
+  } catch (error) {
+    console.error('⚠️ Erro ao salvar projetos:', error);
+  }
+}
 
 // Helper function to save project
 function saveProject(project) {
   projectsStore.set(project.id, project);
+  saveProjectsToFile(); // Persist to file
   return project;
 }
 
@@ -4627,6 +4673,9 @@ app.listen(PORT, async () => {
 ║                                                              ║
 ╚══════════════════════════════════════════════════════════════╝
 `);
+
+  // Carregar projetos do arquivo
+  loadProjectsFromFile();
 
   // Pré-carregar modelos
   await preloadModelos();
