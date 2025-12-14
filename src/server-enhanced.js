@@ -4147,10 +4147,11 @@ app.post('/api/conversations/create', generalLimiter, (req, res) => {
   try {
     const userId = req.session.userId || 'anonymous';
     const sessionId = req.session.id;
+    const { projectId = null } = req.body;
 
-    const conversationId = conversationsManager.createConversation(userId, sessionId);
+    const conversationId = conversationsManager.createConversation(userId, sessionId, projectId);
 
-    logger.info(`New conversation created: ${conversationId}`);
+    logger.info(`New conversation created: ${conversationId}${projectId ? ` (project: ${projectId})` : ''}`);
     res.json({ success: true, conversationId });
   } catch (error) {
     logger.error('Create conversation error:', error);
@@ -4158,19 +4159,20 @@ app.post('/api/conversations/create', generalLimiter, (req, res) => {
   }
 });
 
-// Listar conversas (com paginação e busca)
+// Listar conversas (com paginação, busca e filtro por projeto)
 app.get('/api/conversations/list', generalLimiter, (req, res) => {
   try {
     const userId = req.session.userId || 'anonymous';
-    const { limit = 50, offset = 0, search = '' } = req.query;
+    const { limit = 50, offset = 0, search = '', projectId = null } = req.query;
 
     const result = conversationsManager.listConversations(userId, {
       limit: parseInt(limit),
       offset: parseInt(offset),
-      search
+      search,
+      projectId
     });
 
-    logger.info(`Listed ${result.conversations.length} conversations for user ${userId}`);
+    logger.info(`Listed ${result.conversations.length} conversations for user ${userId}${projectId ? ` (project: ${projectId})` : ''}`);
     res.json(result);
   } catch (error) {
     logger.error('List conversations error:', error);
@@ -4182,9 +4184,10 @@ app.get('/api/conversations/list', generalLimiter, (req, res) => {
 app.get('/api/conversations/organized', generalLimiter, (req, res) => {
   try {
     const userId = req.session.userId || 'anonymous';
-    const organized = conversationsManager.organizeByDate(userId);
+    const { projectId = null } = req.query;
+    const organized = conversationsManager.organizeByDate(userId, projectId);
 
-    logger.info(`Organized conversations for user ${userId}`);
+    logger.info(`Organized conversations for user ${userId}${projectId ? ` (project: ${projectId})` : ''}`);
     res.json({ success: true, organized });
   } catch (error) {
     logger.error('Organize conversations error:', error);
@@ -4321,6 +4324,48 @@ app.post('/api/conversations/clean-old', generalLimiter, (req, res) => {
   } catch (error) {
     logger.error('Clean old conversations error:', error);
     res.status(500).json({ error: 'Erro ao limpar conversas antigas' });
+  }
+});
+
+// Vincular conversa a projeto
+app.put('/api/conversations/:conversationId/link-project', generalLimiter, (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const { projectId } = req.body;
+
+    if (!projectId) {
+      return res.status(400).json({ error: 'projectId é obrigatório' });
+    }
+
+    const success = conversationsManager.linkToProject(conversationId, projectId);
+
+    if (!success) {
+      return res.status(404).json({ error: 'Conversa não encontrada' });
+    }
+
+    logger.info(`Linked conversation ${conversationId} to project ${projectId}`);
+    res.json({ success: true });
+  } catch (error) {
+    logger.error('Link to project error:', error);
+    res.status(500).json({ error: 'Erro ao vincular conversa ao projeto' });
+  }
+});
+
+// Desvincular conversa de projeto
+app.put('/api/conversations/:conversationId/unlink-project', generalLimiter, (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    const success = conversationsManager.unlinkFromProject(conversationId);
+
+    if (!success) {
+      return res.status(404).json({ error: 'Conversa não encontrada' });
+    }
+
+    logger.info(`Unlinked conversation ${conversationId} from project`);
+    res.json({ success: true });
+  } catch (error) {
+    logger.error('Unlink from project error:', error);
+    res.status(500).json({ error: 'Erro ao desvincular conversa do projeto' });
   }
 });
 
