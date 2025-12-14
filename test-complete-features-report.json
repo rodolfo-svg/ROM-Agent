@@ -1,20 +1,20 @@
 {
   "summary": {
     "total": 43,
-    "passed": 41,
-    "failed": 2,
+    "passed": 43,
+    "failed": 0,
     "warnings": 0,
-    "successRate": 95.3,
-    "duration": 0.03,
-    "timestamp": "2025-12-14T22:35:51.615Z"
+    "successRate": 100,
+    "duration": 0.05,
+    "timestamp": "2025-12-14T23:16:10.449Z"
   },
   "tests": [
     {
       "name": "Health Check (/api/info)",
       "passed": {
         "status": "healthy",
-        "uptime": "0h 58m",
-        "uptimeSeconds": 3501
+        "uptime": "0h 1m",
+        "uptimeSeconds": 105
       },
       "details": "Status: 200, Version: 2.0.0, Health: healthy, Bedrock: connected"
     },
@@ -35,7 +35,8 @@
     },
     {
       "name": "Criar Projeto com Custom Instructions (/api/projects/create)",
-      "details": "Status: 200, ID: 1, KB: undefinedMB, Custom Instructions: Não"
+      "passed": true,
+      "details": "Status: 200, ID: 1, KB: 500MB, Custom Instructions: Sim"
     },
     {
       "name": "Listar Projetos (/api/projects/list)",
@@ -44,7 +45,13 @@
     },
     {
       "name": "Upload para Projeto com KB Tracking (/api/projects/1/upload)",
-      "details": "Status: 200, KB Usage: N/A"
+      "passed": {
+        "currentMB": "0.00",
+        "maxMB": 500,
+        "usagePercent": 0,
+        "remainingMB": "500.00"
+      },
+      "details": "Status: 200, KB Usage: 0.00/500MB (0%)"
     },
     {
       "name": "Validação de Limite de KB",
