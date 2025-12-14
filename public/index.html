@@ -115,6 +115,79 @@
             color: var(--text-primary);
         }
 
+        /* Conversation Items */
+        .conversation-item {
+            padding: 8px 10px;
+            margin: 2px 0;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            transition: all 0.15s;
+            position: relative;
+        }
+
+        .conversation-item:hover {
+            background: var(--bg-2);
+            color: var(--text-primary);
+        }
+
+        .conversation-item:hover .conversation-actions {
+            opacity: 1;
+        }
+
+        .conversation-item.active {
+            background: var(--bg-2);
+            color: var(--text-primary);
+        }
+
+        .conversation-title {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conversation-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .conversation-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            padding: 2px 4px;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+
+        .conversation-btn:hover {
+            background: var(--bg-3);
+            color: var(--text-primary);
+        }
+
+        .conversation-date-group {
+            margin-bottom: 16px;
+        }
+
+        .conversation-date-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            padding: 8px 6px 6px;
+            letter-spacing: 0.5px;
+        }
+
         .sidebar-footer {
             padding: 12px;
             border-top: 1px solid var(--border);
@@ -622,6 +695,14 @@
             </div>
 
             <div class="sidebar-nav">
+                <!-- Histórico de Conversas -->
+                <div class="nav-section" id="conversationsSection">
+                    <div class="nav-section-title">Histórico</div>
+                    <div id="conversationsList">
+                        <p style="color: var(--text-tertiary); font-size: 12px; padding: 8px 10px;">Carregando...</p>
+                    </div>
+                </div>
+
                 <div class="nav-section">
                     <div class="nav-section-title">Principal</div>
                     <div class="nav-item active" onclick="showView('chat')">
@@ -904,7 +985,9 @@
                     <p>Assistente jurídico especializado em Direito brasileiro. Redação de peças, pesquisa de jurisprudência e análise legal.</p>
                 </div>
             `;
+            currentConversationId = null; // Reset current conversation
             showView('chat');
+            loadConversations(); // Reload conversations list
         }
 
         // Add message
@@ -983,6 +1066,17 @@
                     addMessage('❌ ' + data.error, 'assistant');
                 } else {
                     addMessage(data.response, 'assistant');
+
+                    // Update current conversation ID if returned
+                    if (data.conversationId) {
+                        const wasNewConversation = !currentConversationId;
+                        currentConversationId = data.conversationId;
+
+                        // Reload conversations list if new conversation was created
+                        if (wasNewConversation) {
+                            loadConversations();
+                        }
+                    }
                 }
             } catch (error) {
                 removeLoading(loadingId);
@@ -1412,9 +1506,174 @@ Memória: ${data.memory?.heapUsed}
             }
         }
 
+        // ====== CONVERSATIONS HISTORY ======
+
+        let currentConversationId = null;
+
+        // Load conversations organized by date
+        async function loadConversations() {
+            try {
+                const response = await fetch('/api/conversations/organized');
+                const data = await response.json();
+
+                if (data.success) {
+                    renderConversations(data.organized);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar conversas:', error);
+                document.getElementById('conversationsList').innerHTML =
+                    '<p style="color: var(--text-tertiary); font-size: 12px; padding: 8px 10px;">Erro ao carregar</p>';
+            }
+        }
+
+        // Render conversations grouped by date
+        function renderConversations(organized) {
+            const listDiv = document.getElementById('conversationsList');
+
+            const dateGroups = [
+                { key: 'today', title: 'Hoje' },
+                { key: 'yesterday', title: 'Ontem' },
+                { key: 'lastWeek', title: 'Últimos 7 dias' },
+                { key: 'lastMonth', title: 'Último mês' },
+                { key: 'older', title: 'Mais antigos' }
+            ];
+
+            let html = '';
+            let hasConversations = false;
+
+            dateGroups.forEach(group => {
+                const conversations = organized[group.key];
+                if (conversations && conversations.length > 0) {
+                    hasConversations = true;
+                    html += `<div class="conversation-date-group">`;
+                    html += `<div class="conversation-date-title">${group.title}</div>`;
+
+                    conversations.forEach(conv => {
+                        const isActive = currentConversationId === conv.id ? 'active' : '';
+                        html += `
+                            <div class="conversation-item ${isActive}" data-id="${conv.id}" onclick="openConversation('${conv.id}')">
+                                <span class="conversation-title" title="${escapeHtml(conv.title)}">${escapeHtml(conv.title)}</span>
+                                <div class="conversation-actions">
+                                    <button class="conversation-btn" onclick="event.stopPropagation(); renameConversation('${conv.id}')" title="Renomear">✏️</button>
+                                    <button class="conversation-btn" onclick="event.stopPropagation(); deleteConversation('${conv.id}')" title="Deletar">🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    html += `</div>`;
+                }
+            });
+
+            if (!hasConversations) {
+                html = '<p style="color: var(--text-tertiary); font-size: 12px; padding: 8px 10px;">Nenhuma conversa ainda</p>';
+            }
+
+            listDiv.innerHTML = html;
+        }
+
+        // Open specific conversation
+        async function openConversation(conversationId) {
+            try {
+                const response = await fetch(`/api/conversations/${conversationId}`);
+                const data = await response.json();
+
+                if (!data.success || !data.conversation) {
+                    alert('Erro ao carregar conversa');
+                    return;
+                }
+
+                const conversation = data.conversation;
+
+                // Clear current chat
+                const chatView = document.getElementById('chatView');
+                chatView.innerHTML = '';
+
+                // Remove welcome if exists
+                const welcome = document.getElementById('welcome');
+                if (welcome) welcome.remove();
+
+                // Render all messages from conversation
+                conversation.messages.forEach(msg => {
+                    const sender = msg.role === 'user' ? 'user' : 'assistant';
+                    addMessage(msg.content, sender);
+                });
+
+                // Set current conversation
+                currentConversationId = conversationId;
+
+                // Update active state in sidebar
+                document.querySelectorAll('.conversation-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                const activeItem = document.querySelector(`.conversation-item[data-id="${conversationId}"]`);
+                if (activeItem) {
+                    activeItem.classList.add('active');
+                }
+
+                // Switch to chat view
+                showView('chat');
+            } catch (error) {
+                console.error('Erro ao abrir conversa:', error);
+                alert('Erro ao abrir conversa: ' + error.message);
+            }
+        }
+
+        // Rename conversation
+        async function renameConversation(conversationId) {
+            const newTitle = prompt('Novo título:');
+            if (!newTitle || !newTitle.trim()) return;
+
+            try {
+                const response = await fetch(`/api/conversations/${conversationId}/rename`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: newTitle.trim() })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    loadConversations(); // Reload list
+                } else {
+                    alert('Erro ao renomear: ' + (data.error || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro ao renomear conversa:', error);
+                alert('Erro ao renomear conversa');
+            }
+        }
+
+        // Delete conversation
+        async function deleteConversation(conversationId) {
+            if (!confirm('Deseja realmente deletar esta conversa?')) return;
+
+            try {
+                const response = await fetch(`/api/conversations/${conversationId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // If deleting current conversation, clear chat
+                    if (currentConversationId === conversationId) {
+                        newChat();
+                    }
+                    loadConversations(); // Reload list
+                } else {
+                    alert('Erro ao deletar: ' + (data.error || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro ao deletar conversa:', error);
+                alert('Erro ao deletar conversa');
+            }
+        }
+
         // Init
         document.getElementById('messageInput').focus();
         loadHistory();
+        loadConversations(); // Load conversations sidebar
     </script>
 </body>
 </html>
