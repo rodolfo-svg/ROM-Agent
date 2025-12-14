@@ -235,8 +235,22 @@ app.post('/api/chat', async (req, res) => {
       return res.status(500).json({ error: 'API Key não configurada' });
     }
 
-    const { message, metadata } = req.body;
+    const { message, metadata, projectId = null } = req.body;
     const history = getHistory(req.session.id);
+
+    // ✅ GERENCIAMENTO DE CONVERSAÇÃO
+    // Criar ou obter conversationId da sessão
+    if (!req.session.conversationId) {
+      const userId = req.session.userId || 'anonymous';
+      req.session.conversationId = conversationsManager.createConversation(
+        userId,
+        req.session.id,
+        projectId
+      );
+      logger.info(`Nova conversa criada: ${req.session.conversationId}`);
+    }
+
+    const conversationId = req.session.conversationId;
 
     // ✅ VERIFICAÇÃO E ANÁLISE DO SISTEMA DE AUTO-ATUALIZAÇÃO
     let contextoEnriquecido = null;
@@ -264,7 +278,7 @@ app.post('/api/chat', async (req, res) => {
       }
     }
 
-    // Adicionar mensagem do usuário ao histórico
+    // Adicionar mensagem do usuário ao histórico em memória
     history.push({
       role: 'user',
       content: message,
@@ -273,15 +287,31 @@ app.post('/api/chat', async (req, res) => {
       timestamp: new Date()
     });
 
+    // ✅ SALVAR MENSAGEM DO USUÁRIO NA CONVERSA PERSISTENTE
+    conversationsManager.addMessage(conversationId, {
+      role: 'user',
+      content: message
+    });
+
     // Processar com agente
     const resposta = await agent.processar(message);
 
-    // Adicionar resposta ao histórico
+    // Adicionar resposta ao histórico em memória
     history.push({ role: 'assistant', content: resposta, timestamp: new Date() });
+
+    // ✅ SALVAR RESPOSTA DO ASSISTANT NA CONVERSA PERSISTENTE
+    conversationsManager.addMessage(conversationId, {
+      role: 'assistant',
+      content: resposta
+    });
+
+    // ✅ GERAR TÍTULO AUTOMATICAMENTE APÓS PRIMEIRA MENSAGEM
+    conversationsManager.generateTitle(conversationId);
 
     // Preparar resposta com metadados de verificação
     const response = {
       response: resposta,
+      conversationId: conversationId, // Retornar conversationId para o frontend
       metadados: contextoEnriquecido?.metadados || {},
       recomendacoes: contextoEnriquecido?.recomendacoes || [],
       verificacaoRealizada: !!contextoEnriquecido
@@ -582,6 +612,11 @@ app.post('/api/clear', (req, res) => {
     agents.get(sessionId).limparHistorico();
   }
   conversationHistory.set(sessionId, []);
+
+  // ✅ LIMPAR conversationId DA SESSÃO PARA CRIAR NOVA CONVERSA
+  delete req.session.conversationId;
+  logger.info(`Histórico limpo - nova conversa será criada na próxima mensagem`);
+
   res.json({ success: true });
 });
 
