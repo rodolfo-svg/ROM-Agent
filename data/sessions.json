@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "userId": "user-001",
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTAwMSIsImVtYWlsIjoicm9kb2xmb0Byb20uYWR2LmJyIiwicm9sZSI6Im1hc3Rlcl9hZG1pbiIsInBhcnRuZXJJZCI6InJvbSIsImlhdCI6MTc2NTc0MzQyNiwiZXhwIjoxNzY2MzQ4MjI2fQ.B6Ro2xdP7u7IUrdpRPUrgTr7x56Z48cTMJtCgMwsdRA",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTAwMSIsInR5cGUiOiJyZWZyZXNoIiwiaWF0IjoxNzY1NzQzNDI2LCJleHAiOjE3NjgzMzU0MjZ9.Ueam1w0eknTEeF34hzFYWaT1QWte7UOcvQt7ioTUN8s",
+    "createdAt": "2025-12-14T20:17:06.327Z",
+    "lastActivity": "2025-12-14T20:17:06.327Z",
+    "userAgent": null
+  },
+  {
+    "userId": "user-001",
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTAwMSIsImVtYWlsIjoicm9kb2xmb0Byb20uYWR2LmJyIiwicm9sZSI6Im1hc3Rlcl9hZG1pbiIsInBhcnRuZXJJZCI6InJvbSIsImlhdCI6MTc2NTc0NTcxMSwiZXhwIjoxNzY2MzUwNTExfQ.1uI2_7o_b7q57YVjTPls5PLiB4VH1mJFZQrHitg_U0I",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTAwMSIsInR5cGUiOiJyZWZyZXNoIiwiaWF0IjoxNzY1NzQ1NzExLCJleHAiOjE3NjgzMzc3MTF9.Tzud5jTg76odbOHRbuYRelcEm7hk0_HtNjvWaYYQv_w",
+    "createdAt": "2025-12-14T20:55:11.938Z",
+    "lastActivity": "2025-12-14T20:55:11.938Z",
+    "userAgent": null
+  }
+]

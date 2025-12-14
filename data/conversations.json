@@ -103,5 +103,63 @@
     "createdAt": "2025-12-14T18:52:19.617Z",
     "updatedAt": "2025-12-14T18:52:22.619Z",
     "messageCount": 2
+  },
+  "conv_1765743425235_bs7q26": {
+    "id": "conv_1765743425235_bs7q26",
+    "userId": "anonymous",
+    "sessionId": "k0nQE7sd5t0aBUOmAJ6TNg74zAZIehMP",
+    "projectId": null,
+    "title": "Teste Automático - Renomeado",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de sistema - responda apenas com OK",
+        "timestamp": "2025-12-14T20:17:05.235Z"
+      },
+      {
+        "role": "assistant",
+        "content": "OK. O teste do sistema foi concluído com sucesso. Estou à disposição para qualquer consulta ou informação que você precise.",
+        "timestamp": "2025-12-14T20:17:06.193Z"
+      }
+    ],
+    "createdAt": "2025-12-14T20:17:05.235Z",
+    "updatedAt": "2025-12-14T20:17:06.200Z",
+    "messageCount": 2
+  },
+  "conv_1765745710930_l6w8d": {
+    "id": "conv_1765745710930_l6w8d",
+    "userId": "anonymous",
+    "sessionId": "lR4wADlg8hKIYX5sXhBe42bj26JuGWk0",
+    "projectId": null,
+    "title": "Teste Automático - Renomeado",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de sistema - responda apenas com OK",
+        "timestamp": "2025-12-14T20:55:10.931Z"
+      },
+      {
+        "role": "assistant",
+        "content": "OK",
+        "timestamp": "2025-12-14T20:55:11.806Z"
+      }
+    ],
+    "createdAt": "2025-12-14T20:55:10.930Z",
+    "updatedAt": "2025-12-14T20:55:11.813Z",
+    "messageCount": 2
+  },
+  "conv_1765745711815_4xzr44": {
+    "id": "conv_1765745711815_4xzr44",
+    "userId": "anonymous",
+    "sessionId": "ZXsWs0GUZSBLpgs_EhAnqz06K4Pl7cH_",
+    "projectId": null,
+    "title": "Nova Conversa",
+    "titleGenerated": false,
+    "messages": [],
+    "createdAt": "2025-12-14T20:55:11.815Z",
+    "updatedAt": "2025-12-14T20:55:11.815Z",
+    "messageCount": 0
   }
 }

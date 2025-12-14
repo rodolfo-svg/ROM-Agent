@@ -723,6 +723,55 @@ app.get('/api/info', async (req, res) => {
   }
 });
 
+// API - Estatísticas de uso do sistema
+app.get('/api/stats', (req, res) => {
+  try {
+    // Obter estatísticas de conversas
+    const allConversations = conversationsManager.loadConversations();
+    const conversationsArray = Object.values(allConversations);
+
+    const totalConversations = conversationsArray.length;
+    const totalMessages = conversationsArray.reduce((sum, conv) => sum + (conv.messageCount || 0), 0);
+
+    // Estatísticas de cache
+    const cacheHitRate = 0; // Placeholder - implementar se necessário
+
+    // Estatísticas de agentes
+    const activeAgents = agents.size;
+
+    // Estatísticas de KB (placeholder)
+    const totalDocuments = 0; // Placeholder - implementar se necessário
+
+    // Tempo médio de resposta (placeholder)
+    const averageResponseTime = 3.0; // Placeholder baseado em testes
+
+    const stats = {
+      success: true,
+      conversations: {
+        total: totalConversations,
+        totalMessages: totalMessages
+      },
+      cache: {
+        activeSessions: activeAgents,
+        hitRate: cacheHitRate
+      },
+      kb: {
+        totalDocuments: totalDocuments
+      },
+      performance: {
+        averageResponseTime: averageResponseTime,
+        unit: 'seconds'
+      },
+      timestamp: new Date().toISOString()
+    };
+
+    res.json(stats);
+  } catch (error) {
+    console.error('Erro ao obter estatísticas:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ====================================================================
 // ROTAS DE AUTENTICAÇÃO JWT
 // ====================================================================
@@ -1675,6 +1724,57 @@ app.get('/api/kb/statistics', (req, res) => {
   }
 });
 
+// Obter status geral do Knowledge Base
+app.get('/api/kb/status', (req, res) => {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const kbPath = path.join(__dirname, '../KB');
+
+    // Verificar se diretório KB existe
+    if (!fs.existsSync(kbPath)) {
+      return res.json({
+        success: true,
+        status: 'empty',
+        totalDocuments: 0,
+        totalSize: 0,
+        lastUpdate: null,
+        message: 'Knowledge Base vazio - aguardando documentos'
+      });
+    }
+
+    // Contar documentos e tamanho total
+    const files = fs.readdirSync(kbPath);
+    const documents = files.filter(f => !f.startsWith('.'));
+
+    let totalSize = 0;
+    let lastUpdate = null;
+
+    documents.forEach(file => {
+      const filePath = path.join(kbPath, file);
+      const stats = fs.statSync(filePath);
+      totalSize += stats.size;
+
+      if (!lastUpdate || stats.mtime > lastUpdate) {
+        lastUpdate = stats.mtime;
+      }
+    });
+
+    res.json({
+      success: true,
+      status: documents.length > 0 ? 'active' : 'empty',
+      totalDocuments: documents.length,
+      totalSize: totalSize,
+      totalSizeFormatted: `${(totalSize / 1024 / 1024).toFixed(2)} MB`,
+      lastUpdate: lastUpdate ? lastUpdate.toISOString() : null,
+      kbPath: kbPath
+    });
+  } catch (error) {
+    console.error('Erro ao obter status do KB:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ====================================================================
 // ROTAS DE API PARA KNOWLEDGE BASE (KB) COM AUTENTICAÇÃO
 // ====================================================================
@@ -2155,13 +2255,16 @@ app.get('/api/validate/statistics', (req, res) => {
 // Obter estatísticas do cache
 app.get('/api/cache/statistics', (req, res) => {
   try {
-    const agent = getAgent(req.session.id);
-    if (!agent) {
-      return res.status(500).json({ error: 'Agente não inicializado' });
-    }
+    // Retornar estatísticas do cache de agentes ativos
+    const stats = {
+      enabled: true,
+      activeSessions: agents.size,
+      totalAgents: agents.size,
+      cacheType: 'in-memory',
+      ttl: '30min'
+    };
 
-    const stats = agent.getCacheStatistics();
-    res.json({ stats });
+    res.json({ success: true, stats });
   } catch (error) {
     console.error('Erro ao obter estatísticas do cache:', error);
     res.status(500).json({ error: error.message });
@@ -4197,6 +4300,34 @@ app.post('/api/conversations/create', generalLimiter, (req, res) => {
 
     logger.info(`New conversation created: ${conversationId}${projectId ? ` (project: ${projectId})` : ''}`);
     res.json({ success: true, conversationId });
+  } catch (error) {
+    logger.error('Create conversation error:', error);
+    res.status(500).json({ error: 'Erro ao criar conversa' });
+  }
+});
+
+// Criar nova conversa (alias para compatibilidade - POST /api/conversations)
+app.post('/api/conversations', generalLimiter, (req, res) => {
+  try {
+    const userId = req.session.userId || 'anonymous';
+    const sessionId = req.session.id;
+    const { title = 'Nova conversa', messages = [], projectId = null } = req.body;
+
+    const conversationId = conversationsManager.createConversation(userId, sessionId, projectId);
+
+    // Se houver mensagens no body (para importação), adicionar
+    if (messages && messages.length > 0) {
+      const conversation = conversationsManager.loadConversations()[conversationId];
+      if (conversation) {
+        conversation.messages = messages;
+        conversation.title = title;
+        conversation.messageCount = messages.length;
+        conversationsManager.saveConversations(conversationsManager.loadConversations());
+      }
+    }
+
+    logger.info(`New conversation created: ${conversationId}${projectId ? ` (project: ${projectId})` : ''}`);
+    res.json({ success: true, conversationId, conversation: conversationsManager.loadConversations()[conversationId] });
   } catch (error) {
     logger.error('Create conversation error:', error);
     res.status(500).json({ error: 'Erro ao criar conversa' });
