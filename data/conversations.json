@@ -80,5 +80,28 @@
     "createdAt": "2025-12-14T18:17:57.531Z",
     "updatedAt": "2025-12-14T18:18:03.765Z",
     "messageCount": 2
+  },
+  "conv_1765738339617_d9g61c": {
+    "id": "conv_1765738339617_d9g61c",
+    "userId": "anonymous",
+    "sessionId": "JtlZzY2XKZBc4JtK2QODGLdVkO_RzB1j",
+    "projectId": null,
+    "title": "teste rápido",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "teste rápido",
+        "timestamp": "2025-12-14T18:52:19.618Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Olá! Parece que você está interessado em testar minhas habilidades como ROM Agent, um assistente jurídico especializado em Direito brasileiro. Estou aqui para ajudar com qualquer dúvida ou questão legal que você possa ter.\n\nPara começarmos, aqui está um teste rápido que pode demonstrar minha capacidade de fornecer informações e orientação jurídica:\n\n**Questão Jurídica:**\nEm um caso de indenização por dano moral, quais são os principais critérios que o juiz considera para determinar o valor da indenização?\n\n**Resposta:**\nNo Direito brasileiro, quando o juiz determina o valor da indenização por dano moral, ele considera os seguintes critérios principais:\n\n1. **A gravidade do dano sofrido:** A intensidade da ofensa e a extensão do sofrimento causado à vítima.\n2. **A culpa do agente causador do dano:** O grau de responsabilidade ou negligência do réu.\n3. **A situação econômica do réu:** A capacidade financeira do réu para arcar com a indenização.\n4. **O comportamento da vítima após o evento:** Se a vítima demonstrou algum comportamento que pudesse ter contribuído para a situação.\n5. **Eventuais consequências do dano:** Efeitos duradouros ou permanentes sobre a vítima, como sequelas psicológicas.\n\nEsses critérios são analisados de forma equilibrada, e o valor da indenização pode variar significativamente dependendo das circunstâncias específicas do caso.\n\nSe você tiver mais perguntas ou precisar de uma análise mais detalhada de algum tópico jurídico, sinta-se à vontade para perguntar!",
+        "timestamp": "2025-12-14T18:52:22.619Z"
+      }
+    ],
+    "createdAt": "2025-12-14T18:52:19.617Z",
+    "updatedAt": "2025-12-14T18:52:22.619Z",
+    "messageCount": 2
   }
 }

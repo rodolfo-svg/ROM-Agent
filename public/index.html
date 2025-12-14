@@ -400,6 +400,31 @@
             color: var(--text-tertiary);
         }
 
+        /* Action buttons */
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 13px;
+        }
+
+        .action-btn:hover {
+            background: var(--bg-3);
+            border-color: var(--text-tertiary);
+            color: var(--text-primary);
+        }
+
+        .action-btn svg {
+            flex-shrink: 0;
+        }
+
         .send-btn {
             position: absolute;
             right: 10px;
@@ -903,6 +928,34 @@
 
             <div class="input-area">
                 <div class="input-wrapper">
+                    <!-- Botões de ação antes do textarea -->
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px; padding: 0 12px;">
+                        <button class="action-btn" onclick="document.getElementById('fileUploadInput').click()" title="Anexar arquivo ao KB">
+                            <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
+                                <path d="M4.5 3a2.5 2.5 0 015 0v9a1.5 1.5 0 01-3 0V5a.5.5 0 011 0v7a.5.5 0 001 0V3a1.5 1.5 0 10-3 0v9a2.5 2.5 0 005 0V5a.5.5 0 011 0v7a3.5 3.5 0 11-7 0V3z"/>
+                            </svg>
+                            <span style="font-size: 12px;">Anexar arquivo</span>
+                        </button>
+                        <button class="action-btn" onclick="exportConversation()" title="Exportar conversa atual">
+                            <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
+                                <path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/>
+                                <path d="M7.646 11.854a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V1.5a.5.5 0 00-1 0v8.793L5.354 8.146a.5.5 0 10-.708.708l3 3z"/>
+                            </svg>
+                            <span style="font-size: 12px;">Exportar</span>
+                        </button>
+                        <button class="action-btn" onclick="document.getElementById('conversationUploadInput').click()" title="Importar conversa">
+                            <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
+                                <path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/>
+                                <path d="M7.646 1.146a.5.5 0 01.708 0l3 3a.5.5 0 01-.708.708L8.5 2.707V11.5a.5.5 0 01-1 0V2.707L5.354 4.854a.5.5 0 11-.708-.708l3-3z"/>
+                            </svg>
+                            <span style="font-size: 12px;">Importar</span>
+                        </button>
+                    </div>
+
+                    <!-- Input file oculto para anexos -->
+                    <input type="file" id="fileUploadInput" style="display: none;" multiple accept=".pdf,.docx,.txt,.md,.json" onchange="handleFileUpload(event)">
+                    <input type="file" id="conversationUploadInput" style="display: none;" accept=".json" onchange="handleConversationUpload(event)">
+
                     <textarea
                         id="messageInput"
                         class="input-box"
@@ -1668,6 +1721,149 @@ Memória: ${data.memory?.heapUsed}
                 console.error('Erro ao deletar conversa:', error);
                 alert('Erro ao deletar conversa');
             }
+        }
+
+        // ========== FILE UPLOAD & EXPORT FUNCTIONS ==========
+
+        // Handle file upload to KB
+        async function handleFileUpload(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            const formData = new FormData();
+            for (let file of files) {
+                formData.append('files', file);
+            }
+
+            // Show loading
+            const messagesDiv = document.getElementById('messages');
+            const loadingMsg = document.createElement('div');
+            loadingMsg.className = 'message';
+            loadingMsg.innerHTML = `
+                <div class="message-avatar">📤</div>
+                <div class="message-content">
+                    <div style="color: var(--text-secondary);">Enviando ${files.length} arquivo(s) para o Knowledge Base...</div>
+                </div>
+            `;
+            messagesDiv.appendChild(loadingMsg);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            try {
+                const response = await fetch('/api/kb/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                // Remove loading message
+                loadingMsg.remove();
+
+                // Show result
+                const resultMsg = document.createElement('div');
+                resultMsg.className = 'message';
+                if (result.success || result.processed) {
+                    resultMsg.innerHTML = `
+                        <div class="message-avatar">✅</div>
+                        <div class="message-content">
+                            <div style="color: var(--text-primary);"><strong>Upload concluído!</strong></div>
+                            <div style="color: var(--text-secondary); margin-top: 8px;">
+                                ${result.processed || files.length} arquivo(s) adicionado(s) ao Knowledge Base.
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    resultMsg.innerHTML = `
+                        <div class="message-avatar">❌</div>
+                        <div class="message-content">
+                            <div style="color: var(--text-primary);"><strong>Erro no upload</strong></div>
+                            <div style="color: var(--text-secondary); margin-top: 8px;">
+                                ${result.error || 'Erro desconhecido'}
+                            </div>
+                        </div>
+                    `;
+                }
+                messagesDiv.appendChild(resultMsg);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+            } catch (error) {
+                loadingMsg.remove();
+                alert('Erro ao enviar arquivos: ' + error.message);
+            }
+
+            // Reset input
+            event.target.value = '';
+        }
+
+        // Export current conversation
+        async function exportConversation() {
+            if (!currentConversationId) {
+                alert('Nenhuma conversa ativa para exportar');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/conversations/${currentConversationId}`);
+                const data = await response.json();
+
+                if (data.success && data.conversation) {
+                    const conversation = data.conversation;
+                    const blob = new Blob([JSON.stringify(conversation, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `conversa_${conversation.id}_${new Date().toISOString().slice(0,10)}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                } else {
+                    alert('Erro ao exportar conversa');
+                }
+            } catch (error) {
+                console.error('Erro ao exportar:', error);
+                alert('Erro ao exportar conversa: ' + error.message);
+            }
+        }
+
+        // Handle conversation import
+        async function handleConversationUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const conversationData = JSON.parse(e.target.result);
+
+                    // Create new conversation with imported data
+                    const response = await fetch('/api/conversations', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            title: conversationData.title || 'Conversa Importada',
+                            messages: conversationData.messages || []
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success && result.conversationId) {
+                        // Open the imported conversation
+                        await openConversation(result.conversationId);
+                        loadConversations();
+                        alert('Conversa importada com sucesso!');
+                    } else {
+                        alert('Erro ao importar conversa: ' + (result.error || 'Erro desconhecido'));
+                    }
+                } catch (error) {
+                    console.error('Erro ao importar:', error);
+                    alert('Erro ao importar conversa: ' + error.message);
+                }
+            };
+
+            reader.readAsText(file);
+            event.target.value = '';
         }
 
         // Init
