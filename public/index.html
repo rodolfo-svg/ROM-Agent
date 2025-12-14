@@ -930,12 +930,13 @@
                 <div class="input-wrapper">
                     <!-- Botões de ação antes do textarea -->
                     <div style="display: flex; gap: 8px; margin-bottom: 8px; padding: 0 12px;">
-                        <button class="action-btn" onclick="document.getElementById('fileUploadInput').click()" title="Anexar arquivo ao KB">
+                        <!-- Label funciona nativamente em mobile sem JavaScript -->
+                        <label for="fileUploadInput" class="action-btn" title="Anexar arquivo ao KB" style="margin: 0;">
                             <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
                                 <path d="M4.5 3a2.5 2.5 0 015 0v9a1.5 1.5 0 01-3 0V5a.5.5 0 011 0v7a.5.5 0 001 0V3a1.5 1.5 0 10-3 0v9a2.5 2.5 0 005 0V5a.5.5 0 011 0v7a3.5 3.5 0 11-7 0V3z"/>
                             </svg>
                             <span style="font-size: 12px;">Anexar arquivo</span>
-                        </button>
+                        </label>
                         <button class="action-btn" onclick="exportConversation()" title="Exportar conversa atual">
                             <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
                                 <path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/>
@@ -943,13 +944,13 @@
                             </svg>
                             <span style="font-size: 12px;">Exportar</span>
                         </button>
-                        <button class="action-btn" onclick="document.getElementById('conversationUploadInput').click()" title="Importar conversa">
+                        <label for="conversationUploadInput" class="action-btn" title="Importar conversa" style="margin: 0;">
                             <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
                                 <path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/>
                                 <path d="M7.646 1.146a.5.5 0 01.708 0l3 3a.5.5 0 01-.708.708L8.5 2.707V11.5a.5.5 0 01-1 0V2.707L5.354 4.854a.5.5 0 11-.708-.708l3-3z"/>
                             </svg>
                             <span style="font-size: 12px;">Importar</span>
-                        </button>
+                        </label>
                     </div>
 
                     <!-- Input file oculto para anexos -->
