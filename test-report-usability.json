@@ -1,0 +1,196 @@
+{
+  "timestamp": "2025-12-14T21:37:47.158Z",
+  "summary": {
+    "total": 28,
+    "passed": 28,
+    "failed": 0,
+    "warnings": 0,
+    "successRate": 100,
+    "duration": 6645
+  },
+  "results": [
+    {
+      "category": "Sistema",
+      "name": "Health Check (/api/info)",
+      "url": "http://localhost:3000/api/info",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 23,
+      "validation": "✓ Contém 'version'"
+    },
+    {
+      "category": "Sistema",
+      "name": "Estatísticas do Sistema (/api/stats)",
+      "url": "http://localhost:3000/api/stats",
+      "status": 200,
+      "expected": 200,
+      "passed": {
+        "averageResponseTime": 3,
+        "unit": "seconds"
+      },
+      "duration": 2,
+      "validation": "✓ Stats completas (10 conversas)"
+    },
+    {
+      "category": "Sistema",
+      "name": "Status de Autenticação (/api/auth/status)",
+      "url": "http://localhost:3000/api/auth/status",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 1,
+      "validation": "✓ Contém 'authenticated'"
+    },
+    {
+      "category": "Conversação",
+      "name": "Listar conversas organizadas (/api/conversations/organized)",
+      "url": "http://localhost:3000/api/conversations/organized",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 3,
+      "validation": "✓ Contém 'organized'"
+    },
+    {
+      "category": "Conversação",
+      "name": "Enviar mensagem ao chat (/api/chat)",
+      "url": "http://localhost:3000/api/chat",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 6471,
+      "validation": "✓ Contém 'response'"
+    },
+    {
+      "category": "Conversação",
+      "name": "Criar nova conversa (POST /api/conversations)",
+      "url": "http://localhost:3000/api/conversations",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 4,
+      "validation": "✓ Contém 'conversationId'"
+    },
+    {
+      "category": "Conversação",
+      "name": "Obter conversa específica (/api/conversations/conv_1765745711815_4xzr44)",
+      "url": "http://localhost:3000/api/conversations/conv_1765745711815_4xzr44",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 3,
+      "validation": "✓ Estrutura válida com 0 mensagens"
+    },
+    {
+      "category": "Conversação",
+      "name": "Renomear conversa (PUT /api/conversations/conv_1765745711815_4xzr44/rename)",
+      "url": "http://localhost:3000/api/conversations/conv_1765745711815_4xzr44/rename",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 2,
+      "validation": "✓ Contém 'success'"
+    },
+    {
+      "category": "Knowledge Base",
+      "name": "Status do KB (/api/kb/status)",
+      "url": "http://localhost:3000/api/kb/status",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 3,
+      "validation": "✓ KB com 4 documentos"
+    },
+    {
+      "category": "Knowledge Base",
+      "name": "Listar documentos KB (/api/kb/documents) [requer auth]",
+      "url": "http://localhost:3000/api/kb/documents",
+      "status": 401,
+      "expected": 401,
+      "passed": true,
+      "duration": 1,
+      "validation": ""
+    },
+    {
+      "category": "Autenticação",
+      "name": "Login com credenciais válidas (/api/auth/login)",
+      "url": "http://localhost:3000/api/auth/login",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 119,
+      "validation": "✓ Contém 'accessToken'"
+    },
+    {
+      "category": "Projetos",
+      "name": "Listar projetos (/api/projects/list)",
+      "url": "http://localhost:3000/api/projects/list",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 1,
+      "validation": "✓ É array com 0 itens"
+    },
+    {
+      "category": "Ferramentas",
+      "name": "Busca semântica (/api/semantic-search)",
+      "url": "http://localhost:3000/api/semantic-search",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 2,
+      "validation": "✓ É array com 0 itens"
+    },
+    {
+      "category": "Ferramentas",
+      "name": "Listar templates (/api/templates/list)",
+      "url": "http://localhost:3000/api/templates/list",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 1,
+      "validation": "✓ É array com 0 itens"
+    },
+    {
+      "category": "Ferramentas",
+      "name": "Status de backups (/api/backup/status)",
+      "url": "http://localhost:3000/api/backup/status",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 2,
+      "validation": "✓ É array com 1 itens"
+    },
+    {
+      "category": "Ferramentas",
+      "name": "Estatísticas de cache (/api/cache/statistics)",
+      "url": "http://localhost:3000/api/cache/statistics",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 1,
+      "validation": "✓ Contém 'stats'"
+    },
+    {
+      "category": "Frontend",
+      "name": "Página principal HTML (/)",
+      "url": "http://localhost:3000/",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 2,
+      "validation": "✓ HTML válido"
+    },
+    {
+      "category": "Analytics",
+      "name": "Página de Analytics (/analytics.html)",
+      "url": "http://localhost:3000/analytics.html",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 1,
+      "validation": "✓ Analytics HTML válido"
+    }
+  ]
+}

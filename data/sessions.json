@@ -14,5 +14,21 @@
     "createdAt": "2025-12-14T20:55:11.938Z",
     "lastActivity": "2025-12-14T20:55:11.938Z",
     "userAgent": null
+  },
+  {
+    "userId": "user-001",
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTAwMSIsImVtYWlsIjoicm9kb2xmb0Byb20uYWR2LmJyIiwicm9sZSI6Im1hc3Rlcl9hZG1pbiIsInBhcnRuZXJJZCI6InJvbSIsImlhdCI6MTc2NTc0Nzg5OCwiZXhwIjoxNzY2MzUyNjk4fQ.Ohtdx_4u-Vpgt5slN152NomQnGxROoNe4zFWmyLXwxE",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTAwMSIsInR5cGUiOiJyZWZyZXNoIiwiaWF0IjoxNzY1NzQ3ODk4LCJleHAiOjE3NjgzMzk4OTh9.ox_9_7nrPpgt4tyDE2cukTnA70MWQe9Gbz_O_FcuKG0",
+    "createdAt": "2025-12-14T21:31:38.840Z",
+    "lastActivity": "2025-12-14T21:31:38.840Z",
+    "userAgent": null
+  },
+  {
+    "userId": "user-001",
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTAwMSIsImVtYWlsIjoicm9kb2xmb0Byb20uYWR2LmJyIiwicm9sZSI6Im1hc3Rlcl9hZG1pbiIsInBhcnRuZXJJZCI6InJvbSIsImlhdCI6MTc2NTc0ODI2NywiZXhwIjoxNzY2MzUzMDY3fQ.T9mG_rn2JS2eijAcuAe5GA_nrGwc8XgYzKCi5EU-SAk",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTAwMSIsInR5cGUiOiJyZWZyZXNoIiwiaWF0IjoxNzY1NzQ4MjY3LCJleHAiOjE3NjgzNDAyNjd9._qf_X4f5DDF4npHSqMTm0X_8NccrqFr4SbcLgMMeAL8",
+    "createdAt": "2025-12-14T21:37:47.147Z",
+    "lastActivity": "2025-12-14T21:37:47.147Z",
+    "userAgent": null
   }
 ]

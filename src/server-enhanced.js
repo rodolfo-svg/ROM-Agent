@@ -675,6 +675,7 @@ app.get('/api/info', async (req, res) => {
     const systemInfo = {
       nome: CONFIG.nome,
       versao: CONFIG.versao,
+      version: CONFIG.versao, // Alias em inglês para compatibilidade internacional
       capacidades: CONFIG.capacidades,
 
       // Health Check
@@ -4073,8 +4074,11 @@ app.get('/api/templates/list', generalLimiter, async (req, res) => {
 
     const templates = templatesManager.listTemplates();
 
-    logger.info(`Found ${templates.length} templates`);
-    res.json(templates);
+    // Garantir que sempre retornamos um array
+    const templatesList = Array.isArray(templates) ? templates : [];
+
+    logger.info(`Found ${templatesList.length} templates`);
+    res.json(templatesList);
   } catch (error) {
     logger.error('Templates list error:', error);
     res.status(500).json({ error: 'Erro ao listar templates' });
