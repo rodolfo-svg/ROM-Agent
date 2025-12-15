@@ -13,6 +13,8 @@ import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import { logger } from './utils/logger.js';
 import projectsRouter from '../lib/api-routes-projects.js';
+import autoUpdateRoutes from '../lib/api-routes-auto-update.js';
+const autoUpdateSystem = require('../lib/auto-update-system.cjs');
 
 dotenv.config();
 
@@ -26,6 +28,9 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Rotas de Projects e Code Execution
 app.use('/api', projectsRouter);
+
+// Rotas de Auto-Atualização e Aprendizado
+app.use('/api', autoUpdateRoutes);
 
 // Instância do agente
 let agent = null;
@@ -822,6 +827,11 @@ app.listen(PORT, () => {
   logger.info('Iniciando sistema de deploy automático...');
   scheduler.start();
   logger.info('Sistema de deploy automático configurado para 02h-05h (horário de Brasília)');
+
+  // Ativar sistema de auto-atualização e aprendizado
+  logger.info('Ativando sistema de auto-atualização e aprendizado...');
+  autoUpdateSystem.ativar();
+  logger.info('Sistema de auto-atualização ATIVO - Verificação a cada 24h');
 });
 
 // Graceful shutdown
