@@ -34,10 +34,13 @@ import templatesManager from '../lib/templates-manager.js';
 import backupManager from '../lib/backup-manager.js';
 import conversationsManager from '../lib/conversations-manager.js';
 import chunkedUpload from '../lib/chunked-upload.js';
+import projectsRouter from '../lib/api-routes-projects.js';
+import autoUpdateRoutes from '../lib/api-routes-auto-update.js';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
 const IntegradorSistema = require('../lib/integrador-sistema.cjs');
+const autoUpdateSystem = require('../lib/auto-update-system.cjs');
 const PromptsManager = require('../lib/prompts-manager.cjs');
 const PromptsVersioning = require('../lib/prompts-versioning.cjs');
 const AuthSystem = require('../lib/auth-system.cjs');
@@ -130,6 +133,10 @@ app.use(session({
 
 // Rate Limiter Geral (100 requisições/hora por IP)
 app.use('/api/', generalLimiter);
+
+// Rotas de Projects e Auto-Atualização
+app.use('/api', projectsRouter);
+app.use('/api', autoUpdateRoutes);
 
 logger.info('Sistema inicializado com todos os middlewares de otimização');
 
@@ -5544,6 +5551,11 @@ logger.info('✅ Pricing API endpoints configured');
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
+  // Ativar sistema de auto-atualização e aprendizado
+  logger.info('Ativando sistema de auto-atualização e aprendizado...');
+  autoUpdateSystem.ativar();
+  logger.info('Sistema de auto-atualização ATIVO - Verificação a cada 24h');
+
   console.log(`
 ╔══════════════════════════════════════════════════════════════╗
 ║                                                              ║
