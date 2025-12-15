@@ -9,6 +9,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { ROMAgent, CONFIG } from './index.js';
 import dotenv from 'dotenv';
+import { scheduler } from './jobs/scheduler.js';
+import { deployJob } from './jobs/deploy-job.js';
+import { logger } from './utils/logger.js';
 
 dotenv.config();
 
@@ -103,6 +106,100 @@ app.get('/api/download/:file', (req, res) => {
     res.download(path.join(__dirname, file.path), file.name);
   } else {
     res.status(404).json({ error: 'Arquivo não encontrado' });
+  }
+});
+
+// ============================================================================
+// API - Sistema de Deploy Automático
+// ============================================================================
+
+// Status do scheduler
+app.get('/api/scheduler/status', (req, res) => {
+  try {
+    const status = scheduler.getStatus();
+    res.json(status);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Lista jobs agendados
+app.get('/api/scheduler/jobs', (req, res) => {
+  try {
+    const jobs = scheduler.listJobs();
+    res.json({ jobs });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Executa um job manualmente
+app.post('/api/scheduler/run/:jobName', async (req, res) => {
+  try {
+    const { jobName } = req.params;
+    await scheduler.runJob(jobName);
+    res.json({ success: true, message: `Job '${jobName}' executado com sucesso` });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Status do deploy
+app.get('/api/deploy/status', (req, res) => {
+  try {
+    const status = deployJob.getStatus();
+    res.json(status);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Histórico de deploys
+app.get('/api/deploy/history', async (req, res) => {
+  try {
+    const limit = parseInt(req.query.limit) || 10;
+    const history = await deployJob.getHistory(limit);
+    res.json({ history });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Executa deploy manual
+app.post('/api/deploy/execute', async (req, res) => {
+  try {
+    // Executa em background e retorna imediatamente
+    deployJob.execute().catch(error => {
+      logger.error('Erro no deploy manual:', error);
+    });
+
+    res.json({
+      success: true,
+      message: 'Deploy iniciado em background. Use /api/deploy/status para acompanhar.'
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Logs do sistema
+app.get('/api/logs', async (req, res) => {
+  try {
+    const date = req.query.date || null;
+    const logs = await logger.getLogs(date);
+    res.json({ logs });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Lista arquivos de log disponíveis
+app.get('/api/logs/files', async (req, res) => {
+  try {
+    const files = await logger.listLogFiles();
+    res.json({ files });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
@@ -716,6 +813,24 @@ app.listen(PORT, () => {
 ║                                                              ║
 ╚══════════════════════════════════════════════════════════════╝
 `);
+
+  // Iniciar scheduler de jobs
+  logger.info('Iniciando sistema de deploy automático...');
+  scheduler.start();
+  logger.info('Sistema de deploy automático configurado para 02h-05h (horário de Brasília)');
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM recebido. Encerrando gracefully...');
+  scheduler.stop();
+  process.exit(0);
+});
+
+process.on('SIGINT', () => {
+  logger.info('SIGINT recebido. Encerrando gracefully...');
+  scheduler.stop();
+  process.exit(0);
 });
 
 export default app;
