@@ -37,6 +37,7 @@ import chunkedUpload from '../lib/chunked-upload.js';
 import projectsRouter from '../lib/api-routes-projects.js';
 import autoUpdateRoutes from '../lib/api-routes-auto-update.js';
 import storageRoutes from '../lib/api-routes-storage.js';
+import schedulerRoutes from '../lib/api-routes-scheduler.js';
 import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
@@ -142,10 +143,11 @@ app.use(session({
 // Rate Limiter Geral (100 requisições/hora por IP)
 app.use('/api/', generalLimiter);
 
-// Rotas de Projects, Auto-Atualização e Storage
+// Rotas de Projects, Auto-Atualização, Storage e Scheduler
 app.use('/api', projectsRouter);
 app.use('/api', autoUpdateRoutes);
 app.use('/api', storageRoutes);
+app.use('/api', schedulerRoutes);
 
 logger.info('Sistema inicializado com todos os middlewares de otimização');
 
