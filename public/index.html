@@ -755,6 +755,32 @@
                 left: 0;
             }
         }
+
+        /* Timbrado Watermark */
+        .letterhead {
+            position: fixed;
+            bottom: env(safe-area-inset-bottom, 20px);
+            right: env(safe-area-inset-right, 20px);
+            max-width: 200px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 1;
+            transition: opacity 0.3s;
+        }
+
+        .letterhead img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .letterhead {
+                max-width: 120px;
+                bottom: calc(env(safe-area-inset-bottom, 10px) + 80px);
+                right: env(safe-area-inset-right, 10px);
+            }
+        }
     </style>
 </head>
 <body>
@@ -2250,6 +2276,11 @@ Memória: ${data.memory?.heapUsed}
             }, 5000);
         }
     </script>
+
+    <!-- Letterhead Watermark -->
+    <div class="letterhead">
+        <img src="/img/timbrado_rom.png" alt="ROM Timbrado">
+    </div>
 
 </body>
 </html>
