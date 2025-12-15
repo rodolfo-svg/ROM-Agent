@@ -898,7 +898,12 @@ app.get('/api/info', async (req, res) => {
       // AWS Bedrock
       bedrock: {
         status: bedrockStatus,
-        region: process.env.AWS_REGION || 'us-east-1'
+        region: process.env.AWS_REGION || 'us-east-1',
+        credentials: {
+          hasAccessKeyId: !!process.env.AWS_ACCESS_KEY_ID,
+          hasSecretAccessKey: !!process.env.AWS_SECRET_ACCESS_KEY,
+          hasRegion: !!process.env.AWS_REGION
+        }
       },
 
       // Cache
