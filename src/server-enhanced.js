@@ -22,6 +22,7 @@ import { BedrockAgent } from './modules/bedrock.js';
 import partnersBranding from '../lib/partners-branding.js';
 import formattingTemplates from '../lib/formatting-templates.js';
 import { extractDocument } from '../lib/extractor-pipeline.js';
+import usersManager, { ROLES } from '../lib/users-manager.js';
 import { conversarComTools } from './modules/bedrock-tools.js';
 import dotenv from 'dotenv';
 import compression from 'compression';
@@ -1060,6 +1061,187 @@ app.get('/api/partners/:partnerId/letterhead', (req, res) => {
     });
   } catch (error) {
     console.error('Erro ao obter timbrado:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ====================================================================
+// ROTAS DE API PARA GERENCIAMENTO DE USUÁRIOS DA EQUIPE ROM
+// ====================================================================
+
+// Criar novo usuário (admin/developer only)
+app.post('/api/users', async (req, res) => {
+  try {
+    // TODO: Adicionar verificação de autenticação (admin/developer only)
+    const newUser = await usersManager.createUser(req.body);
+
+    console.log(`✅ Usuário criado: ${newUser.name} (${newUser.email}) - Role: ${newUser.role}`);
+
+    res.json({
+      success: true,
+      user: newUser,
+      message: 'Usuário criado com sucesso'
+    });
+  } catch (error) {
+    console.error('❌ Erro ao criar usuário:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Listar usuários
+app.get('/api/users', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de autenticação
+    const includeInactive = req.query.includeInactive === 'true';
+    const users = usersManager.listUsers(includeInactive);
+
+    res.json({
+      success: true,
+      users,
+      total: users.length
+    });
+  } catch (error) {
+    console.error('❌ Erro ao listar usuários:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Obter usuário por ID
+app.get('/api/users/:userId', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de autenticação
+    const { userId } = req.params;
+    const user = usersManager.getUserById(userId);
+
+    res.json({
+      success: true,
+      user
+    });
+  } catch (error) {
+    console.error('❌ Erro ao obter usuário:', error);
+
+    if (error.message === 'Usuário não encontrado') {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// Atualizar usuário
+app.put('/api/users/:userId', async (req, res) => {
+  try {
+    // TODO: Adicionar verificação de autenticação (admin/developer only)
+    const { userId } = req.params;
+    const updates = req.body;
+
+    const updatedUser = await usersManager.updateUser(userId, updates);
+
+    console.log(`✅ Usuário atualizado: ${updatedUser.name} (${updatedUser.email})`);
+
+    res.json({
+      success: true,
+      user: updatedUser,
+      message: 'Usuário atualizado com sucesso'
+    });
+  } catch (error) {
+    console.error('❌ Erro ao atualizar usuário:', error);
+
+    if (error.message === 'Usuário não encontrado') {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(400).json({ error: error.message });
+    }
+  }
+});
+
+// Desativar usuário (soft delete)
+app.delete('/api/users/:userId', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de autenticação (admin/developer only)
+    const { userId } = req.params;
+
+    usersManager.deactivateUser(userId);
+
+    console.log(`⚠️ Usuário desativado: ${userId}`);
+
+    res.json({
+      success: true,
+      message: 'Usuário desativado com sucesso'
+    });
+  } catch (error) {
+    console.error('❌ Erro ao desativar usuário:', error);
+
+    if (error.message === 'Usuário não encontrado') {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// Reativar usuário
+app.post('/api/users/:userId/reactivate', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de autenticação (admin/developer only)
+    const { userId } = req.params;
+
+    usersManager.reactivateUser(userId);
+
+    console.log(`✅ Usuário reativado: ${userId}`);
+
+    res.json({
+      success: true,
+      message: 'Usuário reativado com sucesso'
+    });
+  } catch (error) {
+    console.error('❌ Erro ao reativar usuário:', error);
+
+    if (error.message === 'Usuário não encontrado') {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// Deletar usuário permanentemente (admin only)
+app.delete('/api/users/:userId/hard-delete', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de autenticação (admin only)
+    const { userId } = req.params;
+
+    usersManager.deleteUser(userId);
+
+    console.log(`🗑️ Usuário deletado permanentemente: ${userId}`);
+
+    res.json({
+      success: true,
+      message: 'Usuário deletado permanentemente'
+    });
+  } catch (error) {
+    console.error('❌ Erro ao deletar usuário:', error);
+
+    if (error.message === 'Usuário não encontrado') {
+      res.status(404).json({ error: error.message });
+    } else {
+      res.status(500).json({ error: error.message });
+    }
+  }
+});
+
+// Obter estatísticas de usuários
+app.get('/api/users-statistics', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de autenticação (admin/developer/manager)
+    const stats = usersManager.getStatistics();
+
+    res.json({
+      success: true,
+      stats
+    });
+  } catch (error) {
+    console.error('❌ Erro ao obter estatísticas:', error);
     res.status(500).json({ error: error.message });
   }
 });

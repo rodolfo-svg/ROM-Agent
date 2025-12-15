@@ -1003,8 +1003,53 @@
                             <button class="btn btn-secondary" style="width: 100%;" onclick="checkNewModels()">Verificar Novos</button>
                         </div>
                         <div style="background: var(--bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
-                            <h3 style="margin-bottom: 12px;">👥 Usuários</h3>
-                            <button class="btn btn-secondary" style="width: 100%;" onclick="manageUsers()">Gerenciar</button>
+                            <h3 style="margin-bottom: 12px;">👥 Cadastro de Usuários ROM</h3>
+                            <p style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 12px;">Gerenciar equipe interna</p>
+
+                            <!-- Formulário de cadastro -->
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <input type="text" id="userName" placeholder="Nome completo"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+
+                                <input type="email" id="userEmail" placeholder="Email"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+
+                                <input type="password" id="userPassword" placeholder="Senha"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+
+                                <select id="userRole"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+                                    <option value="">Selecione a função</option>
+                                    <option value="admin">Admin (Acesso Total)</option>
+                                    <option value="developer">Developer (Técnico + Admin)</option>
+                                    <option value="manager">Manager (Gestão)</option>
+                                    <option value="operator">Operator (Operação)</option>
+                                    <option value="viewer">Viewer (Visualização)</option>
+                                </select>
+
+                                <input type="text" id="userDepartment" placeholder="Departamento (ex: Jurídico, TI)"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+
+                                <input type="tel" id="userPhone" placeholder="Telefone (opcional)"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+
+                                <input type="text" id="userOAB" placeholder="OAB (opcional)"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+
+                                <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="createUser()">
+                                    Criar Usuário
+                                </button>
+
+                                <button class="btn btn-secondary" style="width: 100%;" onclick="listUsers()">
+                                    Listar Usuários
+                                </button>
+                            </div>
+
+                            <!-- Lista de usuários -->
+                            <div id="usersListContainer" style="margin-top: 16px; display: none;">
+                                <h4 style="font-size: 13px; margin-bottom: 8px; color: var(--text-secondary);">Usuários Cadastrados:</h4>
+                                <div id="usersList" style="max-height: 300px; overflow-y: auto;"></div>
+                            </div>
                         </div>
                         <div style="background: var(--bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
                             <h3 style="margin-bottom: 12px;">📄 Timbrado Parceiro</h3>
@@ -1694,6 +1739,204 @@
             }
 
             event.target.value = '';
+        }
+
+        // ============================================
+        // GERENCIAMENTO DE USUÁRIOS DA EQUIPE ROM
+        // ============================================
+
+        // Criar novo usuário
+        async function createUser() {
+            try {
+                const name = document.getElementById('userName').value.trim();
+                const email = document.getElementById('userEmail').value.trim();
+                const password = document.getElementById('userPassword').value.trim();
+                const role = document.getElementById('userRole').value;
+                const department = document.getElementById('userDepartment').value.trim();
+                const phone = document.getElementById('userPhone').value.trim();
+                const oab = document.getElementById('userOAB').value.trim();
+
+                // Validações
+                if (!name || !email || !password || !role) {
+                    alert('Por favor, preencha todos os campos obrigatórios (Nome, Email, Senha e Função)');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    alert('A senha deve ter pelo menos 6 caracteres');
+                    return;
+                }
+
+                // Enviar para API
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password,
+                        role,
+                        department: department || 'Geral',
+                        phone,
+                        oab
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`✅ Usuário ${name} criado com sucesso!\n\nID: ${result.user.id}\nRole: ${result.user.role}\nDepartamento: ${result.user.department}`);
+
+                    // Limpar formulário
+                    document.getElementById('userName').value = '';
+                    document.getElementById('userEmail').value = '';
+                    document.getElementById('userPassword').value = '';
+                    document.getElementById('userRole').value = '';
+                    document.getElementById('userDepartment').value = '';
+                    document.getElementById('userPhone').value = '';
+                    document.getElementById('userOAB').value = '';
+
+                    // Atualizar lista automaticamente
+                    listUsers();
+                } else {
+                    alert('❌ Erro: ' + (result.error || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro ao criar usuário:', error);
+                alert('❌ Erro ao criar usuário: ' + error.message);
+            }
+        }
+
+        // Listar usuários
+        async function listUsers() {
+            try {
+                const response = await fetch('/api/users?includeInactive=true');
+                const result = await response.json();
+
+                if (!result.success) {
+                    alert('Erro ao listar usuários: ' + (result.error || 'Erro desconhecido'));
+                    return;
+                }
+
+                const container = document.getElementById('usersListContainer');
+                const list = document.getElementById('usersList');
+
+                if (result.users.length === 0) {
+                    list.innerHTML = '<p style="font-size: 12px; color: var(--text-tertiary); text-align: center; padding: 20px;">Nenhum usuário cadastrado</p>';
+                    container.style.display = 'block';
+                    return;
+                }
+
+                // Agrupar por role
+                const byRole = result.users.reduce((acc, user) => {
+                    if (!acc[user.role]) acc[user.role] = [];
+                    acc[user.role].push(user);
+                    return acc;
+                }, {});
+
+                // Emoji por role
+                const roleEmojis = {
+                    'admin': '👑',
+                    'developer': '💻',
+                    'manager': '📊',
+                    'operator': '⚙️',
+                    'viewer': '👁️'
+                };
+
+                // Tradução de roles
+                const roleNames = {
+                    'admin': 'Admin',
+                    'developer': 'Developer',
+                    'manager': 'Manager',
+                    'operator': 'Operator',
+                    'viewer': 'Viewer'
+                };
+
+                let html = '';
+
+                Object.keys(byRole).forEach(role => {
+                    html += `<div style="margin-bottom: 16px;">
+                        <h5 style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600;">
+                            ${roleEmojis[role]} ${roleNames[role]} (${byRole[role].length})
+                        </h5>`;
+
+                    byRole[role].forEach(user => {
+                        const activeClass = user.active ? 'background: var(--bg-1)' : 'background: #3a1f1f; opacity: 0.6';
+                        const statusIcon = user.active ? '✅' : '❌';
+
+                        html += `
+                        <div style="${activeClass}; padding: 12px; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
+                                <div style="flex: 1;">
+                                    <p style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">
+                                        ${statusIcon} ${user.name}
+                                    </p>
+                                    <p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 2px;">
+                                        📧 ${user.email}
+                                    </p>
+                                    ${user.department ? `<p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 2px;">🏢 ${user.department}</p>` : ''}
+                                    ${user.phone ? `<p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 2px;">📱 ${user.phone}</p>` : ''}
+                                    ${user.oab ? `<p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 2px;">⚖️ ${user.oab}</p>` : ''}
+                                    <p style="font-size: 10px; color: var(--text-tertiary); margin-top: 4px;">
+                                        ID: ${user.id}
+                                    </p>
+                                </div>
+                                <button onclick="toggleUserStatus('${user.id}', ${user.active})"
+                                    style="padding: 4px 8px; font-size: 10px; background: ${user.active ? '#b91c1c' : '#16a34a'}; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                    ${user.active ? 'Desativar' : 'Reativar'}
+                                </button>
+                            </div>
+                        </div>`;
+                    });
+
+                    html += '</div>';
+                });
+
+                list.innerHTML = html;
+                container.style.display = 'block';
+
+                // Mostrar estatísticas
+                alert(`📊 Total: ${result.total} usuários\n\n${Object.keys(byRole).map(role => `${roleEmojis[role]} ${roleNames[role]}: ${byRole[role].length}`).join('\n')}`);
+
+            } catch (error) {
+                console.error('Erro ao listar usuários:', error);
+                alert('❌ Erro ao listar usuários: ' + error.message);
+            }
+        }
+
+        // Alternar status do usuário (ativar/desativar)
+        async function toggleUserStatus(userId, isActive) {
+            try {
+                const action = isActive ? 'desativar' : 'reativar';
+                const confirmMsg = isActive
+                    ? 'Tem certeza que deseja DESATIVAR este usuário?\n\nEle não poderá mais fazer login.'
+                    : 'Tem certeza que deseja REATIVAR este usuário?';
+
+                if (!confirm(confirmMsg)) {
+                    return;
+                }
+
+                const endpoint = isActive
+                    ? `/api/users/${userId}`
+                    : `/api/users/${userId}/reactivate`;
+
+                const method = isActive ? 'DELETE' : 'POST';
+
+                const response = await fetch(endpoint, { method });
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`✅ Usuário ${action}do com sucesso!`);
+                    listUsers(); // Recarregar lista
+                } else {
+                    alert('❌ Erro: ' + (result.error || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro ao alterar status:', error);
+                alert('❌ Erro: ' + error.message);
+            }
         }
 
         async function showSystemInfo() {
