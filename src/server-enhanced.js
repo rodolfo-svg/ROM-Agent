@@ -845,10 +845,12 @@ app.get('/api/history', (req, res) => {
 
 // API - Listar prompts
 app.get('/api/prompts', (req, res) => {
-  const agent = getAgent(req.session.id);
-  if (agent) {
-    res.json({ prompts: agent.listarPrompts() });
-  } else {
+  try {
+    const { partnerId, role } = getUserInfo(req);
+    const prompts = promptsManager.listarPrompts(partnerId, role);
+    res.json({ prompts });
+  } catch (error) {
+    console.error('Erro ao listar prompts:', error);
     res.json({ prompts: [] });
   }
 });
