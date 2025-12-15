@@ -36,6 +36,8 @@ import conversationsManager from '../lib/conversations-manager.js';
 import chunkedUpload from '../lib/chunked-upload.js';
 import projectsRouter from '../lib/api-routes-projects.js';
 import autoUpdateRoutes from '../lib/api-routes-auto-update.js';
+import { scheduler } from './jobs/scheduler.js';
+import { deployJob } from './jobs/deploy-job.js';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
@@ -5555,6 +5557,16 @@ app.listen(PORT, async () => {
   logger.info('Ativando sistema de auto-atualização e aprendizado...');
   autoUpdateSystem.ativar();
   logger.info('Sistema de auto-atualização ATIVO - Verificação a cada 24h');
+
+  // Ativar scheduler de jobs automáticos (deploy 02h + health check)
+  logger.info('Ativando scheduler de jobs automáticos...');
+  scheduler.start();
+  logger.info('Scheduler ATIVO - Deploy às 02h + Health check por hora');
+
+  // Ativar backup automático diário (03h)
+  logger.info('Agendando backup automático diário...');
+  backupManager.scheduleBackup('03:00');
+  logger.info('Backup automático ATIVO - Execução às 03h diariamente');
 
   console.log(`
 ╔══════════════════════════════════════════════════════════════╗
