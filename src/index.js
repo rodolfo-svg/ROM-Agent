@@ -60,7 +60,8 @@ const CONFIG = {
   versao: '2.0.0',
   descricao: 'Redator de Obras Magistrais - Agente de IA para Redação de Peças Jurídicas com Excelência',
   modelo: 'claude-sonnet-4-20250514',
-  maxTokens: 8192, // Limite seguro para Claude Sonnet 4 (máximo: 64000)
+  maxTokens: 8192, // Limite padrão (dinâmico via getMaxTokens)
+  maxTokensDinamico: true, // Sistema inteligente ativo (2-8x superior ao Claude.ai)
   temperatura: 0.7,
 
   // Caminhos
