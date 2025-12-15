@@ -1006,6 +1006,17 @@
                             <h3 style="margin-bottom: 12px;">👥 Usuários</h3>
                             <button class="btn btn-secondary" style="width: 100%;" onclick="manageUsers()">Gerenciar</button>
                         </div>
+                        <div style="background: var(--bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+                            <h3 style="margin-bottom: 12px;">📄 Timbrado Parceiro</h3>
+                            <p style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 12px;">Upload de timbrado personalizado</p>
+                            <input type="text" id="partnerIdInput" placeholder="ID do Parceiro (ex: escritorio-xyz)" style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); margin-bottom: 8px; font-size: 13px;">
+                            <input type="file" id="letterheadUploadInput" accept=".png,.jpg,.jpeg,.svg" style="display: none;" onchange="uploadPartnerLetterhead(event)">
+                            <button class="btn btn-secondary" style="width: 100%;" onclick="document.getElementById('letterheadUploadInput').click()">Escolher Arquivo</button>
+                            <div id="letterheadPreview" style="margin-top: 12px; text-align: center; display: none;">
+                                <p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 4px;">Preview:</p>
+                                <img id="letterheadPreviewImg" style="max-width: 100%; max-height: 100px; border: 1px solid var(--border); border-radius: 4px;" />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1621,6 +1632,68 @@
 
         function manageUsers() {
             alert('Gerenciamento de usuários em desenvolvimento');
+        }
+
+        // Upload de timbrado do parceiro
+        async function uploadPartnerLetterhead(event) {
+            const partnerId = document.getElementById('partnerIdInput').value.trim();
+            const file = event.target.files[0];
+
+            if (!partnerId) {
+                alert('Por favor, insira o ID do parceiro');
+                event.target.value = '';
+                return;
+            }
+
+            if (!file) return;
+
+            // Validar arquivo
+            const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Formato inválido! Use PNG, JPG ou SVG');
+                event.target.value = '';
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Arquivo muito grande! Máximo 5MB');
+                event.target.value = '';
+                return;
+            }
+
+            // Preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('letterheadPreviewImg').src = e.target.result;
+                document.getElementById('letterheadPreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+
+            // Upload
+            try {
+                const formData = new FormData();
+                formData.append('letterhead', file);
+
+                const response = await fetch(`/api/partners/${partnerId}/letterhead`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`Timbrado do parceiro ${partnerId} enviado com sucesso!\nURL: ${result.letterheadUrl}`);
+                } else {
+                    alert('Erro: ' + (result.error || 'Erro desconhecido'));
+                    document.getElementById('letterheadPreview').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Erro no upload:', error);
+                alert('Erro no upload: ' + error.message);
+                document.getElementById('letterheadPreview').style.display = 'none';
+            }
+
+            event.target.value = '';
         }
 
         async function showSystemInfo() {

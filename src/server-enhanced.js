@@ -198,6 +198,39 @@ const uploadLogo = multer({
   }
 });
 
+// Configurar multer para upload de letterheads (timbrados)
+const letterheadStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const partnersDir = path.join(__dirname, '../public/img/partners');
+    if (!fs.existsSync(partnersDir)) {
+      fs.mkdirSync(partnersDir, { recursive: true });
+    }
+    cb(null, partnersDir);
+  },
+  filename: (req, file, cb) => {
+    const partnerId = req.params.partnerId || 'temp';
+    const ext = path.extname(file.originalname);
+    cb(null, `${partnerId}-letterhead${ext}`);
+  }
+});
+
+const uploadLetterhead = multer({
+  storage: letterheadStorage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /png|jpg|jpeg|svg/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const allowedMimes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'];
+    const mimetype = allowedMimes.includes(file.mimetype);
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Apenas arquivos PNG, JPG e SVG são permitidos!'));
+    }
+  }
+});
+
 // Armazenar instâncias de agente por sessão
 const agents = new Map();
 
@@ -983,6 +1016,50 @@ app.post('/api/partners/:partnerId/logo', uploadLogo.single('logo'), (req, res) 
     });
   } catch (error) {
     console.error('Erro no upload de logo:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Upload de timbrado (letterhead) do parceiro
+app.post('/api/partners/:partnerId/letterhead', uploadLetterhead.single('letterhead'), (req, res) => {
+  try {
+    // TODO: Adicionar verificação de admin ou do próprio parceiro
+    const { partnerId } = req.params;
+
+    if (!req.file) {
+      return res.status(400).json({ error: 'Nenhum arquivo enviado' });
+    }
+
+    const letterheadUrl = `/img/partners/${req.file.filename}`;
+    const updatedPartner = partnersBranding.updatePartnerLetterhead(partnerId, letterheadUrl);
+
+    res.json({
+      success: true,
+      partner: updatedPartner,
+      letterheadUrl: letterheadUrl
+    });
+  } catch (error) {
+    console.error('Erro no upload de timbrado:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET letterhead do parceiro
+app.get('/api/partners/:partnerId/letterhead', (req, res) => {
+  try {
+    const { partnerId } = req.params;
+    const partner = partnersBranding.getBranding(partnerId);
+
+    if (!partner) {
+      return res.status(404).json({ error: 'Parceiro não encontrado' });
+    }
+
+    res.json({
+      success: true,
+      letterhead: partner.letterhead || '/img/timbrado_rom.png' // Fallback para timbrado ROM padrão
+    });
+  } catch (error) {
+    console.error('Erro ao obter timbrado:', error);
     res.status(500).json({ error: error.message });
   }
 });
