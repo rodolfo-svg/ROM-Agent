@@ -33,6 +33,7 @@ import documentVersioning from '../lib/versioning.js';
 import templatesManager from '../lib/templates-manager.js';
 import backupManager from '../lib/backup-manager.js';
 import conversationsManager from '../lib/conversations-manager.js';
+import chunkedUpload from '../lib/chunked-upload.js';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
@@ -528,6 +529,156 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// ============================================================================
+// API - UPLOAD CHUNKED PARA ARQUIVOS GRANDES (SEM LIMITE)
+// ============================================================================
+
+/**
+ * Iniciar sessão de upload chunked
+ * POST /api/upload/chunked/init
+ * Body: { filename, fileSize, contentType }
+ */
+app.post('/api/upload/chunked/init', uploadLimiter, async (req, res) => {
+  try {
+    const { filename, fileSize, contentType } = req.body;
+
+    if (!filename || !fileSize) {
+      return res.status(400).json({ error: 'Filename e fileSize são obrigatórios' });
+    }
+
+    const session = await chunkedUpload.initSession(filename, fileSize, contentType || 'application/octet-stream');
+
+    logger.info('Sessão de upload chunked iniciada', {
+      uploadId: session.uploadId,
+      filename,
+      fileSize: (fileSize / 1024 / 1024).toFixed(2) + ' MB'
+    });
+
+    res.json({
+      success: true,
+      ...session
+    });
+
+  } catch (error) {
+    logger.error('Erro ao iniciar upload chunked', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Upload de um chunk
+ * POST /api/upload/chunked/:uploadId/chunk/:chunkIndex
+ * Body: binary data (chunk)
+ */
+app.post('/api/upload/chunked/:uploadId/chunk/:chunkIndex', uploadLimiter, async (req, res) => {
+  try {
+    const { uploadId, chunkIndex } = req.params;
+    const chunks = [];
+
+    // Receber dados binários
+    req.on('data', chunk => chunks.push(chunk));
+
+    req.on('end', async () => {
+      try {
+        const chunkData = Buffer.concat(chunks);
+        const result = await chunkedUpload.uploadChunk(uploadId, parseInt(chunkIndex), chunkData);
+
+        logger.info('Chunk recebido', {
+          uploadId,
+          chunkIndex,
+          progress: result.progress + '%'
+        });
+
+        res.json({
+          success: true,
+          ...result
+        });
+
+      } catch (error) {
+        logger.error('Erro ao processar chunk', { error: error.message });
+        res.status(500).json({ error: error.message });
+      }
+    });
+
+  } catch (error) {
+    logger.error('Erro no upload de chunk', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Finalizar upload chunked
+ * POST /api/upload/chunked/:uploadId/finalize
+ */
+app.post('/api/upload/chunked/:uploadId/finalize', uploadLimiter, async (req, res) => {
+  try {
+    const { uploadId } = req.params;
+    const result = await chunkedUpload.finalizeUpload(uploadId);
+
+    logger.info('Upload chunked finalizado', {
+      uploadId,
+      filename: result.filename,
+      fileSize: (result.fileSize / 1024 / 1024).toFixed(2) + ' MB'
+    });
+
+    res.json({
+      success: true,
+      ...result
+    });
+
+  } catch (error) {
+    logger.error('Erro ao finalizar upload chunked', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Status de upload chunked
+ * GET /api/upload/chunked/:uploadId/status
+ */
+app.get('/api/upload/chunked/:uploadId/status', (req, res) => {
+  try {
+    const { uploadId } = req.params;
+    const status = chunkedUpload.getStatus(uploadId);
+
+    if (!status) {
+      return res.status(404).json({ error: 'Sessão de upload não encontrada' });
+    }
+
+    res.json({
+      success: true,
+      ...status
+    });
+
+  } catch (error) {
+    logger.error('Erro ao obter status de upload', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Cancelar upload chunked
+ * DELETE /api/upload/chunked/:uploadId
+ */
+app.delete('/api/upload/chunked/:uploadId', async (req, res) => {
+  try {
+    const { uploadId } = req.params;
+    const result = await chunkedUpload.cancelUpload(uploadId);
+
+    logger.info('Upload chunked cancelado', { uploadId });
+
+    res.json(result);
+
+  } catch (error) {
+    logger.error('Erro ao cancelar upload', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+logger.info('✅ Chunked Upload API endpoints configured');
+
+// ============================================================================
 
 // API - Upload múltiplos documentos com extração automática (33 ferramentas)
 app.post('/api/upload-documents', upload.array('files', 20), async (req, res) => {
@@ -5116,6 +5267,278 @@ app.put('/api/conversations/:conversationId/unlink-project', generalLimiter, (re
 });
 
 logger.info('✅ Conversations API endpoints configured');
+
+// ============================================================================
+// API - SISTEMA DE TARIFAÇÃO
+// ============================================================================
+
+/**
+ * Calcula custo estimado de uma operação antes de executar
+ * POST /api/pricing/calculate
+ * Body: { operation, inputTokens, outputTokens, model }
+ */
+app.post('/api/pricing/calculate', generalLimiter, (req, res) => {
+  try {
+    const { operation, inputTokens, outputTokens, model = 'sonnet' } = req.body;
+
+    // Tabela de preços (por 1K tokens)
+    const pricing = {
+      'haiku': { input: 0.00025, output: 0.00125 },
+      'sonnet': { input: 0.003, output: 0.015 },
+      'opus': { input: 0.015, output: 0.075 }
+    };
+
+    const modelPricing = pricing[model.toLowerCase()] || pricing['sonnet'];
+
+    // Calcular custos
+    const inputCost = (inputTokens / 1000) * modelPricing.input;
+    const outputCost = (outputTokens / 1000) * modelPricing.output;
+    const totalCost = inputCost + outputCost;
+
+    // Custos adicionais
+    const iof = 0.0638; // IOF 6.38% para transações internacionais
+    const markup = 0.30; // Markup de 30%
+
+    // Calcular custo final com todos os encargos
+    const costWithIOF = totalCost * (1 + iof); // Custo + IOF
+    const finalCost = costWithIOF * (1 + markup); // Custo + IOF + Markup 30%
+
+    // Estimativas por tipo de operação
+    const estimates = {
+      'peticao-inicial': { input: 5000, output: 8000 },
+      'contestacao': { input: 4000, output: 7000 },
+      'recurso': { input: 6000, output: 10000 },
+      'habeas-corpus': { input: 4000, output: 6000 },
+      'extracao-pdf': { input: 3000, output: 1000 },
+      'resumo-executivo': { input: 7000, output: 3000 }
+    };
+
+    const operationEstimate = estimates[operation] || { input: 5000, output: 8000 };
+
+    logger.info('Cálculo de tarifação', {
+      operation,
+      model,
+      inputTokens: inputTokens || operationEstimate.input,
+      outputTokens: outputTokens || operationEstimate.output,
+      cost: finalCost.toFixed(4)
+    });
+
+    res.json({
+      success: true,
+      pricing: {
+        model,
+        operation,
+        inputTokens: inputTokens || operationEstimate.input,
+        outputTokens: outputTokens || operationEstimate.output,
+        breakdown: {
+          inputCost: inputCost.toFixed(6),
+          outputCost: outputCost.toFixed(6),
+          subtotal: totalCost.toFixed(6),
+          iof: (totalCost * iof).toFixed(6),
+          iofPercentage: '6.38%',
+          subtotalWithIOF: costWithIOF.toFixed(6),
+          markup: (costWithIOF * markup).toFixed(6),
+          markupPercentage: '30%'
+        },
+        total: {
+          usd: finalCost.toFixed(4),
+          brl: (finalCost * 5.80).toFixed(2)
+        },
+        currency: 'USD',
+        exchangeRate: 5.80
+      },
+      comparison: {
+        haiku: ((((operationEstimate.input / 1000) * pricing.haiku.input) + ((operationEstimate.output / 1000) * pricing.haiku.output)) * (1 + iof) * (1 + markup)).toFixed(4),
+        sonnet: ((((operationEstimate.input / 1000) * pricing.sonnet.input) + ((operationEstimate.output / 1000) * pricing.sonnet.output)) * (1 + iof) * (1 + markup)).toFixed(4),
+        opus: ((((operationEstimate.input / 1000) * pricing.opus.input) + ((operationEstimate.output / 1000) * pricing.opus.output)) * (1 + iof) * (1 + markup)).toFixed(4)
+      },
+      notes: [
+        'Custos incluem IOF de 6.38% para transações internacionais',
+        'Markup de 30% aplicado sobre custo + IOF',
+        'Conversão BRL baseada na cotação atual (exemplo: R$ 5,80)',
+        'Valores finais já incluem TODOS os custos'
+      ]
+    });
+
+  } catch (error) {
+    logger.error('Erro ao calcular tarifação', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Obter tabela de preços completa
+ * GET /api/pricing/table
+ */
+app.get('/api/pricing/table', (req, res) => {
+  try {
+    const pricing = [
+      {
+        model: 'Claude Haiku',
+        tier: 'Econômico',
+        inputPrice: '$0.00025/1K',
+        outputPrice: '$0.00125/1K',
+        recommended: 'Extração, resumos simples',
+        speed: 'Muito rápido',
+        quality: 'Boa'
+      },
+      {
+        model: 'Claude Sonnet 4.5',
+        tier: 'Balanceado',
+        inputPrice: '$0.003/1K',
+        outputPrice: '$0.015/1K',
+        recommended: 'Petições, recursos, peças jurídicas',
+        speed: 'Rápido',
+        quality: 'Excelente'
+      },
+      {
+        model: 'Claude Opus',
+        tier: 'Premium',
+        inputPrice: '$0.015/1K',
+        outputPrice: '$0.075/1K',
+        recommended: 'Casos críticos, recursos extraordinários',
+        speed: 'Moderado',
+        quality: 'Máxima'
+      }
+    ];
+
+    const examples = [
+      {
+        operation: 'Petição Inicial Simples (Sonnet)',
+        input: 5000,
+        output: 8000,
+        cost: '$0.135',
+        costBRL: 'R$ 0,78'
+      },
+      {
+        operation: 'Extração de PDF (Haiku)',
+        input: 3000,
+        output: 1000,
+        cost: '$0.002',
+        costBRL: 'R$ 0,01'
+      },
+      {
+        operation: 'Recurso Extraordinário (Opus)',
+        input: 7000,
+        output: 12000,
+        cost: '$1.005',
+        costBRL: 'R$ 5,83'
+      }
+    ];
+
+    res.json({
+      success: true,
+      pricing,
+      examples,
+      markup: '30%',
+      notes: [
+        'Preços incluem markup de 30% sobre custo real',
+        'Valores em USD (conversão BRL é estimada)',
+        'Haiku é 67x mais barato que Opus',
+        'Sonnet oferece melhor custo-benefício'
+      ]
+    });
+
+  } catch (error) {
+    logger.error('Erro ao obter tabela de preços', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Calcular custo estimado por tipo de peça
+ * GET /api/pricing/estimate/:pieceType
+ */
+app.get('/api/pricing/estimate/:pieceType', (req, res) => {
+  try {
+    const { pieceType } = req.params;
+    const { model = 'sonnet' } = req.query;
+
+    const estimates = {
+      'peticao-inicial': { name: 'Petição Inicial', input: 5000, output: 8000, complexity: 'média' },
+      'contestacao': { name: 'Contestação', input: 4000, output: 7000, complexity: 'média' },
+      'recurso-apelacao': { name: 'Recurso de Apelação', input: 6000, output: 10000, complexity: 'alta' },
+      'recurso-especial': { name: 'Recurso Especial', input: 7000, output: 12000, complexity: 'muito alta' },
+      'recurso-extraordinario': { name: 'Recurso Extraordinário', input: 7000, output: 12000, complexity: 'muito alta' },
+      'habeas-corpus': { name: 'Habeas Corpus', input: 4000, output: 6000, complexity: 'média' },
+      'mandado-seguranca': { name: 'Mandado de Segurança', input: 5000, output: 8000, complexity: 'média' },
+      'agravo-instrumento': { name: 'Agravo de Instrumento', input: 4000, output: 6000, complexity: 'média' },
+      'embargos-declaracao': { name: 'Embargos de Declaração', input: 3000, output: 4000, complexity: 'baixa' },
+      'alegacoes-finais': { name: 'Alegações Finais', input: 6000, output: 9000, complexity: 'alta' },
+      'parecer-juridico': { name: 'Parecer Jurídico', input: 5000, output: 7000, complexity: 'média' },
+      'contrato': { name: 'Contrato', input: 4000, output: 6000, complexity: 'média' }
+    };
+
+    const estimate = estimates[pieceType];
+
+    if (!estimate) {
+      return res.status(404).json({
+        error: 'Tipo de peça não encontrado',
+        availableTypes: Object.keys(estimates)
+      });
+    }
+
+    const pricing = {
+      'haiku': { input: 0.00025, output: 0.00125 },
+      'sonnet': { input: 0.003, output: 0.015 },
+      'opus': { input: 0.015, output: 0.075 }
+    };
+
+    const modelPricing = pricing[model.toLowerCase()] || pricing['sonnet'];
+    const inputCost = (estimate.input / 1000) * modelPricing.input;
+    const outputCost = (estimate.output / 1000) * modelPricing.output;
+    const subtotal = inputCost + outputCost;
+
+    // Adicionar IOF (6.38%) e Markup (30%)
+    const iof = 0.0638;
+    const markup = 0.30;
+    const costWithIOF = subtotal * (1 + iof);
+    const totalCost = costWithIOF * (1 + markup);
+
+    res.json({
+      success: true,
+      piece: {
+        type: pieceType,
+        name: estimate.name,
+        complexity: estimate.complexity,
+        estimatedTokens: {
+          input: estimate.input,
+          output: estimate.output,
+          total: estimate.input + estimate.output
+        }
+      },
+      pricing: {
+        model,
+        cost: {
+          usd: totalCost.toFixed(4),
+          brl: (totalCost * 5.80).toFixed(2)
+        },
+        breakdown: {
+          inputCost: inputCost.toFixed(6),
+          outputCost: outputCost.toFixed(6),
+          subtotal: subtotal.toFixed(6),
+          iof: (subtotal * iof).toFixed(6) + ' (6.38%)',
+          markup: (costWithIOF * markup).toFixed(6) + ' (30%)',
+          total: totalCost.toFixed(4)
+        },
+        notes: [
+          'Inclui IOF de 6.38% para transações internacionais',
+          'Inclui Markup de 30% sobre custo + IOF',
+          'Valor final já contempla TODOS os encargos'
+        ]
+      },
+      recommendation: estimate.complexity === 'muito alta' ? 'opus' : estimate.complexity === 'alta' ? 'sonnet' : 'haiku'
+    });
+
+  } catch (error) {
+    logger.error('Erro ao estimar custo de peça', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+logger.info('✅ Pricing API endpoints configured');
+
+// ============================================================================
 
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;

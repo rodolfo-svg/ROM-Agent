@@ -69,6 +69,6 @@ services:
     autoDeploy: true
 
     # ═══ DOMÍNIOS ═══
-    # domains:
-    #   - iarom.com.br
-    #   - www.iarom.com.br
+    domains:
+      - iarom.com.br
+      - www.iarom.com.br
