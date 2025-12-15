@@ -12,6 +12,7 @@ import dotenv from 'dotenv';
 import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import { logger } from './utils/logger.js';
+import projectsRouter from '../lib/api-routes-projects.js';
 
 dotenv.config();
 
@@ -22,6 +23,9 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, '../public')));
+
+// Rotas de Projects e Code Execution
+app.use('/api', projectsRouter);
 
 // Instância do agente
 let agent = null;
