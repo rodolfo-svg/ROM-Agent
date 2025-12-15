@@ -3635,6 +3635,92 @@ function saveProject(project) {
   return project;
 }
 
+// ====================================================================
+// MULTI-TENANT CUSTOM INSTRUCTIONS SYSTEM
+// ====================================================================
+
+// Partner prompts file path (custom instructions por parceiro)
+const partnerPromptsFilePath = path.join(process.cwd(), 'data', 'partner-prompts.json');
+
+// In-memory cache for partner prompts
+let partnerPromptsCache = {};
+
+// Load partner prompts from file
+function loadPartnerPrompts() {
+  try {
+    if (fs.existsSync(partnerPromptsFilePath)) {
+      const data = fs.readFileSync(partnerPromptsFilePath, 'utf8');
+      partnerPromptsCache = JSON.parse(data);
+      const partnersCount = Object.keys(partnerPromptsCache).length;
+      console.log(`✅ ${partnersCount} customizações de prompts carregadas de ${partnerPromptsFilePath}`);
+    } else {
+      console.log('ℹ️ Nenhum arquivo de customizações encontrado, iniciando vazio');
+      partnerPromptsCache = {};
+    }
+  } catch (error) {
+    console.error('⚠️ Erro ao carregar customizações de prompts:', error);
+    partnerPromptsCache = {};
+  }
+}
+
+// Save partner prompts to file
+function savePartnerPrompts() {
+  try {
+    const dataDir = path.join(process.cwd(), 'data');
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir, { recursive: true });
+    }
+
+    fs.writeFileSync(partnerPromptsFilePath, JSON.stringify(partnerPromptsCache, null, 2));
+    console.log(`💾 Customizações de prompts salvas em ${partnerPromptsFilePath}`);
+  } catch (error) {
+    console.error('⚠️ Erro ao salvar customizações de prompts:', error);
+  }
+}
+
+// Get partner-specific custom instructions (or default)
+function getPartnerPrompts(projectId, partnerId) {
+  // Projeto ROM Agent (ID "1") é multi-tenant
+  if (projectId !== '1') {
+    return null; // Outros projetos não têm customização por parceiro
+  }
+
+  // Se parceiro tem customização, retornar
+  if (partnerId && partnerPromptsCache[partnerId]) {
+    return partnerPromptsCache[partnerId];
+  }
+
+  // Caso contrário, retornar null (usa prompts padrão do projeto)
+  return null;
+}
+
+// Save partner-specific custom instructions
+function savePartnerPrompt(projectId, partnerId, customInstructions, userId = 'system') {
+  // Apenas projeto ROM Agent (ID "1") aceita customização por parceiro
+  if (projectId !== '1') {
+    throw new Error('Apenas o projeto ROM Agent aceita customizações por parceiro');
+  }
+
+  if (!partnerId || partnerId.trim() === '') {
+    throw new Error('partnerId é obrigatório');
+  }
+
+  if (!customInstructions || customInstructions.trim() === '') {
+    throw new Error('customInstructions não pode ser vazio');
+  }
+
+  // Salvar customização
+  partnerPromptsCache[partnerId] = {
+    customInstructions: customInstructions.trim(),
+    lastModified: new Date().toISOString(),
+    editedBy: userId
+  };
+
+  savePartnerPrompts();
+
+  return partnerPromptsCache[partnerId];
+}
+
 // GET /api/projects/list - Listar todos os projetos
 app.get('/api/projects/list', (req, res) => {
   try {
@@ -3647,20 +3733,145 @@ app.get('/api/projects/list', (req, res) => {
   }
 });
 
-// GET /api/projects/:id - Obter detalhes de um projeto
+// GET /api/projects/:id - Obter detalhes de um projeto (com support multi-tenant)
 app.get('/api/projects/:id', (req, res) => {
   try {
     const { id } = req.params;
+    const { partnerId } = req.query; // Query param opcional: ?partnerId=xxx
     const project = projectsStore.get(id);
 
     if (!project) {
       return res.status(404).json({ error: 'Projeto não encontrado' });
     }
 
-    res.json(project);
+    // Clonar projeto para não modificar o original
+    const projectResponse = { ...project };
+
+    // Se projeto ROM Agent (ID "1") e partnerId fornecido, aplicar customizações
+    if (id === '1' && partnerId) {
+      const partnerPrompt = getPartnerPrompts(id, partnerId);
+
+      if (partnerPrompt) {
+        // Override custom instructions com versão do parceiro
+        projectResponse.customInstructions = partnerPrompt.customInstructions;
+        projectResponse.customInstructionsSource = 'partner'; // Indica que é customizado
+        projectResponse.customInstructionsLastModified = partnerPrompt.lastModified;
+        projectResponse.customInstructionsEditedBy = partnerPrompt.editedBy;
+      } else {
+        // Usar prompts padrão
+        projectResponse.customInstructionsSource = 'default';
+      }
+    }
+
+    res.json(projectResponse);
   } catch (error) {
     console.error('Erro ao obter projeto:', error);
     res.status(500).json({ error: error.message });
+  }
+});
+
+// PUT /api/projects/1/prompts - Editar custom instructions do parceiro (projeto ROM Agent)
+app.put('/api/projects/1/prompts', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const { customInstructions } = req.body;
+    const user = req.user; // Obtido pelo middleware de autenticação
+    const partnerId = user.partnerId || 'rom';
+
+    // Validar entrada
+    if (!customInstructions || customInstructions.trim().length === 0) {
+      return res.status(400).json({
+        error: 'customInstructions não pode ser vazio',
+        message: 'Por favor, forneça as instruções customizadas'
+      });
+    }
+
+    // Salvar customização do parceiro
+    const saved = savePartnerPrompt('1', partnerId, customInstructions, user.email || user.userId);
+
+    logger.info(`Custom instructions atualizadas para parceiro ${partnerId} por ${user.email || user.userId}`);
+
+    res.json({
+      success: true,
+      partnerId,
+      customInstructions: saved.customInstructions,
+      lastModified: saved.lastModified,
+      editedBy: saved.editedBy,
+      message: 'Custom instructions atualizadas com sucesso'
+    });
+
+  } catch (error) {
+    console.error('Erro ao atualizar custom instructions:', error);
+    res.status(500).json({
+      error: error.message,
+      message: 'Erro ao atualizar custom instructions'
+    });
+  }
+});
+
+// GET /api/projects/1/prompts - Obter custom instructions do parceiro
+app.get('/api/projects/1/prompts', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const user = req.user;
+    const partnerId = user.partnerId || 'rom';
+
+    const partnerPrompt = getPartnerPrompts('1', partnerId);
+
+    // Obter prompts padrão do projeto
+    const project = projectsStore.get('1');
+    const defaultPrompts = project ? project.customInstructions : '';
+
+    res.json({
+      success: true,
+      partnerId,
+      source: partnerPrompt ? 'partner' : 'default',
+      customInstructions: partnerPrompt ? partnerPrompt.customInstructions : defaultPrompts,
+      defaultPrompts: defaultPrompts, // Sempre retornar os padrão para referência
+      lastModified: partnerPrompt ? partnerPrompt.lastModified : null,
+      editedBy: partnerPrompt ? partnerPrompt.editedBy : null,
+      isCustomized: !!partnerPrompt
+    });
+
+  } catch (error) {
+    console.error('Erro ao obter custom instructions:', error);
+    res.status(500).json({
+      error: error.message,
+      message: 'Erro ao obter custom instructions'
+    });
+  }
+});
+
+// DELETE /api/projects/1/prompts - Resetar custom instructions para padrão (remover customização)
+app.delete('/api/projects/1/prompts', authSystem.authMiddleware(), (req, res) => {
+  try {
+    const user = req.user;
+    const partnerId = user.partnerId || 'rom';
+
+    // Remover customização do parceiro
+    if (partnerPromptsCache[partnerId]) {
+      delete partnerPromptsCache[partnerId];
+      savePartnerPrompts();
+
+      logger.info(`Custom instructions resetadas para padrão para parceiro ${partnerId} por ${user.email || user.userId}`);
+
+      res.json({
+        success: true,
+        partnerId,
+        message: 'Custom instructions resetadas para padrão. Agora usando prompts globais do ROM Agent.'
+      });
+    } else {
+      res.json({
+        success: true,
+        partnerId,
+        message: 'Parceiro já estava usando prompts padrão'
+      });
+    }
+
+  } catch (error) {
+    console.error('Erro ao resetar custom instructions:', error);
+    res.status(500).json({
+      error: error.message,
+      message: 'Erro ao resetar custom instructions'
+    });
   }
 });
 
@@ -4676,6 +4887,9 @@ app.listen(PORT, async () => {
 
   // Carregar projetos do arquivo
   loadProjectsFromFile();
+
+  // Carregar customizações de prompts dos parceiros
+  loadPartnerPrompts();
 
   // Pré-carregar modelos
   await preloadModelos();
