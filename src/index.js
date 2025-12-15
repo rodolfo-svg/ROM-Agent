@@ -21,6 +21,9 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const IntelligentCache = require('../lib/intelligent-cache.cjs');
 
+// Importar versão do package.json
+const packageJson = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), '../package.json'), 'utf-8'));
+
 // Importar módulos jurídicos
 import legislacao from './modules/legislacao.js';
 import tribunais from './modules/tribunais.js';
@@ -57,7 +60,7 @@ const __dirname = path.dirname(__filename);
 // Configuração do agente
 const CONFIG = {
   nome: 'ROM',
-  versao: '2.0.0',
+  versao: packageJson.version, // Versão dinâmica do package.json
   descricao: 'Redator de Obras Magistrais - Agente de IA para Redação de Peças Jurídicas com Excelência',
   modelo: 'claude-sonnet-4-20250514',
   maxTokens: 8192, // Limite padrão (dinâmico via getMaxTokens)

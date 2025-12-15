@@ -108,6 +108,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// Trust proxy para Render (necessário para rate limiting e X-Forwarded-For)
+app.set('trust proxy', true);
+
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, '../public')));
