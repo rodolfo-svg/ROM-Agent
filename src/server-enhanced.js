@@ -36,8 +36,10 @@ import conversationsManager from '../lib/conversations-manager.js';
 import chunkedUpload from '../lib/chunked-upload.js';
 import projectsRouter from '../lib/api-routes-projects.js';
 import autoUpdateRoutes from '../lib/api-routes-auto-update.js';
+import storageRoutes from '../lib/api-routes-storage.js';
 import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
+import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
@@ -136,16 +138,18 @@ app.use(session({
 // Rate Limiter Geral (100 requisições/hora por IP)
 app.use('/api/', generalLimiter);
 
-// Rotas de Projects e Auto-Atualização
+// Rotas de Projects, Auto-Atualização e Storage
 app.use('/api', projectsRouter);
 app.use('/api', autoUpdateRoutes);
+app.use('/api', storageRoutes);
 
 logger.info('Sistema inicializado com todos os middlewares de otimização');
 
-// Configurar multer para upload
+// Configurar multer para upload (ARMAZENAMENTO PERSISTENTE)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const uploadDir = path.join(__dirname, '../upload');
+    // Usar disco persistente (/var/data no Render)
+    const uploadDir = ACTIVE_PATHS.upload;
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -176,10 +180,11 @@ const upload = multer({
   }
 });
 
-// Configurar multer para upload de logos
+// Configurar multer para upload de logos (ARMAZENAMENTO PERSISTENTE)
 const logoStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const partnersDir = path.join(__dirname, '../public/img/partners');
+    // Usar disco persistente para logos de parceiros
+    const partnersDir = ACTIVE_PATHS.partners;
     if (!fs.existsSync(partnersDir)) {
       fs.mkdirSync(partnersDir, { recursive: true });
     }
@@ -209,10 +214,11 @@ const uploadLogo = multer({
   }
 });
 
-// Configurar multer para upload de letterheads (timbrados)
+// Configurar multer para upload de letterheads/timbrados (ARMAZENAMENTO PERSISTENTE)
 const letterheadStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    const partnersDir = path.join(__dirname, '../public/img/partners');
+    // Usar disco persistente para timbrados de parceiros
+    const partnersDir = ACTIVE_PATHS.partners;
     if (!fs.existsSync(partnersDir)) {
       fs.mkdirSync(partnersDir, { recursive: true });
     }
@@ -5553,6 +5559,12 @@ logger.info('✅ Pricing API endpoints configured');
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
+  // Configurar armazenamento persistente
+  logger.info('Configurando armazenamento persistente...');
+  ensureStorageStructure();
+  logger.info(`Armazenamento: ${STORAGE_INFO.environment} (${STORAGE_INFO.diskSize})`);
+  logger.info(`Base: ${STORAGE_INFO.basePath}`);
+
   // Ativar sistema de auto-atualização e aprendizado
   logger.info('Ativando sistema de auto-atualização e aprendizado...');
   autoUpdateSystem.ativar();
