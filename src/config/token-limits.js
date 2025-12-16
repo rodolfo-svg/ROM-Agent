@@ -57,6 +57,7 @@ export const TOKEN_LIMITS = {
   'transacao_penal': 32000,
   'liberdade_provisoria': 32000,
   'revogacao_prisao': 32000,
+  'peticao_aditamento': 32000,
 
   // ═══════════════════════════════════════════════════════════════
   // PEÇAS GERAIS APLICÁVEIS A TODAS AS ÁREAS - 32K
@@ -65,7 +66,6 @@ export const TOKEN_LIMITS = {
   'manifestacao': 32000,
   'manifestacao_processo': 32000,
   'memorando': 32000,
-  'peticao_aditamento': 32000,
   'esclarecimentos': 32000,
   'informacoes': 32000,
 
