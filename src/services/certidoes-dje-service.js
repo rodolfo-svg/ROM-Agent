@@ -10,8 +10,6 @@ import http from 'http';
 import fs from 'fs/promises';
 import path from 'path';
 import { ACTIVE_PATHS } from '../../lib/storage-config.js';
-// TODO: Implementar integração com KB quando serviço estiver disponível
-// import knowledgeBaseService from './knowledge-base-service.js';
 
 class CertidoesDJEService {
   constructor() {
@@ -90,13 +88,9 @@ class CertidoesDJEService {
 
       console.log(`✅ Certidão baixada com sucesso - Nº: ${certidao.numeroCertidao}`);
 
-      // TODO: Adicionar ao KB quando serviço estiver disponível
-      // if (adicionarAoKB && projectId) {
-      //   await this.adicionarCertidaoAoKB(certidao, projectId);
-      // }
-
+      // Adicionar ao KB do projeto ROM se solicitado
       if (adicionarAoKB && projectId) {
-        console.log(`ℹ️  Integração com KB pendente - certidão salva localmente em ${this.certidoesPath}`);
+        await this.adicionarCertidaoAoKB(certidao, projectId);
       }
 
       return certidao;
@@ -109,7 +103,6 @@ class CertidoesDJEService {
 
   /**
    * Adicionar certidão ao Knowledge Base do projeto
-   * TODO: Implementar quando serviço de KB estiver disponível
    *
    * @param {object} certidao - Dados da certidão
    * @param {string} projectId - ID do projeto
@@ -117,29 +110,61 @@ class CertidoesDJEService {
    */
   async adicionarCertidaoAoKB(certidao, projectId = '1') {
     try {
-      console.log(`📚 Preparando certidão ${certidao.numeroCertidao} para KB do projeto ${projectId}`);
+      console.log(`📚 Adicionando certidão ${certidao.numeroCertidao} ao KB do projeto ${projectId}`);
 
-      // Gerar conteúdo formatado da certidão para o KB
+      // Validar que ACTIVE_PATHS.kb existe
+      if (!ACTIVE_PATHS.kb) {
+        throw new Error('ACTIVE_PATHS.kb não está definido');
+      }
+
+      // Criar diretórios do KB se não existirem
+      const kbDocsPath = path.join(ACTIVE_PATHS.kb, 'documents');
+      await fs.mkdir(kbDocsPath, { recursive: true });
+
+      // Gerar conteúdo formatado da certidão
       const conteudoKB = this.gerarConteudoParaKB(certidao);
 
-      // Criar arquivo Markdown com o conteúdo da certidão
-      const filename = `certidao_${certidao.numeroCertidao.replace(/[^a-zA-Z0-9-]/g, '_')}.md`;
-      const filepath = path.join(this.certidoesPath, filename);
+      // Nome do arquivo (sem caracteres especiais)
+      const baseFilename = `certidao_${certidao.numeroCertidao.replace(/[^a-zA-Z0-9-]/g, '_')}_${Date.now()}`;
 
-      await fs.writeFile(filepath, conteudoKB, 'utf-8');
+      // Salvar arquivo .txt no KB (formato que o sistema lê)
+      const txtFilePath = path.join(kbDocsPath, `${baseFilename}.txt`);
+      await fs.writeFile(txtFilePath, conteudoKB, 'utf-8');
 
-      console.log(`✅ Certidão salva como ${filename}`);
-      console.log(`ℹ️  Para adicionar ao KB, use o upload manual do arquivo`);
+      // Salvar metadados em arquivo JSON separado
+      const metadataPath = path.join(kbDocsPath, `${baseFilename}.json`);
+      const metadata = {
+        id: certidao.id,
+        numeroCertidao: certidao.numeroCertidao,
+        numeroProcesso: certidao.numeroProcesso,
+        tribunal: certidao.tribunal,
+        tipo: 'certidao-dje',
+        dataPublicacao: certidao.informacoesPrincipais.dataPublicacao,
+        tipoDecisao: certidao.informacoesPrincipais.tipoDecisao,
+        orgaoJulgador: certidao.informacoesPrincipais.orgaoJulgador,
+        magistrado: certidao.informacoesPrincipais.magistrado,
+        partes: certidao.informacoesPrincipais.partes,
+        origem: 'CNJ/DJe-DJEN',
+        dataDownload: certidao.dataDownload,
+        projectId: projectId,
+        originalFilename: `${baseFilename}.txt`
+      };
+
+      await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2), 'utf-8');
+
+      console.log(`✅ Certidão adicionada ao KB com sucesso: ${baseFilename}.txt`);
 
       return {
         success: true,
-        filepath,
-        filename,
-        message: 'Certidão salva localmente. Integração com KB pendente.'
+        kbPath: txtFilePath,
+        metadataPath,
+        filename: `${baseFilename}.txt`,
+        message: 'Certidão adicionada ao KB e disponível para consulta'
       };
 
     } catch (error) {
-      console.error(`⚠️  Erro ao preparar certidão:`, error);
+      console.error(`❌ Erro ao adicionar certidão ao KB:`, error);
+      // Não falhar o processo principal se houver erro ao adicionar ao KB
       return { success: false, error: error.message };
     }
   }
