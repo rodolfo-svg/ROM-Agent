@@ -5752,6 +5752,136 @@ app.listen(PORT, async () => {
       logger.error('Erro ao inicializar ROM Case Processor:', error);
     });
 
+  // 🚨 Criar pasta Desktop/Mesa para UPLOADS MANUAIS DE EMERGÊNCIA
+  try {
+    const os = await import('os');
+    const desktopPath = path.join(os.homedir(), 'Desktop', 'ROM-Uploads-Emergencia');
+
+    // Criar pasta se não existir
+    await fs.promises.mkdir(desktopPath, { recursive: true });
+
+    // Criar arquivo README explicando como usar
+    const readmePath = path.join(desktopPath, 'LEIA-ME.txt');
+    const readmeContent = `
+╔════════════════════════════════════════════════════════════════╗
+║                                                                ║
+║  📁 ROM - PASTA DE UPLOADS DE EMERGÊNCIA                      ║
+║                                                                ║
+╚════════════════════════════════════════════════════════════════╝
+
+🎯 COMO USAR:
+
+1. Arraste e solte arquivos PDF ou DOCX nesta pasta
+2. O sistema detectará automaticamente e iniciará o processamento
+3. Os arquivos serão:
+   ✅ Extraídos com 33 ferramentas de limpeza
+   ✅ Salvos no Knowledge Base (KB)
+   ✅ Indexados e analisados
+   ✅ Disponibilizados para o chat
+
+⚠️  IMPORTANTE:
+   - Esta pasta é para USO DE EMERGÊNCIA
+   - Use a interface web sempre que possível: https://iarom.com.br
+   - Arquivos processados serão movidos para subpasta "processados/"
+
+📊 STATUS DO MONITORAMENTO: ATIVO ✅
+📅 Data de criação: ${new Date().toLocaleString('pt-BR')}
+
+© 2025 ROM Agent - Redator de Obras Magistrais
+`;
+
+    await fs.promises.writeFile(readmePath, readmeContent, 'utf8');
+
+    // Criar subpasta para arquivos processados
+    await fs.promises.mkdir(path.join(desktopPath, 'processados'), { recursive: true });
+
+    logger.info(`✅ Pasta de emergência criada: ${desktopPath}`);
+
+    // 👁️ Monitorar pasta para novos arquivos (usando chokidar que já está nas dependências)
+    const chokidar = (await import('chokidar')).default;
+    const watcher = chokidar.watch(desktopPath, {
+      ignored: /(^|[\/\\])\../, // ignorar arquivos ocultos
+      persistent: true,
+      ignoreInitial: true, // não processar arquivos existentes na inicialização
+      awaitWriteFinish: {
+        stabilityThreshold: 2000,
+        pollInterval: 100
+      }
+    });
+
+    watcher.on('add', async (filePath) => {
+      // Ignorar arquivos da subpasta processados e README
+      if (filePath.includes('processados') || filePath.includes('LEIA-ME')) {
+        return;
+      }
+
+      const fileName = path.basename(filePath);
+      const ext = path.extname(filePath).toLowerCase();
+
+      // Apenas processar PDF e DOCX
+      if (!['.pdf', '.docx'].includes(ext)) {
+        logger.warn(`⚠️ Arquivo ignorado (formato não suportado): ${fileName}`);
+        return;
+      }
+
+      logger.info(`🚨 UPLOAD DE EMERGÊNCIA detectado: ${fileName}`);
+
+      try {
+        // Processar arquivo com extrator
+        const extractorPipeline = (await import('../lib/extractor-pipeline.js')).default;
+
+        logger.info(`📄 Extraindo ${fileName} com 33 ferramentas...`);
+        const result = await extractorPipeline.extractDocument(filePath);
+
+        if (result.success && result.text) {
+          logger.info(`✅ Extração concluída: ${result.charCount} caracteres`);
+
+          // Salvar no KB
+          const kbPath = path.join(ACTIVE_PATHS.KB, 'documents', `${Date.now()}_emergencia_${fileName}.txt`);
+          await fs.promises.mkdir(path.dirname(kbPath), { recursive: true });
+          await fs.promises.writeFile(kbPath, result.text, 'utf8');
+
+          // Salvar metadados
+          const metadata = {
+            source: 'emergency-upload-desktop',
+            originalFilename: fileName,
+            uploadedAt: new Date().toISOString(),
+            extractedAt: new Date().toISOString(),
+            textLength: result.charCount,
+            toolsUsed: result.toolsUsed || [],
+            type: detectDocumentType(result.text),
+            processNumber: extractProcessNumber(result.text),
+            parties: extractParties(result.text),
+            court: extractCourt(result.text)
+          };
+
+          const metadataPath = kbPath.replace('.txt', '.metadata.json');
+          await fs.promises.writeFile(metadataPath, JSON.stringify(metadata, null, 2), 'utf8');
+
+          logger.info(`💾 Salvo no KB: ${path.basename(kbPath)}`);
+
+          // Mover arquivo original para "processados"
+          const processedPath = path.join(desktopPath, 'processados', fileName);
+          await fs.promises.rename(filePath, processedPath);
+
+          logger.info(`📦 Arquivo movido para: processados/${fileName}`);
+          logger.info(`✅ UPLOAD DE EMERGÊNCIA processado com sucesso!`);
+
+        } else {
+          logger.error(`❌ Falha na extração de ${fileName}: ${result.error || 'Texto vazio'}`);
+        }
+
+      } catch (error) {
+        logger.error(`❌ Erro ao processar upload de emergência ${fileName}:`, error);
+      }
+    });
+
+    logger.info('👁️  Monitoramento de pasta Desktop/Mesa ATIVO');
+
+  } catch (error) {
+    logger.error('❌ Erro ao criar pasta de emergência:', error);
+  }
+
   // Pré-carregar modelos
   await preloadModelos();
 });
