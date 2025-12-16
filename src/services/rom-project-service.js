@@ -185,6 +185,28 @@ class ROMProjectService {
   }
 
   /**
+   * Obtém todos os prompts de uma categoria
+   */
+  getPromptsByCategory(category) {
+    if (!['judiciais', 'extrajudiciais', 'gerais'].includes(category)) {
+      throw new Error(`Categoria inválida: ${category}`);
+    }
+
+    return this.prompts[category] || {};
+  }
+
+  /**
+   * Obtém todos os prompts de todas as categorias
+   */
+  getAllPrompts() {
+    return {
+      judiciais: this.prompts.judiciais,
+      extrajudiciais: this.prompts.extrajudiciais,
+      gerais: this.prompts.gerais
+    };
+  }
+
+  /**
    * Cria ou atualiza um prompt
    */
   async savePrompt(category, promptId, promptData) {
@@ -249,6 +271,31 @@ class ROMProjectService {
    */
   listTemplates() {
     return Object.keys(this.templates);
+  }
+
+  /**
+   * Obtém todos os templates
+   */
+  getTemplates() {
+    return this.templates;
+  }
+
+  /**
+   * Adiciona arquivos ao Knowledge Base
+   */
+  async addToKnowledgeBase(projectName, files, category) {
+    // TODO: Implementar registro de arquivos no KB
+    console.log(`Arquivos adicionados ao KB: projeto=${projectName}, categoria=${category}, total=${files.length}`);
+    return { success: true, files };
+  }
+
+  /**
+   * Lista arquivos do Knowledge Base
+   */
+  async listKnowledgeBaseFiles(projectName, category) {
+    // TODO: Implementar listagem de arquivos do KB
+    console.log(`Listando KB: projeto=${projectName}, categoria=${category}`);
+    return [];
   }
 
   /**
