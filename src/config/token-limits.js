@@ -38,12 +38,25 @@ export const TOKEN_LIMITS = {
   'memorial': 32000,
   'parecer_juridico': 32000,
   'parecer': 32000,
-  'resposta_acusacao': 32000,
   'replica': 32000,
   'treplica': 32000,
   'embargos_declaracao': 32000,
   'razoes_recurso': 32000,
-  'contrarrazoes': 32000,
+  'contrarrazoes_recurso': 32000,
+
+  // ═══════════════════════════════════════════════════════════════
+  // PEÇAS CRIMINAIS - 32K
+  // ═══════════════════════════════════════════════════════════════
+  'resposta_acusacao': 32000,
+  'defesa_previa': 32000,
+  'alegacoes_finais': 32000,
+  'alegacoes_finais_defesa': 32000,
+  'alegacoes_finais_acusacao': 32000,
+  'impugnacao_acusacao': 32000,
+  'suspensao_condicional': 32000,
+  'transacao_penal': 32000,
+  'liberdade_provisoria': 32000,
+  'revogacao_prisao': 32000,
 
   // ═══════════════════════════════════════════════════════════════
   // PEÇAS GERAIS APLICÁVEIS A TODAS AS ÁREAS - 32K
@@ -51,14 +64,10 @@ export const TOKEN_LIMITS = {
   'peticao_generica': 32000,
   'manifestacao': 32000,
   'manifestacao_processo': 32000,
-  'alegacoes': 32000,
   'memorando': 32000,
-  'razoes': 32000,
-  'contrarrazoes': 32000,
-  'impugnacao_generica': 32000,
-  'defesa_previa': 32000,
-  'suspensao_condicional': 32000,
   'peticao_aditamento': 32000,
+  'esclarecimentos': 32000,
+  'informacoes': 32000,
 
   // ═══════════════════════════════════════════════════════════════
   // PEÇAS MÉDIAS - 16K (2x SUPERIOR AO CLAUDE.AI)
