@@ -2529,6 +2529,127 @@ app.delete('/api/kb/documents/:id', authSystem.authMiddleware(), (req, res) => {
   }
 });
 
+// 📚 Novo endpoint: Listar documentos REAIS extraídos em KB/documents/
+app.get('/api/kb/extracted-documents', async (req, res) => {
+  try {
+    const kbDocsPath = path.join(ACTIVE_PATHS.KB, 'documents');
+
+    // Verificar se pasta existe
+    if (!fs.existsSync(kbDocsPath)) {
+      return res.json({ success: true, documents: [], count: 0 });
+    }
+
+    // Ler todos os arquivos da pasta
+    const files = await fs.promises.readdir(kbDocsPath);
+    const txtFiles = files.filter(f => f.endsWith('.txt'));
+
+    // Ler cada documento e seus metadados
+    const documents = await Promise.all(txtFiles.map(async (file) => {
+      const filePath = path.join(kbDocsPath, file);
+      const metadataPath = filePath.replace('.txt', '.metadata.json');
+
+      try {
+        const stats = await fs.promises.stat(filePath);
+        const content = await fs.promises.readFile(filePath, 'utf8');
+
+        let metadata = {};
+        if (fs.existsSync(metadataPath)) {
+          const metaContent = await fs.promises.readFile(metadataPath, 'utf8');
+          metadata = JSON.parse(metaContent);
+        }
+
+        return {
+          id: file.replace('.txt', ''),
+          filename: file,
+          originalFilename: metadata.originalFilename || file,
+          uploadedAt: metadata.uploadedAt || stats.birthtime,
+          extractedAt: metadata.extractedAt,
+          type: metadata.type || 'Documento',
+          processNumber: metadata.processNumber,
+          parties: metadata.parties,
+          court: metadata.court,
+          textLength: metadata.textLength || content.length,
+          toolsUsed: metadata.toolsUsed || [],
+          source: metadata.source || 'unknown',
+          size: stats.size,
+          preview: content.substring(0, 200) + '...'
+        };
+      } catch (error) {
+        console.error(`Erro ao ler documento ${file}:`, error);
+        return null;
+      }
+    }));
+
+    // Filtrar nulls e ordenar por data
+    const validDocs = documents
+      .filter(doc => doc !== null)
+      .sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+
+    res.json({
+      success: true,
+      documents: validDocs,
+      count: validDocs.length,
+      totalSize: validDocs.reduce((sum, doc) => sum + doc.size, 0)
+    });
+
+  } catch (error) {
+    console.error('❌ Erro ao listar documentos extraídos:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 📄 Endpoint para baixar documento extraído específico
+app.get('/api/kb/extracted-documents/:id/download', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const filePath = path.join(ACTIVE_PATHS.KB, 'documents', `${id}.txt`);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Documento não encontrado' });
+    }
+
+    // Ler metadados para nome original
+    const metadataPath = filePath.replace('.txt', '.metadata.json');
+    let originalName = id + '.txt';
+
+    if (fs.existsSync(metadataPath)) {
+      const metadata = JSON.parse(await fs.promises.readFile(metadataPath, 'utf8'));
+      originalName = metadata.originalFilename || originalName;
+    }
+
+    res.download(filePath, originalName);
+  } catch (error) {
+    console.error('❌ Erro ao baixar documento:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 🗑️ Endpoint para deletar documento extraído
+app.delete('/api/kb/extracted-documents/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const filePath = path.join(ACTIVE_PATHS.KB, 'documents', `${id}.txt`);
+    const metadataPath = filePath.replace('.txt', '.metadata.json');
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Documento não encontrado' });
+    }
+
+    // Deletar arquivo de texto
+    await fs.promises.unlink(filePath);
+
+    // Deletar metadados se existir
+    if (fs.existsSync(metadataPath)) {
+      await fs.promises.unlink(metadataPath);
+    }
+
+    res.json({ success: true, message: 'Documento deletado com sucesso' });
+  } catch (error) {
+    console.error('❌ Erro ao deletar documento:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Estatísticas do KB do usuário (requer autenticação)
 app.get('/api/kb/user-statistics', authSystem.authMiddleware(), (req, res) => {
   try {
