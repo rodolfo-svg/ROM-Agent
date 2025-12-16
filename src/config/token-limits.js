@@ -46,6 +46,21 @@ export const TOKEN_LIMITS = {
   'contrarrazoes': 32000,
 
   // ═══════════════════════════════════════════════════════════════
+  // PEÇAS GERAIS APLICÁVEIS A TODAS AS ÁREAS - 32K
+  // ═══════════════════════════════════════════════════════════════
+  'peticao_generica': 32000,
+  'manifestacao': 32000,
+  'manifestacao_processo': 32000,
+  'alegacoes': 32000,
+  'memorando': 32000,
+  'razoes': 32000,
+  'contrarrazoes': 32000,
+  'impugnacao_generica': 32000,
+  'defesa_previa': 32000,
+  'suspensao_condicional': 32000,
+  'peticao_aditamento': 32000,
+
+  // ═══════════════════════════════════════════════════════════════
   // PEÇAS MÉDIAS - 16K (2x SUPERIOR AO CLAUDE.AI)
   // ═══════════════════════════════════════════════════════════════
   'requerimento': 16000,
@@ -57,6 +72,13 @@ export const TOKEN_LIMITS = {
   'substabelecimento': 16000,
   'peticao_simples': 16000,
   'peticao_intermediaria': 16000,
+  'juntada_documentos': 16000,
+  'desistencia': 16000,
+  'renúncia': 16000,
+  'cumprimento_diligencia': 16000,
+  'certidao': 16000,
+  'ata': 16000,
+  'termo': 16000,
 
   // ═══════════════════════════════════════════════════════════════
   // CHAT E CONSULTAS - 8K (IGUAL AO CLAUDE.AI)
