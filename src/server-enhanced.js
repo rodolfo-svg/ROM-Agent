@@ -1305,6 +1305,10 @@ logger.info('✅ Chunked Upload API endpoints configured');
 // API - Upload múltiplos documentos com extração automática (33 ferramentas)
 app.post('/api/upload-documents', upload.array('files', 20), async (req, res) => {
   try {
+    // Estender timeout para 10 minutos (arquivos grandes podem demorar)
+    req.setTimeout(600000); // 10 minutos
+    res.setTimeout(600000);
+
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
     }
