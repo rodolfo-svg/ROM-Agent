@@ -45,6 +45,7 @@ import romCaseProcessorService from './services/processors/rom-case-processor-se
 import caseProcessorRouter from './routes/case-processor.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
 import certidoesDJEService from './services/certidoes-dje-service.js';
+import multiAgentPipelineService from './services/multi-agent-pipeline-service.js';
 import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
@@ -399,6 +400,216 @@ app.delete('/api/certidoes/:id', generalLimiter, async (req, res) => {
 });
 
 logger.info('✅ API de Certidões DJe/DJEN inicializada');
+
+// ===========================================
+// 🤖 MULTI-AGENT PIPELINE (PROCESSOS GRANDES 6700+ PÁGINAS)
+// ===========================================
+
+/**
+ * POST /api/multi-agent/create
+ * Criar novo pipeline multi-agent
+ *
+ * Body: {
+ *   documentPath: string (obrigatório),
+ *   mode: string (obrigatório: 'automatico' | 'manual' | 'hibrido'),
+ *   budget: string (obrigatório: 'economico' | 'premium' | 'flexivel'),
+ *   selectedStages: array (opcional, para modo flexível),
+ *   outputType: string (opcional, tipo de saída desejada)
+ * }
+ */
+app.post('/api/multi-agent/create', generalLimiter, async (req, res) => {
+  try {
+    const { documentPath, mode, budget, selectedStages, outputType } = req.body;
+
+    // Validações
+    if (!documentPath) {
+      return res.status(400).json({
+        success: false,
+        error: 'documentPath é obrigatório'
+      });
+    }
+
+    if (!mode || !['automatico', 'manual', 'hibrido'].includes(mode)) {
+      return res.status(400).json({
+        success: false,
+        error: 'mode deve ser "automatico", "manual" ou "hibrido"'
+      });
+    }
+
+    if (!budget || !['economico', 'premium', 'flexivel'].includes(budget)) {
+      return res.status(400).json({
+        success: false,
+        error: 'budget deve ser "economico", "premium" ou "flexivel"'
+      });
+    }
+
+    if (budget === 'flexivel' && (!selectedStages || selectedStages.length === 0)) {
+      return res.status(400).json({
+        success: false,
+        error: 'selectedStages é obrigatório quando budget é "flexivel"'
+      });
+    }
+
+    // Verificar se arquivo existe
+    if (!fs.existsSync(documentPath)) {
+      return res.status(404).json({
+        success: false,
+        error: `Documento não encontrado: ${documentPath}`
+      });
+    }
+
+    logger.info(`🤖 Criando Multi-Agent Pipeline - Modo: ${mode}, Orçamento: ${budget}`);
+
+    const pipeline = await multiAgentPipelineService.createPipeline({
+      documentPath,
+      mode,
+      budget,
+      selectedStages,
+      outputType: outputType || 'revisao_criminal'
+    });
+
+    res.json({
+      success: true,
+      pipeline: {
+        id: pipeline.id,
+        status: pipeline.status,
+        stages: pipeline.stages,
+        estimatedCost: pipeline.estimatedCost,
+        createdAt: pipeline.createdAt
+      },
+      message: `Pipeline ${pipeline.id} criado com sucesso`
+    });
+
+  } catch (error) {
+    logger.error('Erro ao criar pipeline multi-agent:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/multi-agent/execute/:id
+ * Executar pipeline multi-agent
+ *
+ * NOTA: Esta é uma operação de longa duração (pode levar vários minutos)
+ * Recomenda-se usar SSE ou polling em /api/multi-agent/status/:id para acompanhar progresso
+ */
+app.post('/api/multi-agent/execute/:id', generalLimiter, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const pipeline = multiAgentPipelineService.getPipelineStatus(id);
+
+    if (!pipeline) {
+      return res.status(404).json({
+        success: false,
+        error: `Pipeline ${id} não encontrado`
+      });
+    }
+
+    if (pipeline.status === 'executando') {
+      return res.status(409).json({
+        success: false,
+        error: 'Pipeline já está em execução'
+      });
+    }
+
+    logger.info(`🚀 Executando Multi-Agent Pipeline: ${id}`);
+
+    // Executar pipeline em background (não bloquear a resposta HTTP)
+    multiAgentPipelineService.executePipeline(id, (progress) => {
+      // Callback de progresso (pode ser usado para SSE futuramente)
+      logger.info(`   📊 Pipeline ${id} - Stage ${progress.stageNumber}/${progress.totalStages}: ${progress.stage} (${progress.progress}%)`);
+    }).then(result => {
+      if (result.success) {
+        logger.info(`✅ Pipeline ${id} concluído com sucesso`);
+      } else {
+        logger.error(`❌ Pipeline ${id} falhou: ${result.error}`);
+      }
+    });
+
+    res.json({
+      success: true,
+      message: `Pipeline ${id} iniciado. Use GET /api/multi-agent/status/${id} para acompanhar progresso`,
+      pipelineId: id
+    });
+
+  } catch (error) {
+    logger.error('Erro ao executar pipeline multi-agent:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/multi-agent/status/:id
+ * Obter status atual do pipeline
+ */
+app.get('/api/multi-agent/status/:id', generalLimiter, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const status = multiAgentPipelineService.getPipelineStatus(id);
+
+    if (!status) {
+      return res.status(404).json({
+        success: false,
+        error: `Pipeline ${id} não encontrado`
+      });
+    }
+
+    res.json({
+      success: true,
+      pipeline: status
+    });
+
+  } catch (error) {
+    logger.error('Erro ao obter status do pipeline:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/multi-agent/list
+ * Listar todos os pipelines criados
+ *
+ * Query params:
+ *   status: string (opcional: 'criado' | 'executando' | 'concluido' | 'erro')
+ */
+app.get('/api/multi-agent/list', generalLimiter, async (req, res) => {
+  try {
+    const { status } = req.query;
+
+    let pipelines = multiAgentPipelineService.listPipelines();
+
+    // Filtrar por status se fornecido
+    if (status) {
+      pipelines = pipelines.filter(p => p.status === status);
+    }
+
+    res.json({
+      success: true,
+      pipelines,
+      count: pipelines.length
+    });
+
+  } catch (error) {
+    logger.error('Erro ao listar pipelines:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+logger.info('✅ API Multi-Agent Pipeline inicializada');
 
 // ====================================================================
 
@@ -7078,6 +7289,15 @@ app.listen(PORT, async () => {
     })
     .catch(error => {
       logger.error('Erro ao inicializar ROM Case Processor:', error);
+    });
+
+  // Inicializar Multi-Agent Pipeline Service (Sistema de análise de processos grandes 6700+ páginas)
+  multiAgentPipelineService.init()
+    .then(() => {
+      logger.info('✅ Multi-Agent Pipeline Service inicializado - Suporte a documentos 6700+ páginas com múltiplos modelos IA');
+    })
+    .catch(error => {
+      logger.error('Erro ao inicializar Multi-Agent Pipeline Service:', error);
     });
 
   // 🚨 Criar pasta Desktop/Mesa para UPLOADS MANUAIS DE EMERGÊNCIA
