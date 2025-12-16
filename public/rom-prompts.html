@@ -434,11 +434,49 @@
                     throw new Error(data.error || 'Erro ao carregar prompt');
                 }
 
+                const prompt = data.prompt;
+
                 // Atualizar modal
-                document.getElementById('modal-title').textContent = formatPromptName(promptId);
+                document.getElementById('modal-title').textContent = prompt.nome || formatPromptName(promptId);
                 document.getElementById('modal-category').textContent = getCategoryName(category);
                 document.getElementById('modal-id').textContent = promptId;
-                document.getElementById('modal-content').value = data.content;
+
+                // Montar conteúdo do prompt com metadados e estrutura
+                let content = `📋 METADADOS:\n`;
+                content += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                content += `Nome: ${prompt.nome || promptId}\n`;
+                content += `Categoria: ${prompt.categoria || 'N/A'}\n`;
+                if (prompt.subcategoria) content += `Subcategoria: ${prompt.subcategoria}\n`;
+                content += `Versão: ${prompt.version || '1.0'}\n`;
+                content += `Última Atualização: ${prompt.updated ? new Date(prompt.updated).toLocaleString('pt-BR') : 'N/A'}\n`;
+                content += `Auto-atualizável: ${prompt.autoUpdateable ? 'Sim' : 'Não'}\n`;
+                if (prompt.descricao) content += `Descrição: ${prompt.descricao}\n`;
+                if (prompt.tags && prompt.tags.length > 0) content += `Tags: ${prompt.tags.join(', ')}\n`;
+
+                content += `\n\n📝 ESTRUTURA DA PEÇA:\n`;
+                content += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                if (prompt.estrutura && Array.isArray(prompt.estrutura)) {
+                    prompt.estrutura.forEach((item, index) => {
+                        content += `${index + 1}. ${item}\n`;
+                    });
+                } else {
+                    content += `(Estrutura não definida)\n`;
+                }
+
+                // Se houver template/conteúdo, mostrar
+                if (prompt.template) {
+                    content += `\n\n📄 TEMPLATE:\n`;
+                    content += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                    content += prompt.template;
+                }
+
+                if (prompt.content) {
+                    content += `\n\n✍️ CONTEÚDO:\n`;
+                    content += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                    content += prompt.content;
+                }
+
+                document.getElementById('modal-content').value = content;
 
                 // Mostrar modal
                 document.getElementById('prompt-modal').classList.add('show');
