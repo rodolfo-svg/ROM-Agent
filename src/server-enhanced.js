@@ -21,7 +21,7 @@ import { ROMAgent, CONFIG } from './index.js';
 import { BedrockAgent } from './modules/bedrock.js';
 import partnersBranding from '../lib/partners-branding.js';
 import formattingTemplates from '../lib/formatting-templates.js';
-import { extractDocument, processFile } from '../lib/extractor-pipeline.js';
+import { extractDocument, processFile, CONFIG as EXTRACTOR_CONFIG } from '../lib/extractor-pipeline.js';
 import usersManager, { ROLES } from '../lib/users-manager.js';
 import { conversarComTools } from './modules/bedrock-tools.js';
 import dotenv from 'dotenv';
@@ -1551,10 +1551,58 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
           chunks: processResult.processing?.chunks || 0
         };
 
-        extractions.push(extractedData);
-        console.log(`✅ Processado: ${file.originalname} (${processResult.extraction?.wordCount} palavras, ${processResult.structuredDocuments?.filesGenerated || 0} docs estruturados)`);
+        // 💾 COPIAR PARA KB (processFile salva em extracted/, precisamos copiar para KB/)
+        try {
+          // Validação 1: Verificar se extracted existe
+          if (!processResult.extracted) {
+            throw new Error('processResult.extracted is undefined');
+          }
 
-        // Nota: processFile() já salva tudo automaticamente, incluindo no KB
+          // Validação 2: Construir caminho usando CONFIG correto
+          const extractedTextPath = path.join(EXTRACTOR_CONFIG.extractedFolder, processResult.extracted);
+
+          // Validação 3: Verificar se arquivo existe
+          if (!fs.existsSync(extractedTextPath)) {
+            throw new Error(`Arquivo extraído não encontrado: ${extractedTextPath}`);
+          }
+
+          // Ler conteúdo do arquivo extraído
+          const extractedText = await fs.promises.readFile(extractedTextPath, 'utf8');
+
+          // Criar nome único para KB (remover extensão se já houver .txt)
+          const baseFilename = file.originalname.replace(/\.txt$/i, '');
+          const kbPath = path.join(ACTIVE_PATHS.kb, 'documents', `${Date.now()}_${baseFilename}.txt`);
+
+          // Validação 4: Garantir que diretório KB existe
+          await fs.promises.mkdir(path.dirname(kbPath), { recursive: true });
+
+          // Copiar arquivo
+          await fs.promises.copyFile(extractedTextPath, kbPath);
+
+          // Salvar metadados no KB
+          const kbMetadata = {
+            source: 'web-upload',
+            originalFilename: file.originalname,
+            uploadedAt: new Date().toISOString(),
+            textLength: processResult.extraction?.charCount || 0,
+            wordCount: processResult.extraction?.wordCount || 0,
+            toolsUsed: processResult.toolsUsed || [],
+            structuredDocuments: processResult.structuredDocuments,
+            structuredDocsPath: processResult.structuredDocuments?.outputPath
+          };
+
+          const kbMetadataPath = kbPath.replace('.txt', '.metadata.json');
+          await fs.promises.writeFile(kbMetadataPath, JSON.stringify(kbMetadata, null, 2), 'utf8');
+
+          console.log(`   💾 KB: Copiado ${path.basename(kbPath)}`);
+        } catch (kbError) {
+          // Log mas não falha o upload completo
+          console.error(`   ⚠️  Erro ao copiar para KB: ${kbError.message}`);
+          logger.warn('Falha ao copiar para KB', { error: kbError.message, file: file.originalname });
+        }
+
+        extractions.push(extractedData);
+        console.log(`✅ Processado: ${file.originalname} (${processResult.extraction?.wordCount} palavras, ${processResult.structuredDocuments?.filesGenerated || 0} docs estruturados)`)
       } catch (fileError) {
         console.error(`❌ Erro ao processar ${file.originalname}:`, fileError);
         extractions.push({

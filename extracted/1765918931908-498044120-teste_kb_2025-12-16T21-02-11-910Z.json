@@ -1,0 +1,32 @@
+{
+  "originalFile": "1765918931908-498044120-teste_kb.txt",
+  "extractedFile": "1765918931908-498044120-teste_kb_2025-12-16T21-02-11-910Z.txt",
+  "extractedAt": "2025-12-16T21:02:11.914Z",
+  "method": "direct",
+  "wordCount": 20,
+  "charCount": 91,
+  "estimatedTokens": 23,
+  "costSaved": "$0.0003 (vs. enviar PDF para modelo)",
+  "processing": {
+    "ferramentasAplicadas": 33,
+    "reducao": "0.0%",
+    "tamanhoOriginal": 91,
+    "tamanhoFinal": 91,
+    "chunks": 0
+  },
+  "metadados": {
+    "numerosProcesso": [],
+    "datas": [],
+    "valores": [],
+    "cpfs": [],
+    "cnpjs": [],
+    "oabs": [],
+    "artigos": []
+  },
+  "toolsUsed": [
+    "direct-read",
+    "33-ferramentas-processamento",
+    "10-processadores-otimizacao"
+  ],
+  "confidence": null
+}
