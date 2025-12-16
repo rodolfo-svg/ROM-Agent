@@ -12,7 +12,16 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Número de CPUs disponíveis
-const numCPUs = os.cpus().length;
+const totalCPUs = os.cpus().length;
+
+// 🔧 LIMITE DE WORKERS baseado no ambiente
+const isRender = process.env.RENDER === 'true';
+const MAX_WORKERS_RENDER = 3; // Render: máx 3 workers (2GB RAM / ~600MB por worker)
+const numCPUs = isRender ? Math.min(totalCPUs, MAX_WORKERS_RENDER) : totalCPUs;
+
+if (isRender) {
+  console.log(`⚙️  Ambiente RENDER detectado - Limitando workers para ${numCPUs} (RAM: 2GB)`);
+}
 
 if (cluster.isPrimary) {
   console.log(`
@@ -26,7 +35,7 @@ if (cluster.isPrimary) {
 ║   ╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝                              ║
 ║                                                              ║
 ║   🚀 SERVIDOR MULTI-CORE INICIANDO                          ║
-║   Processadores Disponíveis: ${numCPUs.toString().padEnd(2)}                           ║
+║   CPUs Físicas: ${totalCPUs.toString().padEnd(2)} | Workers: ${numCPUs.toString().padEnd(2)}                        ║
 ║                                                              ║
 ╚══════════════════════════════════════════════════════════════╝
 `);
