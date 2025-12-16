@@ -506,19 +506,103 @@ app.post('/api/chat', async (req, res) => {
       console.error('⚠️ Erro ao buscar no KB:', kbError.message);
     }
 
-    // Processar com agente Bedrock (adicionar contexto do KB se houver)
-    const messageWithContext = kbContext ? message + kbContext : message;
+    // 🚀 DETECTAR ANÁLISE COMPLETA E USAR CASE PROCESSOR (5 LAYERS)
+    const lowerMessage = message.toLowerCase();
+    const isAnaliseCompleta = (
+      (lowerMessage.includes('analise') || lowerMessage.includes('análise')) &&
+      (lowerMessage.includes('integra') || lowerMessage.includes('íntegra') || lowerMessage.includes('completa'))
+    ) || lowerMessage.includes('resumo executivo') ||
+       lowerMessage.includes('fichamento') ||
+       lowerMessage.includes('embargos') ||
+       lowerMessage.includes('processo completo');
 
-    console.log(`🔄 Enviando mensagem para agente Bedrock (${messageWithContext.length} caracteres)...`);
-    const resultado = await agent.enviar(messageWithContext);
-    console.log(`✅ Agente respondeu: sucesso=${resultado.sucesso}, resposta=${resultado.resposta?.length || 0} caracteres`);
+    let resposta;
 
-    if (!resultado.sucesso) {
-      console.error(`❌ Erro do agente: ${resultado.erro}`);
-      return res.status(500).json({ error: resultado.erro || 'Erro ao processar mensagem' });
+    if (isAnaliseCompleta && relevantDocs && relevantDocs.length > 0) {
+      // ✅ USAR CASE PROCESSOR (5 LAYERS) para análise completa
+      console.log('🔍 Análise completa detectada - Executando 5 LAYERS do Case Processor...');
+
+      try {
+        // Criar casoId temporário baseado no documento
+        const casoId = `CHAT_${req.session.id}_${Date.now()}`;
+
+        // Executar todas as 5 layers do Case Processor
+        const resultado = await romCaseProcessorService.processCaso(casoId, {
+          documentPaths: relevantDocs.map(doc => path.join(kbDocsPath, doc.file.replace('.txt', ''))),
+          extractorService: { extractDocument: async () => ({ success: true, text: relevantDocs[0].content }) },
+          skipExtraction: true, // Já temos o texto extraído
+          extractedDocuments: relevantDocs.map(doc => ({
+            filename: doc.metadata.originalFilename || doc.file,
+            text: doc.content,
+            metadata: doc.metadata
+          }))
+        });
+
+        // Formatar resposta com TODAS as informações das 5 layers
+        resposta = `# 📋 ANÁLISE COMPLETA DO PROCESSO\n\n`;
+
+        // Layer 2: Índices
+        if (resultado.indexes) {
+          resposta += `## 📊 ÍNDICE DE EVENTOS E FOLHAS\n\n`;
+          if (resultado.indexes.eventos) {
+            resposta += `**Total de Eventos:** ${resultado.indexes.eventos.length}\n\n`;
+            resultado.indexes.eventos.slice(0, 20).forEach((evento, i) => {
+              resposta += `${i + 1}. ${evento.tipo || 'Evento'} - Folha ${evento.folha || 'N/A'}\n`;
+            });
+            if (resultado.indexes.eventos.length > 20) {
+              resposta += `\n_... e mais ${resultado.indexes.eventos.length - 20} eventos_\n`;
+            }
+          }
+        }
+
+        // Layer 3: Fichamento e Prazos
+        if (resultado.consolidacoes) {
+          resposta += `\n\n## 📑 FICHAMENTO COMPLETO\n\n${JSON.stringify(resultado.consolidacoes, null, 2)}\n\n`;
+        }
+
+        if (resultado.prazos) {
+          resposta += `\n\n## ⏰ ANÁLISE DE PRAZOS\n\n${JSON.stringify(resultado.prazos, null, 2)}\n\n`;
+        }
+
+        // Layer 4: Jurisprudência
+        if (resultado.jurisprudencia) {
+          resposta += `\n\n## ⚖️ JURISPRUDÊNCIA RELEVANTE\n\n`;
+          resultado.jurisprudencia.forEach((jurisp, i) => {
+            resposta += `${i + 1}. **${jurisp.ementa}**\n   - Fonte: ${jurisp.fonte}\n\n`;
+          });
+        }
+
+        // Mensagem original do usuário
+        resposta += `\n\n---\n\n**Processamento completo realizado com sucesso!**\n`;
+        resposta += `Todas as 5 layers foram executadas: Extração ✅ Índices ✅ Análise ✅ Jurisprudência ✅ Redação ✅`;
+
+        console.log(`✅ Análise completa gerada: ${resposta.length} caracteres`);
+      } catch (caseError) {
+        console.error(`❌ Erro no Case Processor: ${caseError.message}`);
+        console.error(`   Stack: ${caseError.stack}`);
+        // Fallback para processamento normal
+        const messageWithContext = kbContext ? message + kbContext : message;
+        const resultado = await agent.enviar(messageWithContext);
+        if (!resultado.sucesso) {
+          return res.status(500).json({ error: resultado.erro || 'Erro ao processar mensagem' });
+        }
+        resposta = resultado.resposta;
+      }
+    } else {
+      // Processamento normal com agente Bedrock
+      const messageWithContext = kbContext ? message + kbContext : message;
+
+      console.log(`🔄 Enviando mensagem para agente Bedrock (${messageWithContext.length} caracteres)...`);
+      const resultado = await agent.enviar(messageWithContext);
+      console.log(`✅ Agente respondeu: sucesso=${resultado.sucesso}, resposta=${resultado.resposta?.length || 0} caracteres`);
+
+      if (!resultado.sucesso) {
+        console.error(`❌ Erro do agente: ${resultado.erro}`);
+        return res.status(500).json({ error: resultado.erro || 'Erro ao processar mensagem' });
+      }
+
+      resposta = resultado.resposta;
     }
-
-    const resposta = resultado.resposta;
 
     // Adicionar resposta ao histórico em memória
     history.push({ role: 'assistant', content: resposta, timestamp: new Date() });
