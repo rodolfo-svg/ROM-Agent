@@ -67,9 +67,13 @@ export const TOKEN_LIMITS = {
   'esclarecimento': 8192,
 
   // ═══════════════════════════════════════════════════════════════
-  // DEFAULT - 8K (CONSERVADOR)
+  // DEFAULT E OUTROS - 8K (CONSERVADOR)
   // ═══════════════════════════════════════════════════════════════
-  'default': 8192
+  'default': 8192,
+  'outros': 8192,
+  'other': 8192,
+  'personalizado': 8192,
+  'custom': 8192
 };
 
 /**

@@ -40,8 +40,9 @@
         "input": 15,
         "output": 75
       },
-      "implemented": false,
-      "notes": "Modelo mais potente - considerar para casos complexos"
+      "implemented": true,
+      "implementedAt": "2025-12-16",
+      "notes": "Modelo IMPRESCINDÍVEL - máxima capacidade de raciocínio e análise profunda"
     }
   ],
   "aws_bedrock": [
@@ -101,8 +102,9 @@
         "input": 0.06,
         "output": 0.24
       },
-      "implemented": false,
-      "notes": "Modelo rápido e barato - ótimo para tarefas simples"
+      "implemented": true,
+      "implementedAt": "2025-12-16",
+      "notes": "Modelo rápido e barato - ótimo para tarefas simples e processamento em massa"
     },
     {
       "id": "us.amazon.nova-micro-v1:0",
@@ -120,8 +122,9 @@
         "input": 0.035,
         "output": 0.14
       },
-      "implemented": false,
-      "notes": "Modelo ultra-rápido - ideal para processamento em massa"
+      "implemented": true,
+      "implementedAt": "2025-12-16",
+      "notes": "Modelo ultra-rápido - ideal para processamento em massa com custo mínimo"
     },
     {
       "id": "us.meta.llama3-3-70b-instruct-v1:0",
@@ -140,8 +143,9 @@
         "input": 0.99,
         "output": 0.99
       },
-      "implemented": false,
-      "notes": "Modelo open-source de alta performance"
+      "implemented": true,
+      "implementedAt": "2025-12-16",
+      "notes": "Modelo open-source de alta performance - excelente custo-benefício"
     },
     {
       "id": "deepseek-ai.deepseek-r1-distill-qwen-32b",
