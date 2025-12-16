@@ -1448,6 +1448,109 @@ app.get('/api/prompts', (req, res) => {
   }
 });
 
+// API - Listar prompts do Projeto ROM (JSON)
+app.get('/api/rom-prompts', async (req, res) => {
+  try {
+    const promptsDir = path.join(ACTIVE_PATHS.data, 'rom-project', 'prompts');
+    const prompts = {
+      gerais: [],
+      judiciais: [],
+      extrajudiciais: [],
+      total: 0
+    };
+
+    // Função auxiliar para ler prompts de uma categoria
+    const lerPromptsCategoria = async (categoria) => {
+      const categoriaPath = path.join(promptsDir, categoria);
+      try {
+        const files = await fs.promises.readdir(categoriaPath);
+        const jsonFiles = files.filter(f => f.endsWith('.json'));
+
+        for (const file of jsonFiles) {
+          const filePath = path.join(categoriaPath, file);
+          const content = await fs.promises.readFile(filePath, 'utf-8');
+          const promptData = JSON.parse(content);
+
+          prompts[categoria].push({
+            id: promptData.id || file.replace('.json', ''),
+            nome: promptData.nome || promptData.name || file.replace('.json', ''),
+            categoria: categoria,
+            subcategoria: promptData.subcategoria || promptData.subcategory || null,
+            descricao: promptData.descricao || promptData.description || '',
+            tags: promptData.tags || [],
+            version: promptData.version || '1.0',
+            updated: promptData.updated || promptData.lastModified || null,
+            autoUpdateable: promptData.autoUpdateable || false,
+            file: file,
+            path: `${categoria}/${file}`
+          });
+        }
+      } catch (error) {
+        console.error(`Erro ao ler prompts da categoria ${categoria}:`, error);
+      }
+    };
+
+    // Ler todas as categorias
+    await Promise.all([
+      lerPromptsCategoria('gerais'),
+      lerPromptsCategoria('judiciais'),
+      lerPromptsCategoria('extrajudiciais')
+    ]);
+
+    // Calcular total
+    prompts.total = prompts.gerais.length + prompts.judiciais.length + prompts.extrajudiciais.length;
+
+    res.json({
+      success: true,
+      prompts,
+      message: `${prompts.total} prompts do Projeto ROM disponíveis`
+    });
+
+  } catch (error) {
+    console.error('Erro ao listar prompts ROM:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      prompts: { gerais: [], judiciais: [], extrajudiciais: [], total: 0 }
+    });
+  }
+});
+
+// API - Obter prompt específico do Projeto ROM
+app.get('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
+  try {
+    const { categoria, promptId } = req.params;
+    const promptsDir = path.join(ACTIVE_PATHS.data, 'rom-project', 'prompts');
+    const promptPath = path.join(promptsDir, categoria, `${promptId}.json`);
+
+    // Verificar se o arquivo existe
+    try {
+      await fs.promises.access(promptPath);
+    } catch {
+      return res.status(404).json({
+        success: false,
+        error: 'Prompt não encontrado'
+      });
+    }
+
+    // Ler o arquivo
+    const content = await fs.promises.readFile(promptPath, 'utf-8');
+    const promptData = JSON.parse(content);
+
+    res.json({
+      success: true,
+      prompt: promptData
+    });
+
+  } catch (error) {
+    console.error('Erro ao obter prompt ROM:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // API - Info do sistema com health check completo
 app.get('/api/info', async (req, res) => {
   try {

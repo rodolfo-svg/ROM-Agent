@@ -231,5 +231,23 @@
     "createdAt": "2025-12-14T21:37:47.019Z",
     "updatedAt": "2025-12-14T21:37:47.019Z",
     "messageCount": 0
+  },
+  "conv_1765876057674_1p1vbg": {
+    "id": "conv_1765876057674_1p1vbg",
+    "userId": "anonymous",
+    "sessionId": "a_GOwLlczw59w8DDgUQHj288fxF2HEl0",
+    "projectId": "teste",
+    "title": "Nova Conversa",
+    "titleGenerated": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "teste",
+        "timestamp": "2025-12-16T09:07:37.675Z"
+      }
+    ],
+    "createdAt": "2025-12-16T09:07:37.674Z",
+    "updatedAt": "2025-12-16T09:07:37.675Z",
+    "messageCount": 1
   }
 }
