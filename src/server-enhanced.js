@@ -1551,6 +1551,205 @@ app.get('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
   }
 });
 
+// API - Editar prompt do Projeto ROM
+app.put('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
+  try {
+    const { categoria, promptId } = req.params;
+    const { prompt } = req.body;
+
+    if (!prompt) {
+      return res.status(400).json({
+        success: false,
+        error: 'Dados do prompt não fornecidos'
+      });
+    }
+
+    const promptsDir = path.join(ACTIVE_PATHS.data, 'rom-project', 'prompts');
+    const promptPath = path.join(promptsDir, categoria, `${promptId}.json`);
+
+    // Verificar se o arquivo existe
+    try {
+      await fs.promises.access(promptPath);
+    } catch {
+      return res.status(404).json({
+        success: false,
+        error: 'Prompt não encontrado'
+      });
+    }
+
+    // Fazer backup antes de editar
+    const backupDir = path.join(promptsDir, '.backups');
+    await fs.promises.mkdir(backupDir, { recursive: true });
+    const backupPath = path.join(backupDir, `${promptId}_${Date.now()}.json`);
+    const originalContent = await fs.promises.readFile(promptPath, 'utf-8');
+    await fs.promises.writeFile(backupPath, originalContent, 'utf-8');
+
+    // Adicionar timestamp de atualização
+    const updatedPrompt = {
+      ...prompt,
+      updated: new Date().toISOString(),
+      lastModifiedBy: 'user'
+    };
+
+    // Salvar prompt editado
+    await fs.promises.writeFile(
+      promptPath,
+      JSON.stringify(updatedPrompt, null, 2),
+      'utf-8'
+    );
+
+    logger.info('Prompt ROM editado', {
+      categoria,
+      promptId,
+      backupPath
+    });
+
+    res.json({
+      success: true,
+      message: 'Prompt editado com sucesso',
+      prompt: updatedPrompt,
+      backup: backupPath
+    });
+
+  } catch (error) {
+    console.error('Erro ao editar prompt ROM:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// API - Criar novo prompt do Projeto ROM
+app.post('/api/rom-prompts/:categoria', async (req, res) => {
+  try {
+    const { categoria } = req.params;
+    const { prompt } = req.body;
+
+    if (!prompt || !prompt.id) {
+      return res.status(400).json({
+        success: false,
+        error: 'Dados do prompt ou ID não fornecidos'
+      });
+    }
+
+    // Validar categoria
+    const categoriasValidas = ['gerais', 'judiciais', 'extrajudiciais'];
+    if (!categoriasValidas.includes(categoria)) {
+      return res.status(400).json({
+        success: false,
+        error: 'Categoria inválida. Use: gerais, judiciais ou extrajudiciais'
+      });
+    }
+
+    const promptsDir = path.join(ACTIVE_PATHS.data, 'rom-project', 'prompts');
+    const categoriaPath = path.join(promptsDir, categoria);
+    const promptPath = path.join(categoriaPath, `${prompt.id}.json`);
+
+    // Verificar se já existe
+    try {
+      await fs.promises.access(promptPath);
+      return res.status(409).json({
+        success: false,
+        error: 'Prompt com este ID já existe'
+      });
+    } catch {
+      // Arquivo não existe, pode criar
+    }
+
+    // Criar diretório da categoria se não existir
+    await fs.promises.mkdir(categoriaPath, { recursive: true });
+
+    // Adicionar metadados
+    const newPrompt = {
+      ...prompt,
+      categoria: categoria,
+      version: prompt.version || '1.0',
+      created: new Date().toISOString(),
+      updated: new Date().toISOString(),
+      createdBy: 'user',
+      autoUpdateable: false
+    };
+
+    // Salvar novo prompt
+    await fs.promises.writeFile(
+      promptPath,
+      JSON.stringify(newPrompt, null, 2),
+      'utf-8'
+    );
+
+    logger.info('Novo prompt ROM criado', {
+      categoria,
+      promptId: prompt.id
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Prompt criado com sucesso',
+      prompt: newPrompt
+    });
+
+  } catch (error) {
+    console.error('Erro ao criar prompt ROM:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// API - Deletar prompt do Projeto ROM
+app.delete('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
+  try {
+    const { categoria, promptId } = req.params;
+    const promptsDir = path.join(ACTIVE_PATHS.data, 'rom-project', 'prompts');
+    const promptPath = path.join(promptsDir, categoria, `${promptId}.json`);
+
+    // Verificar se o arquivo existe
+    try {
+      await fs.promises.access(promptPath);
+    } catch {
+      return res.status(404).json({
+        success: false,
+        error: 'Prompt não encontrado'
+      });
+    }
+
+    // Ler conteúdo antes de deletar (para backup)
+    const content = await fs.promises.readFile(promptPath, 'utf-8');
+    const promptData = JSON.parse(content);
+
+    // Criar backup permanente antes de deletar
+    const backupDir = path.join(promptsDir, '.deleted');
+    await fs.promises.mkdir(backupDir, { recursive: true });
+    const backupPath = path.join(backupDir, `${promptId}_${Date.now()}.json`);
+    await fs.promises.writeFile(backupPath, content, 'utf-8');
+
+    // Deletar arquivo
+    await fs.promises.unlink(promptPath);
+
+    logger.info('Prompt ROM deletado', {
+      categoria,
+      promptId,
+      backupPath
+    });
+
+    res.json({
+      success: true,
+      message: 'Prompt deletado com sucesso',
+      backup: backupPath,
+      deletedPrompt: promptData
+    });
+
+  } catch (error) {
+    console.error('Erro ao deletar prompt ROM:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // API - Info do sistema com health check completo
 app.get('/api/info', async (req, res) => {
   try {
