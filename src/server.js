@@ -15,6 +15,9 @@ import { logger } from './utils/logger.js';
 import projectsRouter from '../lib/api-routes-projects.js';
 import autoUpdateRoutes from '../lib/api-routes-auto-update.js';
 const autoUpdateSystem = require('../lib/auto-update-system.cjs');
+import datajudService from './services/datajud-service.js';
+import { buscarJusBrasil } from './modules/webSearch.js';
+import { obterTribunal } from './modules/tribunais.js';
 
 dotenv.config();
 
@@ -209,6 +212,227 @@ app.get('/api/logs/files', async (req, res) => {
     res.json({ files });
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// ============================================================================
+// API - Sistema de Consulta de Jurisprudências
+// ============================================================================
+
+// Buscar jurisprudência em múltiplas fontes
+app.get('/api/jurisprudencia/buscar', async (req, res) => {
+  try {
+    const { termo, tribunal, fonte = 'todas', dataInicio, dataFim, limit = 50 } = req.query;
+
+    if (!termo) {
+      return res.status(400).json({
+        success: false,
+        error: 'Parâmetro "termo" é obrigatório'
+      });
+    }
+
+    const resultados = {
+      termo,
+      tribunal,
+      timestamp: new Date().toISOString(),
+      fontes: []
+    };
+
+    // Buscar no DataJud (CNJ)
+    if (fonte === 'datajud' || fonte === 'todas') {
+      try {
+        const datajud = await datajudService.buscarDecisoes({
+          tribunal,
+          termo,
+          dataInicio,
+          dataFim,
+          limit: parseInt(limit)
+        });
+        resultados.fontes.push({ fonte: 'DataJud (CNJ)', ...datajud });
+      } catch (error) {
+        resultados.fontes.push({
+          fonte: 'DataJud (CNJ)',
+          erro: true,
+          mensagem: error.message
+        });
+      }
+    }
+
+    // Buscar no JusBrasil
+    if (fonte === 'jusbrasil' || fonte === 'todas') {
+      try {
+        const jusbrasil = await buscarJusBrasil(termo, 'jurisprudencia');
+        resultados.fontes.push({ fonte: 'JusBrasil', ...jusbrasil });
+      } catch (error) {
+        resultados.fontes.push({
+          fonte: 'JusBrasil',
+          erro: true,
+          mensagem: error.message
+        });
+      }
+    }
+
+    // Buscar via WebSearch (tribunais oficiais)
+    if (fonte === 'websearch' || fonte === 'todas') {
+      try {
+        if (tribunal) {
+          const tribunalInfo = obterTribunal(tribunal);
+          if (tribunalInfo) {
+            resultados.fontes.push({
+              fonte: 'WebSearch Oficial',
+              tribunal: tribunalInfo,
+              termo,
+              instrucao: `Acesse o site oficial do tribunal para buscar "${termo}"`
+            });
+          }
+        }
+      } catch (error) {
+        resultados.fontes.push({
+          fonte: 'WebSearch Oficial',
+          erro: true,
+          mensagem: error.message
+        });
+      }
+    }
+
+    res.json({
+      success: true,
+      totalFontes: resultados.fontes.length,
+      ...resultados
+    });
+
+  } catch (error) {
+    logger.error('Erro ao buscar jurisprudência:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Buscar processo específico por número CNJ
+app.get('/api/jurisprudencia/processo/:numero', async (req, res) => {
+  try {
+    const { numero } = req.params;
+
+    // Validar número do processo
+    const validacao = datajudService.validarNumeroProcesso(numero);
+    if (!validacao.valido) {
+      return res.status(400).json({
+        success: false,
+        error: validacao.mensagem
+      });
+    }
+
+    // Buscar processo no DataJud
+    const resultado = await datajudService.buscarProcessos({
+      numero
+    });
+
+    res.json({
+      success: true,
+      validacao,
+      ...resultado
+    });
+
+  } catch (error) {
+    logger.error('Erro ao buscar processo:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Listar todos os tribunais disponíveis
+app.get('/api/jurisprudencia/tribunais', (req, res) => {
+  try {
+    const tribunais = Object.entries(datajudService.TRIBUNAIS_DATAJUD).map(([sigla, codigo]) => ({
+      sigla,
+      codigo,
+      nome: obterTribunal(sigla)?.nome || sigla
+    }));
+
+    res.json({
+      success: true,
+      total: tribunais.length,
+      tribunais
+    });
+  } catch (error) {
+    logger.error('Erro ao listar tribunais:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Listar classes processuais
+app.get('/api/jurisprudencia/classes', async (req, res) => {
+  try {
+    const resultado = await datajudService.listarClasses();
+    res.json({
+      success: true,
+      ...resultado
+    });
+  } catch (error) {
+    logger.error('Erro ao listar classes:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Listar assuntos processuais
+app.get('/api/jurisprudencia/assuntos', async (req, res) => {
+  try {
+    const { area } = req.query;
+    const resultado = await datajudService.listarAssuntos(area);
+    res.json({
+      success: true,
+      ...resultado
+    });
+  } catch (error) {
+    logger.error('Erro ao listar assuntos:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Limpar cache do DataJud
+app.post('/api/jurisprudencia/cache/clear', (req, res) => {
+  try {
+    const resultado = datajudService.limparCache();
+    res.json({
+      success: true,
+      ...resultado
+    });
+  } catch (error) {
+    logger.error('Erro ao limpar cache:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Estatísticas do cache
+app.get('/api/jurisprudencia/cache/stats', (req, res) => {
+  try {
+    const stats = datajudService.estatisticasCache();
+    res.json({
+      success: true,
+      cache: stats
+    });
+  } catch (error) {
+    logger.error('Erro ao obter estatísticas do cache:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
   }
 });
 
