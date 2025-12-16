@@ -555,13 +555,52 @@ app.post('/api/chat', async (req, res) => {
           }
         }
 
-        // Layer 3: Fichamento e Prazos
+        // Layer 3: Fichamento por Documento e Prazos
+        if (resultado.microfichamentos && Array.isArray(resultado.microfichamentos)) {
+          resposta += `\n\n## 📑 FICHAMENTO POR DOCUMENTO\n\n`;
+          resultado.microfichamentos.forEach((fichamento, i) => {
+            resposta += `### ${i + 1}. ${fichamento.nomeDocumento || `Documento ${i + 1}`}\n\n`;
+
+            // Movimentos processuais
+            if (fichamento.movimentos && Array.isArray(fichamento.movimentos)) {
+              resposta += `**Movimentos Processuais:** ${fichamento.movimentos.length}\n\n`;
+              fichamento.movimentos.forEach((mov, j) => {
+                resposta += `${j + 1}. **${mov.data || 'Data N/A'}** - ${mov.descricao || mov.tipo || 'Movimento'}\n`;
+                if (mov.folha) resposta += `   - Folha: ${mov.folha}\n`;
+              });
+            }
+
+            // Resumo do documento
+            if (fichamento.resumo) {
+              resposta += `\n**Resumo:**\n${fichamento.resumo}\n\n`;
+            }
+
+            // Partes
+            if (fichamento.partes) {
+              resposta += `**Partes:**\n${JSON.stringify(fichamento.partes, null, 2)}\n\n`;
+            }
+
+            resposta += `\n---\n\n`;
+          });
+        }
+
         if (resultado.consolidacoes) {
-          resposta += `\n\n## 📑 FICHAMENTO COMPLETO\n\n${JSON.stringify(resultado.consolidacoes, null, 2)}\n\n`;
+          resposta += `\n\n## 📋 CONSOLIDAÇÃO GERAL\n\n${JSON.stringify(resultado.consolidacoes, null, 2)}\n\n`;
         }
 
         if (resultado.prazos) {
-          resposta += `\n\n## ⏰ ANÁLISE DE PRAZOS\n\n${JSON.stringify(resultado.prazos, null, 2)}\n\n`;
+          resposta += `\n\n## ⏰ ANÁLISE DE PRAZOS\n\n`;
+          if (Array.isArray(resultado.prazos)) {
+            resultado.prazos.forEach((prazo, i) => {
+              resposta += `${i + 1}. **${prazo.tipo || 'Prazo'}**\n`;
+              resposta += `   - Vencimento: ${prazo.dataVencimento || 'N/A'}\n`;
+              resposta += `   - Status: ${prazo.status || 'Pendente'}\n`;
+              if (prazo.dias) resposta += `   - Dias restantes: ${prazo.dias}\n`;
+              resposta += `\n`;
+            });
+          } else {
+            resposta += `${JSON.stringify(resultado.prazos, null, 2)}\n\n`;
+          }
         }
 
         // Layer 4: Jurisprudência
