@@ -467,9 +467,13 @@ app.post('/api/chat', async (req, res) => {
 
     // Processar com agente Bedrock (adicionar contexto do KB se houver)
     const messageWithContext = kbContext ? message + kbContext : message;
+
+    console.log(`🔄 Enviando mensagem para agente Bedrock (${messageWithContext.length} caracteres)...`);
     const resultado = await agent.enviar(messageWithContext);
+    console.log(`✅ Agente respondeu: sucesso=${resultado.sucesso}, resposta=${resultado.resposta?.length || 0} caracteres`);
 
     if (!resultado.sucesso) {
+      console.error(`❌ Erro do agente: ${resultado.erro}`);
       return res.status(500).json({ error: resultado.erro || 'Erro ao processar mensagem' });
     }
 
@@ -498,8 +502,16 @@ app.post('/api/chat', async (req, res) => {
 
     res.json(response);
   } catch (error) {
-    console.error('Erro no chat:', error);
-    res.status(500).json({ error: error.message });
+    console.error('❌ ERRO CRÍTICO no /api/chat:', error.message);
+    console.error('   Stack:', error.stack);
+    console.error('   Session ID:', req.session.id);
+    console.error('   Message length:', req.body.message?.length || 0);
+
+    // Retornar erro mais detalhado
+    res.status(500).json({
+      error: error.message || 'Erro desconhecido no chat',
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
