@@ -851,26 +851,36 @@ app.post('/api/chat', async (req, res) => {
             return { file, content, metadata };
           }));
 
-          // Buscar documentos relevantes (busca simples por palavras-chave)
-          relevantDocs = docs.filter(doc => {
-            const lowerMessage = message.toLowerCase();
-            const lowerContent = doc.content.toLowerCase();
+          // 🎯 BUSCA AMPLIADA: Se usuário pedir "análise completa" ou "todos documentos", enviar TUDO
+          if (message.toLowerCase().includes('todos') ||
+              message.toLowerCase().includes('completo') ||
+              message.toLowerCase().includes('íntegra') ||
+              message.toLowerCase().includes('integra') ||
+              message.toLowerCase().includes('exaustivamente')) {
+            console.log('🔍 Modo EXAUSTIVO ativado: Enviando TODOS os documentos do KB');
+            relevantDocs = docs; // Enviar TODOS
+          } else {
+            // Buscar documentos relevantes (busca ampliada por palavras-chave)
+            relevantDocs = docs.filter(doc => {
+              const lowerMessage = message.toLowerCase();
+              const lowerContent = doc.content.toLowerCase();
 
-            // Verificar se a pergunta menciona termos do documento
-            return (
-              (doc.metadata.processNumber && lowerMessage.includes('processo')) ||
-              (doc.metadata.parties && lowerMessage.includes('parte')) ||
-              (doc.metadata.court && lowerMessage.includes('tribunal')) ||
-              lowerContent.includes(lowerMessage) ||
-              message.split(' ').some(word => word.length > 4 && lowerContent.includes(word.toLowerCase()))
-            );
-          });
+              // Verificar se a pergunta menciona termos do documento
+              return (
+                (doc.metadata.processNumber && lowerMessage.includes('processo')) ||
+                (doc.metadata.parties && lowerMessage.includes('parte')) ||
+                (doc.metadata.court && lowerMessage.includes('tribunal')) ||
+                lowerContent.includes(lowerMessage) ||
+                message.split(' ').some(word => word.length > 4 && lowerContent.includes(word.toLowerCase()))
+              );
+            });
+          }
 
           if (relevantDocs.length > 0) {
             console.log(`✅ ${relevantDocs.length} documento(s) relevante(s) encontrado(s)`);
 
             kbContext = '\n\n📚 DOCUMENTOS DISPONÍVEIS NO KNOWLEDGE BASE:\n\n';
-            relevantDocs.slice(0, 1).forEach((doc, i) => { // Limitar a 1 documento (otimização de tokens)
+            relevantDocs.forEach((doc, i) => { // ENVIAR TODOS OS DOCUMENTOS RELEVANTES
               kbContext += `--- DOCUMENTO ${i + 1}: ${doc.metadata.originalFilename || doc.file} ---\n`;
               if (doc.metadata.type) kbContext += `Tipo: ${doc.metadata.type}\n`;
               if (doc.metadata.processNumber) kbContext += `Processo: ${doc.metadata.processNumber}\n`;
@@ -903,18 +913,18 @@ app.post('/api/chat', async (req, res) => {
                 }
 
                 if (relevantSections.length > 0) {
-                  contentToSend = relevantSections.join('\n\n--- SEÇÃO ---\n\n').substring(0, 50000); // 50KB limite otimizado
+                  contentToSend = relevantSections.join('\n\n--- SEÇÃO ---\n\n').substring(0, 150000); // 150KB limite expandido
                   console.log(`   📍 Encontradas ${relevantSections.length} seções relevantes (${contentToSend.length} caracteres)`);
                 } else {
                   // Fallback: enviar início + final do documento
-                  contentToSend = doc.content.substring(0, 25000) + '\n\n...[MEIO DO DOCUMENTO OMITIDO]...\n\n' +
-                                 doc.content.substring(Math.max(0, doc.content.length - 25000));
+                  contentToSend = doc.content.substring(0, 75000) + '\n\n...[MEIO DO DOCUMENTO OMITIDO]...\n\n' +
+                                 doc.content.substring(Math.max(0, doc.content.length - 75000));
                   console.log(`   📄 Enviando início e fim do documento (${contentToSend.length} caracteres)`);
                 }
               } else {
-                // Para outras perguntas, enviar mais do início
-                contentToSend = doc.content.substring(0, 50000); // 50KB = ~12 páginas otimizado
-                console.log(`   📄 Enviando ${contentToSend.length} caracteres do documento`);
+                // Para outras perguntas, enviar CONTEÚDO COMPLETO ou até 150KB
+                contentToSend = doc.content.substring(0, 150000); // 150KB = ~37 páginas
+                console.log(`   📄 Enviando ${contentToSend.length} caracteres do documento (máx: 150KB)`);
               }
 
               kbContext += `\nConteúdo:\n${contentToSend}\n\n`;
