@@ -5981,12 +5981,62 @@ app.listen(PORT, async () => {
 
           logger.info(`💾 Salvo no KB: ${path.basename(kbPath)}`);
 
+          // 📁 CRIAR PASTA DE RESULTADOS com tudo organizado
+          const timestamp = Date.now();
+          const resultFolderName = `${timestamp}_${path.basename(fileName, path.extname(fileName))}_RESULTADO`;
+          const resultFolder = path.join(desktopPath, resultFolderName);
+          await fs.promises.mkdir(resultFolder, { recursive: true });
+
+          // Salvar documento extraído na pasta de resultados
+          const resultTextPath = path.join(resultFolder, 'documento_extraido.txt');
+          await fs.promises.writeFile(resultTextPath, result.text, 'utf8');
+
+          // Salvar metadados na pasta de resultados
+          const resultMetadataPath = path.join(resultFolder, 'metadados.json');
+          await fs.promises.writeFile(resultMetadataPath, JSON.stringify(metadata, null, 2), 'utf8');
+
+          // Criar arquivo README explicativo
+          const readmeResultPath = path.join(resultFolder, 'LEIA-ME.txt');
+          const readmeContent = `
+╔════════════════════════════════════════════════════════╗
+║  📄 RESULTADO DA EXTRAÇÃO - ROM AGENT                 ║
+╚════════════════════════════════════════════════════════╝
+
+Arquivo Original: ${fileName}
+Processado em: ${new Date().toLocaleString('pt-BR')}
+
+📁 CONTEÚDO DESTA PASTA:
+
+1. documento_extraido.txt
+   → Texto completo extraído com 33 ferramentas
+   → ${result.charCount.toLocaleString()} caracteres
+   → ${result.toolsUsed?.length || 0} ferramentas utilizadas
+
+2. metadados.json
+   → Informações estruturadas do documento
+   → Número do processo, partes, tribunal, tipo
+   → Data de extração e upload
+
+3. LEIA-ME.txt (este arquivo)
+   → Explicação do conteúdo
+
+✅ O documento também foi salvo no Knowledge Base
+   e está disponível para consulta no chat!
+
+Acesse: https://iarom.com.br/kb-documents.html
+
+`;
+          await fs.promises.writeFile(readmeResultPath, readmeContent, 'utf8');
+
+          logger.info(`📁 Pasta de resultados criada: ${resultFolderName}`);
+
           // Mover arquivo original para "processados"
           const processedPath = path.join(desktopPath, 'processados', fileName);
           await fs.promises.rename(filePath, processedPath);
 
           logger.info(`📦 Arquivo movido para: processados/${fileName}`);
           logger.info(`✅ UPLOAD DE EMERGÊNCIA processado com sucesso!`);
+          logger.info(`📂 Resultados disponíveis em: ${resultFolderName}`);
 
         } else {
           logger.error(`❌ Falha na extração de ${fileName}: ${result.error || 'Texto vazio'}`);
