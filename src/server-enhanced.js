@@ -913,18 +913,25 @@ app.post('/api/chat', async (req, res) => {
                 }
 
                 if (relevantSections.length > 0) {
-                  contentToSend = relevantSections.join('\n\n--- SEÇÃO ---\n\n').substring(0, 150000); // 150KB limite expandido
+                  // Enviar TODAS as seções relevantes SEM LIMITE (processos grandes)
+                  contentToSend = relevantSections.join('\n\n--- SEÇÃO ---\n\n');
                   console.log(`   📍 Encontradas ${relevantSections.length} seções relevantes (${contentToSend.length} caracteres)`);
                 } else {
-                  // Fallback: enviar início + final do documento
-                  contentToSend = doc.content.substring(0, 75000) + '\n\n...[MEIO DO DOCUMENTO OMITIDO]...\n\n' +
-                                 doc.content.substring(Math.max(0, doc.content.length - 75000));
+                  // Fallback: enviar 300KB início + 300KB final (total 600KB)
+                  contentToSend = doc.content.substring(0, 300000) + '\n\n...[MEIO DO DOCUMENTO OMITIDO]...\n\n' +
+                                 doc.content.substring(Math.max(0, doc.content.length - 300000));
                   console.log(`   📄 Enviando início e fim do documento (${contentToSend.length} caracteres)`);
                 }
               } else {
-                // Para outras perguntas, enviar CONTEÚDO COMPLETO ou até 150KB
-                contentToSend = doc.content.substring(0, 150000); // 150KB = ~37 páginas
-                console.log(`   📄 Enviando ${contentToSend.length} caracteres do documento (máx: 150KB)`);
+                // Para documentos pequenos (<1MB), enviar COMPLETO
+                // Para documentos grandes, enviar até 500KB
+                if (doc.content.length < 1000000) {
+                  contentToSend = doc.content; // DOCUMENTO COMPLETO
+                  console.log(`   📄 Enviando documento COMPLETO (${contentToSend.length} caracteres)`);
+                } else {
+                  contentToSend = doc.content.substring(0, 500000); // 500KB = ~125 páginas
+                  console.log(`   📄 Enviando primeiros 500KB do documento (${contentToSend.length} caracteres)`);
+                }
               }
 
               kbContext += `\nConteúdo:\n${contentToSend}\n\n`;
