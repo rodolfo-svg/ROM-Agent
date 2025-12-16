@@ -828,7 +828,16 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
 
   } catch (error) {
     console.error('❌ Erro no upload de documentos:', error);
-    res.status(500).json({ error: error.message });
+    console.error('Stack trace:', error.stack);
+    logger.error('Erro no upload de documentos', {
+      error: error.message,
+      stack: error.stack,
+      files: req.files?.map(f => f.originalname)
+    });
+    res.status(500).json({
+      error: error.message,
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
   }
 });
 
