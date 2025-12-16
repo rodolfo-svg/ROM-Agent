@@ -1,0 +1,186 @@
+{
+  "id": "metodo-redacao-tecnica",
+  "nome": "Método de Redação Técnica Jurídica",
+  "categoria": "geral",
+  "subcategoria": "metodologia",
+  "version": "1.0",
+  "updated": "2025-12-16T03:20:00.000Z",
+  "autoUpdateable": true,
+  "descricao": "Metodologia técnica de redação jurídica, focando em precisão, clareza, estruturação lógica e correção gramatical",
+  "tags": ["técnica", "redação", "precisão", "gramática", "estrutura"],
+  "metodologia": {
+    "principios_tecnicos": [
+      "PRECISÃO TERMINOLÓGICA: Uso correto de termos técnico-jurídicos",
+      "CLAREZA EXPOSITIVA: Ideias complexas expressas de forma compreensível",
+      "OBJETIVIDADE: Eliminação de elementos desnecessários ou subjetivos",
+      "CORREÇÃO GRAMATICAL: Norma culta da língua portuguesa rigorosamente observada",
+      "COESÃO TEXTUAL: Conectivos e transições que garantem fluidez",
+      "COERÊNCIA LÓGICA: Sequência argumentativa sem contradições"
+    ],
+    "estrutura_tecnica": {
+      "paragrafacao": {
+        "regras": [
+          "Um parágrafo = Uma ideia principal",
+          "Parágrafo ideal: 3-5 linhas (máximo 8 linhas)",
+          "Primeira frase: Tópico frasal (apresenta a ideia)",
+          "Frases seguintes: Desenvolvimento e conclusão da ideia",
+          "Último parágrafo da seção: Transição para a próxima"
+        ],
+        "estrutura_padrao": [
+          "Tópico frasal (afirmação principal)",
+          "Fundamentação (leis, jurisprudência, doutrina)",
+          "Exemplificação ou explicação (quando necessário)",
+          "Conclusão ou transição"
+        ]
+      },
+      "periodizacao": {
+        "regras": [
+          "Período curto: até 2 linhas (preferencial)",
+          "Período médio: 2-3 linhas (aceitável)",
+          "Período longo: acima de 3 linhas (evitar)",
+          "Evitar orações intercaladas excessivas",
+          "Preferir ordem direta (sujeito + verbo + complemento)"
+        ],
+        "sintaxe": [
+          "Evitar voz passiva analítica excessiva",
+          "Preferir verbos de ação a substantivos abstratos",
+          "Evitar gerundismo ('estar fazendo' → 'fazer')",
+          "Evitar ambiguidades sintáticas",
+          "Cuidado com pronomes relativos distantes do antecedente"
+        ]
+      },
+      "conectivos": {
+        "adicao": ["ademais", "além disso", "outrossim", "igualmente"],
+        "oposicao": ["contudo", "todavia", "entretanto", "não obstante", "em que pese"],
+        "conclusao": ["portanto", "assim", "dessa forma", "consequentemente", "destarte"],
+        "explicacao": ["isto é", "ou seja", "a saber", "com efeito"],
+        "causa": ["porque", "pois", "porquanto", "uma vez que", "haja vista"],
+        "condicao": ["se", "caso", "desde que", "contanto que"],
+        "tempo": ["quando", "enquanto", "logo que", "assim que"],
+        "finalidade": ["para que", "a fim de que", "com o propósito de"]
+      }
+    },
+    "correcao_linguistica": {
+      "concordancia_verbal": [
+        "Verbo concorda com o sujeito em número e pessoa",
+        "Sujeito composto antes do verbo: verbo no plural",
+        "Sujeito composto depois do verbo: plural ou singular",
+        "Expressões partitivas ('parte de', 'maioria de'): verbo concorda com o núcleo ou especificador",
+        "Sujeito oracional: verbo no singular"
+      ],
+      "concordancia_nominal": [
+        "Adjetivo concorda com substantivo em gênero e número",
+        "Adjetivo anteposto: concorda com o mais próximo",
+        "Adjetivo posposto: concorda com todos ou com o mais próximo",
+        "Particípios: concordam como adjetivos"
+      ],
+      "regencia": [
+        "Assistir: VTD (ver) ou VTI (presenciar, ajudar)",
+        "Visar: VTD (mirar) ou VTI (objetivar)",
+        "Aspirar: VTD (respirar) ou VTI (desejar)",
+        "Preferir: VTI+VTI (preferir X a Y, não preferir X do que Y)",
+        "Implicar: VTD (acarretar) - sem preposição"
+      ],
+      "colocacao_pronominal": [
+        "Próclise: pronome ANTES do verbo (após palavras atrativas)",
+        "Ênclise: pronome APÓS o verbo (regra geral)",
+        "Mesóclise: pronome NO MEIO do verbo (futuro do presente/pretérito)",
+        "Nunca iniciar frase com pronome oblíquo átono"
+      ],
+      "pontuacao": [
+        "Vírgula: separa termos de mesma função, isola adjuntos adverbiais deslocados, marca inversões",
+        "Ponto e vírgula: separa itens de enumeração complexa ou orações coordenadas longas",
+        "Dois pontos: introduzem citação, enumeração ou explicação",
+        "Travessão: marca discurso direto ou intercalação enfática",
+        "Aspas: delimitam citações textuais"
+      ]
+    },
+    "vocabulario_tecnico": {
+      "verbos_juridicos_precisos": {
+        "peticionar": "requerer formalmente",
+        "pleitear": "solicitar judicialmente",
+        "insurgir-se": "opor-se, recorrer",
+        "deferir": "conceder, acolher",
+        "indeferir": "negar, rejeitar",
+        "homologar": "aprovar judicialmente",
+        "compulsar": "examinar (autos)",
+        "colacionar": "juntar aos autos",
+        "precluir": "perder o direito processual",
+        "aquiescer": "concordar, aceitar"
+      },
+      "substantivos_tecnicos": {
+        "lide": "objeto da ação judicial",
+        "exordio": "introdução da petição",
+        "dispositivo": "parte final da sentença",
+        "fundamento": "base legal ou fática",
+        "pretensao": "pedido, pleito",
+        "julgado": "decisão judicial",
+        "obiter dictum": "fundamento não essencial",
+        "ratio decidendi": "razão de decidir"
+      },
+      "expressoes_latinas": {
+        "conditio sine qua non": "condição sem a qual não",
+        "in dubio pro reo": "na dúvida, em favor do réu",
+        "nemo plus iuris": "ninguém pode transferir mais direitos do que tem",
+        "pacta sunt servanda": "contratos devem ser cumpridos",
+        "rebus sic stantibus": "enquanto as coisas estão assim"
+      }
+    },
+    "checklist_tecnico": [
+      "✓ Todos os termos jurídicos usados corretamente",
+      "✓ Zero erros de concordância verbal e nominal",
+      "✓ Regências verbais corretas",
+      "✓ Colocação pronominal adequada",
+      "✓ Pontuação precisa e funcional",
+      "✓ Parágrafos bem estruturados (3-5 linhas)",
+      "✓ Períodos curtos e claros (máximo 2-3 linhas)",
+      "✓ Conectivos adequados entre ideias",
+      "✓ Zero ambiguidades sintáticas",
+      "✓ Ordem direta preferencial",
+      "✓ Citações formatadas corretamente",
+      "✓ Números e datas por extenso (quando necessário)"
+    ],
+    "erros_tecnicos_evitar": [
+      "❌ 'Alegar' para si (correto: 'afirmar', 'sustentar')",
+      "❌ 'Acatar' decisão contrária (correto: 'submeter-se')",
+      "❌ 'Imputar crime' (correto: 'atribuir crime')",
+      "❌ 'A nível de' (correto: 'em nível de' ou 'no âmbito de')",
+      "❌ 'Face a' (correto: 'em face de', 'ante')",
+      "❌ 'Onde' para situações abstratas (correto: 'em que', 'na qual')",
+      "❌ 'Aonde' sem ideia de movimento (correto: 'onde')",
+      "❌ 'Através de' (tempo) (correto: 'ao longo de', 'durante')",
+      "❌ 'Anexo segue' (redundância: usar apenas 'anexo' ou 'segue')",
+      "❌ 'Segue anexo' sem concordância (correto: 'Seguem anexos')"
+    ]
+  },
+  "revisao_tecnica": {
+    "etapas": [
+      "1. ESTRUTURA: Verificar organização lógica dos argumentos",
+      "2. CLAREZA: Garantir compreensibilidade de todos os períodos",
+      "3. PRECISÃO: Validar uso correto de termos técnicos",
+      "4. GRAMÁTICA: Revisar concordâncias, regências e colocações",
+      "5. PONTUAÇÃO: Ajustar vírgulas, pontos e demais sinais",
+      "6. COESÃO: Melhorar conectivos e transições",
+      "7. REDUNDÂNCIAS: Eliminar repetições desnecessárias",
+      "8. FORMATAÇÃO: Aplicar padrões de fonte, espaçamento e recuos"
+    ],
+    "ferramentas": [
+      "Corretor ortográfico automatizado",
+      "Verificador de concordância",
+      "Análise de legibilidade (índice Flesch)",
+      "Detecção de repetições e redundâncias",
+      "Validação de citações e referências"
+    ]
+  },
+  "integracao_metodo_persuasivo": {
+    "complementaridade": "O método técnico garante CORREÇÃO e CLAREZA; o método persuasivo garante CONVENCIMENTO e IMPACTO",
+    "aplicacao_conjunta": [
+      "TÉCNICA: Parágrafos bem estruturados → PERSUASÃO: Argumentos progressivos",
+      "TÉCNICA: Termos precisos → PERSUASÃO: Escolha estratégica de vocabulário",
+      "TÉCNICA: Conectivos corretos → PERSUASÃO: Transições que reforçam tese",
+      "TÉCNICA: Gramática impecável → PERSUASÃO: Credibilidade (ethos)",
+      "TÉCNICA: Clareza expositiva → PERSUASÃO: Compreensão que leva à adesão"
+    ]
+  },
+  "prompt_sistema": "Você é um especialista em redação técnica jurídica. Sua missão é produzir textos impecáveis quanto à precisão terminológica, correção gramatical e estruturação lógica. Observe rigorosamente a norma culta da língua portuguesa, utilize termos jurídicos com precisão, construa parágrafos bem estruturados (3-5 linhas), use períodos curtos (máximo 2-3 linhas), empregue conectivos adequados, e garanta zero erros de concordância, regência e pontuação. Seu texto deve ser claro, objetivo e tecnicamente irrepreensível."
+}

@@ -28,11 +28,14 @@ import microfichamentoTemplatesService from '../microfichamento-templates-servic
 import jurisprudenceSearchService from '../jurisprudence-search-service.js';
 import progressEmitter from '../../utils/progress-emitter.js';
 import { BedrockRuntimeClient, ConverseCommand } from '@aws-sdk/client-bedrock-runtime';
+import PrazosProcessuaisService from '../../modules/prazos-processuais.js';
+import * as portugues from '../../modules/portugues.js';
 
 class ROMCaseProcessorService {
   constructor() {
     this.initialized = false;
     this.casosBasePath = path.join(process.cwd(), 'data', 'casos');
+    this.prazosService = new PrazosProcessuaisService();
   }
 
   /**
@@ -57,6 +60,10 @@ class ROMCaseProcessorService {
       this.bedrockClient = new BedrockRuntimeClient({
         region: process.env.AWS_REGION || 'us-east-1'
       });
+
+      // Inicializar serviço de prazos
+      console.log('🔧 Inicializando serviço de prazos processuais...');
+      this.prazosService = new PrazosProcessuaisService();
 
       this.initialized = true;
       console.log('✅ ROM Case Processor Service inicializado');
@@ -257,7 +264,7 @@ class ROMCaseProcessorService {
   /**
    * ═══════════════════════════════════════════════════════════
    * LAYER 3: ANÁLISES ESPECIALIZADAS
-   * Processamento paralelo - Microfichamento, Consolidações
+   * Processamento paralelo - Microfichamento, Consolidações, PRAZOS
    * ═══════════════════════════════════════════════════════════
    */
   async layer3_specializedAnalysis(casoId, extractedDocuments, indexes) {
@@ -298,10 +305,16 @@ class ROMCaseProcessorService {
     // Matriz de risco
     const matrizRisco = this._buildRiskMatrix(consolidacoes);
 
+    // ═══ ANÁLISE DE PRAZOS ═══
+    console.log('⏱️  Analisando prazos processuais...');
+    const prazosAnalysis = await this._analisarPrazos(extractedDocuments, microfichamentos);
+
     const analysis = {
       microfichamentos,
       consolidacoes,
       matrizRisco,
+      prazos: prazosAnalysis.prazos || [],
+      analiseTemporal: prazosAnalysis.analiseTemporal || {},
       analyzedAt: new Date().toISOString()
     };
 
@@ -318,6 +331,222 @@ class ROMCaseProcessorService {
     );
 
     return analysis;
+  }
+
+  /**
+   * Analisar prazos processuais
+   */
+  async _analisarPrazos(extractedDocuments, microfichamentos) {
+    try {
+      const prazosEncontrados = [];
+      const analiseTemporal = {
+        preclusao: { ocorreu: false, tipos: [] },
+        prescricao: { risco: false, detalhes: [] },
+        decadencia: { risco: false, detalhes: [] }
+      };
+
+      // 1. Extrair datas de disponibilização/publicação dos documentos
+      for (const doc of extractedDocuments) {
+        const texto = doc.text || doc.content || '';
+
+        // Buscar padrões de publicação DJe/DJEN
+        const padraoPublicacao = /publicad[oa]\s+(?:no|em|na)\s+(?:DJe|DJEN|Diário\s+Eletrônico)\s+(?:em|na\s+data\s+de|do\s+dia)\s+(\d{2}\/\d{2}\/\d{4})/gi;
+        const padraoDisponibilizacao = /disponibilizad[oa]\s+(?:em|na\s+data\s+de)\s+(\d{2}\/\d{2}\/\d{4})/gi;
+
+        let match;
+        while ((match = padraoPublicacao.exec(texto)) !== null) {
+          const dataPublicacao = match[1];
+
+          // Buscar contexto ao redor (tipo de prazo)
+          const contexto = texto.substring(Math.max(0, match.index - 200), Math.min(texto.length, match.index + 200));
+          const tipoPrazo = this._identificarTipoPrazo(contexto);
+
+          if (tipoPrazo) {
+            try {
+              // Converter data string para objeto Date
+              const [dia, mes, ano] = dataPublicacao.split('/');
+              const dataPublicacaoDate = new Date(`${ano}-${mes}-${dia}`);
+
+              // Calcular prazo usando o módulo de prazos
+              const calculoPrazo = await this.prazosService.calcularPrazo(
+                dataPublicacaoDate,
+                tipoPrazo.dias,
+                tipoPrazo.tribunal || 'CNJ',
+                {
+                  tipoAcao: tipoPrazo.tipo,
+                  materia: tipoPrazo.materia
+                }
+              );
+
+              prazosEncontrados.push({
+                documento: doc.fileName,
+                tipo: tipoPrazo.tipo,
+                prazo: tipoPrazo.dias,
+                dataPublicacao,
+                dataVencimento: calculoPrazo.datas.vencimento,
+                diasUteisRestantes: calculoPrazo.diasUteisRestantes,
+                status: calculoPrazo.status,
+                alertas: calculoPrazo.alertas,
+                analiseTemporal: calculoPrazo.analiseTemporal
+              });
+
+              // Agregar análise temporal
+              if (calculoPrazo.analiseTemporal?.preclusao?.ocorreu) {
+                analiseTemporal.preclusao.ocorreu = true;
+                analiseTemporal.preclusao.tipos.push({
+                  documento: doc.fileName,
+                  tipo: calculoPrazo.analiseTemporal.preclusao.tipo,
+                  descricao: calculoPrazo.analiseTemporal.preclusao.descricao
+                });
+              }
+
+              if (calculoPrazo.analiseTemporal?.prescricao?.risco) {
+                analiseTemporal.prescricao.risco = true;
+                analiseTemporal.prescricao.detalhes.push({
+                  documento: doc.fileName,
+                  prazo: calculoPrazo.analiseTemporal.prescricao.prazo,
+                  descricao: calculoPrazo.analiseTemporal.prescricao.descricao
+                });
+              }
+
+              if (calculoPrazo.analiseTemporal?.decadencia?.risco) {
+                analiseTemporal.decadencia.risco = true;
+                analiseTemporal.decadencia.detalhes.push({
+                  documento: doc.fileName,
+                  prazo: calculoPrazo.analiseTemporal.decadencia.prazo,
+                  descricao: calculoPrazo.analiseTemporal.decadencia.descricao
+                });
+              }
+            } catch (err) {
+              console.error(`Erro ao calcular prazo para ${doc.fileName}:`, err.message);
+            }
+          }
+        }
+
+        // Buscar datas de disponibilização
+        while ((match = padraoDisponibilizacao.exec(texto)) !== null) {
+          const dataDisponibilizacao = match[1];
+          const contexto = texto.substring(Math.max(0, match.index - 200), Math.min(texto.length, match.index + 200));
+          const tipoPrazo = this._identificarTipoPrazo(contexto);
+
+          if (tipoPrazo) {
+            try {
+              const [dia, mes, ano] = dataDisponibilizacao.split('/');
+              const dataDispDate = new Date(`${ano}-${mes}-${dia}`);
+
+              // Disponibilização → Publicação (próximo dia útil) → Início do prazo (próximo dia útil)
+              const calculoPrazo = await this.prazosService.calcularPrazo(
+                dataDispDate,
+                tipoPrazo.dias,
+                tipoPrazo.tribunal || 'CNJ',
+                {
+                  tipoAcao: tipoPrazo.tipo,
+                  materia: tipoPrazo.materia,
+                  isDisponibilizacao: true // Flag para indicar que é data de disponibilização
+                }
+              );
+
+              prazosEncontrados.push({
+                documento: doc.fileName,
+                tipo: tipoPrazo.tipo,
+                prazo: tipoPrazo.dias,
+                dataDisponibilizacao,
+                dataPublicacao: calculoPrazo.datas.publicacao,
+                dataVencimento: calculoPrazo.datas.vencimento,
+                diasUteisRestantes: calculoPrazo.diasUteisRestantes,
+                status: calculoPrazo.status,
+                alertas: calculoPrazo.alertas,
+                analiseTemporal: calculoPrazo.analiseTemporal
+              });
+            } catch (err) {
+              console.error(`Erro ao calcular prazo para ${doc.fileName}:`, err.message);
+            }
+          }
+        }
+      }
+
+      console.log(`✅ Prazos analisados: ${prazosEncontrados.length}`);
+
+      return {
+        prazos: prazosEncontrados,
+        analiseTemporal,
+        totalPrazos: prazosEncontrados.length,
+        prazosVencidos: prazosEncontrados.filter(p => p.status === 'vencido').length,
+        prazosProximos: prazosEncontrados.filter(p => p.status === 'urgente' || p.status === 'proximo').length
+      };
+
+    } catch (error) {
+      console.error('Erro na análise de prazos:', error);
+      return {
+        prazos: [],
+        analiseTemporal: {
+          preclusao: { ocorreu: false },
+          prescricao: { risco: false },
+          decadencia: { risco: false }
+        },
+        error: error.message
+      };
+    }
+  }
+
+  /**
+   * Identificar tipo de prazo a partir do contexto
+   */
+  _identificarTipoPrazo(contexto) {
+    const lower = contexto.toLowerCase();
+
+    // Apelação: 15 dias
+    if (lower.includes('apelação') || lower.includes('apelaç') || lower.includes('recurso de apelação')) {
+      return { tipo: 'Apelação', dias: 15, tribunal: 'CNJ', materia: 'civel' };
+    }
+
+    // Embargos de Declaração: 5 dias
+    if (lower.includes('embargos de declaração') || lower.includes('embargos declaratórios')) {
+      return { tipo: 'Embargos de Declaração', dias: 5, tribunal: 'CNJ' };
+    }
+
+    // Contestação: 15 dias
+    if (lower.includes('contestação') || lower.includes('contestar') || lower.includes('resposta do réu')) {
+      return { tipo: 'Contestação', dias: 15, tribunal: 'CNJ', materia: 'civel' };
+    }
+
+    // Recurso Especial: 15 dias
+    if (lower.includes('recurso especial') || lower.includes('resp')) {
+      return { tipo: 'Recurso Especial (STJ)', dias: 15, tribunal: 'STJ' };
+    }
+
+    // Recurso Extraordinário: 15 dias
+    if (lower.includes('recurso extraordinário') || lower.includes('recurso extraordinario')) {
+      return { tipo: 'Recurso Extraordinário (STF)', dias: 15, tribunal: 'STF' };
+    }
+
+    // Agravo de Instrumento: 15 dias
+    if (lower.includes('agravo de instrumento') || lower.includes('agravo')) {
+      return { tipo: 'Agravo de Instrumento', dias: 15, tribunal: 'CNJ' };
+    }
+
+    // Impugnação ao cumprimento de sentença: 15 dias
+    if (lower.includes('impugnação') && lower.includes('cumprimento')) {
+      return { tipo: 'Impugnação ao Cumprimento', dias: 15, tribunal: 'CNJ' };
+    }
+
+    // Contrarrazões: 15 dias
+    if (lower.includes('contrarrazões') || lower.includes('contra-razões')) {
+      return { tipo: 'Contrarrazões', dias: 15, tribunal: 'CNJ' };
+    }
+
+    // Prazo genérico de 15 dias
+    if (lower.match(/\b15\s+dias\b/)) {
+      return { tipo: 'Prazo Processual', dias: 15, tribunal: 'CNJ' };
+    }
+
+    // Prazo genérico de 5 dias
+    if (lower.match(/\b5\s+dias\b/)) {
+      return { tipo: 'Prazo Processual', dias: 5, tribunal: 'CNJ' };
+    }
+
+    // Não identificado
+    return null;
   }
 
   /**
@@ -460,15 +689,89 @@ class ROMCaseProcessorService {
   }
 
   /**
-   * Gerar documento usando Claude via Bedrock
+   * Gerar documento usando Claude via Bedrock com MÉTODO PERSUASIVO
    */
   async _generateWithClaude(fullPrompt, consolidacoes, jurisprudencia) {
     try {
       // Construir contexto para Claude
       const contextText = this._buildContextForClaude(consolidacoes, jurisprudencia);
 
-      // Construir mensagem
-      const systemPrompt = fullPrompt.systemInstructions?.role || 'Você é um assistente jurídico especializado.';
+      // ═══ INTEGRAR MÉTODOS PERSUASIVO + TÉCNICO ═══
+      // Carregar prompts de metodologias
+      const metodoPersuasivo = this.prompts?.gerais?.['metodo-persuasivo-redacao'] || null;
+      const metodoTecnico = this.prompts?.gerais?.['metodo-redacao-tecnica'] || null;
+
+      let systemPrompt = fullPrompt.systemInstructions?.role || 'Você é um assistente jurídico especializado.';
+
+      // Integrar AMBOS os métodos ao system prompt (enfeixados)
+      if (metodoPersuasivo && metodoTecnico) {
+        console.log('✅ Aplicando métodos PERSUASIVO + TÉCNICO à redação (enfeixados)');
+
+        systemPrompt = `${metodoPersuasivo.prompt_sistema}\n\n${metodoTecnico.prompt_sistema}\n\n${systemPrompt}\n\n`;
+
+        // ═══ MÉTODO PERSUASIVO ═══
+        systemPrompt += `## METODOLOGIA PERSUASIVA\n\n`;
+        systemPrompt += `### Princípios Fundamentais:\n`;
+        metodoPersuasivo.metodologia.principios_fundamentais.forEach(p => {
+          systemPrompt += `- ${p}\n`;
+        });
+        systemPrompt += `\n### Estrutura Persuasiva:\n`;
+        systemPrompt += `- **Abertura:** ${metodoPersuasivo.metodologia.estrutura_persuasiva.abertura.objetivo}\n`;
+        systemPrompt += `- **Desenvolvimento:** ${metodoPersuasivo.metodologia.estrutura_persuasiva.desenvolvimento.objetivo}\n`;
+        systemPrompt += `- **Fechamento:** ${metodoPersuasivo.metodologia.estrutura_persuasiva.fechamento.objetivo}\n\n`;
+
+        // ═══ MÉTODO TÉCNICO ═══
+        systemPrompt += `## METODOLOGIA TÉCNICA\n\n`;
+        systemPrompt += `### Princípios Técnicos:\n`;
+        metodoTecnico.metodologia.principios_tecnicos.forEach(p => {
+          systemPrompt += `- ${p}\n`;
+        });
+        systemPrompt += `\n### Estrutura de Parágrafos:\n`;
+        metodoTecnico.metodologia.estrutura_tecnica.paragrafacao.estrutura_padrao.forEach(e => {
+          systemPrompt += `- ${e}\n`;
+        });
+        systemPrompt += `\n### Regras de Períodos:\n`;
+        metodoTecnico.metodologia.estrutura_tecnica.periodizacao.regras.forEach(r => {
+          systemPrompt += `- ${r}\n`;
+        });
+
+        // ═══ INTEGRAÇÃO DOS MÉTODOS ═══
+        systemPrompt += `\n## INTEGRAÇÃO DOS MÉTODOS\n\n`;
+        systemPrompt += `**Complementaridade:** ${metodoTecnico.integracao_metodo_persuasivo.complementaridade}\n\n`;
+        systemPrompt += `### Aplicação Conjunta:\n`;
+        metodoTecnico.integracao_metodo_persuasivo.aplicacao_conjunta.forEach(a => {
+          systemPrompt += `- ${a}\n`;
+        });
+
+        // ═══ CHECKLISTS COMBINADOS ═══
+        systemPrompt += `\n## CHECKLIST FINAL\n\n`;
+        systemPrompt += `### Persuasão:\n`;
+        metodoPersuasivo.metodologia.checklist_persuasivo.forEach(item => {
+          systemPrompt += `${item}\n`;
+        });
+        systemPrompt += `\n### Técnica:\n`;
+        metodoTecnico.metodologia.checklist_tecnico.forEach(item => {
+          systemPrompt += `${item}\n`;
+        });
+
+      } else if (metodoPersuasivo) {
+        console.log('✅ Aplicando método PERSUASIVO à redação');
+        systemPrompt = `${metodoPersuasivo.prompt_sistema}\n\n${systemPrompt}\n\n`;
+        systemPrompt += `## METODOLOGIA PERSUASIVA\n\n`;
+        metodoPersuasivo.metodologia.principios_fundamentais.forEach(p => {
+          systemPrompt += `- ${p}\n`;
+        });
+      } else if (metodoTecnico) {
+        console.log('✅ Aplicando método TÉCNICO à redação');
+        systemPrompt = `${metodoTecnico.prompt_sistema}\n\n${systemPrompt}\n\n`;
+        systemPrompt += `## METODOLOGIA TÉCNICA\n\n`;
+        metodoTecnico.metodologia.principios_tecnicos.forEach(p => {
+          systemPrompt += `- ${p}\n`;
+        });
+      } else {
+        console.warn('⚠️  Métodos de redação não encontrados, usando prompt padrão');
+      }
+
       const userMessage = `${fullPrompt.prompt?.descricao || ''}\n\n${contextText}`;
 
       const command = new ConverseCommand({
@@ -489,7 +792,44 @@ class ROMCaseProcessorService {
       const response = await this.bedrockClient.send(command);
 
       // Extrair texto da resposta
-      const outputText = response.output?.message?.content?.[0]?.text || '';
+      let outputText = response.output?.message?.content?.[0]?.text || '';
+
+      // ═══ APLICAR CORREÇÃO ORTOGRÁFICA E GRAMATICAL ═══
+      console.log('📝 Aplicando correção ortográfica e revisão gramatical...');
+      try {
+        // Verificar gramática e erros comuns
+        const gramatica = await portugues.verificarGramatica(outputText);
+        if (gramatica.problemasEncontrados > 0) {
+          console.log(`⚠️  ${gramatica.problemasEncontrados} problemas gramaticais detectados`);
+          gramatica.problemas.forEach(p => {
+            console.log(`   - ${p.encontrado} → ${p.sugestao}`);
+          });
+        }
+
+        // Analisar estilo e legibilidade
+        const estilo = portugues.analisarEstilo(outputText);
+        console.log(`📊 Análise de estilo: ${estilo.estatisticas.mediaPalavrasPorFrase} palavras/frase`);
+        if (estilo.recomendacoes.length > 0) {
+          console.log(`💡 Recomendações: ${estilo.recomendacoes.join(', ')}`);
+        }
+
+        // Verificar citações e referências
+        const citacoes = portugues.verificarCitacoes(outputText);
+        console.log(`📚 ${citacoes.totalCitacoes} citações encontradas`);
+
+        // Formatar texto jurídico
+        outputText = portugues.formatarTextoJuridico(outputText, {
+          removerAsteriscos: true,
+          removerMarkdown: true,
+          corrigirEspacos: true,
+          formatarCitacoes: true
+        });
+
+        console.log('✅ Correção e formatação aplicadas');
+      } catch (correcaoError) {
+        console.warn('⚠️  Erro na correção automática:', correcaoError.message);
+        // Continua mesmo se a correção falhar
+      }
 
       return outputText;
 
@@ -563,6 +903,342 @@ class ROMCaseProcessorService {
     }
 
     return context;
+  }
+
+  /**
+   * ═══════════════════════════════════════════════════════════
+   * EXPORTAÇÃO DE RESULTADOS PARA ARQUIVOS
+   * Gera todos os relatórios e arquivos solicitados
+   * ═══════════════════════════════════════════════════════════
+   */
+  async exportResults(casoId, results, outputDir = null) {
+    console.log('\n━━━ EXPORTANDO RESULTADOS PARA ARQUIVOS ━━━');
+
+    try {
+      // Diretório de saída (padrão: data/casos/{casoId}/export)
+      const baseDir = outputDir || path.join(this.casosBasePath, casoId, 'export');
+      await fs.mkdir(baseDir, { recursive: true });
+
+      const exportedFiles = {};
+
+      // 1. PROCESSO INTEGRAL - Texto completo de todos os documentos
+      if (results.extraction && results.extraction.length > 0) {
+        console.log('📄 Gerando processo integral...');
+
+        let processoIntegral = '# PROCESSO INTEGRAL\n\n';
+        processoIntegral += `Caso ID: ${casoId}\n`;
+        processoIntegral += `Data de extração: ${results.extraction[0]?.extractedAt || new Date().toISOString()}\n`;
+        processoIntegral += `Total de documentos: ${results.extraction.length}\n\n`;
+        processoIntegral += '═'.repeat(80) + '\n\n';
+
+        results.extraction.forEach((doc, i) => {
+          processoIntegral += `## DOCUMENTO ${i + 1}: ${doc.fileName || 'Sem nome'}\n\n`;
+          processoIntegral += `**Tipo:** ${doc.type || 'Não identificado'}\n`;
+          processoIntegral += `**Data:** ${doc.date || 'N/A'}\n`;
+          processoIntegral += `**Páginas:** ${doc.pages || 'N/A'}\n`;
+          processoIntegral += `**Palavras:** ${doc.wordCount || 'N/A'}\n\n`;
+          processoIntegral += '─'.repeat(80) + '\n\n';
+          processoIntegral += doc.text || doc.content || '[Texto não disponível]';
+          processoIntegral += '\n\n' + '═'.repeat(80) + '\n\n';
+        });
+
+        const integralPath = path.join(baseDir, 'processo-integral.txt');
+        await fs.writeFile(integralPath, processoIntegral, 'utf-8');
+        exportedFiles.processoIntegral = integralPath;
+        console.log(`✅ Processo integral: ${integralPath}`);
+      }
+
+      // 2. ÍNDICE DE EVENTOS E FOLHAS
+      if (results.indexes || results.progressiveIndex) {
+        console.log('📇 Gerando índice de eventos e folhas...');
+
+        const indice = {
+          casoId,
+          geradoEm: new Date().toISOString(),
+          totalDocumentos: results.extraction?.length || 0,
+          metadata: results.indexes?.metadata || {},
+          cronologia: results.indexes?.chronological || [],
+          indiceProgressivo: results.progressiveIndex || {},
+          tiposDocumento: results.indexes?.byType || {},
+          entidades: results.indexes?.entities || {}
+        };
+
+        // JSON
+        const indiceJsonPath = path.join(baseDir, 'indice-eventos-folhas.json');
+        await fs.writeFile(indiceJsonPath, JSON.stringify(indice, null, 2), 'utf-8');
+        exportedFiles.indiceJson = indiceJsonPath;
+
+        // Markdown
+        let indiceMd = '# ÍNDICE DE EVENTOS E FOLHAS\n\n';
+        indiceMd += `**Caso ID:** ${casoId}\n`;
+        indiceMd += `**Gerado em:** ${new Date().toISOString()}\n`;
+        indiceMd += `**Total de documentos:** ${indice.totalDocumentos}\n\n`;
+
+        if (results.indexes?.chronological && results.indexes.chronological.length > 0) {
+          indiceMd += '## Cronologia de Eventos\n\n';
+          results.indexes.chronological.forEach((doc, i) => {
+            indiceMd += `${i + 1}. **${doc.date || 'Data N/A'}** - ${doc.fileName || doc.type || 'Documento'}\n`;
+            if (doc.pages) indiceMd += `   - Páginas: ${doc.pages}\n`;
+          });
+        }
+
+        const indiceMdPath = path.join(baseDir, 'indice-eventos-folhas.md');
+        await fs.writeFile(indiceMdPath, indiceMd, 'utf-8');
+        exportedFiles.indiceMd = indiceMdPath;
+
+        console.log(`✅ Índice (JSON): ${indiceJsonPath}`);
+        console.log(`✅ Índice (MD): ${indiceMdPath}`);
+      }
+
+      // 3. FICHAMENTO POR DOCUMENTO
+      if (results.analysis?.microfichamentos && results.analysis.microfichamentos.length > 0) {
+        console.log('📑 Gerando fichamentos individuais...');
+
+        const fichamentosDir = path.join(baseDir, 'fichamentos');
+        await fs.mkdir(fichamentosDir, { recursive: true });
+
+        for (let i = 0; i < results.analysis.microfichamentos.length; i++) {
+          const fichamento = results.analysis.microfichamentos[i];
+          const nomeArquivo = `fichamento-${i + 1}-${(fichamento.fileName || 'documento').replace(/[^a-z0-9]/gi, '_')}.md`;
+
+          let conteudo = `# FICHAMENTO - ${fichamento.fileName || `Documento ${i + 1}`}\n\n`;
+          conteudo += `**Tipo:** ${fichamento.documentType || fichamento.type || 'N/A'}\n`;
+          conteudo += `**Data:** ${fichamento.metadata?.date || 'N/A'}\n`;
+          conteudo += `**Template:** ${fichamento.templateId || 'N/A'}\n\n`;
+
+          if (fichamento.campos) {
+            conteudo += '## Campos Extraídos\n\n';
+            Object.entries(fichamento.campos).forEach(([key, value]) => {
+              if (Array.isArray(value) && value.length > 0) {
+                conteudo += `### ${key}\n\n`;
+                value.forEach((item, idx) => {
+                  conteudo += `${idx + 1}. ${typeof item === 'object' ? JSON.stringify(item) : item}\n`;
+                });
+                conteudo += '\n';
+              } else if (value && typeof value === 'object') {
+                conteudo += `### ${key}\n\n${JSON.stringify(value, null, 2)}\n\n`;
+              } else if (value) {
+                conteudo += `**${key}:** ${value}\n\n`;
+              }
+            });
+          }
+
+          const fichamentoPath = path.join(fichamentosDir, nomeArquivo);
+          await fs.writeFile(fichamentoPath, conteudo, 'utf-8');
+        }
+
+        exportedFiles.fichamentosDir = fichamentosDir;
+        console.log(`✅ Fichamentos: ${fichamentosDir} (${results.analysis.microfichamentos.length} arquivos)`);
+      }
+
+      // 4. RELATÓRIO DE PRAZOS
+      console.log('⏱️  Gerando relatório de prazos...');
+
+      const relatorioPrazos = {
+        casoId,
+        geradoEm: new Date().toISOString(),
+        prazos: results.analysis?.prazos || [],
+        analiseTemporal: results.analysis?.analiseTemporal || {
+          preclusao: { ocorreu: false, tipos: [] },
+          prescricao: { risco: false, detalhes: [] },
+          decadencia: { risco: false, detalhes: [] }
+        },
+        estatisticas: {
+          totalPrazos: results.analysis?.prazos?.length || 0,
+          prazosVencidos: (results.analysis?.prazos || []).filter(p => p.status === 'vencido').length,
+          prazosUrgentes: (results.analysis?.prazos || []).filter(p => p.status === 'urgente').length,
+          prazosProximos: (results.analysis?.prazos || []).filter(p => p.status === 'proximo').length
+        },
+        baseLegal: {
+          lei: 'Lei nº 11.419/2006 (Art. 4º, §3º e §4º)',
+          resolucoes: ['Resolução CNJ 234/2016 (DJEN)', 'Resolução CNJ 455/2022'],
+          metodologia: 'Disponibilização → Publicação (dia útil seguinte) → Início do Prazo (dia útil seguinte)'
+        }
+      };
+
+      const prazosJsonPath = path.join(baseDir, 'relatorio-prazos.json');
+      await fs.writeFile(prazosJsonPath, JSON.stringify(relatorioPrazos, null, 2), 'utf-8');
+      exportedFiles.relatorioPrazos = prazosJsonPath;
+
+      // Markdown
+      let prazosMd = '# RELATÓRIO DE PRAZOS PROCESSUAIS\n\n';
+      prazosMd += `**Caso ID:** ${casoId}\n`;
+      prazosMd += `**Gerado em:** ${new Date().toISOString()}\n\n`;
+
+      // Estatísticas
+      prazosMd += '## 📊 Estatísticas\n\n';
+      prazosMd += `- **Total de prazos identificados:** ${relatorioPrazos.estatisticas.totalPrazos}\n`;
+      prazosMd += `- **Prazos vencidos:** ${relatorioPrazos.estatisticas.prazosVencidos}\n`;
+      prazosMd += `- **Prazos urgentes:** ${relatorioPrazos.estatisticas.prazosUrgentes}\n`;
+      prazosMd += `- **Prazos próximos:** ${relatorioPrazos.estatisticas.prazosProximos}\n\n`;
+
+      // Análise Temporal
+      prazosMd += '## ⚠️  Análise Temporal\n\n';
+      prazosMd += `### Preclusão\n`;
+      prazosMd += `**Status:** ${relatorioPrazos.analiseTemporal.preclusao.ocorreu ? '🔴 OCORREU' : '🟢 NÃO OCORREU'}\n\n`;
+      if (relatorioPrazos.analiseTemporal.preclusao.tipos && relatorioPrazos.analiseTemporal.preclusao.tipos.length > 0) {
+        prazosMd += '**Detalhes:**\n';
+        relatorioPrazos.analiseTemporal.preclusao.tipos.forEach((t, i) => {
+          prazosMd += `${i + 1}. **${t.documento}**\n`;
+          prazosMd += `   - Tipo: ${t.tipo}\n`;
+          prazosMd += `   - ${t.descricao}\n`;
+        });
+        prazosMd += '\n';
+      }
+
+      prazosMd += `### Prescrição\n`;
+      prazosMd += `**Status:** ${relatorioPrazos.analiseTemporal.prescricao.risco ? '🟠 RISCO IDENTIFICADO' : '🟢 SEM RISCO'}\n\n`;
+      if (relatorioPrazos.analiseTemporal.prescricao.detalhes && relatorioPrazos.analiseTemporal.prescricao.detalhes.length > 0) {
+        prazosMd += '**Detalhes:**\n';
+        relatorioPrazos.analiseTemporal.prescricao.detalhes.forEach((d, i) => {
+          prazosMd += `${i + 1}. **${d.documento}** - Prazo: ${d.prazo}\n`;
+          prazosMd += `   - ${d.descricao}\n`;
+        });
+        prazosMd += '\n';
+      }
+
+      prazosMd += `### Decadência\n`;
+      prazosMd += `**Status:** ${relatorioPrazos.analiseTemporal.decadencia.risco ? '🟠 RISCO IDENTIFICADO' : '🟢 SEM RISCO'}\n\n`;
+      if (relatorioPrazos.analiseTemporal.decadencia.detalhes && relatorioPrazos.analiseTemporal.decadencia.detalhes.length > 0) {
+        prazosMd += '**Detalhes:**\n';
+        relatorioPrazos.analiseTemporal.decadencia.detalhes.forEach((d, i) => {
+          prazosMd += `${i + 1}. **${d.documento}** - Prazo: ${d.prazo}\n`;
+          prazosMd += `   - ${d.descricao}\n`;
+        });
+        prazosMd += '\n';
+      }
+
+      // Prazos Identificados
+      if (relatorioPrazos.prazos && relatorioPrazos.prazos.length > 0) {
+        prazosMd += '## 📅 Prazos Identificados\n\n';
+
+        relatorioPrazos.prazos.forEach((prazo, i) => {
+          const statusEmoji = prazo.status === 'vencido' ? '🔴' : prazo.status === 'urgente' ? '🟠' : prazo.status === 'proximo' ? '🟡' : '🟢';
+
+          prazosMd += `### ${i + 1}. ${prazo.tipo} ${statusEmoji}\n\n`;
+          prazosMd += `- **Documento:** ${prazo.documento}\n`;
+          prazosMd += `- **Prazo:** ${prazo.prazo} dias úteis\n`;
+
+          if (prazo.dataDisponibilizacao) {
+            prazosMd += `- **Data de disponibilização:** ${prazo.dataDisponibilizacao}\n`;
+          }
+          if (prazo.dataPublicacao) {
+            prazosMd += `- **Data de publicação (DJe):** ${prazo.dataPublicacao}\n`;
+          }
+          prazosMd += `- **Data de vencimento:** ${prazo.dataVencimento}\n`;
+          prazosMd += `- **Dias úteis restantes:** ${prazo.diasUteisRestantes}\n`;
+          prazosMd += `- **Status:** ${prazo.status.toUpperCase()}\n`;
+
+          if (prazo.alertas && prazo.alertas.length > 0) {
+            prazosMd += `- **Alertas:**\n`;
+            prazo.alertas.forEach(alerta => {
+              prazosMd += `  - ${alerta}\n`;
+            });
+          }
+
+          prazosMd += '\n';
+        });
+      }
+
+      // Base Legal
+      prazosMd += '## 📖 Base Legal\n\n';
+      prazosMd += `- **${relatorioPrazos.baseLegal.lei}**\n`;
+      relatorioPrazos.baseLegal.resolucoes.forEach(res => {
+        prazosMd += `- ${res}\n`;
+      });
+      prazosMd += `\n**Metodologia:** ${relatorioPrazos.baseLegal.metodologia}\n`;
+
+      const prazosMdPath = path.join(baseDir, 'relatorio-prazos.md');
+      await fs.writeFile(prazosMdPath, prazosMd, 'utf-8');
+      exportedFiles.relatorioPrazosMd = prazosMdPath;
+
+      console.log(`✅ Relatório de prazos (JSON): ${prazosJsonPath}`);
+      console.log(`✅ Relatório de prazos (MD): ${prazosMdPath}`);
+
+      // 5. JURISPRUDÊNCIA
+      if (results.jurisprudence && results.jurisprudence.resultados) {
+        console.log('⚖️  Gerando relatório de jurisprudência...');
+
+        const jurisprudenciaPath = path.join(baseDir, 'jurisprudencia.json');
+        await fs.writeFile(jurisprudenciaPath, JSON.stringify(results.jurisprudence, null, 2), 'utf-8');
+        exportedFiles.jurisprudencia = jurisprudenciaPath;
+
+        // Markdown
+        let jurisMd = '# JURISPRUDÊNCIA RELEVANTE\n\n';
+        jurisMd += `**Caso ID:** ${casoId}\n`;
+        jurisMd += `**Total de teses:** ${results.jurisprudence.totalTeses || 0}\n`;
+        jurisMd += `**Total de precedentes:** ${results.jurisprudence.totalPrecedentes || 0}\n\n`;
+
+        if (results.jurisprudence.resultados && results.jurisprudence.resultados.length > 0) {
+          results.jurisprudence.resultados.forEach((resultado, i) => {
+            jurisMd += `## Tese ${i + 1}: ${resultado.tese}\n\n`;
+
+            if (resultado.jurisprudencia?.precedentes && resultado.jurisprudencia.precedentes.length > 0) {
+              jurisMd += '### Precedentes\n\n';
+              resultado.jurisprudencia.precedentes.slice(0, 5).forEach((prec, j) => {
+                jurisMd += `${j + 1}. **${prec.tribunal || 'Tribunal N/A'}** - ${prec.numero || 'N/A'}\n`;
+                jurisMd += `   - **Ementa:** ${(prec.ementa || '').substring(0, 300)}...\n`;
+                if (prec.url) jurisMd += `   - **URL:** ${prec.url}\n`;
+                jurisMd += '\n';
+              });
+            }
+          });
+        }
+
+        const jurisMdPath = path.join(baseDir, 'jurisprudencia.md');
+        await fs.writeFile(jurisMdPath, jurisMd, 'utf-8');
+        exportedFiles.jurisprudenciaMd = jurisMdPath;
+
+        console.log(`✅ Jurisprudência (JSON): ${jurisprudenciaPath}`);
+        console.log(`✅ Jurisprudência (MD): ${jurisMdPath}`);
+      }
+
+      // 6. DOCUMENTO FINAL (se gerado)
+      if (results.document) {
+        console.log('📝 Salvando documento final...');
+
+        const documentoPath = path.join(baseDir, `documento-${results.document.tipo}.md`);
+        await fs.writeFile(documentoPath, results.document.texto || '', 'utf-8');
+        exportedFiles.documento = documentoPath;
+
+        console.log(`✅ Documento final: ${documentoPath}`);
+      }
+
+      // 7. RESUMO DA EXPORTAÇÃO
+      const resumo = {
+        casoId,
+        exportadoEm: new Date().toISOString(),
+        diretorio: baseDir,
+        arquivosGerados: exportedFiles,
+        estatisticas: {
+          totalDocumentos: results.extraction?.length || 0,
+          totalMicrofichamentos: results.analysis?.microfichamentos?.length || 0,
+          totalTeses: results.jurisprudence?.totalTeses || 0,
+          totalPrecedentes: results.jurisprudence?.totalPrecedentes || 0
+        }
+      };
+
+      const resumoPath = path.join(baseDir, '_resumo-exportacao.json');
+      await fs.writeFile(resumoPath, JSON.stringify(resumo, null, 2), 'utf-8');
+
+      console.log(`\n✅ EXPORTAÇÃO COMPLETA: ${baseDir}`);
+      console.log(`📊 Arquivos gerados: ${Object.keys(exportedFiles).length}`);
+      console.log(`📄 Resumo: ${resumoPath}\n`);
+
+      return {
+        success: true,
+        baseDir,
+        arquivos: exportedFiles,
+        resumo: resumoPath
+      };
+
+    } catch (error) {
+      console.error('❌ Erro na exportação:', error);
+      return {
+        success: false,
+        error: error.message
+      };
+    }
   }
 
   /**
@@ -706,12 +1382,25 @@ class ROMCaseProcessorService {
       console.log(`\n✅ Processamento completo em ${duration} minutos`);
       console.log(`📊 Cache hit rate: ${cacheHitRate}`);
 
+      // EXPORTAR RESULTADOS PARA ARQUIVOS (se solicitado)
+      let exportacao = null;
+      if (options.exportResults !== false) {
+        progressEmitter.addStep(casoId, 'Exportando resultados para arquivos', 'processing');
+        exportacao = await this.exportResults(casoId, results, options.outputDir);
+        if (exportacao.success) {
+          progressEmitter.addSuccess(casoId, `Arquivos exportados: ${exportacao.baseDir}`);
+        } else {
+          progressEmitter.addWarning(casoId, `Erro na exportação: ${exportacao.error}`);
+        }
+      }
+
       // Completar sessão com sucesso
       progressEmitter.completeSession(casoId, {
         totalDocuments: results.extraction.length,
         totalPages: results.extraction.reduce((sum, d) => sum + (d.pages || 0), 0),
         totalWords: results.extraction.reduce((sum, d) => sum + (d.wordCount || 0), 0),
-        cacheHitRate
+        cacheHitRate,
+        exportacao: exportacao?.baseDir || null
       });
 
       return {
@@ -719,6 +1408,7 @@ class ROMCaseProcessorService {
         casoId,
         duration: `${duration} minutos`,
         results,
+        exportacao,
         processedAt: new Date().toISOString()
       };
 
