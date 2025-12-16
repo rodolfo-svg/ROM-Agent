@@ -1,0 +1,25 @@
+{
+  "id": "recurso_especial",
+  "nome": "Recurso Especial",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.266Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Recurso Especial",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO AO STJ",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE E PREPARO",
+    "II. DO CABIMENTO",
+    "III. DO PREQUESTIONAMENTO",
+    "IV. DA VIOLAÇÃO À LEI FEDERAL",
+    "V. DO DISSÍDIO JURISPRUDENCIAL",
+    "VI. DAS RAZÕES DO RECURSO",
+    "VII. DOS PEDIDOS",
+    "FECHAMENTO"
+  ],
+  "instrucoes": "\nRECURSO ESPECIAL - art. 105, III, CF\n\nHIPÓTESES:\na) Contrariar tratado ou lei federal\nb) Julgar válido ato de governo local contestado em face de lei federal\nc) Der a lei federal interpretação divergente da que lhe haja dado outro tribunal\n\nREQUISITOS:\n1. Prequestionamento expresso (Súmula 211/STJ)\n2. Esgotamento das instâncias ordinárias\n3. Não reexame de provas (Súmula 7/STJ)\n4. Demonstração analítica do dissídio (se aplicável)\n\nPREQUESTIONAMENTO FICTO:\n- Oposição de embargos de declaração\n- Art. 1.025 CPC\n"
+}

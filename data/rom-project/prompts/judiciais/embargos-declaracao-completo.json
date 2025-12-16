@@ -1,0 +1,21 @@
+{
+  "id": "embargos-declaracao-completo",
+  "nome": "Embargos de Declaração",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.274Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Embargos de Declaração",
+  "tags": [],
+  "source": "promptsCompletos.js",
+  "estrutura": "\nI. DA TEMPESTIVIDADE\n   - Data da publicação/intimação\n   - Data da oposição\n   - Prazo legal (5 dias)\n\nII. DO CABIMENTO\n   - Hipótese do art. 1.022, [inciso], CPC\n   - Demonstração do vício\n\nIII. DA OBSCURIDADE/CONTRADIÇÃO/OMISSÃO/ERRO MATERIAL\n\n   [Se OBSCURIDADE]\n   - Indicar o trecho obscuro\n   - Explicar a dificuldade de compreensão\n   - Requerer esclarecimento específico\n\n   [Se CONTRADIÇÃO]\n   - Indicar os trechos contraditórios\n   - Demonstrar a incompatibilidade\n   - Requerer harmonização\n\n   [Se OMISSÃO]\n   - Indicar o ponto não analisado\n   - Demonstrar que foi suscitado\n   - Requerer manifestação expressa\n\n   [Se ERRO MATERIAL]\n   - Indicar o erro\n   - Demonstrar sua evidência\n   - Requerer correção\n\nIV. DO PREQUESTIONAMENTO (se para fins recursais)\n   - Indicar dispositivos legais/constitucionais\n   - Requerer manifestação expressa\n\nV. DOS PEDIDOS\n   A. Conhecimento e provimento\n   B. Sanamento do vício apontado\n   C. Efeitos infringentes/modificativos (se aplicável)",
+  "fundamentos": {
+    "cpc": {
+      "Art. 1.022": "Cabimento",
+      "Art. 1.023": "Prazo de 5 dias",
+      "Art. 1.024": "Efeito interruptivo",
+      "Art. 1.025": "Prequestionamento ficto"
+    }
+  }
+}

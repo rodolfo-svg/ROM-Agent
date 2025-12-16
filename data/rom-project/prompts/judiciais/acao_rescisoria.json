@@ -1,0 +1,23 @@
+{
+  "id": "acao_rescisoria",
+  "nome": "Ação Rescisória",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.267Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Ação Rescisória",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "QUALIFICAÇÃO DAS PARTES",
+    "I. DA DECISÃO RESCINDENDA",
+    "II. DO PRAZO DECADENCIAL",
+    "III. DO CABIMENTO (art. 966 CPC)",
+    "IV. DOS FATOS",
+    "V. DO DIREITO",
+    "VI. DOS PEDIDOS (RESCISÃO + NOVO JULGAMENTO)",
+    "FECHAMENTO"
+  ]
+}

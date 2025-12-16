@@ -1,0 +1,26 @@
+{
+  "id": "parecer_juridico",
+  "nome": "Parecer Jurídico",
+  "categoria": "pareceres",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.272Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Parecer Jurídico",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "IDENTIFICAÇÃO",
+    "CONSULENTE",
+    "ASSUNTO",
+    "I. DOS FATOS",
+    "II. DA CONSULTA",
+    "III. DO PARECER",
+    "III.1 DO DIREITO APLICÁVEL",
+    "III.2 DA JURISPRUDÊNCIA",
+    "III.3 DA ANÁLISE",
+    "IV. CONCLUSÃO",
+    "LOCAL E DATA",
+    "ASSINATURA"
+  ]
+}

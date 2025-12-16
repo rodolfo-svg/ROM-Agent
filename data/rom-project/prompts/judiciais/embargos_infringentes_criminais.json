@@ -1,0 +1,22 @@
+{
+  "id": "embargos_infringentes_criminais",
+  "nome": "Embargos Infringentes e de Nulidade",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.269Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Embargos Infringentes e de Nulidade",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE",
+    "II. DO CABIMENTO",
+    "III. DO VOTO VENCIDO",
+    "IV. DAS RAZÕES",
+    "V. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

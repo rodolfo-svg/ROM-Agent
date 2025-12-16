@@ -1,0 +1,13 @@
+{
+  "dataMigracao": "2025-12-16T02:53:09.275Z",
+  "totalPromptsMigrados": 62,
+  "fontes": {
+    "prompts.js": 52,
+    "promptsCompletos.js": 10
+  },
+  "estrutura": {
+    "judiciais": 49,
+    "extrajudiciais": 15,
+    "gerais": 1
+  }
+}

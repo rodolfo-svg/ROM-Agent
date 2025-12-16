@@ -1,0 +1,23 @@
+{
+  "id": "revisao_criminal",
+  "nome": "Revisão Criminal",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.269Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Revisão Criminal",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "QUALIFICAÇÃO DO REQUERENTE",
+    "I. DO CABIMENTO (art. 621 CPP)",
+    "II. DA SENTENÇA CONDENATÓRIA",
+    "III. DOS FATOS",
+    "IV. DO DIREITO",
+    "V. DOS PEDIDOS",
+    "FECHAMENTO"
+  ],
+  "instrucoes": "\nREVISÃO CRIMINAL - art. 621 CPP\n\nHIPÓTESES:\nI - Sentença contrária ao texto expresso da lei ou à evidência dos autos\nII - Sentença fundada em depoimentos, exames ou documentos comprovadamente falsos\nIII - Descoberta de novas provas de inocência ou circunstância que autorize diminuição da pena\n\nLEGITIMADOS: Condenado ou procurador, cônjuge, parente, herdeiros\nPRAZO: Não há - pode ser ajuizada a qualquer tempo\nCOMPETÊNCIA: Tribunal que proferiu a condenação\n"
+}

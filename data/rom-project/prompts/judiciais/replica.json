@@ -1,0 +1,21 @@
+{
+  "id": "replica",
+  "nome": "Réplica",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.265Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Réplica",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. DAS PRELIMINARES ARGUIDAS",
+    "II. DAS PREJUDICIAIS",
+    "III. DO MÉRITO",
+    "IV. REITERAÇÃO DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

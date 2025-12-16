@@ -1,0 +1,24 @@
+{
+  "id": "habeas_corpus",
+  "nome": "Habeas Corpus",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.269Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Habeas Corpus",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "QUALIFICAÇÃO DO PACIENTE",
+    "AUTORIDADE COATORA",
+    "I. DOS FATOS",
+    "II. DO CONSTRANGIMENTO ILEGAL",
+    "III. DO DIREITO",
+    "IV. DA LIMINAR",
+    "V. DOS PEDIDOS",
+    "FECHAMENTO"
+  ],
+  "instrucoes": "\nHABEAS CORPUS - art. 5º, LXVIII, CF\n\nHIPÓTESES DE CABIMENTO:\n1. Prisão ilegal\n2. Excesso de prazo\n3. Falta de justa causa\n4. Incompetência do juízo\n5. Nulidade processual\n6. Extinção da punibilidade\n7. Direito de aguardar em liberdade\n\nDOCUMENTOS ESSENCIAIS:\n- Cópia do auto de prisão\n- Decisão que decretou a prisão\n- Certidão de antecedentes\n- Comprovante de residência\n- Comprovante de trabalho\n- FAC (se possível)\n\nLIMINAR: art. 660, §2º, CPP\n"
+}

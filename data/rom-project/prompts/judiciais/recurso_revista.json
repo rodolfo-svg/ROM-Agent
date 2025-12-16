@@ -1,0 +1,23 @@
+{
+  "id": "recurso_revista",
+  "nome": "Recurso de Revista",
+  "categoria": "trabalhista",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.270Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Recurso de Revista",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO AO TST",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE E PREPARO",
+    "II. DO CABIMENTO",
+    "III. DO PREQUESTIONAMENTO",
+    "IV. DA VIOLAÇÃO LEGAL/DIVERGÊNCIA",
+    "V. DAS RAZÕES",
+    "VI. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

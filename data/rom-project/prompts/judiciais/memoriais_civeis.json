@@ -1,0 +1,21 @@
+{
+  "id": "memoriais_civeis",
+  "nome": "Memoriais Cíveis",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.269Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Memoriais Cíveis",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. SÍNTESE DOS FATOS",
+    "II. DA INSTRUÇÃO PROCESSUAL",
+    "III. DO DIREITO",
+    "IV. CONCLUSÃO",
+    "FECHAMENTO"
+  ]
+}

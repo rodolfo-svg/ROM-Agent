@@ -1,0 +1,25 @@
+{
+  "id": "contrato_compra_venda",
+  "nome": "Contrato de Compra e Venda",
+  "categoria": "contratos",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.272Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Contrato de Compra e Venda",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "PARTES",
+    "CLÁUSULA 1ª - OBJETO",
+    "CLÁUSULA 2ª - PREÇO",
+    "CLÁUSULA 3ª - FORMA DE PAGAMENTO",
+    "CLÁUSULA 4ª - TRADIÇÃO",
+    "CLÁUSULA 5ª - GARANTIAS",
+    "CLÁUSULA 6ª - EVICÇÃO",
+    "CLÁUSULA 7ª - VÍCIOS",
+    "CLÁUSULA 8ª - RESCISÃO",
+    "CLÁUSULA 9ª - FORO",
+    "ASSINATURAS E TESTEMUNHAS"
+  ]
+}

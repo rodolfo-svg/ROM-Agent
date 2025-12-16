@@ -1,0 +1,23 @@
+{
+  "id": "alegacoes_finais_criminais",
+  "nome": "Alegações Finais Criminais",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.269Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Alegações Finais Criminais",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. SÍNTESE ACUSATÓRIA",
+    "II. DA INSTRUÇÃO CRIMINAL",
+    "III. PRELIMINARES",
+    "IV. DO MÉRITO",
+    "V. DA DOSIMETRIA (se condenação)",
+    "VI. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

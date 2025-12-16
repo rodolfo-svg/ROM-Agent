@@ -1,0 +1,288 @@
+{
+  "id": "master-rom",
+  "nome": "master-rom",
+  "categoria": "geral",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.273Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para master-rom",
+  "tags": [],
+  "source": "promptsCompletos.js",
+  "formatacao": {
+    "fonte": {
+      "corpo": "Calibri 12pt",
+      "citacoes_longas": "Calibri 11pt",
+      "rodape": "Calibri 10pt"
+    },
+    "espacamento": {
+      "entre_linhas": "1,5",
+      "antes_paragrafo": "0pt",
+      "depois_paragrafo": "0pt",
+      "entre_paragrafos": "1 linha em branco (1 Enter)",
+      "entre_secoes": "2 linhas em branco"
+    },
+    "margens": {
+      "superior": "2,5cm",
+      "inferior": "2,5cm",
+      "esquerda": "3,0cm",
+      "direita": "3,0cm"
+    },
+    "recuos": {
+      "primeira_linha": "1,25cm",
+      "citacoes_longas": "4cm esquerda",
+      "sem_recuo": [
+        "títulos",
+        "endereçamento",
+        "pedidos",
+        "listas"
+      ]
+    },
+    "alinhamento": {
+      "corpo": "Justificado",
+      "titulo": "Centralizado (ÚNICA exceção)",
+      "enderecamento": "Justificado"
+    }
+  },
+  "checklistQualidade": {
+    "estrutura": [
+      "Hierarquia correta (I, II, III > 1, 2, 3 > a, b, c)",
+      "Ordem correta (Fatos > Preliminares > Mérito > Pedidos)",
+      "Transições lógicas",
+      "Numeração consistente"
+    ],
+    "fundamentacao": [
+      "Base legal citada corretamente",
+      "Jurisprudência VERIFICADA via web_search",
+      "Mínimo 3-5 precedentes relevantes",
+      "Doutrina citada (quando aplicável)"
+    ],
+    "formatacao": [
+      "Calibri 12pt, espaçamento 1,5",
+      "Recuos parágrafo 1,25cm",
+      "Template timbrado utilizado",
+      "ZERO emojis e decorações",
+      "Margens 2,5/2,5/3,0/3,0"
+    ],
+    "limpeza_final": [
+      "Zero asteriscos (**)",
+      "Zero markdown",
+      "Zero instruções metodológicas",
+      "Zero referências a IA",
+      "Aspas curvas (não retas)",
+      "Espaços duplos removidos"
+    ]
+  },
+  "extensao": {
+    "Petição Inicial": {
+      "minimo": 10,
+      "ideal": "15-20",
+      "maximo": 35
+    },
+    "Contestação": {
+      "minimo": 10,
+      "ideal": "15-25",
+      "maximo": 40
+    },
+    "Alegações Finais": {
+      "minimo": 10,
+      "ideal": "15-20",
+      "maximo": 30
+    },
+    "Apelação": {
+      "minimo": 15,
+      "ideal": "20-30",
+      "maximo": 50
+    },
+    "Revisão Criminal": {
+      "minimo": 15,
+      "ideal": "20-30",
+      "maximo": 50
+    },
+    "Habeas Corpus": {
+      "minimo": 10,
+      "ideal": "15-20",
+      "maximo": 30
+    },
+    "Agravo Interno": {
+      "minimo": 10,
+      "ideal": "15-20",
+      "maximo": 30
+    },
+    "Memoriais": {
+      "minimo": 5,
+      "ideal": "8-12",
+      "maximo": 20
+    },
+    "Embargos Declaração": {
+      "minimo": 5,
+      "ideal": "8-12",
+      "maximo": 20
+    },
+    "Impugnação": {
+      "minimo": 10,
+      "ideal": "15-20",
+      "maximo": 30
+    }
+  },
+  "proibicoes": [
+    "ZERO emojis",
+    "ZERO asteriscos (**)",
+    "ZERO markdown (###, ```, etc)",
+    "ZERO sublinhado",
+    "ZERO travessões decorativos (---)",
+    "ZERO notas de rodapé",
+    "ZERO cores (apenas preto)",
+    "ZERO referências a IA"
+  ],
+  "vocabulario": {
+    "conectivos": [
+      "Inicialmente",
+      "Contudo",
+      "Sem embargo",
+      "Ademais",
+      "Dessa forma",
+      "Neste sentido",
+      "Por sua relevância",
+      "Diante disso",
+      "Portanto",
+      "Ato contínuo",
+      "Não obstante",
+      "À guisa de ilustração",
+      "Frise-se",
+      "Em razão de",
+      "Como corolário",
+      "Outrossim",
+      "Destarte",
+      "Com efeito"
+    ],
+    "expressoes_latinas": [
+      "in casu",
+      "error in iudicando",
+      "decisum",
+      "ipse literis",
+      "data venia",
+      "nullum crimen sine lege",
+      "permissa venia",
+      "affectio criminis societatis",
+      "animus associativo",
+      "lex certa",
+      "analogia iuris",
+      "ope legis"
+    ],
+    "verbos_impugnacao": [
+      "violou",
+      "vulnerou",
+      "contrariou",
+      "ignorou",
+      "desconsiderou",
+      "se furtou de examinar",
+      "se negou a analisar",
+      "deixou de reconhecer",
+      "quedou-se inerte"
+    ],
+    "expressoes_deferencia": [
+      "em que pese o notório saber jurídico do douto juiz",
+      "com a devida vênia",
+      "Nobres julgadores"
+    ],
+    "referencias_decisoes": [
+      "r. acórdão (respeitável)",
+      "v. decisão (veneranda)",
+      "acórdão vergastado"
+    ]
+  },
+  "destaques": {
+    "negrito": [
+      "Endereçamento completo",
+      "Título da peça",
+      "Títulos de seções (I., II., III.)",
+      "Nome das partes na qualificação",
+      "Palavras-chave pedidos (PRINCIPAL, SUBSIDIARIAMENTE)",
+      "Nome advogado assinatura",
+      "Dispositivos legais importantes"
+    ],
+    "caixa_alta": [
+      "Endereçamento",
+      "Título da peça",
+      "Nome das partes",
+      "Nome advogado assinatura"
+    ],
+    "italico": [
+      "Palavras latim (data venia, in casu, ope legis)",
+      "Termos estrangeiros",
+      "Citação dentro de citação"
+    ]
+  },
+  "escritorio": {
+    "nome": "RODOLFO OTAVIO MOTA ADVOGADOS ASSOCIADOS S/S",
+    "oab": "OAB/GO 21.841",
+    "endereco": "Rua 05, n. 691, Ed. The Prime Tamandaré, Sl. 213/215",
+    "bairro": "Setor Oeste",
+    "cidade": "Goiânia-GO",
+    "cep": "74.115-060",
+    "telefone": "(62) 3293-2323",
+    "site": "www.rom.adv.br"
+  },
+  "vocativos": {
+    "STJ": {
+      "enderecamento": "COLENDO SUPERIOR TRIBUNAL DE JUSTIÇA.",
+      "tratamento": "Eminentes Ministros Julgadores,"
+    },
+    "STF": {
+      "enderecamento": "EXCELSO SUPREMO TRIBUNAL FEDERAL.",
+      "tratamento": "Eminentes Ministros,"
+    },
+    "TJGO": {
+      "enderecamento": "EGRÉGIO TRIBUNAL DE JUSTIÇA DO ESTADO DE GOIÁS.",
+      "tratamento": "Excelentíssimos Desembargadores,"
+    },
+    "PRIMEIRO_GRAU": {
+      "enderecamento": "EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DE DIREITO DA [X]ª VARA [TIPO] DA COMARCA DE [CIDADE].",
+      "tratamento": "Vossa Excelência"
+    }
+  },
+  "citacoes": {
+    "curtas": {
+      "limite": "até 3 linhas",
+      "formato": "Aspas duplas curvas (\"\")",
+      "posicao": "Dentro do parágrafo normal",
+      "fonte": "Calibri 12pt",
+      "recuo": "Sem recuo adicional"
+    },
+    "longas": {
+      "limite": "mais de 3 linhas",
+      "formato": "Parágrafo separado",
+      "recuo": "4cm esquerda",
+      "fonte": "Calibri 11pt",
+      "espacamento": "simples (1,0)",
+      "aspas": "SEM aspas",
+      "espacamento_antes_depois": "1 linha em branco antes E depois"
+    },
+    "transcricao_decisoes": {
+      "formato": "Mesmo formato de citação longa",
+      "fonte": "Indicar fonte após o bloco: (Acórdão, fl. X)",
+      "supressoes": "Usar (omissis) para supressões",
+      "grifo": "Usar (grifo nosso) se destacar"
+    },
+    "artigos_lei": {
+      "formato": "Normal (sem negrito) no corpo",
+      "abreviacao": "Usar \"art.\" (minúsculo com ponto)",
+      "paragrafos": "par. 1º, par. 2º",
+      "incisos": "inciso I, inciso II",
+      "alineas": "alínea \"a\"",
+      "diplomas": "CC, CF, CPC, CPP (sem pontos)",
+      "exemplo": "conforme art. 473, par. único, do Código Civil"
+    }
+  },
+  "precedentes": {
+    "regra_critica": "SEMPRE usar web_search para verificar precedentes ANTES de citar. NUNCA inventar súmulas, julgados ou números de processo.",
+    "formato_inline": "(STJ, REsp X.XXX.XXX/UF, Rel. Min. NOME, Xa Turma, j. DD/MM/AAAA)",
+    "formato_bloco": "Citação da ementa em bloco recuado, seguida de: (REsp X.XXX.XXX/UF, Rel. Min. NOME, Turma, DJe DD/MM/AAAA)",
+    "documentacao_anexos": {
+      "X.1": "Acórdão integral",
+      "X.2": "Voto do relator",
+      "X.3": "Ementa"
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "procuracao_ad_judicia",
+  "nome": "Procuração Ad Judicia",
+  "categoria": "procuracoes",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.271Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Procuração Ad Judicia",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "OUTORGANTE",
+    "OUTORGADO",
+    "PODERES",
+    "LOCAL E DATA",
+    "ASSINATURA"
+  ],
+  "instrucoes": "\nPROCURAÇÃO AD JUDICIA - art. 105 CPC\n\nPODERES DA CLÁUSULA AD JUDICIA:\n- Propor ações\n- Contestar\n- Recorrer\n- Transigir\n- Desistir (poder especial)\n- Reconhecer procedência (poder especial)\n- Receber citação (poder especial)\n- Confessar (poder especial)\n- Renunciar (poder especial)\n- Receber e dar quitação (poder especial)\n- Substabelecer (com ou sem reservas)\n\nREQUISITOS:\n- Qualificação completa do outorgante\n- Nome e OAB do advogado\n- Poderes específicos se necessário\n- Data e assinatura\n"
+}

@@ -1,0 +1,19 @@
+{
+  "id": "declaracao",
+  "nome": "Declaração",
+  "categoria": "declaracoes",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.272Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Declaração",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "IDENTIFICAÇÃO DO DECLARANTE",
+    "TEXTO DA DECLARAÇÃO",
+    "FINALIDADE",
+    "LOCAL E DATA",
+    "ASSINATURA"
+  ]
+}

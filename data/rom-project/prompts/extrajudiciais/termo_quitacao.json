@@ -1,0 +1,21 @@
+{
+  "id": "termo_quitacao",
+  "nome": "Termo de Quitação",
+  "categoria": "termos",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.273Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Termo de Quitação",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "PARTES",
+    "OBJETO",
+    "VALOR QUITADO",
+    "FORMA DE PAGAMENTO",
+    "DECLARAÇÃO DE QUITAÇÃO",
+    "LOCAL E DATA",
+    "ASSINATURAS"
+  ]
+}

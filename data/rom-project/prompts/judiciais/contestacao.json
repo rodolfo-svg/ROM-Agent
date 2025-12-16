@@ -1,0 +1,24 @@
+{
+  "id": "contestacao",
+  "nome": "Contestação",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.264Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Contestação",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "QUALIFICAÇÃO DO CONTESTANTE",
+    "I. SÍNTESE DA INICIAL",
+    "II. PRELIMINARES",
+    "III. PREJUDICIAIS DE MÉRITO",
+    "IV. DO MÉRITO",
+    "V. DOS PEDIDOS",
+    "FECHAMENTO"
+  ],
+  "instrucoes": "\nCONTESTAÇÃO - ESTRUTURA COMPLETA\n\n1. PRELIMINARES (art. 337 CPC)\n- Inexistência ou nulidade da citação\n- Incompetência absoluta e relativa\n- Incorreção do valor da causa\n- Inépcia da inicial\n- Perempção, litispendência, coisa julgada\n- Conexão, continência\n- Incapacidade da parte, defeito de representação\n- Convenção de arbitragem\n- Ausência de legitimidade\n- Falta de interesse processual\n- Falta de caução\n- Indevida concessão de justiça gratuita\n\n2. PREJUDICIAIS DE MÉRITO\n- Prescrição\n- Decadência\n- Outras\n\n3. MÉRITO\n- Impugnação específica de cada fato\n- Contraprova documental\n- Teses defensivas fundamentadas\n- Jurisprudência favorável\n\n4. PEDIDOS\n- Acolhimento das preliminares\n- Reconhecimento das prejudiciais\n- Improcedência total dos pedidos\n- Subsidiariamente: improcedência parcial\n- Condenação em honorários\n\nEXTENSÃO: 10-40 páginas\n"
+}

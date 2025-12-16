@@ -1,0 +1,20 @@
+{
+  "id": "resposta-acusacao",
+  "nome": "Resposta à Acusação",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.274Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Resposta à Acusação",
+  "tags": [],
+  "source": "promptsCompletos.js",
+  "estrutura": "\nI. SÍNTESE DA ACUSAÇÃO\n   - Fatos imputados\n   - Tipificação\n   - Penas cominadas\n\nII. DAS PRELIMINARES\n   A. Inépcia da Denúncia/Queixa\n   B. Ilegitimidade de Parte\n   C. Coisa Julgada\n   D. Prescrição\n   E. Ausência de Justa Causa\n   F. Nulidades\n\nIII. DA ABSOLVIÇÃO SUMÁRIA (art. 397, CPP)\n   - Demonstrar enquadramento em uma das hipóteses\n\nIV. DO MÉRITO (breve)\n   - Versão defensiva dos fatos\n   - Tese central\n\nV. DAS PROVAS A PRODUZIR\n   - Oitiva de testemunhas (rol de até 8)\n   - Perícias necessárias\n   - Documentos\n\nVI. DOS PEDIDOS\n   A. Rejeição da denúncia/queixa (se preliminar acolhida)\n   B. Absolvição sumária (art. 397)\n   C. Subsidiariamente: prosseguimento com produção de provas",
+  "fundamentos": {
+    "cpp": {
+      "Art. 396": "Oferecimento da resposta",
+      "Art. 396-A": "Conteúdo obrigatório",
+      "Art. 397": "Absolvição sumária"
+    }
+  }
+}

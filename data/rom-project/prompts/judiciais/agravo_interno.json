@@ -1,0 +1,21 @@
+{
+  "id": "agravo_interno",
+  "nome": "Agravo Interno",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.265Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Agravo Interno",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE E CABIMENTO",
+    "II. DA DECISÃO AGRAVADA",
+    "III. DAS RAZÕES DO INCONFORMISMO",
+    "IV. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

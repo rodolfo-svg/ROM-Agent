@@ -1,0 +1,24 @@
+{
+  "id": "resposta_acusacao",
+  "nome": "Resposta à Acusação",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.269Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Resposta à Acusação",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "QUALIFICAÇÃO DO ACUSADO",
+    "I. SÍNTESE DA ACUSAÇÃO",
+    "II. PRELIMINARES",
+    "III. MÉRITO - ABSOLVIÇÃO SUMÁRIA",
+    "IV. PROVAS A PRODUZIR",
+    "V. DOS PEDIDOS",
+    "FECHAMENTO"
+  ],
+  "instrucoes": "\nRESPOSTA À ACUSAÇÃO - art. 396-A CPP\n\nPRELIMINARES:\n- Inépcia da denúncia/queixa\n- Ilegitimidade de parte\n- Coisa julgada\n- Prescrição\n- Ausência de justa causa\n- Nulidades\n\nABSOLVIÇÃO SUMÁRIA (art. 397 CPP):\nI - Existência manifesta de causa excludente da ilicitude\nII - Existência manifesta de causa excludente da culpabilidade (salvo inimputabilidade)\nIII - Fato narrado evidentemente não constitui crime\nIV - Extinta a punibilidade do agente\n\nPRAZO: 10 dias\nROL DE TESTEMUNHAS: até 8 testemunhas\n"
+}

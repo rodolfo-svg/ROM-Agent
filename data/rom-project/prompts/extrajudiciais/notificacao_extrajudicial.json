@@ -1,0 +1,24 @@
+{
+  "id": "notificacao_extrajudicial",
+  "nome": "Notificação Extrajudicial",
+  "categoria": "notificacoes",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.272Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Notificação Extrajudicial",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "NOTIFICANTE",
+    "NOTIFICADO",
+    "I. DOS FATOS",
+    "II. DO DIREITO",
+    "III. DA NOTIFICAÇÃO",
+    "IV. DO PRAZO",
+    "V. DAS CONSEQUÊNCIAS",
+    "LOCAL E DATA",
+    "ASSINATURA"
+  ],
+  "instrucoes": "\nNOTIFICAÇÃO EXTRAJUDICIAL\n\nFINALIDADES:\n- Constituir em mora (art. 397 CC)\n- Interromper prescrição\n- Comprovar ciência\n- Preservar direitos\n- Requisitar providências\n\nFORMAS DE ENVIO:\n1. Cartório de RTD (registro e autenticação)\n2. AR (Aviso de Recebimento)\n3. Oficial de Justiça (se judicial)\n\nREQUISITOS:\n- Identificação completa das partes\n- Descrição clara dos fatos\n- Fundamentação legal\n- Prazo para resposta/cumprimento\n- Consequências do descumprimento\n"
+}

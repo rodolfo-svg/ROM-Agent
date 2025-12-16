@@ -1,0 +1,22 @@
+{
+  "id": "queixa_crime",
+  "nome": "Queixa-Crime",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.270Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Queixa-Crime",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "QUALIFICAÇÃO DO QUERELANTE",
+    "QUALIFICAÇÃO DO QUERELADO",
+    "I. DOS FATOS",
+    "II. DO CRIME",
+    "III. DO DIREITO",
+    "IV. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

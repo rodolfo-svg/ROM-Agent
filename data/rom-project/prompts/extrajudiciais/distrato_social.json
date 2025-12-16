@@ -1,0 +1,22 @@
+{
+  "id": "distrato_social",
+  "nome": "Distrato Social",
+  "categoria": "empresarial",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.271Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Distrato Social",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "PREÂMBULO",
+    "CLÁUSULA 1ª - DISSOLUÇÃO",
+    "CLÁUSULA 2ª - LIQUIDAÇÃO",
+    "CLÁUSULA 3ª - NOMEAÇÃO DO LIQUIDANTE",
+    "CLÁUSULA 4ª - ATIVO E PASSIVO",
+    "CLÁUSULA 5ª - RESPONSABILIDADES",
+    "CLÁUSULA 6ª - GUARDA DE DOCUMENTOS",
+    "ENCERRAMENTO E ASSINATURAS"
+  ]
+}

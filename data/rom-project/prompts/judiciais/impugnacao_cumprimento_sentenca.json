@@ -1,0 +1,21 @@
+{
+  "id": "impugnacao_cumprimento_sentenca",
+  "nome": "Impugnação ao Cumprimento de Sentença",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.268Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Impugnação ao Cumprimento de Sentença",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE",
+    "II. DAS MATÉRIAS (art. 525 CPC)",
+    "III. DO EXCESSO DE EXECUÇÃO",
+    "IV. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

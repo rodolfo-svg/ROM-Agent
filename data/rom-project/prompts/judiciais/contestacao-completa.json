@@ -1,0 +1,75 @@
+{
+  "id": "contestacao-completa",
+  "nome": "Contestação Cível",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.274Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Contestação Cível",
+  "tags": [],
+  "source": "promptsCompletos.js",
+  "estrutura": "\nI. SÍNTESE DA INICIAL\n   - Resumo objetivo da pretensão autoral\n   - Pedidos formulados\n\nII. DAS PRELIMINARES (art. 337, CPC)\n   A. [Preliminar específica]\n   B. [Preliminar específica]\n\nIII. DAS PREJUDICIAIS DE MÉRITO\n   A. Da Prescrição\n   B. Da Decadência\n\nIV. DO MÉRITO\n   1. Impugnação Específica dos Fatos\n      1.1. [Fato impugnado]\n      1.2. [Fato impugnado]\n\n   2. Da Versão dos Fatos\n      - Narrativa da perspectiva do réu\n\n   3. Do Direito\n      3.1. Fundamentação legal\n      3.2. Jurisprudência favorável\n      3.3. Doutrina\n\nV. DOS PEDIDOS\n   A. Acolhimento das preliminares\n   B. Reconhecimento das prejudiciais\n   C. IMPROCEDÊNCIA TOTAL dos pedidos\n   D. Subsidiariamente: improcedência parcial\n   E. Condenação em honorários sucumbenciais",
+  "fundamentos": {
+    "cpc": {
+      "Art. 336": "Incumbe ao réu alegar, na contestação, toda a matéria de defesa",
+      "Art. 337": "Incumbe ao réu, antes de discutir o mérito, alegar",
+      "Art. 341": "Ônus da impugnação específica",
+      "Art. 342": "Fatos não contestados presumem-se verdadeiros"
+    }
+  },
+  "checklistQualidade": [
+    "Todas as preliminares aplicáveis arguidas",
+    "Prejudiciais de mérito verificadas",
+    "Cada fato da inicial foi impugnado especificamente",
+    "Versão dos fatos apresentada de forma clara",
+    "Fundamentação jurídica completa",
+    "Jurisprudência verificada via web_search",
+    "Pedidos escalonados (principal e subsidiário)",
+    "Prazo verificado (15 dias, art. 335)"
+  ],
+  "tecnicas": {
+    "impugnacao_especifica": {
+      "regra": "Art. 341, CPC - Ônus de impugnar especificamente cada fato",
+      "consequencia": "Fatos não impugnados presumem-se verdadeiros",
+      "excecoes": [
+        "Defensor público ou curador especial (art. 341, parágrafo único)",
+        "Fatos que dependem de prova documental",
+        "Fatos contrários ao confessado"
+      ]
+    },
+    "defesa_indireta": {
+      "conceito": "Admite os fatos, mas opõe outros que modificam, extinguem ou impedem",
+      "exemplos": [
+        "Pagamento",
+        "Compensação",
+        "Novação",
+        "Prescrição"
+      ]
+    },
+    "negativa_geral": {
+      "quando_usar": "Defensor público ou curador especial",
+      "efeito": "Não gera presunção de veracidade"
+    }
+  },
+  "preliminares": {
+    "I": "Inexistência ou nulidade da citação",
+    "II": "Incompetência absoluta e relativa",
+    "III": "Incorreção do valor da causa",
+    "IV": "Inépcia da petição inicial",
+    "V": "Perempção",
+    "VI": "Litispendência",
+    "VII": "Coisa julgada",
+    "VIII": "Conexão",
+    "IX": "Incapacidade da parte, defeito de representação ou falta de autorização",
+    "X": "Convenção de arbitragem",
+    "XI": "Ausência de legitimidade ou de interesse processual",
+    "XII": "Falta de caução ou de outra prestação que a lei exige como preliminar",
+    "XIII": "Indevida concessão do benefício de gratuidade de justiça"
+  },
+  "prejudiciais": {
+    "prescricao": "Extinção da pretensão pelo decurso do tempo",
+    "decadencia": "Extinção do próprio direito pelo não exercício",
+    "outras": "Conforme o caso concreto"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "reclamacao_trabalhista",
+  "nome": "Reclamação Trabalhista",
+  "categoria": "trabalhista",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.270Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Reclamação Trabalhista",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "QUALIFICAÇÃO DAS PARTES",
+    "I. DO CONTRATO DE TRABALHO",
+    "II. DOS FATOS",
+    "III. DO DIREITO",
+    "IV. DOS PEDIDOS",
+    "V. DO VALOR DA CAUSA",
+    "VI. DAS PROVAS",
+    "FECHAMENTO"
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "execucao_titulo_extrajudicial",
+  "nome": "Execução de Título Extrajudicial",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.267Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Execução de Título Extrajudicial",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "QUALIFICAÇÃO DAS PARTES",
+    "I. DO TÍTULO EXECUTIVO",
+    "II. DA CERTEZA, LIQUIDEZ E EXIGIBILIDADE",
+    "III. DO CÁLCULO DO DÉBITO",
+    "IV. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

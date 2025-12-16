@@ -1,0 +1,20 @@
+{
+  "id": "relaxamento_prisao",
+  "nome": "Pedido de Relaxamento de Prisão",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.270Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Pedido de Relaxamento de Prisão",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. DA PRISÃO",
+    "II. DA ILEGALIDADE",
+    "III. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

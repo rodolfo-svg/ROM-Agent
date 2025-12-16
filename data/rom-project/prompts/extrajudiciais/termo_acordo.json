@@ -1,0 +1,22 @@
+{
+  "id": "termo_acordo",
+  "nome": "Termo de Acordo Extrajudicial",
+  "categoria": "termos",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.273Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Termo de Acordo Extrajudicial",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "PARTES",
+    "CLÁUSULA 1ª - OBJETO",
+    "CLÁUSULA 2ª - OBRIGAÇÕES",
+    "CLÁUSULA 3ª - PRAZOS",
+    "CLÁUSULA 4ª - QUITAÇÃO",
+    "CLÁUSULA 5ª - MULTA",
+    "CLÁUSULA 6ª - FORO",
+    "ASSINATURAS E TESTEMUNHAS"
+  ]
+}

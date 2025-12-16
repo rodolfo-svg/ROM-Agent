@@ -1,0 +1,28 @@
+{
+  "id": "contrato_locacao",
+  "nome": "Contrato de Locação",
+  "categoria": "contratos",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.272Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Contrato de Locação",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "PARTES",
+    "CLÁUSULA 1ª - OBJETO",
+    "CLÁUSULA 2ª - PRAZO",
+    "CLÁUSULA 3ª - VALOR DO ALUGUEL",
+    "CLÁUSULA 4ª - REAJUSTE",
+    "CLÁUSULA 5ª - FORMA DE PAGAMENTO",
+    "CLÁUSULA 6ª - GARANTIA",
+    "CLÁUSULA 7ª - ENCARGOS",
+    "CLÁUSULA 8ª - OBRIGAÇÕES DO LOCADOR",
+    "CLÁUSULA 9ª - OBRIGAÇÕES DO LOCATÁRIO",
+    "CLÁUSULA 10ª - BENFEITORIAS",
+    "CLÁUSULA 11ª - RESCISÃO",
+    "CLÁUSULA 12ª - FORO",
+    "ASSINATURAS E TESTEMUNHAS"
+  ]
+}

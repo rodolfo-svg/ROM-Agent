@@ -1,0 +1,21 @@
+{
+  "id": "agravo_peticao",
+  "nome": "Agravo de Petição",
+  "categoria": "trabalhista",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.270Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Agravo de Petição",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE",
+    "II. DELIMITAÇÃO DA MATÉRIA",
+    "III. DAS RAZÕES",
+    "IV. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

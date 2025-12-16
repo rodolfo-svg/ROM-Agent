@@ -1,0 +1,20 @@
+{
+  "id": "apelacao-criminal",
+  "nome": "Apelação Criminal",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.274Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Apelação Criminal",
+  "tags": [],
+  "source": "promptsCompletos.js",
+  "estrutura": "\nI. TEMPESTIVIDADE\n   - Data da intimação da sentença\n   - Data da interposição\n   - Prazo legal (5 dias)\n\nII. DA SENTENÇA RECORRIDA\n   - Síntese da decisão\n   - Fundamentação adotada\n   - Dispositivo\n\nIII. DO CABIMENTO\n   - Art. 593, [inciso], CPP\n   - Interesse recursal\n\nIV. DAS RAZÕES RECURSAIS\n\n   A. PRELIMINARES (se houver)\n      - Nulidades processuais\n      - Cerceamento de defesa\n\n   B. DO MÉRITO\n      1. Da Autoria\n      2. Da Materialidade\n      3. Da Tipicidade\n      4. Das Provas\n      5. In dubio pro reo\n\n   C. DA DOSIMETRIA (se condenação mantida)\n      1. Circunstâncias judiciais\n      2. Agravantes/atenuantes\n      3. Causas de aumento/diminuição\n      4. Regime inicial\n      5. Substituição\n\nV. DOS PEDIDOS\n   A. PRINCIPAL: Reforma da sentença para ABSOLVER\n   B. SUBSIDIÁRIOS:\n      - Desclassificação\n      - Redução da pena\n      - Regime mais brando\n      - Substituição da PPL",
+  "fundamentos": {
+    "cpp": {
+      "Art. 593": "Hipóteses de cabimento",
+      "Art. 600": "Prazo de 8 dias para razões",
+      "Art. 601": "Prazo de 8 dias para contrarrazões"
+    }
+  }
+}

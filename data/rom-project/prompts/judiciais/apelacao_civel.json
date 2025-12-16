@@ -1,0 +1,22 @@
+{
+  "id": "apelacao_civel",
+  "nome": "Apelação Cível",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.265Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Apelação Cível",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE E PREPARO",
+    "II. DA SENTENÇA RECORRIDA",
+    "III. DO CABIMENTO",
+    "IV. DAS RAZÕES DO RECURSO",
+    "V. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

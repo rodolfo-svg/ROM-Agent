@@ -1,0 +1,21 @@
+{
+  "id": "revisao-criminal",
+  "nome": "Revisão Criminal",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.274Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Revisão Criminal",
+  "tags": [],
+  "source": "promptsCompletos.js",
+  "estrutura": "\nI. DA CONDENAÇÃO RESCINDENDA\n   - Processo originário\n   - Sentença/acórdão condenatório\n   - Trânsito em julgado\n\nII. DO CABIMENTO\n   - Art. 621, [inciso], CPP\n   - Demonstração da hipótese\n\nIII. DOS FATOS\n   - Narrativa do caso\n   - Erro apontado\n\nIV. DO DIREITO\n   - Fundamentação jurídica\n   - Precedentes favoráveis\n\nV. DOS PEDIDOS\n   A. Procedência para:\n      - Absolver o requerente\n      - OU anular o processo\n      - OU modificar a pena\n   B. Indenização (se aplicável)",
+  "fundamentos": {
+    "cpp": {
+      "Art. 621": "Hipóteses de cabimento",
+      "Art. 622": "Legitimados",
+      "Art. 626": "Procedência e efeitos"
+    }
+  },
+  "competencia": "Tribunal que proferiu a condenação"
+}

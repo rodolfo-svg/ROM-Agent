@@ -1,0 +1,25 @@
+{
+  "id": "contrato_prestacao_servicos",
+  "nome": "Contrato de Prestação de Serviços",
+  "categoria": "contratos",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.272Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Contrato de Prestação de Serviços",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "PARTES",
+    "CLÁUSULA 1ª - OBJETO",
+    "CLÁUSULA 2ª - PRAZO",
+    "CLÁUSULA 3ª - REMUNERAÇÃO",
+    "CLÁUSULA 4ª - FORMA DE PAGAMENTO",
+    "CLÁUSULA 5ª - OBRIGAÇÕES DO CONTRATANTE",
+    "CLÁUSULA 6ª - OBRIGAÇÕES DO CONTRATADO",
+    "CLÁUSULA 7ª - RESCISÃO",
+    "CLÁUSULA 8ª - CONFIDENCIALIDADE",
+    "CLÁUSULA 9ª - FORO",
+    "ASSINATURAS E TESTEMUNHAS"
+  ]
+}

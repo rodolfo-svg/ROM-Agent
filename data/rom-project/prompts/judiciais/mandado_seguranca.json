@@ -1,0 +1,23 @@
+{
+  "id": "mandado_seguranca",
+  "nome": "Mandado de Segurança",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.267Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Mandado de Segurança",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "QUALIFICAÇÃO DO IMPETRANTE",
+    "AUTORIDADE COATORA",
+    "I. DOS FATOS",
+    "II. DO DIREITO LÍQUIDO E CERTO",
+    "III. DA ILEGALIDADE/ABUSO DE PODER",
+    "IV. DA LIMINAR",
+    "V. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

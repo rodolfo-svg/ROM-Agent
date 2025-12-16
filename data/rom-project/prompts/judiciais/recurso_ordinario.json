@@ -1,0 +1,21 @@
+{
+  "id": "recurso_ordinario",
+  "nome": "Recurso Ordinário Trabalhista",
+  "categoria": "trabalhista",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.270Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Recurso Ordinário Trabalhista",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE E PREPARO",
+    "II. DA SENTENÇA RECORRIDA",
+    "III. DAS RAZÕES",
+    "IV. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

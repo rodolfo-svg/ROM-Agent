@@ -1,0 +1,21 @@
+{
+  "id": "agravo_execucao_penal",
+  "nome": "Agravo em Execução Penal",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.269Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Agravo em Execução Penal",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE",
+    "II. DA DECISÃO AGRAVADA",
+    "III. DAS RAZÕES",
+    "IV. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

@@ -1,0 +1,192 @@
+{
+  "id": "peticao-inicial-completa",
+  "nome": "Petição Inicial Cível",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.273Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Petição Inicial Cível",
+  "tags": [],
+  "source": "promptsCompletos.js",
+  "estrutura": "\nI. DOS FATOS (CAUSA DE PEDIR REMOTA)\n   1.1. Da Relação Jurídica entre as Partes\n   1.2. Dos Fatos Constitutivos do Direito\n   1.3. Do Descumprimento/Dano/Ilícito\n\nII. DO DIREITO (CAUSA DE PEDIR PRÓXIMA)\n   2.1. Da Natureza Jurídica da Relação\n   2.2. Do Direito Material Aplicável\n   2.3. Da Jurisprudência Aplicável\n   2.4. Da Doutrina\n\nIII. DA COMPETÊNCIA\n   3.1. Competência Territorial\n   3.2. Competência Material\n   3.3. Competência Funcional\n\nIV. DA TUTELA DE URGÊNCIA (se aplicável)\n   4.1. Da Probabilidade do Direito\n   4.2. Do Perigo de Dano\n   4.3. Do Pedido Liminar\n\nV. DAS PROVAS\n\nVI. DO VALOR DA CAUSA\n\nVII. DOS PEDIDOS\n   A. PEDIDO PRINCIPAL\n   B. PEDIDOS SUBSIDIÁRIOS\n   C. PEDIDOS ACESSÓRIOS\n\nVIII. DA AUDIÊNCIA DE CONCILIAÇÃO\n",
+  "fundamentos": {
+    "constituicao": {
+      "Art. 5º, XXXV": "Inafastabilidade da jurisdição",
+      "Art. 5º, LIV": "Devido processo legal",
+      "Art. 5º, LV": "Contraditório e ampla defesa",
+      "Art. 93, IX": "Fundamentação das decisões"
+    },
+    "cpc": {
+      "Art. 319": "Requisitos da petição inicial",
+      "Art. 320": "Documentos indispensáveis",
+      "Art. 321": "Emenda da inicial",
+      "Art. 322": "Pedido certo e determinado",
+      "Art. 323": "Cumulação de pedidos",
+      "Art. 324": "Pedido alternativo",
+      "Art. 325": "Pedidos subsidiários",
+      "Art. 326": "Pedidos incompatíveis",
+      "Art. 330": "Inépcia da petição inicial",
+      "Art. 291-292": "Valor da causa"
+    }
+  },
+  "checklistQualidade": {
+    "requisitos_319": {
+      "pontos": 35,
+      "itens": [
+        "Juízo competente indicado e fundamentado [5]",
+        "Qualificação completa do autor [5]",
+        "Qualificação completa do réu [5]",
+        "Causa de pedir (fatos) narrada completamente [5]",
+        "Fundamentos jurídicos completos [5]",
+        "Pedido certo e determinado [3]",
+        "Valor da causa atribuído e fundamentado [3]",
+        "Provas especificadas [2]",
+        "Opção pela audiência manifestada [2]"
+      ]
+    },
+    "requisitos_320": {
+      "pontos": 10,
+      "itens": [
+        "Documentos indispensáveis juntados [10]"
+      ]
+    },
+    "fundamentacao": {
+      "pontos": 20,
+      "itens": [
+        "Mínimo 3 precedentes citados (STJ/TJSP/TJGO) [6]",
+        "Precedentes verificados via web_search [5]",
+        "Doutrina citada (mínimo 2 autores) [3]",
+        "Dispositivos legais em negrito [2]",
+        "Fundamentação constitucional [2]",
+        "Links para precedentes [2]"
+      ]
+    },
+    "tutela_urgencia": {
+      "pontos": 10,
+      "itens": [
+        "Probabilidade do direito demonstrada [5]",
+        "Perigo de dano caracterizado [5]"
+      ]
+    },
+    "estrutura_redacao": {
+      "pontos": 15,
+      "itens": [
+        "Estrutura completa [5]",
+        "Cronologia dos fatos clara [2]",
+        "Nexo lógico entre fatos e pedido [3]",
+        "Linguagem clara e objetiva [2]",
+        "Sem erros ortográficos [3]"
+      ]
+    },
+    "formatacao": {
+      "pontos": 10,
+      "itens": [
+        "Calibri 12pt, espaçamento 1,5 [2]",
+        "Recuos de parágrafo 1,25cm [2]",
+        "Template timbrado [2]",
+        "ZERO emojis [2]",
+        "ZERO travessões decorativos [1]",
+        "Numeração hierárquica correta [1]"
+      ]
+    },
+    "minimo_aprovacao": 95
+  },
+  "requisitos": {
+    "I": {
+      "nome": "Juízo a que é dirigida",
+      "obrigatorio": true,
+      "como_fazer": "Identificar competência (arts. 42-53, CPC)",
+      "exemplo": "EXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) JUIZ(A) DE DIREITO DA [NÚMERO]ª VARA [TIPO] DA COMARCA DE [CIDADE]/[ESTADO]"
+    },
+    "II": {
+      "nome": "Qualificação das partes",
+      "obrigatorio": true,
+      "dados_necessarios": [
+        "Nome completo",
+        "Estado civil",
+        "Profissão",
+        "CPF (pessoa física) ou CNPJ (pessoa jurídica)",
+        "Endereço completo (rua, número, bairro, CEP, cidade, estado)",
+        "Telefone e e-mail (quando disponível)"
+      ],
+      "dados_pj": [
+        "Razão social",
+        "CNPJ",
+        "Endereço da sede",
+        "Nome e qualificação do representante legal"
+      ]
+    },
+    "III": {
+      "nome": "Fato e fundamentos jurídicos do pedido",
+      "obrigatorio": true,
+      "causa_pedir_remota": "Os fatos",
+      "causa_pedir_proxima": "Os fundamentos jurídicos"
+    },
+    "IV": {
+      "nome": "Pedido com suas especificações",
+      "obrigatorio": true,
+      "caracteristicas": [
+        "Certo",
+        "Determinado",
+        "Juridicamente possível",
+        "Compatível"
+      ]
+    },
+    "V": {
+      "nome": "Valor da causa",
+      "obrigatorio": true,
+      "base_legal": "Art. 291-292, CPC"
+    },
+    "VI": {
+      "nome": "Provas",
+      "obrigatorio": true,
+      "tipos": [
+        "Documental",
+        "Testemunhal",
+        "Pericial",
+        "Depoimento pessoal"
+      ]
+    },
+    "VII": {
+      "nome": "Opção pela audiência de conciliação",
+      "obrigatorio": true,
+      "opcoes": [
+        "Interesse",
+        "Desinteresse fundamentado"
+      ]
+    }
+  },
+  "competencia": {
+    "territorial": {
+      "regra_geral": "Domicílio do réu (art. 46, CPC)",
+      "excecoes": {
+        "reais_imobiliarias": "Local do imóvel (art. 47)",
+        "inventario": "Último domicílio do de cujus (art. 48)",
+        "incapaz": "Domicílio do representante legal (art. 49)",
+        "reparacao_dano": "Domicílio do autor OU local do fato OU domicílio do réu (art. 53)",
+        "alimentos": "Domicílio do alimentando OU alimentante (art. 53, II)",
+        "entes_publicos": "Seção judiciária/capital/sede"
+      }
+    },
+    "material": {
+      "estadual": "Competência residual (art. 109, CF)",
+      "federal": "Art. 109, CF (União, autarquias, empresas públicas federais)",
+      "trabalho": "Relações de trabalho (art. 114, CF)"
+    }
+  },
+  "perfil": {
+    "especialidade": "Elaboração de petições iniciais cíveis",
+    "expertise": [
+      "Estruturação completa conforme art. 319, CPC",
+      "Identificação da competência jurisdicional adequada",
+      "Cálculo preciso do valor da causa",
+      "Elaboração de causa de pedir remota e próxima",
+      "Formulação de pedidos determinados e juridicamente possíveis",
+      "Tutelas de urgência e evidência",
+      "Produção probatória desde a inicial",
+      "Superação de óbices à admissibilidade",
+      "Prevenção de inépcia"
+    ]
+  }
+}

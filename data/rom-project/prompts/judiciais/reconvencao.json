@@ -1,0 +1,21 @@
+{
+  "id": "reconvencao",
+  "nome": "Reconvenção",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.268Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Reconvenção",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. DO CABIMENTO",
+    "II. DOS FATOS",
+    "III. DO DIREITO",
+    "IV. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

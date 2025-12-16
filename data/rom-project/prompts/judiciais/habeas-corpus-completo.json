@@ -1,0 +1,236 @@
+{
+  "id": "habeas-corpus-completo",
+  "nome": "Habeas Corpus",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.274Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Habeas Corpus",
+  "tags": [],
+  "source": "promptsCompletos.js",
+  "estrutura": "\nI. ENDEREÇAMENTO E QUALIFICAÇÃO\n   - Tribunal competente\n   - Impetrante (advogado)\n   - Paciente (qualificação completa)\n   - Autoridade coatora (nome, cargo)\n\nII. DOS FATOS\n   - Narrativa objetiva\n   - Cronologia processual\n   - Descrição do ato coator\n\nIII. DO CABIMENTO\n   - Modalidade de HC\n   - Hipótese legal (art. 648, CPP)\n\nIV. DO CONSTRANGIMENTO ILEGAL\n   - Fundamentação jurídica\n   - Demonstração concreta da ilegalidade\n   - Precedentes (verificar via web_search)\n\nV. DA LIMINAR (se aplicável)\n   - Fumus boni iuris\n   - Periculum in mora\n\nVI. DOS PEDIDOS\n   A. LIMINARMENTE: [se urgente]\n   B. NO MÉRITO:\n      - Concessão da ordem\n      - Relaxamento/revogação/substituição\n      - Expedição de alvará de soltura",
+  "fundamentos": {
+    "constituicao": {
+      "Art. 5º, LXVIII": "Conceder-se-á habeas corpus sempre que alguém sofrer ou se achar ameaçado de sofrer violência ou coação em sua liberdade de locomoção, por ilegalidade ou abuso de poder.",
+      "Art. 5º, LIV": "Devido processo legal",
+      "Art. 5º, LV": "Contraditório e ampla defesa",
+      "Art. 5º, LVI": "Inadmissibilidade provas ilícitas",
+      "Art. 5º, LVII": "Presunção de inocência",
+      "Art. 5º, LXI": "Prisão só em flagrante ou ordem judicial",
+      "Art. 5º, LXV": "Relaxamento prisão ilegal",
+      "Art. 5º, LXVI": "Liberdade provisória",
+      "Art. 93, IX": "Motivação das decisões judiciais"
+    },
+    "cpp": {
+      "Art. 647": "Cabimento do HC",
+      "Art. 648": "Coação ilegal (ROL EXEMPLIFICATIVO)",
+      "Art. 312-316": "Prisão preventiva",
+      "Art. 319": "Medidas cautelares alternativas",
+      "Art. 282": "Princípios das medidas cautelares"
+    },
+    "sumulas": {
+      "SV 11/STF": "Uso de algemas (excepcionalidade)",
+      "SV 14/STF": "Acesso do defensor aos autos",
+      "SV 56/STF": "Falta de vagas não autoriza regime mais gravoso",
+      "Súmula 691/STF": "HC contra indeferimento de liminar (ressalvas)",
+      "Súmula 693/STF": "Não cabe HC contra pena de multa isolada",
+      "Súmula 695/STF": "Não cabe HC se extinta pena privativa",
+      "Súmula 716/STF": "Progressão antes do trânsito em julgado"
+    }
+  },
+  "checklistQualidade": {
+    "conteudo": [
+      "Modalidade de HC correta (preventivo/liberatório)",
+      "Autoridade coatora identificada corretamente",
+      "Competência correta",
+      "Constrangimento ilegal demonstrado concretamente",
+      "Enquadramento em hipótese do art. 648, CPP",
+      "Pedidos escalonados"
+    ],
+    "fundamentacao": [
+      "Base constitucional (art. 5º, LXVIII + conexos)",
+      "Base legal (CPP)",
+      "Precedentes VERIFICADOS via web_search",
+      "Súmulas aplicáveis"
+    ],
+    "documentacao": [
+      "Decisão impugnada anexada",
+      "Documentos do paciente",
+      "Procuração (se advogado constituído)",
+      "Comprovantes (residência, trabalho, família)"
+    ],
+    "formatacao": [
+      "Aplicado METODO_formatacao_word_rom",
+      "ZERO emojis",
+      "ZERO travessões decorativos",
+      "Fonte Calibri 12pt / Espaçamento 1,5"
+    ]
+  },
+  "modalidades": {
+    "preventivo": {
+      "objetivo": "Evitar constrangimento IMINENTE",
+      "fundamento": "CF art. 5º, LXVIII (\"se achar ameaçado\")",
+      "efeito": "SALVO-CONDUTO",
+      "hipoteses": [
+        "Ameaça concreta de prisão ilegal iminente",
+        "Mandado expedido mas não cumprido",
+        "Intimação para apresentação com ameaça de prisão",
+        "Operação policial em andamento"
+      ],
+      "pedido_tipico": "Conceder HC PREVENTIVO para:\na) OBSTAR qualquer ato de prisão contra o paciente;\nb) CASSAR mandado de prisão eventualmente expedido;\nc) EXPEDIR salvo-conduto em favor do paciente."
+    },
+    "liberatorio": {
+      "objetivo": "Cessar constrangimento JÁ EM CURSO",
+      "fundamento": "CF art. 5º, LXVIII (\"sofrer violência ou coação\")",
+      "efeito": "ALVARÁ DE SOLTURA",
+      "hipoteses": [
+        "Prisão em flagrante ilegal",
+        "Prisão preventiva ilegal",
+        "Prisão temporária ilegal",
+        "Excesso de prazo",
+        "Prisão após absolvição/extinção punibilidade"
+      ],
+      "pedido_tipico": "Conceder HC LIBERATÓRIO para:\na) RELAXAR a prisão ilegal;\nb) DETERMINAR expedição de ALVARÁ DE SOLTURA;\nc) REVOGAR a prisão preventiva;\nd) SUBSIDIARIAMENTE, substituir por medidas cautelares (art. 319, CPP)."
+    },
+    "substitutivo": {
+      "admitido": "apenas em casos excepcionais",
+      "hipoteses": [
+        "Flagrante ilegalidade",
+        "Teratologia da decisão",
+        "Violação a súmula vinculante",
+        "Urgência extrema"
+      ],
+      "tecnica": "Reconhecer excepcionalidade + demonstrar flagrante ilegalidade"
+    }
+  },
+  "hipotesesCabimento": {
+    "1. Prisão em flagrante ilegal": {
+      "subcategorias": [
+        "Flagrante forjado/fabricado",
+        "Flagrante preparado (Súmula 145/STF)",
+        "Ausência de situação de flagrância",
+        "Crime impossível (art. 17, CP)",
+        "Excludentes de ilicitude (arts. 23-25, CP)"
+      ],
+      "verificar": "web_search \"STJ flagrante forjado relaxamento\""
+    },
+    "2. Prisão preventiva ilegal": {
+      "requisitos": "Art. 312, CPP (fumus commissi delicti + periculum libertatis)",
+      "vicios_comuns": [
+        "Fundamentação genérica (apenas gravidade abstrata)",
+        "Ausência de contemporaneidade (fatos antigos)",
+        "Desproporcionalidade",
+        "Ausência de indícios suficientes",
+        "Cabimento de medidas alternativas (art. 319)"
+      ],
+      "verificar": "web_search \"STJ prisão preventiva fundamentação genérica\""
+    },
+    "3. Excesso de prazo": {
+      "fundamento": "Art. 648, II, CPP",
+      "analise": "Razoabilidade + complexidade + diligência das partes",
+      "verificar": "web_search \"STJ excesso prazo prisão preventiva\""
+    },
+    "4. Execução penal ilegal": {
+      "hipoteses": [
+        "Regime mais gravoso que o devido",
+        "Falta de vagas (SV 56/STF)",
+        "Progressão negada indevidamente",
+        "Livramento condicional negado",
+        "Remição não computada"
+      ]
+    },
+    "5. Incompetência (nulidade absoluta)": {
+      "fundamento": "Art. 648, III, CPP",
+      "hipoteses": [
+        "Incompetência absoluta (funcional/material)",
+        "Falta de atribuição do MP",
+        "Juiz impedido/suspeito"
+      ]
+    },
+    "6. Trancamento de ação penal": {
+      "fundamento": "Art. 648, I, CPP (falta de justa causa)",
+      "hipoteses_excepcionais": [
+        "Atipicidade manifesta",
+        "Extinção da punibilidade evidente",
+        "Ausência de indícios mínimos"
+      ],
+      "verificar": "web_search \"STJ trancamento ação penal habeas corpus\""
+    },
+    "7. Nulidades processuais": {
+      "fundamento": "Art. 648, VI, CPP",
+      "hipoteses": [
+        "Cerceamento de defesa",
+        "Falta de defesa técnica",
+        "Citação inválida",
+        "Interrogatório irregular"
+      ]
+    },
+    "8. Provas ilícitas": {
+      "fundamento": "CF art. 5º, LVI",
+      "hipoteses": [
+        "Busca domiciliar sem mandado",
+        "Interceptação telefônica irregular",
+        "Confissão mediante tortura/coação",
+        "Prova derivada de ilícita (teoria dos frutos)"
+      ],
+      "verificar": "web_search \"STF prova ilícita habeas corpus\""
+    },
+    "9. Medidas cautelares desproporcionais": {
+      "fundamento": "Art. 282, CPP",
+      "analise": "Necessidade + adequação + proporcionalidade"
+    },
+    "10. Prisão domiciliar": {
+      "fundamento": "Art. 318/318-A, CPP",
+      "hipoteses": [
+        "Gestante",
+        "Mulher com filho até 12 anos",
+        "Maior de 80 anos",
+        "Doença grave",
+        "Imprescindível aos cuidados de pessoa deficiente"
+      ]
+    },
+    "11. Liberdade provisória negada": {
+      "fundamento": "CF art. 5º, LXVI + art. 310, CPP",
+      "analise": "Ausência dos requisitos da preventiva = direito à liberdade"
+    },
+    "12. Extinção da punibilidade": {
+      "fundamento": "Art. 648, VII, CPP",
+      "hipoteses": [
+        "Prescrição",
+        "Morte do agente",
+        "Anistia/Graça/Indulto",
+        "Decadência",
+        "Abolitio criminis"
+      ]
+    }
+  },
+  "competencia": {
+    "regra": "Órgão SUPERIOR à autoridade coatora",
+    "tabela": {
+      "Delegado de Polícia": "Juiz de Direito",
+      "Juiz de Direito": "Tribunal de Justiça",
+      "Desembargador (TJ)": "STJ",
+      "Desembargador Federal (TRF)": "STJ",
+      "Ministro do STJ": "STF",
+      "Juiz Federal": "TRF",
+      "Turma Recursal (JECrim)": "STJ"
+    }
+  },
+  "documentacaoEssencial": [
+    "Decisão/despacho impugnado",
+    "Mandado de prisão (se houver)",
+    "Auto de prisão em flagrante (se aplicável)",
+    "Certidões processuais",
+    "Documentos pessoais do paciente",
+    "Certidão de antecedentes criminais",
+    "Comprovantes (residência, trabalho)",
+    "Atestados médicos (se aplicável)"
+  ],
+  "naoCabe": [
+    "Contra punição disciplinar militar (CF art. 142, §2)",
+    "Quando extinta pena privativa de liberdade (Súmulas 606/STJ e 695/STF)",
+    "Contra pena de multa isolada (Súmula 693/STF)",
+    "Mero reexame de provas (Súmula 7/STJ por analogia)"
+  ]
+}

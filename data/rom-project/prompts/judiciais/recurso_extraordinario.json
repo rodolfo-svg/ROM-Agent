@@ -1,0 +1,24 @@
+{
+  "id": "recurso_extraordinario",
+  "nome": "Recurso Extraordinário",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.266Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Recurso Extraordinário",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO AO STF",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE E PREPARO",
+    "II. DO CABIMENTO",
+    "III. DO PREQUESTIONAMENTO",
+    "IV. DA REPERCUSSÃO GERAL",
+    "V. DA VIOLAÇÃO CONSTITUCIONAL",
+    "VI. DAS RAZÕES DO RECURSO",
+    "VII. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

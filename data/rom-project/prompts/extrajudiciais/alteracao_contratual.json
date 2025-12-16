@@ -1,0 +1,18 @@
+{
+  "id": "alteracao_contratual",
+  "nome": "Alteração Contratual",
+  "categoria": "empresarial",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.271Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Alteração Contratual",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "PREÂMBULO",
+    "CLÁUSULA ALTERADA",
+    "CONSOLIDAÇÃO (se aplicável)",
+    "ENCERRAMENTO E ASSINATURAS"
+  ]
+}

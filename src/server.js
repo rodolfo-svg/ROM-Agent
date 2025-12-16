@@ -18,6 +18,10 @@ const autoUpdateSystem = require('../lib/auto-update-system.cjs');
 import datajudService from './services/datajud-service.js';
 import { buscarJusBrasil } from './modules/webSearch.js';
 import { obterTribunal } from './modules/tribunais.js';
+import * as extractionService from './services/extraction-service.js';
+import * as documentExtractionService from './services/document-extraction-service.js';
+import romProjectRouter from './routes/rom-project.js';
+import romProjectService from './services/rom-project-service.js';
 
 dotenv.config();
 
@@ -34,6 +38,9 @@ app.use('/api', projectsRouter);
 
 // Rotas de Auto-Atualização e Aprendizado
 app.use('/api', autoUpdateRoutes);
+
+// Rotas do Projeto ROM (Custom Instructions, Prompts, Templates, KB)
+app.use('/api/rom-project', romProjectRouter);
 
 // Instância do agente
 let agent = null;
@@ -429,6 +436,440 @@ app.get('/api/jurisprudencia/cache/stats', (req, res) => {
     });
   } catch (error) {
     logger.error('Erro ao obter estatísticas do cache:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// =========================================
+// ENDPOINTS DE EXTRAÇÃO DE DOCUMENTOS
+// =========================================
+
+/**
+ * POST /api/extraction/extract
+ * Extrai documentos completos com OCR, cronologia, matrizes, etc.
+ *
+ * Body:
+ * {
+ *   filePath: string (caminho do arquivo a ser extraído),
+ *   processNumber: string (número do processo),
+ *   projectName?: string (nome do projeto, padrão: 'ROM'),
+ *   uploadToKB?: boolean (fazer upload para KB, padrão: true),
+ *   generateAllFormats?: boolean (gerar todos os formatos, padrão: true)
+ * }
+ */
+app.post('/api/extraction/extract', async (req, res) => {
+  try {
+    const {
+      filePath,
+      processNumber,
+      projectName = 'ROM',
+      uploadToKB = true,
+      generateAllFormats = true
+    } = req.body;
+
+    // Validações
+    if (!filePath) {
+      return res.status(400).json({
+        success: false,
+        error: 'filePath é obrigatório'
+      });
+    }
+
+    if (!processNumber) {
+      return res.status(400).json({
+        success: false,
+        error: 'processNumber é obrigatório'
+      });
+    }
+
+    logger.info(`Iniciando extração: ${processNumber} (Projeto: ${projectName})`);
+
+    // Executar extração completa
+    const result = await extractionService.extractCompleteDocument({
+      filePath,
+      processNumber,
+      projectName,
+      uploadToKB,
+      generateAllFormats
+    });
+
+    logger.info(`Extração concluída: ${processNumber}`);
+
+    res.json({
+      success: true,
+      processNumber,
+      projectName,
+      extractionFolder: result.processFolder,
+      outputs: result.outputs,
+      log: result.log
+    });
+
+  } catch (error) {
+    logger.error('Erro na extração de documento:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+/**
+ * GET /api/extraction/folder-structure/:processNumber
+ * Retorna a estrutura de pastas criada para um processo
+ */
+app.get('/api/extraction/folder-structure/:processNumber', async (req, res) => {
+  try {
+    const { processNumber } = req.params;
+    const { projectName = 'ROM' } = req.query;
+
+    const structure = await extractionService.createProcessFolderStructure(
+      processNumber,
+      projectName
+    );
+
+    res.json({
+      success: true,
+      processNumber,
+      projectName,
+      structure
+    });
+
+  } catch (error) {
+    logger.error('Erro ao criar estrutura de pastas:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/extraction/ocr
+ * Executa OCR em um PDF ou imagem
+ *
+ * Body:
+ * {
+ *   filePath: string,
+ *   outputFolder: string,
+ *   forceOCR?: boolean
+ * }
+ */
+app.post('/api/extraction/ocr', async (req, res) => {
+  try {
+    const { filePath, outputFolder, forceOCR = false } = req.body;
+
+    if (!filePath || !outputFolder) {
+      return res.status(400).json({
+        success: false,
+        error: 'filePath e outputFolder são obrigatórios'
+      });
+    }
+
+    // Importar OCR service
+    const ocrService = await import('./services/ocr-service.js');
+
+    const result = forceOCR
+      ? await ocrService.performOCROnPDF(filePath, outputFolder)
+      : await ocrService.smartOCR(filePath, outputFolder);
+
+    res.json({
+      success: result.success,
+      ocrNeeded: result.ocrNeeded,
+      totalPages: result.totalPages,
+      processedPages: result.processedPages,
+      averageConfidence: result.averageConfidence,
+      warnings: result.warnings,
+      errors: result.errors,
+      outputPath: result.outputPath
+    });
+
+  } catch (error) {
+    logger.error('Erro no OCR:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/extraction/chronology
+ * Gera cronologia de um processo
+ *
+ * Body:
+ * {
+ *   processData: object (dados do processo),
+ *   includeMatrizes?: boolean
+ * }
+ */
+app.post('/api/extraction/chronology', async (req, res) => {
+  try {
+    const { processData, includeMatrizes = true } = req.body;
+
+    if (!processData) {
+      return res.status(400).json({
+        success: false,
+        error: 'processData é obrigatório'
+      });
+    }
+
+    // Importar chronology service
+    const chronologyService = await import('./services/chronology-service.js');
+
+    const chronology = await chronologyService.generateChronology(processData);
+    let matrices = null;
+
+    if (includeMatrizes) {
+      matrices = await chronologyService.generateMatrizes(processData);
+    }
+
+    res.json({
+      success: true,
+      chronology,
+      matrices
+    });
+
+  } catch (error) {
+    logger.error('Erro ao gerar cronologia:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/extraction/desktop-path
+ * Retorna o caminho da pasta de extrações no Desktop
+ */
+app.get('/api/extraction/desktop-path', (req, res) => {
+  try {
+    const desktopPath = extractionService.getDesktopPath();
+    const basePath = path.join(desktopPath, 'ROM-Extractions');
+
+    res.json({
+      success: true,
+      desktopPath,
+      basePath,
+      platform: process.platform
+    });
+
+  } catch (error) {
+    logger.error('Erro ao obter caminho do Desktop:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// ===================================================================
+// ENDPOINTS - EXTRAÇÃO DE DOCUMENTOS GERAIS
+// ===================================================================
+
+/**
+ * POST /api/documents/extract
+ * Extrai documentos gerais (PDFs, imagens, vídeos, Office, etc.)
+ * Body: {
+ *   files: string[],        // Array de caminhos de arquivos (ILIMITADO)
+ *   folderName: string,     // Nome customizado da pasta (OBRIGATÓRIO)
+ *   projectName?: string,   // Nome do projeto (padrão: ROM)
+ *   uploadToKB?: boolean    // Upload automático para KB (padrão: true)
+ * }
+ */
+app.post('/api/documents/extract', async (req, res) => {
+  try {
+    const { files, folderName, projectName, uploadToKB } = req.body;
+
+    // Validações
+    if (!files || !Array.isArray(files) || files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Array de arquivos é obrigatório (files)'
+      });
+    }
+
+    if (!folderName || typeof folderName !== 'string' || folderName.trim() === '') {
+      return res.status(400).json({
+        success: false,
+        error: 'Nome da pasta é obrigatório (folderName)'
+      });
+    }
+
+    // Verificar se arquivos existem
+    for (const filePath of files) {
+      if (!fs.existsSync(filePath)) {
+        return res.status(404).json({
+          success: false,
+          error: `Arquivo não encontrado: ${filePath}`
+        });
+      }
+    }
+
+    logger.info(`Iniciando extração de ${files.length} documento(s) para pasta: ${folderName}`);
+
+    // Executar extração
+    const resultado = await documentExtractionService.extractGeneralDocuments({
+      files,
+      folderName,
+      projectName: projectName || 'ROM',
+      uploadToKB: uploadToKB !== undefined ? uploadToKB : true,
+      generateAllFormats: true
+    });
+
+    logger.info(`Extração concluída com sucesso: ${resultado.folder}`);
+
+    res.json({
+      success: true,
+      message: `${files.length} documento(s) extraído(s) com sucesso`,
+      ...resultado
+    });
+
+  } catch (error) {
+    logger.error('Erro ao extrair documentos gerais:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      details: error.stack
+    });
+  }
+});
+
+/**
+ * POST /api/documents/create-folder
+ * Cria estrutura de pastas customizada para documentos
+ * Body: {
+ *   folderName: string,    // Nome da pasta
+ *   projectName?: string   // Nome do projeto (padrão: ROM)
+ * }
+ */
+app.post('/api/documents/create-folder', async (req, res) => {
+  try {
+    const { folderName, projectName } = req.body;
+
+    if (!folderName || typeof folderName !== 'string' || folderName.trim() === '') {
+      return res.status(400).json({
+        success: false,
+        error: 'Nome da pasta é obrigatório (folderName)'
+      });
+    }
+
+    const estrutura = await documentExtractionService.createCustomFolderStructure(
+      folderName,
+      projectName || 'ROM'
+    );
+
+    logger.info(`Estrutura de pastas criada: ${estrutura.baseFolder}`);
+
+    res.json({
+      success: true,
+      message: 'Estrutura de pastas criada com sucesso',
+      ...estrutura
+    });
+
+  } catch (error) {
+    logger.error('Erro ao criar estrutura de pastas:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/documents/supported-types
+ * Lista todos os tipos de arquivo suportados
+ */
+app.get('/api/documents/supported-types', (req, res) => {
+  try {
+    const tiposSuportados = {
+      pdf: {
+        extensoes: ['.pdf'],
+        descricao: 'Documentos PDF com OCR automático se necessário',
+        recursos: ['Extração de texto', 'OCR', 'Análise de conteúdo']
+      },
+      imagem: {
+        extensoes: ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff', '.webp'],
+        descricao: 'Imagens com OCR e análise visual',
+        recursos: ['OCR', 'Análise de imagem', 'Extração de texto']
+      },
+      video: {
+        extensoes: ['.mp4', '.avi', '.mov', '.mkv', '.webm', '.flv'],
+        descricao: 'Vídeos com transcrição automática',
+        recursos: ['Transcrição com timestamps', 'Análise de conteúdo', 'Extração de áudio']
+      },
+      documento: {
+        extensoes: ['.docx', '.doc', '.odt', '.rtf'],
+        descricao: 'Documentos de texto do Word e similares',
+        recursos: ['Extração de texto', 'Preservação de formatação']
+      },
+      planilha: {
+        extensoes: ['.xlsx', '.xls', '.ods', '.csv'],
+        descricao: 'Planilhas do Excel e similares',
+        recursos: ['Extração de dados', 'Análise de tabelas']
+      },
+      apresentacao: {
+        extensoes: ['.pptx', '.ppt', '.odp'],
+        descricao: 'Apresentações do PowerPoint e similares',
+        recursos: ['Extração de conteúdo', 'Análise de slides']
+      },
+      texto: {
+        extensoes: ['.txt', '.md', '.json', '.xml', '.html', '.css', '.js'],
+        descricao: 'Arquivos de texto simples e código',
+        recursos: ['Leitura direta', 'Análise de conteúdo']
+      }
+    };
+
+    const totalExtensoes = Object.values(tiposSuportados)
+      .reduce((acc, tipo) => acc + tipo.extensoes.length, 0);
+
+    res.json({
+      success: true,
+      message: `Sistema suporta ${totalExtensoes} tipos de arquivo`,
+      totalTipos: Object.keys(tiposSuportados).length,
+      totalExtensoes,
+      tipos: tiposSuportados,
+      observacoes: [
+        'Suporte para múltiplos documentos sem limite',
+        'Processamento automático por tipo de arquivo',
+        'Export em JSON e TXT',
+        'Upload automático para Knowledge Base',
+        'Estrutura de pastas customizável'
+      ]
+    });
+
+  } catch (error) {
+    logger.error('Erro ao listar tipos suportados:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/documents/desktop-path
+ * Retorna o caminho da pasta de extrações de documentos gerais no Desktop
+ */
+app.get('/api/documents/desktop-path', (req, res) => {
+  try {
+    const desktopPath = documentExtractionService.getDesktopPath();
+    const basePath = path.join(desktopPath, 'ROM-Extractions');
+
+    res.json({
+      success: true,
+      desktopPath,
+      basePath,
+      platform: process.platform,
+      observacao: 'Todas as extrações são salvas em subpastas customizadas dentro de ROM-Extractions'
+    });
+
+  } catch (error) {
+    logger.error('Erro ao obter caminho do Desktop:', error);
     res.status(500).json({
       success: false,
       error: error.message
@@ -1051,6 +1492,17 @@ app.listen(PORT, () => {
   logger.info('Iniciando sistema de deploy automático...');
   scheduler.start();
   logger.info('Sistema de deploy automático configurado para 02h-05h (horário de Brasília)');
+
+  // Inicializar Projeto ROM
+  logger.info('Inicializando Projeto ROM (Prompts Autoatualizáveis)...');
+  romProjectService.init()
+    .then(() => {
+      const stats = romProjectService.getStatistics();
+      logger.info(`✅ Projeto ROM carregado: ${stats.prompts.total} prompts disponíveis`);
+    })
+    .catch(error => {
+      logger.error('Erro ao inicializar Projeto ROM:', error);
+    });
 
   // Ativar sistema de auto-atualização e aprendizado
   logger.info('Ativando sistema de auto-atualização e aprendizado...');

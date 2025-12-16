@@ -1,0 +1,27 @@
+{
+  "id": "contrato_honorarios",
+  "nome": "Contrato de Honorários Advocatícios",
+  "categoria": "contratos",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.272Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Contrato de Honorários Advocatícios",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "PARTES",
+    "CLÁUSULA 1ª - OBJETO",
+    "CLÁUSULA 2ª - SERVIÇOS",
+    "CLÁUSULA 3ª - HONORÁRIOS",
+    "CLÁUSULA 4ª - FORMA DE PAGAMENTO",
+    "CLÁUSULA 5ª - ÊXITO",
+    "CLÁUSULA 6ª - DESPESAS",
+    "CLÁUSULA 7ª - OBRIGAÇÕES DO CLIENTE",
+    "CLÁUSULA 8ª - OBRIGAÇÕES DO ADVOGADO",
+    "CLÁUSULA 9ª - PRAZO",
+    "CLÁUSULA 10ª - RESCISÃO",
+    "CLÁUSULA 11ª - FORO",
+    "ASSINATURAS E TESTEMUNHAS"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "id": "recurso_sentido_estrito",
+  "nome": "Recurso em Sentido Estrito",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.269Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Recurso em Sentido Estrito",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE",
+    "II. CABIMENTO (art. 581 CPP)",
+    "III. DA DECISÃO RECORRIDA",
+    "IV. DAS RAZÕES",
+    "V. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

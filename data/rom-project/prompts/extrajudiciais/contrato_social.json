@@ -1,0 +1,32 @@
+{
+  "id": "contrato_social",
+  "nome": "Contrato Social",
+  "categoria": "empresarial",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.271Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Contrato Social",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "PREÂMBULO",
+    "CLÁUSULA 1ª - DENOMINAÇÃO SOCIAL",
+    "CLÁUSULA 2ª - SEDE",
+    "CLÁUSULA 3ª - OBJETO SOCIAL",
+    "CLÁUSULA 4ª - PRAZO DE DURAÇÃO",
+    "CLÁUSULA 5ª - CAPITAL SOCIAL",
+    "CLÁUSULA 6ª - QUOTAS",
+    "CLÁUSULA 7ª - ADMINISTRAÇÃO",
+    "CLÁUSULA 8ª - PRO LABORE",
+    "CLÁUSULA 9ª - RESPONSABILIDADE",
+    "CLÁUSULA 10ª - CESSÃO DE QUOTAS",
+    "CLÁUSULA 11ª - DELIBERAÇÕES",
+    "CLÁUSULA 12ª - EXERCÍCIO SOCIAL",
+    "CLÁUSULA 13ª - LUCROS E PREJUÍZOS",
+    "CLÁUSULA 14ª - DISSOLUÇÃO",
+    "CLÁUSULA 15ª - FORO",
+    "ENCERRAMENTO E ASSINATURAS"
+  ],
+  "instrucoes": "\nCONTRATO SOCIAL - NORMAS DNRC\n\nREQUISITOS (IN DREI nº 81/2020):\n- Nome empresarial (firma ou denominação)\n- Capital social e forma de integralização\n- Quotas de cada sócio\n- Endereço completo da sede\n- Objeto social (CNAE)\n- Prazo de duração\n- Administração e poderes\n- Participação nos lucros\n\nTIPOS SOCIETÁRIOS:\n- Sociedade Limitada (LTDA)\n- Sociedade Anônima (S/A)\n- EIRELI\n- Sociedade Simples\n\nDOCUMENTOS PARA REGISTRO:\n1. Contrato Social em 3 vias\n2. RG e CPF dos sócios\n3. Comprovante de endereço da sede\n4. Taxa de registro (DARE)\n5. DBE (CNPJ)\n"
+}

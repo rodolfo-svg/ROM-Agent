@@ -1,0 +1,22 @@
+{
+  "id": "incidente_desconsideracao",
+  "nome": "Incidente de Desconsideração da Personalidade Jurídica",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.269Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Incidente de Desconsideração da Personalidade Jurídica",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. DO CABIMENTO",
+    "II. DOS FATOS",
+    "III. DA CONFUSÃO PATRIMONIAL/DESVIO DE FINALIDADE",
+    "IV. DA TEORIA MAIOR/MENOR",
+    "V. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

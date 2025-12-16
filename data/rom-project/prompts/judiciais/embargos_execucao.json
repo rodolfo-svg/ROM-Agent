@@ -1,0 +1,21 @@
+{
+  "id": "embargos_execucao",
+  "nome": "Embargos à Execução",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.268Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Embargos à Execução",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA À EXECUÇÃO",
+    "I. TEMPESTIVIDADE",
+    "II. GARANTIA DO JUÍZO",
+    "III. DAS MATÉRIAS ARGUÍVEIS",
+    "IV. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

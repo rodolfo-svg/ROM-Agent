@@ -1,0 +1,20 @@
+{
+  "id": "substabelecimento",
+  "nome": "Substabelecimento",
+  "categoria": "procuracoes",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.271Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Substabelecimento",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "SUBSTABELECENTE",
+    "SUBSTABELECIDO",
+    "TIPO (com ou sem reservas)",
+    "PROCESSO/ASSUNTO",
+    "LOCAL E DATA",
+    "ASSINATURA"
+  ]
+}

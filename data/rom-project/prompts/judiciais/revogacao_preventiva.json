@@ -1,0 +1,21 @@
+{
+  "id": "revogacao_preventiva",
+  "nome": "Pedido de Revogação de Prisão Preventiva",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.270Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Pedido de Revogação de Prisão Preventiva",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. DA PRISÃO PREVENTIVA",
+    "II. DA AUSÊNCIA DOS REQUISITOS",
+    "III. DAS MEDIDAS CAUTELARES ALTERNATIVAS",
+    "IV. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

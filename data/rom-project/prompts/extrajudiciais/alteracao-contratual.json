@@ -1,0 +1,158 @@
+{
+  "id": "alteracao-contratual",
+  "nome": "Alteração Contratual (DNRC)",
+  "categoria": "empresarial",
+  "subcategoria": "atos-societarios",
+  "version": "1.0",
+  "updated": "2025-12-15T00:00:00.000Z",
+  "autoUpdateable": true,
+  "descricao": "Alteração contratual em estrita conformidade com as normas do DNRC (IN DREI nº 81/2020) e legislação empresarial",
+  "tags": ["alteração", "contratual", "dnrc", "empresarial", "sociedade", "ltda"],
+
+  "fundamentos": {
+    "codigo_civil": {
+      "Art. 997": "Cláusulas obrigatórias do contrato social",
+      "Art. 1.052-1.087": "Sociedade Limitada",
+      "Art. 1.071": "Deliberações dos sócios",
+      "Art. 1.076": "Quórum para alteração contratual"
+    },
+    "normas_dnrc": {
+      "IN DREI 81/2020": "Normas de registro empresarial",
+      "IN DREI 82/2021": "Complementação IN 81",
+      "Manual DNRC": "Manual de Registro de Sociedade Limitada"
+    }
+  },
+
+  "estrutura": [
+    "PREÂMBULO",
+    "CLÁUSULA ALTERADA",
+    "CONSOLIDAÇÃO (se aplicável)",
+    "ENCERRAMENTO E ASSINATURAS"
+  ],
+
+  "instrucoes": "ALTERAÇÃO CONTRATUAL - NORMAS DNRC\n\nPREÂMBULO:\n- Nome da sociedade (CAIXA ALTA)\n- NIRE e CNPJ\n- Qualificação dos sócios\n- Referência ao contrato social original\n\nCLÁUSULA ALTERADA:\n- Indicar número da cláusula alterada\n- Texto integral da nova redação\n- Se múltiplas alterações, numerar em sequência\n\nCONSOLIDAÇÃO:\n- Obrigatória se alteração substancial\n- Texto completo do contrato consolidado\n- Renumeração de cláusulas\n\nENCERRAMENTO:\n- Local e data\n- Assinaturas de todos os sócios\n- Reconhecimento de firma (se exigido)\n- Testemunhas (2, com qualificação completa)\n\nNORMAS DNRC OBRIGATÓRIAS:\n1. Texto claro e objetivo\n2. Sem rasuras ou entrelinhas\n3. Numeração sequencial de cláusulas\n4. Denominação social completa\n5. Objeto social conforme CNAE\n6. Capital social por extenso e em algarismos\n7. Visto do advogado (com OAB)\n\nEXTENSÃO: 2-10 páginas",
+
+  "tiposAlteracao": {
+    "alteracao_endereco": {
+      "descricao": "Mudança de sede da sociedade",
+      "clausula": "CLÁUSULA 2ª - SEDE",
+      "documentos": [
+        "Comprovante de endereço novo",
+        "Declaração do proprietário",
+        "IPTU ou contrato de locação"
+      ]
+    },
+    "alteracao_capital": {
+      "descricao": "Aumento ou redução de capital social",
+      "clausulas": ["CLÁUSULA 5ª - CAPITAL SOCIAL", "CLÁUSULA 6ª - QUOTAS"],
+      "documentos": [
+        "Comprovante de integralização (se aumento)",
+        "Balanço patrimonial (se redução)",
+        "Ata de assembleia"
+      ]
+    },
+    "alteracao_administradores": {
+      "descricao": "Inclusão, exclusão ou modificação de administradores",
+      "clausula": "CLÁUSULA 7ª - ADMINISTRAÇÃO",
+      "documentos": [
+        "RG e CPF dos novos administradores",
+        "Declaração de desimpedimento",
+        "Comprovante de residência"
+      ]
+    },
+    "alteracao_objeto": {
+      "descricao": "Modificação do objeto social",
+      "clausula": "CLÁUSULA 3ª - OBJETO SOCIAL",
+      "documentos": [
+        "Consulta prévia de viabilidade",
+        "Alvarás necessários (se atividade regulada)"
+      ]
+    },
+    "inclusao_socio": {
+      "descricao": "Admissão de novo sócio",
+      "clausulas": ["CLÁUSULA 6ª - QUOTAS", "CLÁUSULA 5ª - CAPITAL (se aumento)"],
+      "documentos": [
+        "RG, CPF e comprovante de residência do novo sócio",
+        "Comprovante de pagamento das quotas",
+        "Certidão negativa de débitos (se exigido)"
+      ]
+    },
+    "retirada_socio": {
+      "descricao": "Retirada ou exclusão de sócio",
+      "clausulas": ["CLÁUSULA 6ª - QUOTAS"],
+      "documentos": [
+        "Termo de renúncia ou ata de exclusão",
+        "Demonstrativo de apuração de haveres",
+        "Quitação mútua (se aplicável)"
+      ]
+    }
+  },
+
+  "requisitosFormais": [
+    "Visto de advogado (OAB e assinatura)",
+    "Assinatura de todos os sócios",
+    "Reconhecimento de firma (se exigido pela Junta)",
+    "2 testemunhas qualificadas",
+    "Sem rasuras ou entrelinhas",
+    "Papel timbrado ou selo DRF (se aplicável)"
+  ],
+
+  "consolidacao": {
+    "quando_obrigatoria": [
+      "Alteração de denominação social",
+      "Alteração de objeto social",
+      "Alteração de capital social",
+      "Qualquer alteração que modifique estrutura da sociedade"
+    ],
+    "quando_opcional": [
+      "Alteração de endereço",
+      "Alteração apenas de administradores (sem mudança de cláusula)"
+    ]
+  },
+
+  "observacoesDNRC": [
+    "Capital social deve ser expresso em moeda nacional",
+    "Objeto social deve ser preciso e compatível com CNAE",
+    "Qualificação completa de todos os sócios",
+    "Administração: especificar poderes e forma de representação",
+    "Prazo de duração (geralmente indeterminado)",
+    "Exercício social (geralmente 1º de janeiro a 31 de dezembro)"
+  ],
+
+  "modeloPreambulo": "Pelo presente instrumento particular de ALTERAÇÃO CONTRATUAL, os abaixo-assinados:\n\n[QUALIFICAÇÃO DE CADA SÓCIO]\n\nÚnicos e atuais sócios da [RAZÃO SOCIAL], pessoa jurídica de direito privado, inscrita no CNPJ sob nº [CNPJ], NIRE nº [NIRE], com sede em [ENDEREÇO COMPLETO], constituída pelo Contrato Social arquivado na Junta Comercial em [DATA], última alteração em [DATA], resolvem, por unanimidade, alterar o referido Contrato Social, na(s) seguinte(s) cláusula(s):",
+
+  "modeloEncerramento": "E, por estarem assim justos e contratados, assinam o presente instrumento em [NÚMERO] vias de igual teor e forma, na presença de duas testemunhas.\n\n[LOCAL E DATA]\n\n[ASSINATURAS DOS SÓCIOS]\n\n[VISTO DO ADVOGADO]\n\nTESTEMUNHAS:\n1. [NOME, RG, CPF]\n2. [NOME, RG, CPF]",
+
+  "checklistAntesCadastro": [
+    "Visto do advogado com OAB legível",
+    "Todas as assinaturas presentes",
+    "Reconhecimento de firma (se exigido)",
+    "Testemunhas qualificadas",
+    "FCN (Ficha de Cadastro Nacional) preenchida",
+    "DBE (Documento Básico de Entrada) gerado",
+    "Taxas pagas (DARE)",
+    "Documentos anexos conforme tipo de alteração"
+  ],
+
+  "prazosRegistro": {
+    "registro_junta": "30 dias após assinatura",
+    "atualizacao_receita": "Automática após registro na Junta",
+    "alvara_funcionamento": "Após atualização na Receita (se necessário)"
+  },
+
+  "formatacao": {
+    "fonte": "Times New Roman ou Arial, 12pt",
+    "espacamento": "1,5 linhas ou simples",
+    "margens": "Padrão (2,5cm)",
+    "numeracao": "Páginas numeradas",
+    "papel": "A4 branco"
+  },
+
+  "proibicoes": [
+    "Jamais descumprir normas do DNRC",
+    "Não utilizar linguagem coloquial",
+    "Não omitir qualificações obrigatórias",
+    "Não deixar de consolidar quando obrigatório",
+    "Não criar cláusulas contrárias à lei ou manual DNRC"
+  ]
+}

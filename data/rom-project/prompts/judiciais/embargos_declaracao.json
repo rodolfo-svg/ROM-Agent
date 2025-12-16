@@ -1,0 +1,22 @@
+{
+  "id": "embargos_declaracao",
+  "nome": "Embargos de Declaração",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.265Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Embargos de Declaração",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE",
+    "II. CABIMENTO",
+    "III. DA OMISSÃO/CONTRADIÇÃO/OBSCURIDADE",
+    "IV. DOS PEDIDOS",
+    "FECHAMENTO"
+  ],
+  "instrucoes": "\nEMBARGOS DE DECLARAÇÃO - art. 1.022 CPC\n\nHIPÓTESES DE CABIMENTO:\n1. OBSCURIDADE - falta de clareza\n2. CONTRADIÇÃO - incompatibilidade interna\n3. OMISSÃO - ponto não analisado\n4. ERRO MATERIAL - equívoco evidente\n\nPREQUESTIONAMENTO:\n- Indicar expressamente os dispositivos legais\n- Requerer manifestação explícita sobre cada ponto\n- Fundamentar o prequestionamento ficto se necessário\n\nPRAZO: 5 dias (art. 1.023 CPC)\nEFEITO INTERRUPTIVO: reinicia prazo de outros recursos\n"
+}

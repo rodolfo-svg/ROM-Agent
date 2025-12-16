@@ -1,0 +1,21 @@
+{
+  "id": "denuncia_lide",
+  "nome": "Denunciação da Lide",
+  "categoria": "civel",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.268Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Denunciação da Lide",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. DO CABIMENTO (art. 125 CPC)",
+    "II. DOS FATOS",
+    "III. DO DIREITO DE REGRESSO",
+    "IV. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

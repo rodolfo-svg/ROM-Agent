@@ -1,0 +1,115 @@
+{
+  "id": "peticao-inicial",
+  "nome": "Petição Inicial Cível",
+  "categoria": "civel",
+  "subcategoria": "inicial",
+  "version": "1.1",
+  "updated": "2025-12-15T00:00:00.000Z",
+  "autoUpdateable": true,
+  "descricao": "Petição inicial completa conforme art. 319, CPC, com todos os requisitos legais e checklist de qualidade de 100 pontos",
+  "tags": ["petição", "inicial", "cível", "art319", "primeiro grau"],
+
+  "perfil": {
+    "especialidade": "Elaboração de petições iniciais cíveis",
+    "expertise": [
+      "Estruturação completa conforme art. 319, CPC",
+      "Identificação da competência jurisdicional adequada",
+      "Cálculo preciso do valor da causa",
+      "Elaboração de causa de pedir remota e próxima",
+      "Formulação de pedidos determinados e juridicamente possíveis",
+      "Tutelas de urgência e evidência",
+      "Produção probatória desde a inicial"
+    ]
+  },
+
+  "fundamentos": {
+    "constituicao": {
+      "Art. 5º, XXXV": "Inafastabilidade da jurisdição",
+      "Art. 5º, LIV": "Devido processo legal",
+      "Art. 5º, LV": "Contraditório e ampla defesa"
+    },
+    "cpc": {
+      "Art. 319": "Requisitos da petição inicial",
+      "Art. 320": "Documentos indispensáveis",
+      "Art. 321": "Emenda da inicial",
+      "Art. 322": "Pedido certo e determinado",
+      "Art. 291-292": "Valor da causa"
+    }
+  },
+
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "QUALIFICAÇÃO DAS PARTES",
+    "TÍTULO DA PEÇA",
+    "I. DOS FATOS",
+    "II. DO DIREITO",
+    "III. DOS PEDIDOS",
+    "IV. DO VALOR DA CAUSA",
+    "V. DAS PROVAS",
+    "FECHAMENTO"
+  ],
+
+  "instrucoes": "PETIÇÃO INICIAL - ESTRUTURA COMPLETA\n\n1. ENDEREÇAMENTO\n- EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DE DIREITO DA ___ VARA [CÍVEL/FAMÍLIA/FAZENDA] DA COMARCA DE ___.\n- Caixa alta, negrito, justificado\n\n2. QUALIFICAÇÃO DAS PARTES\n- Nome em CAIXA ALTA NEGRITO\n- Nacionalidade, estado civil, profissão, RG, CPF\n- Endereço completo para citação\n- E-mail e telefone\n\n3. DOS FATOS\n- Narrativa cronológica e detalhada\n- Datas, locais, valores específicos\n- Documentos comprobatórios referenciados\n\n4. DO DIREITO\n- Fundamentação legal completa\n- Jurisprudência atualizada (verificar via web_search)\n- Doutrina quando aplicável\n- Subsunção dos fatos às normas\n\n5. DOS PEDIDOS\n- PRINCIPAL: em negrito\n- Pedidos específicos em alíneas a), b), c)\n- Pedidos subsidiários se aplicável\n- Tutela de urgência se cabível\n- Justiça gratuita se aplicável\n- Citação do réu\n- Condenação em honorários e custas\n\n6. VALOR DA CAUSA\n- Conforme art. 292 do CPC\n- Justificar o cálculo\n\n7. PROVAS\n- Documental (listar docs anexos)\n- Testemunhal (se necessário)\n- Pericial (se necessário)\n- Depoimento pessoal\n\nEXTENSÃO: 10-35 páginas",
+
+  "requisitos": {
+    "I": "Juízo a que é dirigida",
+    "II": "Qualificação das partes",
+    "III": "Fato e fundamentos jurídicos do pedido",
+    "IV": "Pedido com suas especificações",
+    "V": "Valor da causa",
+    "VI": "Provas",
+    "VII": "Opção pela audiência de conciliação"
+  },
+
+  "valorCausa": {
+    "I - Cobrança": "Principal + juros + penalidades até propositura",
+    "II - Ato jurídico": "Valor do ato ou parte controvertida",
+    "III - Alimentos": "12 prestações mensais",
+    "IV - Divisão/Demarcação": "Valor de avaliação do bem",
+    "V - Indenização": "Valor pretendido (materiais + morais)",
+    "VI - Cumulação": "Soma de todos os valores"
+  },
+
+  "checklistQualidade": {
+    "requisitos_319": 35,
+    "requisitos_320": 10,
+    "fundamentacao": 20,
+    "tutela_urgencia": 10,
+    "estrutura_redacao": 15,
+    "formatacao": 10,
+    "minimo_aprovacao": 95
+  },
+
+  "extensao": {
+    "minimo": 10,
+    "ideal": "15-20",
+    "maximo": 35
+  },
+
+  "proibicoes": [
+    "ZERO emojis",
+    "ZERO markdown",
+    "ZERO asteriscos",
+    "ZERO referências a IA"
+  ],
+
+  "formatacao": {
+    "fonte": "Calibri 12pt",
+    "espacamento": "1,5 linhas",
+    "margens": "2,5cm superior/inferior, 3cm esquerda/direita",
+    "recuo": "1,25cm primeira linha",
+    "alinhamento": "Justificado"
+  },
+
+  "competencia": {
+    "territorial": {
+      "regra_geral": "Domicílio do réu (art. 46, CPC)",
+      "excecoes": {
+        "reais_imobiliarias": "Local do imóvel (art. 47)",
+        "inventario": "Último domicílio do de cujus (art. 48)",
+        "reparacao_dano": "Domicílio do autor OU local do fato OU domicílio do réu (art. 53)",
+        "alimentos": "Domicílio do alimentando OU alimentante (art. 53, II)"
+      }
+    }
+  }
+}

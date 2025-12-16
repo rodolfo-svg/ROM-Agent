@@ -1,0 +1,147 @@
+{
+  "id": "habeas-corpus",
+  "nome": "Habeas Corpus",
+  "categoria": "criminal",
+  "subcategoria": "recursos",
+  "version": "2.0",
+  "updated": "2025-12-15T00:00:00.000Z",
+  "autoUpdateable": true,
+  "descricao": "Habeas Corpus completo com 12 categorias de cabimento, modalidades preventiva e liberatória, e fundamentação constitucional",
+  "tags": ["habeas", "corpus", "criminal", "liberdade", "prisão"],
+
+  "fundamentos": {
+    "constituicao": {
+      "Art. 5º, LXVIII": "Conceder-se-á habeas corpus sempre que alguém sofrer ou se achar ameaçado de sofrer violência ou coação em sua liberdade de locomoção, por ilegalidade ou abuso de poder",
+      "Art. 5º, LIV": "Devido processo legal",
+      "Art. 5º, LVII": "Presunção de inocência",
+      "Art. 5º, LXI": "Prisão só em flagrante ou ordem judicial"
+    },
+    "cpp": {
+      "Art. 647": "Cabimento do HC",
+      "Art. 648": "Coação ilegal (ROL EXEMPLIFICATIVO)",
+      "Art. 312-316": "Prisão preventiva",
+      "Art. 319": "Medidas cautelares alternativas"
+    },
+    "sumulas": {
+      "SV 11/STF": "Uso de algemas (excepcionalidade)",
+      "SV 56/STF": "Falta de vagas não autoriza regime mais gravoso",
+      "Súmula 691/STF": "HC contra indeferimento de liminar (ressalvas)"
+    }
+  },
+
+  "competencia": {
+    "regra": "Órgão SUPERIOR à autoridade coatora",
+    "tabela": {
+      "Delegado de Polícia": "Juiz de Direito",
+      "Juiz de Direito": "Tribunal de Justiça",
+      "Desembargador (TJ)": "STJ",
+      "Ministro do STJ": "STF"
+    }
+  },
+
+  "modalidades": {
+    "preventivo": {
+      "objetivo": "Evitar constrangimento IMINENTE",
+      "efeito": "SALVO-CONDUTO",
+      "hipoteses": [
+        "Ameaça concreta de prisão ilegal iminente",
+        "Mandado expedido mas não cumprido",
+        "Intimação para apresentação com ameaça de prisão"
+      ]
+    },
+    "liberatorio": {
+      "objetivo": "Cessar constrangimento JÁ EM CURSO",
+      "efeito": "ALVARÁ DE SOLTURA",
+      "hipoteses": [
+        "Prisão em flagrante ilegal",
+        "Prisão preventiva ilegal",
+        "Excesso de prazo",
+        "Prisão após absolvição/extinção punibilidade"
+      ]
+    }
+  },
+
+  "hipotesesCabimento": {
+    "1. Prisão em flagrante ilegal": {
+      "subcategorias": [
+        "Flagrante forjado/fabricado",
+        "Flagrante preparado (Súmula 145/STF)",
+        "Ausência de situação de flagrância",
+        "Excludentes de ilicitude"
+      ]
+    },
+    "2. Prisão preventiva ilegal": {
+      "vicios_comuns": [
+        "Fundamentação genérica (apenas gravidade abstrata)",
+        "Ausência de contemporaneidade",
+        "Desproporcionalidade",
+        "Cabimento de medidas alternativas (art. 319)"
+      ]
+    },
+    "3. Excesso de prazo": {
+      "analise": "Razoabilidade + complexidade + diligência das partes"
+    },
+    "4. Execução penal ilegal": {
+      "hipoteses": [
+        "Regime mais gravoso que o devido",
+        "Falta de vagas (SV 56/STF)",
+        "Progressão negada indevidamente"
+      ]
+    }
+  },
+
+  "estrutura": [
+    "I. ENDEREÇAMENTO E QUALIFICAÇÃO",
+    "II. DOS FATOS",
+    "III. DO CABIMENTO",
+    "IV. DO CONSTRANGIMENTO ILEGAL",
+    "V. DA LIMINAR (se aplicável)",
+    "VI. DOS PEDIDOS"
+  ],
+
+  "instrucoes": "HABEAS CORPUS - ESTRUTURA COMPLETA\n\nENDEREÇAMENTO:\nEXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) DESEMBARGADOR(A) PRESIDENTE DO EGRÉGIO TRIBUNAL DE JUSTIÇA\n\nQUALIFICAÇÃO:\n- Impetrante (advogado)\n- Paciente (preso)\n- Autoridade coatora\n- Processo de origem\n\nDOS FATOS:\n- Narrativa objetiva\n- Cronologia processual\n- Descrição do ato coator\n\nDO CONSTRANGIMENTO ILEGAL:\n- Demonstração concreta da ilegalidade\n- Precedentes verificados via web_search\n- Enquadramento no art. 648, CPP\n\nDA LIMINAR:\n- Fumus boni iuris (plausibilidade)\n- Periculum in mora (urgência)\n\nDOS PEDIDOS:\na) LIMINARMENTE: [pedido urgente]\nb) NO MÉRITO: concessão definitiva da ordem\n\nEXTENSÃO: 10-30 páginas",
+
+  "dadosPaciente": [
+    "Nome completo",
+    "Qualificação completa",
+    "RG e CPF",
+    "Endereço residencial",
+    "Local de custódia (se preso)",
+    "Número do processo originário"
+  ],
+
+  "documentacaoEssencial": [
+    "Decisão/despacho impugnado",
+    "Mandado de prisão",
+    "Auto de prisão em flagrante",
+    "Certidões processuais",
+    "Documentos pessoais do paciente",
+    "Comprovantes (residência, trabalho)"
+  ],
+
+  "naoCabe": [
+    "Contra punição disciplinar militar (CF art. 142, §2)",
+    "Quando extinta pena privativa de liberdade",
+    "Contra pena de multa isolada (Súmula 693/STF)"
+  ],
+
+  "extensao": {
+    "minimo": 10,
+    "ideal": "15-20",
+    "maximo": 30
+  },
+
+  "formatacao": {
+    "fonte": "Calibri 12pt",
+    "espacamento": "1,5 linhas",
+    "margens": "2,5cm superior/inferior, 3cm esquerda/direita",
+    "recuo": "1,25cm primeira linha"
+  },
+
+  "proibicoes": [
+    "ZERO emojis",
+    "ZERO markdown",
+    "ZERO asteriscos",
+    "ZERO travessões decorativos"
+  ]
+}

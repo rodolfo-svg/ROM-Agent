@@ -1,0 +1,22 @@
+{
+  "id": "apelacao_criminal",
+  "nome": "Apelação Criminal",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.269Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Apelação Criminal",
+  "tags": [],
+  "source": "prompts.js",
+  "estrutura": [
+    "ENDEREÇAMENTO",
+    "REFERÊNCIA AO PROCESSO",
+    "I. TEMPESTIVIDADE",
+    "II. DA SENTENÇA RECORRIDA",
+    "III. DAS RAZÕES",
+    "IV. DA ABSOLVIÇÃO/REDUÇÃO DA PENA",
+    "V. DOS PEDIDOS",
+    "FECHAMENTO"
+  ]
+}

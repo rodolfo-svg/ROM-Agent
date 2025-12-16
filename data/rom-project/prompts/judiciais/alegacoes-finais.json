@@ -1,0 +1,64 @@
+{
+  "id": "alegacoes-finais",
+  "nome": "Alegações Finais Criminais",
+  "categoria": "criminal",
+  "subcategoria": "outros",
+  "version": "1.0",
+  "updated": "2025-12-16T02:53:09.274Z",
+  "autoUpdateable": true,
+  "descricao": "Prompt para Alegações Finais Criminais",
+  "tags": [],
+  "source": "promptsCompletos.js",
+  "estrutura": "\nI. SÍNTESE ACUSATÓRIA\n   - Resumo da denúncia/queixa\n   - Tipificação imputada\n   - Penas cominadas\n\nII. DA INSTRUÇÃO CRIMINAL\n   - Resumo das provas produzidas\n   - Depoimentos relevantes\n   - Laudos periciais\n   - Documentos juntados\n\nIII. DAS PRELIMINARES\n   A. Nulidades (se houver)\n   B. Prescrição (se aplicável)\n   C. Outras questões processuais\n\nIV. DO MÉRITO\n   1. Da Autoria\n      - Análise das provas de autoria\n      - Versão defensiva\n\n   2. Da Materialidade\n      - Existência ou não do fato\n      - Provas materiais\n\n   3. Da Tipicidade\n      - Subsunção ou não ao tipo penal\n      - Atipicidade (se aplicável)\n\n   4. Das Excludentes\n      - Ilicitude (legítima defesa, estado de necessidade)\n      - Culpabilidade (inexigibilidade, erro)\n\nV. DA DOSIMETRIA (em caso de condenação)\n   1. Primeira Fase - Circunstâncias Judiciais (art. 59, CP)\n   2. Segunda Fase - Agravantes e Atenuantes\n   3. Terceira Fase - Causas de Aumento e Diminuição\n   4. Regime Inicial\n   5. Substituição da PPL\n\nVI. DOS PEDIDOS\n   A. PRINCIPAL: ABSOLVIÇÃO\n      - Com base no art. 386, [inciso], CPP\n\n   B. SUBSIDIÁRIOS:\n      - Desclassificação para tipo mais brando\n      - Reconhecimento de atenuantes/minorantes\n      - Fixação da pena no mínimo legal\n      - Regime mais brando\n      - Substituição da PPL",
+  "fundamentos": {
+    "cpp": {
+      "Art. 403": "Prazo de 5 dias após instrução",
+      "Art. 404": "Ordenadas diligências, novo prazo de 5 dias",
+      "Art. 381": "Requisitos da sentença (fundamentação)"
+    }
+  },
+  "absolvicao": {
+    "I": "Estar provada a inexistência do fato",
+    "II": "Não haver prova da existência do fato",
+    "III": "Não constituir o fato infração penal",
+    "IV": "Estar provado que o réu não concorreu para a infração penal",
+    "V": "Não existir prova de ter o réu concorrido para a infração penal",
+    "VI": "Existirem circunstâncias que excluam o crime ou isentem o réu de pena, ou mesmo se houver fundada dúvida sobre sua existência",
+    "VII": "Não existir prova suficiente para a condenação"
+  },
+  "teses": {
+    "autoria": [
+      "Negativa de autoria",
+      "Autoria diversa",
+      "Versão inconsistente da acusação"
+    ],
+    "materialidade": [
+      "Inexistência do fato",
+      "Prova material insuficiente",
+      "Laudo inconclusivo"
+    ],
+    "tipicidade": [
+      "Atipicidade da conduta",
+      "Princípio da insignificância",
+      "Crime impossível"
+    ],
+    "ilicitude": [
+      "Legítima defesa",
+      "Estado de necessidade",
+      "Estrito cumprimento do dever legal",
+      "Exercício regular de direito"
+    ],
+    "culpabilidade": [
+      "Inexigibilidade de conduta diversa",
+      "Coação moral irresistível",
+      "Erro de proibição",
+      "Inimputabilidade"
+    ],
+    "prova": [
+      "In dubio pro reo",
+      "Prova exclusivamente testemunhal frágil",
+      "Contradições nos depoimentos",
+      "Ausência de prova técnica"
+    ]
+  }
+}
