@@ -450,13 +450,54 @@ app.post('/api/chat', async (req, res) => {
             console.log(`✅ ${relevantDocs.length} documento(s) relevante(s) encontrado(s)`);
 
             kbContext = '\n\n📚 DOCUMENTOS DISPONÍVEIS NO KNOWLEDGE BASE:\n\n';
-            relevantDocs.slice(0, 3).forEach((doc, i) => { // Limitar a 3 documentos
+            relevantDocs.slice(0, 2).forEach((doc, i) => { // Limitar a 2 documentos (para caber mais conteúdo)
               kbContext += `--- DOCUMENTO ${i + 1}: ${doc.metadata.originalFilename || doc.file} ---\n`;
               if (doc.metadata.type) kbContext += `Tipo: ${doc.metadata.type}\n`;
               if (doc.metadata.processNumber) kbContext += `Processo: ${doc.metadata.processNumber}\n`;
               if (doc.metadata.parties) kbContext += `Partes: ${doc.metadata.parties}\n`;
               if (doc.metadata.court) kbContext += `Tribunal: ${doc.metadata.court}\n`;
-              kbContext += `\nConteúdo:\n${doc.content.substring(0, 5000)}\n\n`; // Limitar a 5000 caracteres por doc
+
+              // 🚀 BUSCA INTELIGENTE: Enviar partes relevantes do documento
+              let contentToSend = '';
+              const lowerMessage = message.toLowerCase();
+
+              // Se mencionar "sentença", "decisão", "dispositiv", "folha", buscar essas seções
+              if (lowerMessage.includes('sentença') || lowerMessage.includes('decisão') ||
+                  lowerMessage.includes('dispositiv') || lowerMessage.includes('folha') ||
+                  lowerMessage.includes('última') || lowerMessage.includes('julg')) {
+
+                // Buscar seções relevantes no documento
+                const lines = doc.content.split('\n');
+                const relevantSections = [];
+
+                for (let i = 0; i < lines.length; i++) {
+                  const line = lines[i].toLowerCase();
+                  if (line.includes('sentença') || line.includes('decisão') ||
+                      line.includes('dispositiv') || line.includes('julg') ||
+                      line.match(/fl\.\s*\d+/) || line.match(/folha\s*\d+/)) {
+                    // Capturar contexto: 50 linhas antes e 50 depois
+                    const start = Math.max(0, i - 50);
+                    const end = Math.min(lines.length, i + 50);
+                    relevantSections.push(lines.slice(start, end).join('\n'));
+                  }
+                }
+
+                if (relevantSections.length > 0) {
+                  contentToSend = relevantSections.join('\n\n--- SEÇÃO ---\n\n').substring(0, 400000); // 400KB limite
+                  console.log(`   📍 Encontradas ${relevantSections.length} seções relevantes (${contentToSend.length} caracteres)`);
+                } else {
+                  // Fallback: enviar início + final do documento
+                  contentToSend = doc.content.substring(0, 200000) + '\n\n...[MEIO DO DOCUMENTO OMITIDO]...\n\n' +
+                                 doc.content.substring(Math.max(0, doc.content.length - 200000));
+                  console.log(`   📄 Enviando início e fim do documento (${contentToSend.length} caracteres)`);
+                }
+              } else {
+                // Para outras perguntas, enviar mais do início
+                contentToSend = doc.content.substring(0, 400000); // 400KB = ~100 páginas
+                console.log(`   📄 Enviando ${contentToSend.length} caracteres do documento`);
+              }
+
+              kbContext += `\nConteúdo:\n${contentToSend}\n\n`;
             });
           }
         }
