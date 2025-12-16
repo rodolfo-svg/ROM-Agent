@@ -39,6 +39,8 @@ import autoUpdateRoutes from '../lib/api-routes-auto-update.js';
 import storageRoutes from '../lib/api-routes-storage.js';
 import schedulerRoutes from '../lib/api-routes-scheduler.js';
 import partnerSettingsRoutes from '../lib/api-routes-partner-settings.js';
+import romProjectService from './services/rom-project-service.js';
+import romProjectRouter from './routes/rom-project.js';
 import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
@@ -150,6 +152,7 @@ app.use('/api', autoUpdateRoutes);
 app.use('/api', storageRoutes);
 app.use('/api', schedulerRoutes);
 app.use('/api', partnerSettingsRoutes);
+app.use('/api/rom-project', romProjectRouter);
 
 logger.info('Sistema inicializado com todos os middlewares de otimização');
 
@@ -5623,6 +5626,16 @@ app.listen(PORT, async () => {
 
   // Carregar customizações de prompts dos parceiros
   loadPartnerPrompts();
+
+  // Inicializar Projeto ROM
+  romProjectService.init()
+    .then(() => {
+      const stats = romProjectService.getStatistics();
+      logger.info(`✅ Projeto ROM carregado: ${stats.prompts.total} prompts disponíveis`);
+    })
+    .catch(error => {
+      logger.error('Erro ao inicializar Projeto ROM:', error);
+    });
 
   // Pré-carregar modelos
   await preloadModelos();
