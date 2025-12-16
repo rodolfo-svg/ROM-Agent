@@ -598,12 +598,20 @@ function buildSystemPrompt() {
   }
 
   prompt += `---\n\n`;
-  prompt += `**EXCELÊNCIA NAS RESPOSTAS:**\n`;
-  prompt += `- ✅ Análises PROFUNDAS e DETALHADAS, nunca rasas\n`;
-  prompt += `- ✅ Fundamentação legal COMPLETA com artigos específicos\n`;
-  prompt += `- ✅ Citação de jurisprudência quando relevante\n`;
-  prompt += `- ❌ NUNCA respostas genéricas ou superficiais\n`;
-  prompt += `- ❌ NUNCA omita fundamentação legal obrigatória\n`;
+  prompt += `**EXCELÊNCIA NAS RESPOSTAS - IMPERATIVO:**\n\n`;
+  prompt += `VOCÊ DEVE OBRIGATORIAMENTE:\n`;
+  prompt += `- ✅ Produzir análises EXTENSAS, PROFUNDAS e DETALHADAS (mínimo 1000 palavras para análises complexas)\n`;
+  prompt += `- ✅ Citar TODOS os artigos de lei aplicáveis com explicação COMPLETA de cada um\n`;
+  prompt += `- ✅ Incluir fundamentação doutrinária e jurisprudencial quando existente\n`;
+  prompt += `- ✅ Estruturar em seções numeradas com cabeçalhos claros\n`;
+  prompt += `- ✅ Usar linguagem técnico-jurídica sofisticada e precisa\n`;
+  prompt += `- ✅ Desenvolver raciocínio jurídico completo, não apenas conclusões\n\n`;
+  prompt += `VOCÊ ESTÁ ABSOLUTAMENTE PROIBIDO DE:\n`;
+  prompt += `- ❌ Respostas genéricas, superficiais ou rasas\n`;
+  prompt += `- ❌ Omitir fundamentação legal obrigatória\n`;
+  prompt += `- ❌ Usar apenas tópicos sem desenvolvimento textual\n`;
+  prompt += `- ❌ Responder em menos de 500 palavras para perguntas jurídicas complexas\n\n`;
+  prompt += `**FORMATO ESPERADO:** Parágrafos bem desenvolvidos com fundamentação completa, citações legais com explicação, argumentação jurídica sólida.\n\n`;
 
   console.log(`✅ [DEBUG] System prompt construído com sucesso!`);
   console.log(`   Tamanho: ${prompt.length} caracteres`);
@@ -634,11 +642,15 @@ function selectIntelligentModel(message, metadata = {}, relevantDocs = []) {
     return 'deepseek.r1-v1:0';
   }
 
-  // 3. ANÁLISE COMPLETA - Claude Sonnet 4.5
-  if ((lowerMessage.includes('analise') || lowerMessage.includes('análise')) &&
-      (lowerMessage.includes('completa') || lowerMessage.includes('íntegra') ||
-       lowerMessage.includes('profunda') || lowerMessage.includes('detalhada'))) {
-    console.log('🔥 Modelo selecionado: Claude Sonnet 4.5 (análise profunda)');
+  // 3. ANÁLISE JURÍDICA / PEÇAS PROCESSUAIS - Claude Sonnet 4.5 (PRIORIDADE)
+  if (lowerMessage.includes('analise') || lowerMessage.includes('análise') ||
+      lowerMessage.includes('processo') || lowerMessage.includes('sentença') ||
+      lowerMessage.includes('decisão') || lowerMessage.includes('acórdão') ||
+      lowerMessage.includes('embargos') || lowerMessage.includes('recurso') ||
+      lowerMessage.includes('petição') || lowerMessage.includes('contestação') ||
+      lowerMessage.includes('fundamentação') || lowerMessage.includes('resumo executivo') ||
+      lowerMessage.includes('fichamento') || lowerMessage.includes('parecer')) {
+    console.log('🔥 Modelo selecionado: Claude Sonnet 4.5 (análise jurídica profunda)');
     return 'anthropic.claude-sonnet-4-5-20250929-v1:0';
   }
 
@@ -694,9 +706,9 @@ function selectIntelligentModel(message, metadata = {}, relevantDocs = []) {
     return 'meta.llama3-3-70b-instruct-v1:0';
   }
 
-  // 9. PADRÃO - Nova Pro (bom custo-benefício)
-  console.log('✅ Modelo selecionado: Nova Pro (padrão)');
-  return 'amazon.nova-pro-v1:0';
+  // 9. PADRÃO - Claude Sonnet 4.5 (máxima qualidade para análises jurídicas)
+  console.log('✅ Modelo selecionado: Claude Sonnet 4.5 (padrão - máxima qualidade)');
+  return 'anthropic.claude-sonnet-4-5-20250929-v1:0';
 }
 
 // Armazenar instâncias de agente por sessão
@@ -713,8 +725,8 @@ function getAgent(sessionId, modelId = null, forceNew = false) {
     // Construir system prompt com custom instructions
     const systemPrompt = buildSystemPrompt();
 
-    // Usar modelo específico ou padrão (Nova Pro)
-    const modelo = modelId || 'amazon.nova-pro-v1:0';
+    // Usar modelo específico ou padrão (Claude Sonnet 4.5 - máxima qualidade)
+    const modelo = modelId || 'anthropic.claude-sonnet-4-5-20250929-v1:0';
 
     console.log(`🤖 [DEBUG] Criando agente para sessão ${sessionId}`);
     console.log(`   - Modelo: ${modelo}`);
