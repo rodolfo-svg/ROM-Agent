@@ -28,14 +28,14 @@ import microfichamentoTemplatesService from '../microfichamento-templates-servic
 import jurisprudenceSearchService from '../jurisprudence-search-service.js';
 import progressEmitter from '../../utils/progress-emitter.js';
 import { BedrockRuntimeClient, ConverseCommand } from '@aws-sdk/client-bedrock-runtime';
-import PrazosProcessuaisService from '../../modules/prazos-processuais.js';
+import prazosProcessuaisService from '../../modules/prazos-processuais.js';
 import * as portugues from '../../modules/portugues.js';
 
 class ROMCaseProcessorService {
   constructor() {
     this.initialized = false;
     this.casosBasePath = path.join(process.cwd(), 'data', 'casos');
-    this.prazosService = new PrazosProcessuaisService();
+    this.prazosService = prazosProcessuaisService;
   }
 
   /**
