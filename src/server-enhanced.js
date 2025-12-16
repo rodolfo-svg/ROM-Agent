@@ -501,22 +501,205 @@ const uploadLetterhead = multer({
   }
 });
 
+// ============================================================
+// 🎯 CUSTOM INSTRUCTIONS & INTELLIGENT MODEL SELECTION
+// ============================================================
+
+/**
+ * Carrega custom instructions do arquivo JSON
+ */
+function loadCustomInstructions() {
+  try {
+    const customInstructionsPath = path.join(__dirname, '..', 'data', 'rom-project', 'custom-instructions.json');
+    if (fs.existsSync(customInstructionsPath)) {
+      const data = JSON.parse(fs.readFileSync(customInstructionsPath, 'utf8'));
+      return data.systemInstructions || null;
+    }
+  } catch (error) {
+    console.error('⚠️ Erro ao carregar custom instructions:', error.message);
+  }
+  return null;
+}
+
+/**
+ * Constrói system prompt completo com custom instructions
+ */
+function buildSystemPrompt() {
+  const customInstructions = loadCustomInstructions();
+
+  if (!customInstructions) {
+    // Fallback: prompt básico
+    return 'Você é o ROM Agent, um assistente jurídico especializado em Direito brasileiro.';
+  }
+
+  // Construir prompt detalhado
+  let prompt = `# ${customInstructions.role}\n\n`;
+
+  // Expertise
+  if (customInstructions.expertise && customInstructions.expertise.length > 0) {
+    prompt += `## Áreas de Expertise:\n`;
+    customInstructions.expertise.forEach(area => {
+      prompt += `- ${area}\n`;
+    });
+    prompt += '\n';
+  }
+
+  // Guidelines
+  if (customInstructions.guidelines && customInstructions.guidelines.length > 0) {
+    prompt += `## Diretrizes Obrigatórias:\n`;
+    customInstructions.guidelines.forEach(guideline => {
+      prompt += `- ${guideline}\n`;
+    });
+    prompt += '\n';
+  }
+
+  // Prohibitions
+  if (customInstructions.prohibitions && customInstructions.prohibitions.length > 0) {
+    prompt += `## Proibições:\n`;
+    customInstructions.prohibitions.forEach(prohibition => {
+      prompt += `- ❌ ${prohibition}\n`;
+    });
+    prompt += '\n';
+  }
+
+  // Tom
+  if (customInstructions.tone) {
+    prompt += `## Tom: ${customInstructions.tone}\n\n`;
+  }
+
+  // Análise de Prazos
+  if (customInstructions.deadlineAnalysis) {
+    prompt += `## Análise de Prazos Processuais:\n`;
+    prompt += `- Lei 11.419/2006: Publicação eletrônica (DJe/DJEN)\n`;
+    prompt += `- Início do prazo: SEMPRE no 1º dia útil APÓS a publicação\n`;
+    prompt += `- Contagem: Dias úteis (excluem sábados, domingos e feriados)\n`;
+    prompt += `- Prazo em dobro: Fazenda Pública, Defensoria, litisconsortes\n\n`;
+  }
+
+  prompt += `---\n\n`;
+  prompt += `**EXCELÊNCIA NAS RESPOSTAS:**\n`;
+  prompt += `- ✅ Análises PROFUNDAS e DETALHADAS, nunca rasas\n`;
+  prompt += `- ✅ Fundamentação legal COMPLETA com artigos específicos\n`;
+  prompt += `- ✅ Citação de jurisprudência quando relevante\n`;
+  prompt += `- ❌ NUNCA respostas genéricas ou superficiais\n`;
+  prompt += `- ❌ NUNCA omita fundamentação legal obrigatória\n`;
+
+  return prompt;
+}
+
+/**
+ * Seleciona modelo ideal baseado no tipo de query
+ * @param {string} message - Mensagem do usuário
+ * @param {object} metadata - Metadados adicionais
+ * @param {array} relevantDocs - Documentos relevantes do KB
+ * @returns {string} Model ID do Bedrock
+ */
+function selectIntelligentModel(message, metadata = {}, relevantDocs = []) {
+  const lowerMessage = message.toLowerCase();
+
+  // 1. MULTIMODAL - Detecção de imagens (futuro)
+  const hasImageAttachment = metadata.hasImage || false;
+
+  // 2. RACIOCÍNIO PROFUNDO - DeepSeek R1
+  if (lowerMessage.includes('fundamentação') ||
+      lowerMessage.includes('raciocínio') ||
+      lowerMessage.includes('explicação detalhada') ||
+      lowerMessage.includes('passo a passo')) {
+    console.log('🧠 Modelo selecionado: DeepSeek R1 (raciocínio exposto)');
+    return 'deepseek.r1-v1:0';
+  }
+
+  // 3. ANÁLISE COMPLETA - Claude Sonnet 4.5
+  if ((lowerMessage.includes('analise') || lowerMessage.includes('análise')) &&
+      (lowerMessage.includes('completa') || lowerMessage.includes('íntegra') ||
+       lowerMessage.includes('profunda') || lowerMessage.includes('detalhada'))) {
+    console.log('🔥 Modelo selecionado: Claude Sonnet 4.5 (análise profunda)');
+    return 'anthropic.claude-sonnet-4-5-20250929-v1:0';
+  }
+
+  // 4. RAG / PESQUISA NO KB - Claude Sonnet 4.5 ou Llama 3.3
+  if (lowerMessage.includes('pesquise') ||
+      lowerMessage.includes('buscar') ||
+      lowerMessage.includes('precedentes') ||
+      (relevantDocs && relevantDocs.length > 3)) {
+    if (metadata.clienteVIP || relevantDocs.length > 10) {
+      console.log('🔍 Modelo selecionado: Claude Sonnet 4.5 (RAG premium)');
+      return 'anthropic.claude-sonnet-4-5-20250929-v1:0';
+    } else {
+      console.log('📚 Modelo selecionado: Llama 3.3 70B (RAG custo-benefício)');
+      return 'meta.llama3-3-70b-instruct-v1:0';
+    }
+  }
+
+  // 5. CASOS VIP / CRÍTICOS - Nova Premier ou Opus 4.5
+  if (metadata.clienteVIP || lowerMessage.includes('urgente') || lowerMessage.includes('crítico')) {
+    if (lowerMessage.includes('máxima qualidade') || metadata.casoComplexo) {
+      console.log('💎 Modelo selecionado: Claude Opus 4.5 (máxima qualidade)');
+      return 'anthropic.claude-opus-4-5-20251101-v1:0';
+    } else {
+      console.log('🏆 Modelo selecionado: Nova Premier (VIP Amazon)');
+      return 'amazon.nova-premier-v1:0';
+    }
+  }
+
+  // 6. RESUMOS RÁPIDOS / TRIAGEM - Claude Haiku 4.5
+  if (lowerMessage.includes('resumo rápido') ||
+      lowerMessage.includes('resumir') ||
+      lowerMessage.includes('triagem') ||
+      lowerMessage.includes('breve')) {
+    console.log('⚡ Modelo selecionado: Claude Haiku 4.5 (rápido)');
+    return 'anthropic.claude-haiku-4-5-20251001-v1:0';
+  }
+
+  // 7. VALIDAÇÃO / SEGUNDA OPINIÃO - Llama 4 Maverick
+  if (lowerMessage.includes('validar') ||
+      lowerMessage.includes('revisar') ||
+      lowerMessage.includes('segunda opinião') ||
+      lowerMessage.includes('verificar')) {
+    console.log('🔄 Modelo selecionado: Llama 4 Maverick (validação)');
+    return 'meta.llama4-maverick-17b-instruct-v1:0';
+  }
+
+  // 8. LONG CONTEXT - Processos grandes
+  const hasLargeDocuments = relevantDocs && relevantDocs.some(doc =>
+    doc.content && doc.content.length > 100000
+  );
+  if (hasLargeDocuments || lowerMessage.includes('processo completo')) {
+    console.log('📚 Modelo selecionado: Llama 3.3 70B (long context)');
+    return 'meta.llama3-3-70b-instruct-v1:0';
+  }
+
+  // 9. PADRÃO - Nova Pro (bom custo-benefício)
+  console.log('✅ Modelo selecionado: Nova Pro (padrão)');
+  return 'amazon.nova-pro-v1:0';
+}
+
 // Armazenar instâncias de agente por sessão
 const agents = new Map();
 
 // Armazenar histórico de conversas
 const conversationHistory = new Map();
 
-// Inicializar agente para sessão (usando Bedrock)
-function getAgent(sessionId) {
-  if (!agents.has(sessionId)) {
-    // Usar BedrockAgent que funciona diretamente com AWS sem precisar de Anthropic API Key
-    agents.set(sessionId, new BedrockAgent({
-      modelo: 'amazon.nova-lite-v1:0', // OTIMIZAÇÃO: Lite é 40% mais rápido que Pro
-      systemPrompt: 'Você é o ROM Agent, um assistente jurídico especializado em Direito brasileiro.'
+// Inicializar agente para sessão (usando Bedrock com intelligent model selection)
+function getAgent(sessionId, modelId = null, forceNew = false) {
+  const agentKey = modelId ? `${sessionId}_${modelId}` : sessionId;
+
+  if (!agents.has(agentKey) || forceNew) {
+    // Construir system prompt com custom instructions
+    const systemPrompt = buildSystemPrompt();
+
+    // Usar modelo específico ou padrão (Nova Pro)
+    const modelo = modelId || 'amazon.nova-pro-v1:0';
+
+    console.log(`🤖 Criando agente para sessão ${sessionId} com modelo: ${modelo}`);
+
+    agents.set(agentKey, new BedrockAgent({
+      modelo,
+      systemPrompt
     }));
   }
-  return agents.get(sessionId);
+
+  return agents.get(agentKey);
 }
 
 // Obter histórico de conversa (limitado às últimas 10 mensagens para performance)
@@ -536,12 +719,7 @@ app.get('/', (req, res) => {
 // API - Processar mensagem com streaming
 app.post('/api/chat', async (req, res) => {
   try {
-    const agent = getAgent(req.session.id);
-    if (!agent) {
-      return res.status(500).json({ error: 'API Key não configurada' });
-    }
-
-    const { message, metadata, projectId = null } = req.body;
+    const { message, metadata = {}, projectId = null } = req.body;
     const history = getHistory(req.session.id);
 
     // ✅ GERENCIAMENTO DE CONVERSAÇÃO
@@ -700,6 +878,14 @@ app.post('/api/chat', async (req, res) => {
       }
     } catch (kbError) {
       console.error('⚠️ Erro ao buscar no KB:', kbError.message);
+    }
+
+    // 🎯 INTELLIGENT MODEL SELECTION
+    const selectedModel = selectIntelligentModel(message, metadata, relevantDocs);
+    const agent = getAgent(req.session.id, selectedModel);
+
+    if (!agent) {
+      return res.status(500).json({ error: 'Erro ao inicializar agente' });
     }
 
     // 🚀 DETECTAR ANÁLISE COMPLETA E USAR CASE PROCESSOR (5 LAYERS)
