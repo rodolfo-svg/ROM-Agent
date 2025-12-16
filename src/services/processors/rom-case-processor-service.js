@@ -61,10 +61,6 @@ class ROMCaseProcessorService {
         region: process.env.AWS_REGION || 'us-east-1'
       });
 
-      // Inicializar serviço de prazos
-      console.log('🔧 Inicializando serviço de prazos processuais...');
-      this.prazosService = new PrazosProcessuaisService();
-
       this.initialized = true;
       console.log('✅ ROM Case Processor Service inicializado');
       return true;

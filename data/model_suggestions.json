@@ -2981,5 +2981,2674 @@
     "priority": "low",
     "status": "pending",
     "createdAt": "2025-12-16T09:12:13.518Z"
+  },
+  {
+    "id": "suggestion-1765876468903-ggswnqgoy",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:28.921Z"
+  },
+  {
+    "id": "suggestion-1765876468921-44bqg6u4i",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:28.921Z"
+  },
+  {
+    "id": "suggestion-1765876468921-w104hj30d",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:28.921Z"
+  },
+  {
+    "id": "suggestion-1765876468921-j6izgffhe",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:28.921Z"
+  },
+  {
+    "id": "suggestion-1765876468979-h30bytor3",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:28.980Z"
+  },
+  {
+    "id": "suggestion-1765876468980-b49y57xi5",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:28.980Z"
+  },
+  {
+    "id": "suggestion-1765876468980-2ir43575m",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:28.983Z"
+  },
+  {
+    "id": "suggestion-1765876468983-68qt7e3il",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:28.983Z"
+  },
+  {
+    "id": "suggestion-1765876469023-elxeta4n0",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.024Z"
+  },
+  {
+    "id": "suggestion-1765876469024-7c6odzcpp",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.024Z"
+  },
+  {
+    "id": "suggestion-1765876469024-ryb8gyxnm",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.024Z"
+  },
+  {
+    "id": "suggestion-1765876469024-c5spgwhaw",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.024Z"
+  },
+  {
+    "id": "suggestion-1765876469079-3w39mhfjt",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.079Z"
+  },
+  {
+    "id": "suggestion-1765876469079-332crhsfg",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.079Z"
+  },
+  {
+    "id": "suggestion-1765876469079-5ixwfibcv",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.079Z"
+  },
+  {
+    "id": "suggestion-1765876469079-cq0qs7mqb",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.080Z"
+  },
+  {
+    "id": "suggestion-1765876469136-rusbasytj",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.136Z"
+  },
+  {
+    "id": "suggestion-1765876469136-5fqeh1c4p",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.136Z"
+  },
+  {
+    "id": "suggestion-1765876469136-h3i70rqo9",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.136Z"
+  },
+  {
+    "id": "suggestion-1765876469136-lf788piim",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.136Z"
+  },
+  {
+    "id": "suggestion-1765876469137-129ejijvi",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.137Z"
+  },
+  {
+    "id": "suggestion-1765876469137-lzmo053wq",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.137Z"
+  },
+  {
+    "id": "suggestion-1765876469137-nmz8jgaop",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.137Z"
+  },
+  {
+    "id": "suggestion-1765876469137-lrgcj7dsg",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.137Z"
+  },
+  {
+    "id": "suggestion-1765876469143-k5lupk31v",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.143Z"
+  },
+  {
+    "id": "suggestion-1765876469143-s3burl44w",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.143Z"
+  },
+  {
+    "id": "suggestion-1765876469143-rflniiarp",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.143Z"
+  },
+  {
+    "id": "suggestion-1765876469143-wqpuclafw",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:14:29.143Z"
+  },
+  {
+    "id": "suggestion-1765877000127-peytl8shj",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:23:20.127Z"
+  },
+  {
+    "id": "suggestion-1765877000127-zvk2et28c",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:23:20.127Z"
+  },
+  {
+    "id": "suggestion-1765877000127-7w26pk7yx",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:23:20.127Z"
+  },
+  {
+    "id": "suggestion-1765877000127-1s1ldh9cl",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:23:20.127Z"
+  },
+  {
+    "id": "suggestion-1765877000129-zodz1s7in",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:23:20.129Z"
+  },
+  {
+    "id": "suggestion-1765877000129-3r618ti4a",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:23:20.129Z"
+  },
+  {
+    "id": "suggestion-1765877000129-gz7cqmb7q",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:23:20.129Z"
+  },
+  {
+    "id": "suggestion-1765877000129-zq8l1x06w",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:23:20.129Z"
+  },
+  {
+    "id": "suggestion-1765877065925-y7z8vn0x4",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:25.925Z"
+  },
+  {
+    "id": "suggestion-1765877065925-hbz3dhamq",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:25.925Z"
+  },
+  {
+    "id": "suggestion-1765877065925-efxplbm23",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:25.925Z"
+  },
+  {
+    "id": "suggestion-1765877065925-fkfk387sz",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:25.925Z"
+  },
+  {
+    "id": "suggestion-1765877065997-h6zt23r18",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:25.997Z"
+  },
+  {
+    "id": "suggestion-1765877065998-rlctgebbk",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:25.998Z"
+  },
+  {
+    "id": "suggestion-1765877065998-5pjyze5i0",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:25.998Z"
+  },
+  {
+    "id": "suggestion-1765877065998-i4zudxgty",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:25.998Z"
+  },
+  {
+    "id": "suggestion-1765877066002-1b153eqrz",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.003Z"
+  },
+  {
+    "id": "suggestion-1765877066003-on6jrorwm",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.003Z"
+  },
+  {
+    "id": "suggestion-1765877066003-wwd9hja50",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.003Z"
+  },
+  {
+    "id": "suggestion-1765877066003-4i1tydawn",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.003Z"
+  },
+  {
+    "id": "suggestion-1765877066024-gmxgyyse4",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.024Z"
+  },
+  {
+    "id": "suggestion-1765877066024-vxj4ce866",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.024Z"
+  },
+  {
+    "id": "suggestion-1765877066024-norl5s2lj",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.024Z"
+  },
+  {
+    "id": "suggestion-1765877066024-jd7fh89vx",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.024Z"
+  },
+  {
+    "id": "suggestion-1765877066054-iiwnfyzkp",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.054Z"
+  },
+  {
+    "id": "suggestion-1765877066054-oeqtloj3w",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.054Z"
+  },
+  {
+    "id": "suggestion-1765877066054-r5az52x35",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.054Z"
+  },
+  {
+    "id": "suggestion-1765877066054-1u2m2134w",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.054Z"
+  },
+  {
+    "id": "suggestion-1765877066115-e9eh1909x",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.115Z"
+  },
+  {
+    "id": "suggestion-1765877066115-0r240moul",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.115Z"
+  },
+  {
+    "id": "suggestion-1765877066115-aqej1v3ji",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.115Z"
+  },
+  {
+    "id": "suggestion-1765877066115-ng7ylxq9n",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.115Z"
+  },
+  {
+    "id": "suggestion-1765877066127-vu9o9o7hx",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.127Z"
+  },
+  {
+    "id": "suggestion-1765877066127-jyo0oda5b",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.127Z"
+  },
+  {
+    "id": "suggestion-1765877066127-fc2ns87yh",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.127Z"
+  },
+  {
+    "id": "suggestion-1765877066127-5gh2ch3o9",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.127Z"
+  },
+  {
+    "id": "suggestion-1765877066207-84b0w64vg",
+    "modelId": "claude-opus-4-20250514",
+    "modelName": "Claude Opus 4",
+    "provider": "Anthropic",
+    "reason": "Novo modelo Anthropic disponível",
+    "benefits": [
+      {
+        "type": "quality",
+        "description": "Raciocínio avançado - ideal para análise jurídica complexa",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "critical",
+      "useCases": [],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "critical",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.207Z"
+  },
+  {
+    "id": "suggestion-1765877066207-y0etzdsop",
+    "modelId": "us.amazon.nova-lite-v1:0",
+    "modelName": "Amazon Nova Lite",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      },
+      {
+        "type": "capacity",
+        "description": "Context window grande - processa documentos extensos",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "transformational"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.207Z"
+  },
+  {
+    "id": "suggestion-1765877066207-rebs5fmg5",
+    "modelId": "us.amazon.nova-micro-v1:0",
+    "modelName": "Amazon Nova Micro",
+    "provider": "Amazon",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      },
+      {
+        "type": "performance",
+        "description": "Alta velocidade - resposta rápida",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "high",
+      "useCases": [
+        "Processamento em massa de documentos",
+        "Respostas rápidas para consultas simples",
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "significant"
+    },
+    "priority": "high",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.207Z"
+  },
+  {
+    "id": "suggestion-1765877066207-pc9el0n60",
+    "modelId": "us.meta.llama3-3-70b-instruct-v1:0",
+    "modelName": "Meta Llama 3.3 70B",
+    "provider": "Meta",
+    "reason": "Modelo disponível no AWS Bedrock",
+    "benefits": [
+      {
+        "type": "cost",
+        "description": "Custo muito baixo - ideal para alto volume",
+        "impact": "high"
+      }
+    ],
+    "recommendation": {
+      "priority": "low",
+      "useCases": [
+        "Alto volume de requisições",
+        "Otimização de custos"
+      ],
+      "implementationSteps": [
+        "Adicionar configuração do modelo em src/index.js",
+        "Atualizar módulo bedrock.js ou criar novo adaptador",
+        "Adicionar ao seletor de modelo na interface",
+        "Testar com casos de uso jurídicos",
+        "Documentar limitações e casos de uso ideais",
+        "Implantar em produção"
+      ],
+      "estimatedEffort": "small",
+      "expectedImpact": "minor"
+    },
+    "priority": "low",
+    "status": "pending",
+    "createdAt": "2025-12-16T09:24:26.207Z"
   }
 ]
