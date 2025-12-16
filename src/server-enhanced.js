@@ -6842,6 +6842,14 @@ app.listen(PORT, async () => {
     });
 
   // 🚨 Criar pasta Desktop/Mesa para UPLOADS MANUAIS DE EMERGÊNCIA
+  // IMPORTANTE: Apenas o worker 1 monitora a pasta (evita duplicatas em cluster)
+  const cluster = await import('cluster');
+  const shouldInitWatcher = !cluster.default.isWorker || cluster.default.worker?.id === 1;
+
+  if (!shouldInitWatcher) {
+    logger.info('📂 Worker secundário - pulando inicialização do watcher de emergência');
+  }
+
   try {
     const os = await import('os');
     const desktopPath = path.join(os.homedir(), 'Desktop', 'ROM-Uploads-Emergencia');
@@ -6886,6 +6894,14 @@ app.listen(PORT, async () => {
 
     logger.info(`✅ Pasta de emergência criada: ${desktopPath}`);
 
+    // 👁️ Monitorar pasta para novos arquivos - APENAS NO WORKER 1
+    if (!shouldInitWatcher) {
+      logger.info('⚠️  Watcher de emergência desabilitado para este worker');
+      return;
+    }
+
+    logger.info('🎯 Inicializando watcher de emergência no Worker 1');
+
     // 👁️ Monitorar pasta para novos arquivos (usando chokidar que já está nas dependências)
     const chokidar = (await import('chokidar')).default;
     const watcher = chokidar.watch(desktopPath, {
@@ -6916,38 +6932,47 @@ app.listen(PORT, async () => {
       logger.info(`🚨 UPLOAD DE EMERGÊNCIA detectado: ${fileName}`);
 
       try {
-        // Processar arquivo com extrator
-        const extractorPipeline = (await import('../lib/extractor-pipeline.js')).default;
+        // 🚀 PROCESSAR ARQUIVO COMPLETO (extração + documentos estruturados)
+        logger.info(`📄 Processando ${fileName} com 33 ferramentas + documentos estruturados...`);
+        const result = await processFile(filePath);
 
-        logger.info(`📄 Extraindo ${fileName} com 33 ferramentas...`);
-        const result = await extractorPipeline.extractDocument(filePath);
+        if (result.success) {
+          logger.info(`✅ Processamento concluído:`);
+          logger.info(`   - Texto: ${result.extraction.charCount} caracteres`);
+          logger.info(`   - Ferramentas: ${result.toolsUsed.length}`);
+          logger.info(`   - Documentos estruturados: ${result.structuredDocuments?.filesGenerated || 0}`);
 
-        if (result.success && result.text) {
-          logger.info(`✅ Extração concluída: ${result.charCount} caracteres`);
+          // 💾 Copiar texto principal para KB para busca rápida
+          // O processFile já salva tudo em data/extracted/ e data/extracted/structured/
+          const extractedTextPath = path.join(process.cwd(), 'data', 'extracted', result.extracted);
+          const extractedText = await fs.promises.readFile(extractedTextPath, 'utf8');
 
-          // Salvar no KB
           const kbPath = path.join(ACTIVE_PATHS.kb, 'documents', `${Date.now()}_emergencia_${fileName}.txt`);
           await fs.promises.mkdir(path.dirname(kbPath), { recursive: true });
-          await fs.promises.writeFile(kbPath, result.text, 'utf8');
+          await fs.promises.copyFile(extractedTextPath, kbPath);
 
-          // Salvar metadados
+          // Salvar metadados no KB
           const metadata = {
             source: 'emergency-upload-desktop',
             originalFilename: fileName,
             uploadedAt: new Date().toISOString(),
             extractedAt: new Date().toISOString(),
-            textLength: result.charCount,
+            textLength: result.extraction.charCount,
+            wordCount: result.extraction.wordCount,
             toolsUsed: result.toolsUsed || [],
-            type: detectDocumentType(result.text),
-            processNumber: extractProcessNumber(result.text),
-            parties: extractParties(result.text),
-            court: extractCourt(result.text)
+            structuredDocuments: result.structuredDocuments,
+            structuredDocsPath: result.structuredDocuments?.outputPath,
+            type: detectDocumentType(extractedText),
+            processNumber: extractProcessNumber(extractedText),
+            parties: extractParties(extractedText),
+            court: extractCourt(extractedText)
           };
 
           const metadataPath = kbPath.replace('.txt', '.metadata.json');
           await fs.promises.writeFile(metadataPath, JSON.stringify(metadata, null, 2), 'utf8');
 
           logger.info(`💾 Salvo no KB: ${path.basename(kbPath)}`);
+          logger.info(`📁 Documentos estruturados em: ${result.structuredDocuments?.outputPath || 'N/A'}`);
 
           // 📁 CRIAR PASTA DE RESULTADOS com tudo organizado
           const timestamp = Date.now();
@@ -6957,11 +6982,27 @@ app.listen(PORT, async () => {
 
           // Salvar documento extraído na pasta de resultados
           const resultTextPath = path.join(resultFolder, 'documento_extraido.txt');
-          await fs.promises.writeFile(resultTextPath, result.text, 'utf8');
+          await fs.promises.writeFile(resultTextPath, extractedText, 'utf8');
 
           // Salvar metadados na pasta de resultados
           const resultMetadataPath = path.join(resultFolder, 'metadados.json');
           await fs.promises.writeFile(resultMetadataPath, JSON.stringify(metadata, null, 2), 'utf8');
+
+          // Copiar documentos estruturados para a pasta de resultados
+          if (result.structuredDocuments?.outputPath) {
+            const structuredFolder = path.join(resultFolder, 'documentos_estruturados');
+            await fs.promises.mkdir(structuredFolder, { recursive: true });
+
+            // Copiar todos os arquivos estruturados
+            const structuredFiles = await fs.promises.readdir(result.structuredDocuments.outputPath);
+            for (const file of structuredFiles) {
+              const srcPath = path.join(result.structuredDocuments.outputPath, file);
+              const destPath = path.join(structuredFolder, file);
+              await fs.promises.copyFile(srcPath, destPath);
+            }
+
+            logger.info(`📋 ${structuredFiles.length} documentos estruturados copiados para Desktop`);
+          }
 
           // Criar arquivo README explicativo
           const readmeResultPath = path.join(resultFolder, 'LEIA-ME.txt');
@@ -6977,15 +7018,19 @@ Processado em: ${new Date().toLocaleString('pt-BR')}
 
 1. documento_extraido.txt
    → Texto completo extraído com 33 ferramentas
-   → ${result.charCount.toLocaleString()} caracteres
+   → ${result.extraction.charCount.toLocaleString()} caracteres
    → ${result.toolsUsed?.length || 0} ferramentas utilizadas
 
-2. metadados.json
+2. documentos_estruturados/
+   → ${result.structuredDocuments?.filesGenerated || 0} documentos organizados
+   → Fichamento, índices, análises, entidades, etc.
+
+3. metadados.json
    → Informações estruturadas do documento
    → Número do processo, partes, tribunal, tipo
    → Data de extração e upload
 
-3. LEIA-ME.txt (este arquivo)
+4. LEIA-ME.txt (este arquivo)
    → Explicação do conteúdo
 
 ✅ O documento também foi salvo no Knowledge Base
