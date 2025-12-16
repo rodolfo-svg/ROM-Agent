@@ -364,8 +364,70 @@ app.post('/api/chat', async (req, res) => {
       content: message
     });
 
-    // Processar com agente Bedrock
-    const resultado = await agent.enviar(message);
+    // 🔍 BUSCAR DOCUMENTOS RELEVANTES NO KB
+    let kbContext = '';
+    try {
+      const kbDocsPath = path.join(ACTIVE_PATHS.KB, 'documents');
+      if (fs.existsSync(kbDocsPath)) {
+        const files = await fs.promises.readdir(kbDocsPath);
+        const txtFiles = files.filter(f => f.endsWith('.txt'));
+
+        if (txtFiles.length > 0) {
+          console.log(`📚 Buscando em ${txtFiles.length} documentos do KB...`);
+
+          // Ler todos os documentos e seus metadados
+          const docs = await Promise.all(txtFiles.map(async (file) => {
+            const filePath = path.join(kbDocsPath, file);
+            const metadataPath = filePath.replace('.txt', '.metadata.json');
+
+            const content = await fs.promises.readFile(filePath, 'utf8');
+            let metadata = {};
+            try {
+              if (fs.existsSync(metadataPath)) {
+                metadata = JSON.parse(await fs.promises.readFile(metadataPath, 'utf8'));
+              }
+            } catch (e) {}
+
+            return { file, content, metadata };
+          }));
+
+          // Buscar documentos relevantes (busca simples por palavras-chave)
+          const relevantDocs = docs.filter(doc => {
+            const lowerMessage = message.toLowerCase();
+            const lowerContent = doc.content.toLowerCase();
+
+            // Verificar se a pergunta menciona termos do documento
+            return (
+              (doc.metadata.processNumber && lowerMessage.includes('processo')) ||
+              (doc.metadata.parties && lowerMessage.includes('parte')) ||
+              (doc.metadata.court && lowerMessage.includes('tribunal')) ||
+              lowerContent.includes(lowerMessage) ||
+              message.split(' ').some(word => word.length > 4 && lowerContent.includes(word.toLowerCase()))
+            );
+          });
+
+          if (relevantDocs.length > 0) {
+            console.log(`✅ ${relevantDocs.length} documento(s) relevante(s) encontrado(s)`);
+
+            kbContext = '\n\n📚 DOCUMENTOS DISPONÍVEIS NO KNOWLEDGE BASE:\n\n';
+            relevantDocs.slice(0, 3).forEach((doc, i) => { // Limitar a 3 documentos
+              kbContext += `--- DOCUMENTO ${i + 1}: ${doc.metadata.originalFilename || doc.file} ---\n`;
+              if (doc.metadata.type) kbContext += `Tipo: ${doc.metadata.type}\n`;
+              if (doc.metadata.processNumber) kbContext += `Processo: ${doc.metadata.processNumber}\n`;
+              if (doc.metadata.parties) kbContext += `Partes: ${doc.metadata.parties}\n`;
+              if (doc.metadata.court) kbContext += `Tribunal: ${doc.metadata.court}\n`;
+              kbContext += `\nConteúdo:\n${doc.content.substring(0, 5000)}\n\n`; // Limitar a 5000 caracteres por doc
+            });
+          }
+        }
+      }
+    } catch (kbError) {
+      console.error('⚠️ Erro ao buscar no KB:', kbError.message);
+    }
+
+    // Processar com agente Bedrock (adicionar contexto do KB se houver)
+    const messageWithContext = kbContext ? message + kbContext : message;
+    const resultado = await agent.enviar(messageWithContext);
 
     if (!resultado.sucesso) {
       return res.status(500).json({ error: resultado.erro || 'Erro ao processar mensagem' });
@@ -762,6 +824,34 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
 
         extractions.push(extractedData);
         console.log(`✅ Processado: ${file.originalname} (${extractionResult.textLength} caracteres)`);
+
+        // 💾 SALVAR NO KB para o chat poder acessar
+        try {
+          const kbPath = path.join(ACTIVE_PATHS.KB, 'documents', `${Date.now()}_${file.originalname}.txt`);
+          await fs.promises.mkdir(path.dirname(kbPath), { recursive: true });
+          await fs.promises.writeFile(kbPath, extractedData.extractedText, 'utf8');
+
+          // Adicionar metadados
+          const metadataPath = kbPath.replace('.txt', '.metadata.json');
+          await fs.promises.writeFile(metadataPath, JSON.stringify({
+            originalFilename: file.originalname,
+            uploadedAt: extractedData.uploadedAt,
+            type: detectDocumentType(extractedData.extractedText),
+            processNumber: extractProcessNumber(extractedData.extractedText),
+            parties: extractParties(extractedData.extractedText),
+            court: extractCourt(extractedData.extractedText),
+            textLength: extractedData.textLength,
+            toolsUsed: extractedData.toolsUsed
+          }, null, 2), 'utf8');
+
+          console.log(`💾 Salvo no KB: ${path.basename(kbPath)}`);
+          extractedData.savedToKB = true;
+          extractedData.kbPath = kbPath;
+        } catch (kbError) {
+          console.error(`⚠️ Erro ao salvar no KB: ${kbError.message}`);
+          extractedData.savedToKB = false;
+          extractedData.kbError = kbError.message;
+        }
       } catch (fileError) {
         console.error(`❌ Erro ao processar ${file.originalname}:`, fileError);
         extractions.push({
