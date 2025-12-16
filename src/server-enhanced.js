@@ -114,6 +114,52 @@ kbCleaner.scheduleAutoCleaning({
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// ═══════════════════════════════════════════════════════════════════════
+// HELPER FUNCTIONS GLOBAIS - Extração inteligente de metadados
+// ═══════════════════════════════════════════════════════════════════════
+
+function detectDocumentType(text) {
+  const lower = text.toLowerCase();
+  if (lower.includes('petição inicial')) return 'Petição Inicial';
+  if (lower.includes('recurso')) return 'Recurso';
+  if (lower.includes('contestação')) return 'Contestação';
+  if (lower.includes('sentença')) return 'Sentença';
+  if (lower.includes('agravo')) return 'Agravo';
+  if (lower.includes('habeas corpus')) return 'Habeas Corpus';
+  if (lower.includes('contrato')) return 'Contrato';
+  return 'Documento Jurídico';
+}
+
+function extractProcessNumber(text) {
+  const match = text.match(/\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}/);
+  return match ? match[0] : 'Não identificado';
+}
+
+function extractParties(text) {
+  const match = text.match(/(?:autor|requerente):\s*([^\n]+)|([^\n]+)\s*(?:x|versus)\s*([^\n]+)/i);
+  return match ? (match[1] || `${match[2]} x ${match[3]}`).trim() : 'Não identificado';
+}
+
+function extractCourt(text) {
+  const match = text.match(/(?:vara|tribunal|juízo)\s+([^\n]+)/i);
+  return match ? match[0].trim() : 'Não identificado';
+}
+
+function extractSubject(text) {
+  const match = text.match(/(?:assunto|objeto):\s*([^\n]+)/i);
+  return match ? match[1].trim() : 'Não identificado';
+}
+
+function extractDate(text) {
+  const match = text.match(/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/);
+  return match ? match[0] : 'Não identificado';
+}
+
+function extractValue(text) {
+  const match = text.match(/R\$\s*[\d.,]+/);
+  return match ? match[0] : 'Não identificado';
+}
+
 const app = express();
 
 // Trust proxy para Render (necessário para rate limiting e X-Forwarded-For)
@@ -862,49 +908,6 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
           }
         });
       }
-    }
-
-    // Helper functions para extração inteligente de metadados
-    function detectDocumentType(text) {
-      const lower = text.toLowerCase();
-      if (lower.includes('petição inicial')) return 'Petição Inicial';
-      if (lower.includes('recurso')) return 'Recurso';
-      if (lower.includes('contestação')) return 'Contestação';
-      if (lower.includes('sentença')) return 'Sentença';
-      if (lower.includes('agravo')) return 'Agravo';
-      if (lower.includes('habeas corpus')) return 'Habeas Corpus';
-      if (lower.includes('contrato')) return 'Contrato';
-      return 'Documento Jurídico';
-    }
-
-    function extractProcessNumber(text) {
-      const match = text.match(/\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}/);
-      return match ? match[0] : 'Não identificado';
-    }
-
-    function extractParties(text) {
-      const match = text.match(/(?:autor|requerente):\s*([^\n]+)|([^\n]+)\s*(?:x|versus)\s*([^\n]+)/i);
-      return match ? (match[1] || `${match[2]} x ${match[3]}`).trim() : 'Não identificado';
-    }
-
-    function extractCourt(text) {
-      const match = text.match(/(?:vara|tribunal|juízo)\s+([^\n]+)/i);
-      return match ? match[0].trim() : 'Não identificado';
-    }
-
-    function extractSubject(text) {
-      const match = text.match(/(?:assunto|objeto):\s*([^\n]+)/i);
-      return match ? match[1].trim() : 'Não identificado';
-    }
-
-    function extractDate(text) {
-      const match = text.match(/\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}/);
-      return match ? match[0] : 'Não identificado';
-    }
-
-    function extractValue(text) {
-      const match = text.match(/R\$\s*[\d.,]+/);
-      return match ? match[0] : 'Não identificado';
     }
 
     console.log(`✅ Upload concluído: ${extractions.length} arquivo(s) processado(s)`);
