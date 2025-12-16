@@ -213,10 +213,8 @@ logger.info('Sistema inicializado com todos os middlewares de otimização');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     // Usar disco persistente (/var/data no Render)
+    // Pasta já criada por ensureStorageStructure() no startup
     const uploadDir = ACTIVE_PATHS.upload;
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
@@ -248,10 +246,8 @@ const upload = multer({
 const logoStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     // Usar disco persistente para logos de parceiros
+    // Pasta já criada por ensureStorageStructure() no startup
     const partnersDir = ACTIVE_PATHS.partners;
-    if (!fs.existsSync(partnersDir)) {
-      fs.mkdirSync(partnersDir, { recursive: true });
-    }
     cb(null, partnersDir);
   },
   filename: (req, file, cb) => {
@@ -282,10 +278,8 @@ const uploadLogo = multer({
 const letterheadStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     // Usar disco persistente para timbrados de parceiros
+    // Pasta já criada por ensureStorageStructure() no startup
     const partnersDir = ACTIVE_PATHS.partners;
-    if (!fs.existsSync(partnersDir)) {
-      fs.mkdirSync(partnersDir, { recursive: true });
-    }
     cb(null, partnersDir);
   },
   filename: (req, file, cb) => {
