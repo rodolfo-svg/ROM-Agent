@@ -645,7 +645,7 @@ app.post('/api/chat', async (req, res) => {
             console.log(`✅ ${relevantDocs.length} documento(s) relevante(s) encontrado(s)`);
 
             kbContext = '\n\n📚 DOCUMENTOS DISPONÍVEIS NO KNOWLEDGE BASE:\n\n';
-            relevantDocs.slice(0, 2).forEach((doc, i) => { // Limitar a 2 documentos (para caber mais conteúdo)
+            relevantDocs.slice(0, 1).forEach((doc, i) => { // Limitar a 1 documento (otimização de tokens)
               kbContext += `--- DOCUMENTO ${i + 1}: ${doc.metadata.originalFilename || doc.file} ---\n`;
               if (doc.metadata.type) kbContext += `Tipo: ${doc.metadata.type}\n`;
               if (doc.metadata.processNumber) kbContext += `Processo: ${doc.metadata.processNumber}\n`;
@@ -678,17 +678,17 @@ app.post('/api/chat', async (req, res) => {
                 }
 
                 if (relevantSections.length > 0) {
-                  contentToSend = relevantSections.join('\n\n--- SEÇÃO ---\n\n').substring(0, 400000); // 400KB limite
+                  contentToSend = relevantSections.join('\n\n--- SEÇÃO ---\n\n').substring(0, 50000); // 50KB limite otimizado
                   console.log(`   📍 Encontradas ${relevantSections.length} seções relevantes (${contentToSend.length} caracteres)`);
                 } else {
                   // Fallback: enviar início + final do documento
-                  contentToSend = doc.content.substring(0, 200000) + '\n\n...[MEIO DO DOCUMENTO OMITIDO]...\n\n' +
-                                 doc.content.substring(Math.max(0, doc.content.length - 200000));
+                  contentToSend = doc.content.substring(0, 25000) + '\n\n...[MEIO DO DOCUMENTO OMITIDO]...\n\n' +
+                                 doc.content.substring(Math.max(0, doc.content.length - 25000));
                   console.log(`   📄 Enviando início e fim do documento (${contentToSend.length} caracteres)`);
                 }
               } else {
                 // Para outras perguntas, enviar mais do início
-                contentToSend = doc.content.substring(0, 400000); // 400KB = ~100 páginas
+                contentToSend = doc.content.substring(0, 50000); // 50KB = ~12 páginas otimizado
                 console.log(`   📄 Enviando ${contentToSend.length} caracteres do documento`);
               }
 
