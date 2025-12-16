@@ -22,6 +22,7 @@ import * as extractionService from './services/extraction-service.js';
 import * as documentExtractionService from './services/document-extraction-service.js';
 import romProjectRouter from './routes/rom-project.js';
 import romProjectService from './services/rom-project-service.js';
+import caseProcessorSSE from './routes/case-processor-sse.js';
 
 dotenv.config();
 
@@ -41,6 +42,9 @@ app.use('/api', autoUpdateRoutes);
 
 // Rotas do Projeto ROM (Custom Instructions, Prompts, Templates, KB)
 app.use('/api/rom-project', romProjectRouter);
+
+// Rotas de Server-Sent Events para Progresso em Tempo Real
+app.use('/api/case-processor', caseProcessorSSE);
 
 // Instância do agente
 let agent = null;

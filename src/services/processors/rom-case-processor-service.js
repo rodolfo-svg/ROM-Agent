@@ -26,6 +26,7 @@ import parallelProcessorService from './parallel-processor-service.js';
 import romProjectService from '../rom-project-service.js';
 import microfichamentoTemplatesService from '../microfichamento-templates-service.js';
 import jurisprudenceSearchService from '../jurisprudence-search-service.js';
+import progressEmitter from '../../utils/progress-emitter.js';
 import { BedrockRuntimeClient, ConverseCommand } from '@aws-sdk/client-bedrock-runtime';
 
 class ROMCaseProcessorService {
@@ -595,59 +596,123 @@ class ROMCaseProcessorService {
         throw new Error('Serviço de extração não fornecido');
       }
 
+      // Iniciar sessão de progresso
+      progressEmitter.startSession(casoId, {
+        totalDocuments: documentPaths.length,
+        indexLevel,
+        generateDocument,
+        documentType
+      });
+
       const results = {};
 
       // LAYER 1: Extração
+      progressEmitter.startLayer(casoId, 1, 'Extração Bruta');
+      progressEmitter.addStep(casoId, `Extraindo ${documentPaths.length} documentos em paralelo`, 'processing');
+
       results.extraction = await this.layer1_extractDocuments(
         casoId,
         documentPaths,
         extractorService
       );
 
+      progressEmitter.addSuccess(casoId, `${results.extraction.length} documentos extraídos`);
+      progressEmitter.addResult(casoId, 'Total de páginas', results.extraction.reduce((sum, d) => sum + (d.pages || 0), 0));
+      progressEmitter.completeLayer(casoId, 1, {
+        documentsProcessed: results.extraction.length,
+        totalPages: results.extraction.reduce((sum, d) => sum + (d.pages || 0), 0)
+      });
+
       // LAYER 2: Índices
+      progressEmitter.startLayer(casoId, 2, 'Índices e Metadados');
+      progressEmitter.addStep(casoId, 'Construindo índices inteligentes', 'processing');
+
       results.indexes = await this.layer2_buildIndexes(
         casoId,
         results.extraction
       );
 
+      progressEmitter.addSuccess(casoId, 'Índices construídos');
+      progressEmitter.addResult(casoId, 'Tipos de documentos', results.indexes.metadata.types.length);
+      progressEmitter.completeLayer(casoId, 2);
+
       // Índice Progressivo
+      progressEmitter.addStep(casoId, `Criando índice progressivo (${indexLevel})`, 'processing');
+
       results.progressiveIndex = await this.buildProgressiveIndex(
         casoId,
         results.extraction,
         indexLevel
       );
 
+      progressEmitter.addSuccess(casoId, `Índice ${indexLevel} gerado`);
+
       // LAYER 3: Análises Especializadas
+      progressEmitter.startLayer(casoId, 3, 'Análises Especializadas');
+      progressEmitter.addStep(casoId, 'Processando análises em paralelo', 'processing');
+      progressEmitter.addInfo(casoId, 'Criando microfichamentos...');
+
       results.analysis = await this.layer3_specializedAnalysis(
         casoId,
         results.extraction,
         results.indexes
       );
 
+      progressEmitter.addSuccess(casoId, 'Análises especializadas concluídas');
+      progressEmitter.addResult(casoId, 'Microfichamentos criados', results.analysis.microfichamentos.length);
+      progressEmitter.addResult(casoId, 'Teses identificadas', results.analysis.consolidacoes.teses?.length || 0);
+      progressEmitter.completeLayer(casoId, 3);
+
       // LAYER 4: Jurisprudência (somente se teses identificadas)
       if (results.analysis.consolidacoes.teses && results.analysis.consolidacoes.teses.length > 0) {
+        progressEmitter.startLayer(casoId, 4, 'Jurisprudência Verificável');
+        progressEmitter.addStep(casoId, `Buscando jurisprudência para ${results.analysis.consolidacoes.teses.length} teses`, 'processing');
+
         results.jurisprudence = await this.layer4_jurisprudenceSearch(
           casoId,
           results.analysis.consolidacoes.teses,
           searchServices
         );
+
+        progressEmitter.addSuccess(casoId, 'Busca de jurisprudência concluída');
+        progressEmitter.addResult(casoId, 'Precedentes encontrados', results.jurisprudence.totalPrecedentes || 0);
+        progressEmitter.addResult(casoId, 'Cache hits', `${results.jurisprudence.cacheHits || 0}/${results.analysis.consolidacoes.teses.length}`);
+        progressEmitter.completeLayer(casoId, 4);
+      } else {
+        progressEmitter.addInfo(casoId, 'Nenhuma tese identificada - Layer 4 (jurisprudência) não será executada');
       }
 
       // LAYER 5: Redação Final (somente se solicitado)
       if (generateDocument) {
+        progressEmitter.startLayer(casoId, 5, 'Redação Final');
+        progressEmitter.addStep(casoId, `Gerando documento: ${documentType}`, 'processing');
+
         results.document = await this.layer5_generateDocument(
           casoId,
           documentType,
           results.analysis.consolidacoes,
           results.jurisprudence
         );
+
+        progressEmitter.addSuccess(casoId, `Documento ${documentType} gerado`);
+        progressEmitter.addResult(casoId, 'Tamanho do documento', `${(results.document.texto?.length || 0).toLocaleString('pt-BR')} caracteres`);
+        progressEmitter.completeLayer(casoId, 5);
       }
 
       const endTime = Date.now();
       const duration = ((endTime - startTime) / 1000 / 60).toFixed(2);
+      const cacheHitRate = await this._getCacheHitRate(casoId);
 
       console.log(`\n✅ Processamento completo em ${duration} minutos`);
-      console.log(`📊 Cache hit rate: ${await this._getCacheHitRate(casoId)}`);
+      console.log(`📊 Cache hit rate: ${cacheHitRate}`);
+
+      // Completar sessão com sucesso
+      progressEmitter.completeSession(casoId, {
+        totalDocuments: results.extraction.length,
+        totalPages: results.extraction.reduce((sum, d) => sum + (d.pages || 0), 0),
+        totalWords: results.extraction.reduce((sum, d) => sum + (d.wordCount || 0), 0),
+        cacheHitRate
+      });
 
       return {
         success: true,
@@ -659,6 +724,10 @@ class ROMCaseProcessorService {
 
     } catch (error) {
       console.error('❌ Erro no processamento do caso:', error);
+
+      // Marcar sessão como falha
+      progressEmitter.failSession(casoId, error);
+
       return {
         success: false,
         casoId,
