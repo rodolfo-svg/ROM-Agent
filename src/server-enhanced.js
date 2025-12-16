@@ -1595,6 +1595,45 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
           await fs.promises.writeFile(kbMetadataPath, JSON.stringify(kbMetadata, null, 2), 'utf8');
 
           console.log(`   💾 KB: Copiado ${path.basename(kbPath)}`);
+
+          // 📋 REGISTRAR NO kb-documents.json (para aparecer na interface do KB)
+          try {
+            const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+            let kbDocs = [];
+
+            if (fs.existsSync(kbDocsPath)) {
+              const data = fs.readFileSync(kbDocsPath, 'utf8');
+              kbDocs = JSON.parse(data);
+            }
+
+            // Criar entrada para o documento
+            const kbDoc = {
+              id: `kb-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              name: file.originalname,
+              type: file.mimetype,
+              size: file.size,
+              path: kbPath,
+              userId: req.user?.userId || 'web-upload',
+              userName: req.user?.name || 'Web Upload',
+              uploadedAt: new Date().toISOString(),
+              extractedText: await fs.promises.readFile(kbPath, 'utf8'),
+              textLength: processResult.extraction?.charCount || 0,
+              metadata: {
+                toolsUsed: processResult.toolsUsed || [],
+                structuredDocuments: processResult.structuredDocuments?.filesGenerated || 0,
+                structuredDocsPath: processResult.structuredDocuments?.outputPath,
+                wordCount: processResult.extraction?.wordCount || 0
+              }
+            };
+
+            kbDocs.push(kbDoc);
+            fs.writeFileSync(kbDocsPath, JSON.stringify(kbDocs, null, 2));
+
+            console.log(`   📋 KB Registry: Registrado em kb-documents.json (${kbDocs.length} total)`);
+          } catch (registryError) {
+            console.error(`   ⚠️  Erro ao registrar em kb-documents.json: ${registryError.message}`);
+          }
+
         } catch (kbError) {
           // Log mas não falha o upload completo
           console.error(`   ⚠️  Erro ao copiar para KB: ${kbError.message}`);

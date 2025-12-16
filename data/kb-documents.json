@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "kb-1765919948078-9tvtvt6gu",
+    "name": "teste_kb.txt",
+    "type": "text/plain",
+    "size": 93,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1765919948077_teste_kb.txt",
+    "userId": "web-upload",
+    "userName": "Web Upload",
+    "uploadedAt": "2025-12-16T21:19:08.078Z",
+    "extractedText": "Teste de upload para KB\nEste é um arquivo de teste simples para validar a cópia para o KB.\n",
+    "textLength": 91,
+    "metadata": {
+      "toolsUsed": [
+        "direct-read",
+        "33-ferramentas-processamento",
+        "10-processadores-otimizacao"
+      ],
+      "structuredDocuments": 7,
+      "structuredDocsPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/extracted/structured/1765919948063-955601258-teste_kb",
+      "wordCount": 20
+    }
+  }
+]
