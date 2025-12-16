@@ -601,6 +601,7 @@ app.post('/api/chat', async (req, res) => {
 
     // 🔍 BUSCAR DOCUMENTOS RELEVANTES NO KB
     let kbContext = '';
+    let relevantDocs = []; // Declarar no escopo correto
     try {
       const kbDocsPath = path.join(ACTIVE_PATHS.kb, 'documents');
       if (fs.existsSync(kbDocsPath)) {
@@ -627,7 +628,7 @@ app.post('/api/chat', async (req, res) => {
           }));
 
           // Buscar documentos relevantes (busca simples por palavras-chave)
-          const relevantDocs = docs.filter(doc => {
+          relevantDocs = docs.filter(doc => {
             const lowerMessage = message.toLowerCase();
             const lowerContent = doc.content.toLowerCase();
 
