@@ -3753,6 +3753,81 @@ app.delete('/api/kb/extracted-documents/:id', async (req, res) => {
   }
 });
 
+// 📊 Endpoint para listar documentos estruturados (7 tipos)
+app.get('/api/kb/structured-documents', async (req, res) => {
+  try {
+    const structuredPath = path.join(EXTRACTOR_CONFIG.extractedFolder, 'structured');
+
+    if (!fs.existsSync(structuredPath)) {
+      return res.json({ success: true, documents: [], count: 0 });
+    }
+
+    // Listar todas as pastas (cada pasta é um documento processado)
+    const folders = await fs.promises.readdir(structuredPath);
+    const documents = [];
+
+    for (const folder of folders) {
+      const folderPath = path.join(structuredPath, folder);
+      const stats = await fs.promises.stat(folderPath);
+
+      if (!stats.isDirectory()) continue;
+
+      // Listar arquivos dentro da pasta
+      const files = await fs.promises.readdir(folderPath);
+      const structuredFiles = files.map(file => ({
+        name: file,
+        path: path.join(folderPath, file),
+        type: file.split('_').slice(1).join('_').replace(/\.(md|json)$/, '')
+      }));
+
+      documents.push({
+        id: folder,
+        name: folder,
+        createdAt: stats.birthtime,
+        filesCount: structuredFiles.length,
+        files: structuredFiles
+      });
+    }
+
+    // Ordenar por data de criação (mais recentes primeiro)
+    documents.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    res.json({
+      success: true,
+      documents,
+      count: documents.length,
+      totalFiles: documents.reduce((sum, doc) => sum + doc.filesCount, 0)
+    });
+
+  } catch (error) {
+    console.error('❌ Erro ao listar documentos estruturados:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 📄 Endpoint para baixar documento estruturado específico
+app.get('/api/kb/structured-documents/:id/:filename', async (req, res) => {
+  try {
+    const { id, filename } = req.params;
+    const filePath = path.join(EXTRACTOR_CONFIG.extractedFolder, 'structured', id, filename);
+
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: 'Arquivo não encontrado' });
+    }
+
+    const content = await fs.promises.readFile(filePath, 'utf8');
+    const contentType = filename.endsWith('.json') ? 'application/json' : 'text/markdown';
+
+    res.setHeader('Content-Type', contentType);
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    res.send(content);
+
+  } catch (error) {
+    console.error('❌ Erro ao baixar documento estruturado:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Estatísticas do KB do usuário (requer autenticação)
 app.get('/api/kb/user-statistics', authSystem.authMiddleware(), (req, res) => {
   try {
