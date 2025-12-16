@@ -511,12 +511,28 @@ const uploadLetterhead = multer({
 function loadCustomInstructions() {
   try {
     const customInstructionsPath = path.join(__dirname, '..', 'data', 'rom-project', 'custom-instructions.json');
+    console.log(`🔍 [DEBUG] Tentando carregar custom instructions de: ${customInstructionsPath}`);
+
     if (fs.existsSync(customInstructionsPath)) {
       const data = JSON.parse(fs.readFileSync(customInstructionsPath, 'utf8'));
-      return data.systemInstructions || null;
+      const instructions = data.systemInstructions || null;
+
+      if (instructions) {
+        console.log(`✅ [DEBUG] Custom instructions carregadas com sucesso!`);
+        console.log(`   - Role: ${instructions.role}`);
+        console.log(`   - Expertise areas: ${instructions.expertise?.length || 0}`);
+        console.log(`   - Guidelines: ${instructions.guidelines?.length || 0}`);
+      } else {
+        console.log(`⚠️ [DEBUG] Arquivo existe mas systemInstructions está vazio`);
+      }
+
+      return instructions;
+    } else {
+      console.log(`❌ [DEBUG] Arquivo custom-instructions.json NÃO ENCONTRADO!`);
     }
   } catch (error) {
     console.error('⚠️ Erro ao carregar custom instructions:', error.message);
+    console.error('   Stack:', error.stack);
   }
   return null;
 }
@@ -525,11 +541,16 @@ function loadCustomInstructions() {
  * Constrói system prompt completo com custom instructions
  */
 function buildSystemPrompt() {
+  console.log(`🏗️ [DEBUG] Construindo system prompt...`);
+
   const customInstructions = loadCustomInstructions();
 
   if (!customInstructions) {
     // Fallback: prompt básico
-    return 'Você é o ROM Agent, um assistente jurídico especializado em Direito brasileiro.';
+    const fallbackPrompt = 'Você é o ROM Agent, um assistente jurídico especializado em Direito brasileiro.';
+    console.log(`⚠️ [DEBUG] Usando FALLBACK prompt (custom instructions não carregadas)`);
+    console.log(`   Prompt: ${fallbackPrompt}`);
+    return fallbackPrompt;
   }
 
   // Construir prompt detalhado
@@ -583,6 +604,10 @@ function buildSystemPrompt() {
   prompt += `- ✅ Citação de jurisprudência quando relevante\n`;
   prompt += `- ❌ NUNCA respostas genéricas ou superficiais\n`;
   prompt += `- ❌ NUNCA omita fundamentação legal obrigatória\n`;
+
+  console.log(`✅ [DEBUG] System prompt construído com sucesso!`);
+  console.log(`   Tamanho: ${prompt.length} caracteres`);
+  console.log(`   Primeiros 300 chars: ${prompt.substring(0, 300)}...`);
 
   return prompt;
 }
@@ -691,12 +716,21 @@ function getAgent(sessionId, modelId = null, forceNew = false) {
     // Usar modelo específico ou padrão (Nova Pro)
     const modelo = modelId || 'amazon.nova-pro-v1:0';
 
-    console.log(`🤖 Criando agente para sessão ${sessionId} com modelo: ${modelo}`);
+    console.log(`🤖 [DEBUG] Criando agente para sessão ${sessionId}`);
+    console.log(`   - Modelo: ${modelo}`);
+    console.log(`   - System Prompt Tamanho: ${systemPrompt.length} chars`);
+    console.log(`   - System Prompt Preview: ${systemPrompt.substring(0, 150)}...`);
+    console.log(`   - Agent Key: ${agentKey}`);
 
     agents.set(agentKey, new BedrockAgent({
       modelo,
       systemPrompt
     }));
+
+    console.log(`✅ [DEBUG] Agente criado e armazenado no Map`);
+  } else {
+    console.log(`♻️ [DEBUG] Reutilizando agente existente para sessão ${sessionId}`);
+    console.log(`   - Agent Key: ${agentKey}`);
   }
 
   return agents.get(agentKey);
@@ -881,12 +915,26 @@ app.post('/api/chat', async (req, res) => {
     }
 
     // 🎯 INTELLIGENT MODEL SELECTION
+    console.log(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    console.log(`💬 [DEBUG] NOVA MENSAGEM DO CHAT`);
+    console.log(`   - Sessão: ${req.session.id}`);
+    console.log(`   - Mensagem: ${message.substring(0, 100)}...`);
+    console.log(`   - Metadata: ${JSON.stringify(metadata)}`);
+    console.log(`   - Docs Relevantes: ${relevantDocs.length}`);
+    console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+
     const selectedModel = selectIntelligentModel(message, metadata, relevantDocs);
+
+    console.log(`\n🎯 [DEBUG] MODELO SELECIONADO: ${selectedModel}`);
+
     const agent = getAgent(req.session.id, selectedModel);
 
     if (!agent) {
+      console.error(`❌ [DEBUG] FALHA AO CRIAR AGENTE!`);
       return res.status(500).json({ error: 'Erro ao inicializar agente' });
     }
+
+    console.log(`✅ [DEBUG] Agente obtido com sucesso, iniciando processamento...`);
 
     // 🚀 DETECTAR ANÁLISE COMPLETA E USAR CASE PROCESSOR (5 LAYERS)
     const lowerMessage = message.toLowerCase();

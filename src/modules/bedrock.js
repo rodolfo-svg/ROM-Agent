@@ -448,6 +448,17 @@ export class BedrockAgent {
     this.region = options.region || CONFIG.region;
     this.systemPrompt = options.systemPrompt || null;
     this.historico = [];
+
+    console.log(`🏗️ [DEBUG] BedrockAgent Constructor`);
+    console.log(`   - Modelo: ${this.modelo}`);
+    console.log(`   - Region: ${this.region}`);
+    console.log(`   - SystemPrompt recebido: ${this.systemPrompt ? 'SIM' : 'NÃO'}`);
+    if (this.systemPrompt) {
+      console.log(`   - SystemPrompt Tamanho: ${this.systemPrompt.length} chars`);
+      console.log(`   - SystemPrompt Preview: ${this.systemPrompt.substring(0, 100)}...`);
+    } else {
+      console.log(`   ⚠️ ATENÇÃO: SystemPrompt está NULL ou undefined!`);
+    }
   }
 
   async enviar(mensagem, options = {}) {
