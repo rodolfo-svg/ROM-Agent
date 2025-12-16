@@ -21,7 +21,7 @@ import { ROMAgent, CONFIG } from './index.js';
 import { BedrockAgent } from './modules/bedrock.js';
 import partnersBranding from '../lib/partners-branding.js';
 import formattingTemplates from '../lib/formatting-templates.js';
-import { extractDocument } from '../lib/extractor-pipeline.js';
+import { extractDocument, processFile } from '../lib/extractor-pipeline.js';
 import usersManager, { ROLES } from '../lib/users-manager.js';
 import { conversarComTools } from './modules/bedrock-tools.js';
 import dotenv from 'dotenv';
@@ -1320,70 +1320,55 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
 
     for (const file of req.files) {
       try {
-        console.log(`🔍 Processando: ${file.originalname} com 33 ferramentas...`);
+        console.log(`🔍 Processando: ${file.originalname} com 33 ferramentas + documentos estruturados...`);
 
-        // 🚀 EXTRAÇÃO REAL usando pipeline (33 ferramentas, 100% gratuito)
-        const extractionResult = await extractDocument(file.path);
+        // 🚀 PROCESSAMENTO COMPLETO: Extração + Documentos Estruturados
+        // Usa processFile() que gera automaticamente:
+        // - Texto extraído (33 ferramentas)
+        // - 7 documentos estruturados (fichamento, índices, análises)
+        // - Chunks para RAG
+        // - Metadados completos
+        const processResult = await processFile(file.path);
 
-        // Estruturar dados extraídos
+        if (!processResult.success) {
+          throw new Error(processResult.error || 'Falha na extração');
+        }
+
+        // Estruturar dados processados
         const extractedData = {
           filename: file.originalname,
           size: file.size,
           type: file.mimetype,
           uploadedAt: new Date().toISOString(),
 
-          // Dados extraídos reais
-          extractedText: extractionResult.text || '',
-          textLength: extractionResult.textLength || 0,
-          toolsUsed: extractionResult.toolsUsed || [],
+          // Dados extraídos
+          extractedText: processResult.extraction?.charCount > 0 ? 'Texto extraído com sucesso' : '',
+          textLength: processResult.extraction?.charCount || 0,
+          wordCount: processResult.extraction?.wordCount || 0,
+          toolsUsed: processResult.toolsUsed || [],
+
+          // Documentos estruturados gerados
+          structuredDocuments: processResult.structuredDocuments || {},
 
           // Metadados inteligentes
           data: {
-            'Tipo de Documento': detectDocumentType(extractionResult.text),
-            'Número do Processo': extractProcessNumber(extractionResult.text),
-            'Partes': extractParties(extractionResult.text),
-            'Vara/Tribunal': extractCourt(extractionResult.text),
-            'Assunto': extractSubject(extractionResult.text),
-            'Data': extractDate(extractionResult.text),
-            'Valor da Causa': extractValue(extractionResult.text),
-            'Status': `✅ Extraído com sucesso (${(extractionResult.toolsUsed || []).length} ferramentas)`
+            'Tipo de Documento': 'Processo Judicial',
+            'Status': `✅ Processado (${(processResult.toolsUsed || []).length} ferramentas + 7 docs estruturados)`,
+            'Fichamento': processResult.structuredDocuments?.filesGenerated >= 7 ? '✅' : '⚠️',
+            'Índices': processResult.structuredDocuments?.filesGenerated >= 7 ? '✅' : '⚠️',
+            'Análises': processResult.structuredDocuments?.filesGenerated >= 7 ? '✅' : '⚠️',
+            'Documentos Gerados': processResult.structuredDocuments?.filesGenerated || 0
           },
 
           // Info técnica
-          stats: extractionResult.stats || {},
-          chunks: extractionResult.chunks || []
+          stats: processResult.processing || {},
+          chunks: processResult.processing?.chunks || 0
         };
 
         extractions.push(extractedData);
-        console.log(`✅ Processado: ${file.originalname} (${extractionResult.textLength} caracteres)`);
+        console.log(`✅ Processado: ${file.originalname} (${processResult.extraction?.wordCount} palavras, ${processResult.structuredDocuments?.filesGenerated || 0} docs estruturados)`);
 
-        // 💾 SALVAR NO KB para o chat poder acessar
-        try {
-          const kbPath = path.join(ACTIVE_PATHS.kb, 'documents', `${Date.now()}_${file.originalname}.txt`);
-          await fs.promises.mkdir(path.dirname(kbPath), { recursive: true });
-          await fs.promises.writeFile(kbPath, extractedData.extractedText, 'utf8');
-
-          // Adicionar metadados
-          const metadataPath = kbPath.replace('.txt', '.metadata.json');
-          await fs.promises.writeFile(metadataPath, JSON.stringify({
-            originalFilename: file.originalname,
-            uploadedAt: extractedData.uploadedAt,
-            type: detectDocumentType(extractedData.extractedText),
-            processNumber: extractProcessNumber(extractedData.extractedText),
-            parties: extractParties(extractedData.extractedText),
-            court: extractCourt(extractedData.extractedText),
-            textLength: extractedData.textLength,
-            toolsUsed: extractedData.toolsUsed
-          }, null, 2), 'utf8');
-
-          console.log(`💾 Salvo no KB: ${path.basename(kbPath)}`);
-          extractedData.savedToKB = true;
-          extractedData.kbPath = kbPath;
-        } catch (kbError) {
-          console.error(`⚠️ Erro ao salvar no KB: ${kbError.message}`);
-          extractedData.savedToKB = false;
-          extractedData.kbError = kbError.message;
-        }
+        // Nota: processFile() já salva tudo automaticamente, incluindo no KB
       } catch (fileError) {
         console.error(`❌ Erro ao processar ${file.originalname}:`, fileError);
         extractions.push({
