@@ -293,6 +293,19 @@
                 </div>
             </div>
         </div>
+
+        <!-- Nova Seção: Documentos Estruturados -->
+        <div class="documents-section" style="margin-top: 2rem;">
+            <div class="section-header">
+                <h2>📊 Documentos Estruturados (7 Tipos)</h2>
+            </div>
+
+            <div id="structured-documents-container">
+                <div class="loading">
+                    <p>Carregando documentos estruturados...</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -421,11 +434,99 @@
             return div.innerHTML;
         }
 
+        // Função para carregar documentos estruturados
+        async function loadStructuredDocuments() {
+            const container = document.getElementById('structured-documents-container');
+            container.innerHTML = '<div class="loading"><p>Carregando documentos estruturados...</p></div>';
+
+            try {
+                const response = await fetch('/api/kb/structured-documents');
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Erro ao carregar documentos estruturados');
+                }
+
+                if (data.documents.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>Nenhum documento estruturado encontrado</h3>
+                            <p>Faça upload de documentos para gerar fichamentos, índices e análises automaticamente.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Criar HTML para cada conjunto de documentos estruturados
+                let html = '';
+
+                data.documents.forEach(doc => {
+                    html += `
+                        <div class="document-card" style="margin-bottom: 1.5rem;">
+                            <div class="document-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem; border-radius: 8px 8px 0 0;">
+                                <h3 style="color: white; margin: 0; font-size: 1.125rem;">📁 ${escapeHtml(doc.name)}</h3>
+                                <p style="color: rgba(255,255,255,0.9); margin: 0.25rem 0 0 0; font-size: 0.875rem;">
+                                    ${doc.filesCount} documentos estruturados • Criado em ${formatDate(doc.createdAt)}
+                                </p>
+                            </div>
+                            <div class="document-body" style="padding: 1rem; background: white; border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.75rem;">
+                                    ${doc.files.map(file => {
+                                        const icon = getDocTypeIcon(file.name);
+                                        const displayName = file.name.replace(/^\d+_/, '').replace(/\.(md|json)$/, '').replace(/_/g, ' ');
+                                        return `
+                                            <a href="/api/kb/structured-documents/${encodeURIComponent(doc.id)}/${encodeURIComponent(file.name)}"
+                                               target="_blank"
+                                               class="btn"
+                                               style="background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 0.75rem; text-decoration: none; text-align: left; transition: all 0.2s;">
+                                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <span style="font-size: 1.25rem;">${icon}</span>
+                                                    <span style="flex: 1; font-size: 0.875rem; font-weight: 600;">${displayName}</span>
+                                                    <span style="font-size: 0.75rem; color: var(--text-secondary);">⬇</span>
+                                                </div>
+                                            </a>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('Erro ao carregar documentos estruturados:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Erro ao carregar documentos</h3>
+                        <p>${escapeHtml(error.message)}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Função auxiliar para obter ícone por tipo de documento
+        function getDocTypeIcon(filename) {
+            if (filename.includes('FICHAMENTO')) return '📋';
+            if (filename.includes('CRONOLOGICO')) return '📅';
+            if (filename.includes('TIPO')) return '📂';
+            if (filename.includes('ENTIDADES')) return '👥';
+            if (filename.includes('PEDIDOS')) return '⚖️';
+            if (filename.includes('FATOS')) return '📝';
+            if (filename.includes('LEGISLACAO')) return '📜';
+            return '📄';
+        }
+
         // Carregar documentos ao abrir a página
         loadDocuments();
+        loadStructuredDocuments();
 
         // Atualizar a cada 30 segundos
-        setInterval(loadDocuments, 30000);
+        setInterval(() => {
+            loadDocuments();
+            loadStructuredDocuments();
+        }, 30000);
     </script>
 </body>
 </html>
