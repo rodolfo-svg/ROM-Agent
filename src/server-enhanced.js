@@ -742,7 +742,7 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
             'Assunto': extractSubject(extractionResult.text),
             'Data': extractDate(extractionResult.text),
             'Valor da Causa': extractValue(extractionResult.text),
-            'Status': `✅ Extraído com sucesso (${extractionResult.toolsUsed.length} ferramentas)`
+            'Status': `✅ Extraído com sucesso (${(extractionResult.toolsUsed || []).length} ferramentas)`
           },
 
           // Info técnica
