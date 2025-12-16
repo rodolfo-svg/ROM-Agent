@@ -95,12 +95,12 @@ if (cluster.isPrimary) {
   });
 
 } else {
-  // Worker process - importa e executa o servidor
-  const serverPath = path.join(__dirname, 'server.js');
+  // Worker process - importa e executa o servidor MELHORADO
+  const serverPath = path.join(__dirname, 'server-enhanced.js');
 
   // Importa dinamicamente o servidor
   import(serverPath).then(() => {
-    console.log(`[Worker ${process.pid}] ✅ Servidor iniciado e pronto para receber requisições`);
+    console.log(`[Worker ${process.pid}] ✅ Servidor ENHANCED iniciado e pronto para receber requisições`);
   }).catch(error => {
     console.error(`[Worker ${process.pid}] ❌ Erro ao iniciar:`, error);
     process.exit(1);
