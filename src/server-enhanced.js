@@ -679,6 +679,122 @@ app.post('/api/chat', async (req, res) => {
   }
 });
 
+// API - Aprovar Documento e Limpar KB
+app.post('/api/approve-document', async (req, res) => {
+  try {
+    const { casoId, projectId, keepDesktopCopy = true } = req.body;
+
+    if (!casoId) {
+      return res.status(400).json({ error: 'casoId é obrigatório' });
+    }
+
+    console.log(`✅ Aprovando documento para caso ${casoId}...`);
+
+    const result = {
+      success: true,
+      casoId,
+      deletedFiles: [],
+      desktopCopy: null,
+      message: 'Documento aprovado com sucesso'
+    };
+
+    // 1. MANTER CÓPIA NO DESKTOP (se solicitado)
+    if (keepDesktopCopy) {
+      try {
+        const desktopPath = path.join(process.env.HOME || process.env.USERPROFILE, 'Desktop', 'ROM-Agent-Aprovados');
+        await fs.mkdir(desktopPath, { recursive: true });
+
+        const casoExportPath = path.join(ACTIVE_PATHS.data, 'casos', casoId, 'export');
+        const desktopCasoPath = path.join(desktopPath, casoId);
+
+        // Verificar se há exportação
+        try {
+          await fs.access(casoExportPath);
+
+          // Copiar toda a exportação para o Desktop
+          await fs.cp(casoExportPath, desktopCasoPath, { recursive: true });
+
+          result.desktopCopy = desktopCasoPath;
+          console.log(`📁 Cópia salva no Desktop: ${desktopCasoPath}`);
+        } catch (err) {
+          console.warn('⚠️  Exportação não encontrada, pulando cópia para Desktop');
+        }
+      } catch (err) {
+        console.error('❌ Erro ao copiar para Desktop:', err);
+        result.desktopCopyError = err.message;
+      }
+    }
+
+    // 2. DELETAR ARQUIVOS TEMPORÁRIOS DO KB
+    try {
+      const kbDocsPath = path.join(ACTIVE_PATHS.kb, 'documents');
+
+      // Listar todos os arquivos no KB
+      const kbFiles = await fs.readdir(kbDocsPath);
+
+      // Filtrar apenas arquivos relacionados ao caso (se projectId fornecido)
+      let filesToDelete = kbFiles;
+      if (projectId) {
+        filesToDelete = kbFiles.filter(f => f.includes(projectId) || f.includes(casoId));
+      }
+
+      // Deletar arquivos
+      for (const file of filesToDelete) {
+        const filePath = path.join(kbDocsPath, file);
+        try {
+          await fs.unlink(filePath);
+          result.deletedFiles.push(file);
+          console.log(`🗑️  Deletado do KB: ${file}`);
+        } catch (err) {
+          console.warn(`⚠️  Não foi possível deletar ${file}:`, err.message);
+        }
+      }
+
+      console.log(`✅ ${result.deletedFiles.length} arquivos deletados do KB`);
+    } catch (err) {
+      console.error('❌ Erro ao deletar KB:', err);
+      result.kbDeletionError = err.message;
+    }
+
+    // 3. MARCAR CASO COMO APROVADO NO HISTÓRICO
+    try {
+      const casoPath = path.join(ACTIVE_PATHS.data, 'casos', casoId);
+      const metadataPath = path.join(casoPath, 'metadata.json');
+
+      let metadata = {
+        casoId,
+        status: 'aprovado',
+        approvedAt: new Date().toISOString(),
+        kbCleaned: result.deletedFiles.length > 0,
+        desktopCopy: result.desktopCopy
+      };
+
+      try {
+        const existingData = await fs.readFile(metadataPath, 'utf-8');
+        const existing = JSON.parse(existingData);
+        metadata = { ...existing, ...metadata };
+      } catch (err) {
+        // Arquivo não existe - criar novo
+      }
+
+      await fs.writeFile(metadataPath, JSON.stringify(metadata, null, 2), 'utf-8');
+      console.log(`✅ Caso marcado como aprovado`);
+    } catch (err) {
+      console.error('❌ Erro ao atualizar metadata:', err);
+      result.metadataError = err.message;
+    }
+
+    res.json(result);
+
+  } catch (error) {
+    console.error('❌ Erro ao aprovar documento:', error);
+    res.status(500).json({
+      error: error.message || 'Erro ao aprovar documento',
+      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
 // API - Chat com Tool Use (Jurisprudência Automática)
 app.post('/api/chat-with-tools', async (req, res) => {
   try {
@@ -2705,6 +2821,12 @@ app.delete('/api/kb/documents/:id', authSystem.authMiddleware(), (req, res) => {
 // 📚 Novo endpoint: Listar documentos REAIS extraídos em KB/documents/
 app.get('/api/kb/extracted-documents', async (req, res) => {
   try {
+    // Garantir que ACTIVE_PATHS.kb existe
+    if (!ACTIVE_PATHS.kb) {
+      console.error('❌ ACTIVE_PATHS.kb não está definido');
+      return res.json({ success: true, documents: [], count: 0 });
+    }
+
     const kbDocsPath = path.join(ACTIVE_PATHS.kb, 'documents');
 
     // Verificar se pasta existe
