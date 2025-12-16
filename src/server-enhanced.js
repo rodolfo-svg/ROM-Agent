@@ -4122,6 +4122,41 @@ app.get('/api/kb/user-statistics', authSystem.authMiddleware(), (req, res) => {
 // ROTAS DE API PARA MODEL MONITOR
 // ====================================================================
 
+// Listar todos os modelos disponíveis
+app.get('/api/models', authSystem.authMiddleware(), async (req, res) => {
+  try {
+    const modelsPath = path.join(__dirname, '../data/ai_models.json');
+    const modelsData = JSON.parse(fs.readFileSync(modelsPath, 'utf-8'));
+
+    // Flatten the structure for easier consumption
+    const allModels = [];
+    for (const [providerKey, models] of Object.entries(modelsData)) {
+      if (Array.isArray(models)) {
+        models.forEach(model => {
+          allModels.push({
+            ...model,
+            providerKey: providerKey
+          });
+        });
+      }
+    }
+
+    res.json({
+      success: true,
+      models: allModels,
+      totalCount: allModels.length,
+      implementedCount: allModels.filter(m => m.implemented).length,
+      providers: Object.keys(modelsData)
+    });
+  } catch (error) {
+    console.error('❌ Erro ao listar modelos:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // Verificar novos modelos disponíveis
 app.post('/api/models/check', authSystem.authMiddleware(), authSystem.requireRole('master_admin'), async (req, res) => {
   try {
