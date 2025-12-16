@@ -1,0 +1,311 @@
+{
+  "id": "metodo-analise-prazos",
+  "nome": "Método de Análise de Prazos Processuais",
+  "categoria": "geral",
+  "subcategoria": "prazos",
+  "version": "1.0",
+  "updated": "2025-12-16T08:37:00.000Z",
+  "autoUpdateable": true,
+  "descricao": "Metodologia técnica para análise e cálculo de prazos processuais com base na Lei 11.419/2006 e resoluções do CNJ",
+  "tags": ["prazos", "DJe", "DJEN", "preclusão", "prescrição", "decadência"],
+
+  "base_legal": {
+    "principal": "Lei nº 11.419/2006 (Art. 4º, §3º e §4º) - Lei do Processo Eletrônico",
+    "resolucoes": [
+      "Resolução CNJ 234/2016 - DJEN (Diário de Justiça Eletrônico Nacional)",
+      "Resolução CNJ 455/2022 - Regulamentação do DJEN"
+    ],
+    "codigo_processo": "CPC/2015 - Arts. 212-225 (Prazos Processuais)",
+    "contagem": "Lei nº 5.010/1966 (Art. 1º) - Contagem de prazos"
+  },
+
+  "regras_fundamentais": {
+    "publicacao_dje": {
+      "etapa_1": {
+        "nome": "Disponibilização",
+        "momento": "1º dia útil após inserção no sistema",
+        "exemplo": "Segunda-feira (documento inserido no sistema)"
+      },
+      "etapa_2": {
+        "nome": "Publicação",
+        "momento": "Dia útil seguinte à disponibilização",
+        "exemplo": "Terça-feira (publicação no DJe/DJEN)"
+      },
+      "etapa_3": {
+        "nome": "Início do prazo",
+        "momento": "1º dia útil APÓS a publicação",
+        "exemplo": "Quarta-feira (início da contagem)"
+      },
+      "importante": "Sempre contar a partir do primeiro dia útil APÓS a publicação, nunca do dia da publicação"
+    },
+
+    "contagem_prazo": {
+      "regra_geral": "Prazos em DIAS ÚTEIS (excluem sábados, domingos e feriados)",
+      "inicio": "Primeiro dia útil seguinte à publicação",
+      "termino": "Até as 23h59min do último dia do prazo",
+      "feriados_considerados": [
+        "Feriados nacionais",
+        "Feriados estaduais",
+        "Feriados municipais",
+        "Pontos facultativos declarados"
+      ]
+    },
+
+    "prazos_comuns": {
+      "apelacao": {
+        "prazo": 15,
+        "unidade": "dias úteis",
+        "base_legal": "CPC Art. 1.003"
+      },
+      "contestacao": {
+        "prazo": 15,
+        "unidade": "dias úteis",
+        "base_legal": "CPC Art. 335"
+      },
+      "agravo_instrumento": {
+        "prazo": 15,
+        "unidade": "dias úteis",
+        "base_legal": "CPC Art. 1.003, §5º"
+      },
+      "embargos_declaracao": {
+        "prazo": 5,
+        "unidade": "dias úteis",
+        "base_legal": "CPC Art. 1.023"
+      },
+      "recurso_especial": {
+        "prazo": 15,
+        "unidade": "dias úteis",
+        "base_legal": "CPC Art. 1.003"
+      },
+      "recurso_extraordinario": {
+        "prazo": 15,
+        "unidade": "dias úteis",
+        "base_legal": "CPC Art. 1.003"
+      },
+      "manifestacao": {
+        "prazo": 15,
+        "unidade": "dias úteis",
+        "base_legal": "CPC Art. 10"
+      }
+    }
+  },
+
+  "analise_temporal": {
+    "preclusao": {
+      "definicao": "Perda do direito processual de praticar determinado ato por decurso de prazo",
+      "tipos": [
+        {
+          "nome": "Preclusão Temporal",
+          "descricao": "Perda pelo decurso do prazo legal",
+          "exemplo": "Não apresentar contestação no prazo de 15 dias"
+        },
+        {
+          "nome": "Preclusão Lógica",
+          "descricao": "Perda por ter praticado ato incompatível",
+          "exemplo": "Recorrer e desistir depois"
+        },
+        {
+          "nome": "Preclusão Consumativa",
+          "descricao": "Perda por já ter exercido validamente o direito",
+          "exemplo": "Já apresentou contestação, não pode apresentar outra"
+        }
+      ],
+      "verificacao": [
+        "Identificar data de publicação no DJe/DJEN",
+        "Calcular término do prazo (excluindo feriados)",
+        "Verificar se houve manifestação dentro do prazo",
+        "Confirmar se não houve suspensão de prazo"
+      ]
+    },
+
+    "prescricao": {
+      "definicao": "Perda do direito de ação pelo decurso do tempo",
+      "prazos_comuns": [
+        {
+          "tipo": "Ação pessoal (geral)",
+          "prazo": "10 anos",
+          "base_legal": "CC Art. 205"
+        },
+        {
+          "tipo": "Reparação civil",
+          "prazo": "3 anos",
+          "base_legal": "CC Art. 206, §3º, V"
+        },
+        {
+          "tipo": "Ação de cobrança",
+          "prazo": "5 anos",
+          "base_legal": "CC Art. 206, §5º"
+        },
+        {
+          "tipo": "Dívida líquida (título executivo)",
+          "prazo": "5 anos",
+          "base_legal": "CC Art. 206, §5º, I"
+        }
+      ],
+      "interrupcao": [
+        "Citação (mesmo nula)",
+        "Protesto judicial",
+        "Apresentação de título de crédito",
+        "Reconhecimento do débito pelo devedor"
+      ],
+      "suspensao": [
+        "Entre cônjuges, na constância do casamento",
+        "Contra absolutamente incapazes",
+        "Pendente condição suspensiva"
+      ]
+    },
+
+    "decadencia": {
+      "definicao": "Perda do direito potestativo pelo decurso do tempo",
+      "caracteristicas": [
+        "Não se suspende nem se interrompe (salvo exceções legais)",
+        "Pode ser declarada de ofício pelo juiz",
+        "Prazo geralmente estabelecido em lei"
+      ],
+      "exemplos": [
+        {
+          "direito": "Ação anulatória de casamento",
+          "prazo": "2 anos",
+          "base_legal": "CC Art. 1.560"
+        },
+        {
+          "direito": "Ação de anulação de negócio jurídico",
+          "prazo": "2 anos",
+          "base_legal": "CC Art. 179"
+        },
+        {
+          "direito": "Reclamação trabalhista",
+          "prazo": "2 anos após extinção do contrato",
+          "base_legal": "CF Art. 7º, XXIX"
+        }
+      ]
+    }
+  },
+
+  "metodologia_calculo": {
+    "passo_1": {
+      "acao": "Identificar a data de publicação",
+      "detalhes": [
+        "Localizar menção 'Publicado no DJe em DD/MM/AAAA'",
+        "Ou 'Disponibilizado no DJEN em DD/MM/AAAA'",
+        "Confirmar se é data de publicação (não de disponibilização)"
+      ]
+    },
+    "passo_2": {
+      "acao": "Determinar o tipo de prazo",
+      "detalhes": [
+        "Identificar o ato processual (apelação, contestação, etc.)",
+        "Consultar prazo legal aplicável",
+        "Verificar se há prazo em dobro (litisconsortes, Fazenda Pública)"
+      ]
+    },
+    "passo_3": {
+      "acao": "Calcular o primeiro dia útil",
+      "detalhes": [
+        "Início = primeiro dia útil APÓS a publicação",
+        "Excluir sábados, domingos e feriados",
+        "Considerar feriados locais do foro"
+      ]
+    },
+    "passo_4": {
+      "acao": "Contar os dias úteis",
+      "detalhes": [
+        "Excluir sábados, domingos e feriados",
+        "Incluir pontos facultativos como dias não úteis",
+        "Verificar recesso forense (se aplicável)"
+      ]
+    },
+    "passo_5": {
+      "acao": "Determinar o último dia",
+      "detalhes": [
+        "Prazo expira às 23h59min do último dia útil",
+        "Se último dia cair em dia não útil, prorroga para próximo dia útil",
+        "Manifestação pode ser feita até meia-noite"
+      ]
+    }
+  },
+
+  "situacoes_especiais": {
+    "prazo_em_dobro": {
+      "fazenda_publica": {
+        "recurso": "Prazo em dobro para recorrer",
+        "contestar": "Prazo em dobro para contestar",
+        "base_legal": "CPC Art. 183"
+      },
+      "defensoria_publica": {
+        "recurso": "Prazo em dobro para recorrer",
+        "contestar": "Prazo em dobro para contestar",
+        "base_legal": "CPC Art. 186"
+      },
+      "litisconsortes_advogados_diferentes": {
+        "manifestacao": "Prazo em dobro para todas as manifestações",
+        "base_legal": "CPC Art. 229"
+      }
+    },
+
+    "suspensao_prazo": {
+      "ferias_forenses": "Julho e Janeiro (verificar foro específico)",
+      "recesso_fim_ano": "20/12 a 20/01 (verificar foro)",
+      "suspensao_legal": "Processo suspenso por determinação judicial",
+      "acordo_partes": "Suspensão consensual homologada"
+    },
+
+    "intimacao_pessoal": {
+      "quando": [
+        "Ministério Público",
+        "Fazenda Pública",
+        "Defensoria Pública"
+      ],
+      "regra": "Prazo conta da data da ciência pessoal, não da publicação"
+    }
+  },
+
+  "relatorio_prazos": {
+    "estrutura": {
+      "identificacao": [
+        "Número do processo",
+        "Partes envolvidas",
+        "Tipo de ação"
+      ],
+      "publicacao_identificada": [
+        "Data de publicação no DJe/DJEN",
+        "Tipo de decisão publicada",
+        "Conteúdo resumido"
+      ],
+      "calculo_detalhado": [
+        "Data de início do prazo (1º dia útil após publicação)",
+        "Prazo legal aplicável (quantidade de dias)",
+        "Dias úteis contados",
+        "Feriados excluídos (lista)",
+        "Data final do prazo"
+      ],
+      "analise_temporal": [
+        "Preclusão: Ocorreu? Quando?",
+        "Prescrição: Há risco? Prazo restante?",
+        "Decadência: Há risco? Prazo restante?"
+      ],
+      "recomendacoes": [
+        "Ações urgentes necessárias",
+        "Prazos críticos a observar",
+        "Documentos a preparar"
+      ]
+    }
+  },
+
+  "checklist_analise": [
+    "✓ Identificar TODAS as datas de publicação no DJe/DJEN",
+    "✓ Verificar tipo correto de cada decisão publicada",
+    "✓ Calcular prazo inicial (1º dia útil APÓS publicação)",
+    "✓ Listar TODOS os feriados no período (nacional, estadual, municipal)",
+    "✓ Excluir sábados, domingos e feriados da contagem",
+    "✓ Verificar se há prazo em dobro (Fazenda, Defensoria, litisconsortes)",
+    "✓ Conferir se houve suspensão de prazo (férias, recesso, suspensão processual)",
+    "✓ Determinar data EXATA do último dia do prazo",
+    "✓ Analisar se houve preclusão temporal",
+    "✓ Verificar risco de prescrição do direito de ação",
+    "✓ Verificar risco de decadência do direito potestativo",
+    "✓ Listar ações urgentes e prazos críticos"
+  ],
+
+  "prompt_sistema": "Você é um especialista em análise de prazos processuais. Sua missão é identificar com PRECISÃO ABSOLUTA todas as datas de publicação no DJe/DJEN, calcular prazos de forma RIGOROSA seguindo a Lei 11.419/2006, CPC/2015 e resoluções do CNJ. SEMPRE inicie a contagem no primeiro dia útil APÓS a publicação (nunca no dia da publicação). Exclua sábados, domingos e TODOS os feriados. Verifique prazos em dobro. Analise preclusão, prescrição e decadência. Seja extremamente detalhista e preciso, pois erros em prazos podem causar prejuízos irreparáveis."
+}

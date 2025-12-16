@@ -44,6 +44,7 @@ import romProjectRouter from './routes/rom-project.js';
 import romCaseProcessorService from './services/processors/rom-case-processor-service.js';
 import caseProcessorRouter from './routes/case-processor.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
+import certidoesDJEService from './services/certidoes-dje-service.js';
 import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
@@ -206,6 +207,200 @@ app.use('/api/rom-project', romProjectRouter);
 // Rotas de Processamento de Casos (Extração + 5 Layers)
 app.use('/api/case-processor', caseProcessorRouter);
 app.use('/api/case-processor', caseProcessorSSE);
+
+// ====================================================================
+// 📄 API DE CERTIDÕES DJe/DJEN (CNJ)
+// ====================================================================
+
+/**
+ * POST /api/certidoes/download
+ * Baixar certidão do Diário da Justiça Eletrônico
+ *
+ * Body: {
+ *   numeroProcesso: string (obrigatório),
+ *   tribunal: string (opcional),
+ *   dataPublicacao: string (opcional, formato DD/MM/YYYY),
+ *   tipo: string (opcional: 'dje' ou 'djen', padrão: 'dje'),
+ *   projectId: string (opcional, padrão: '1'),
+ *   adicionarAoKB: boolean (opcional, padrão: true)
+ * }
+ */
+app.post('/api/certidoes/download', generalLimiter, async (req, res) => {
+  try {
+    const { numeroProcesso, tribunal, dataPublicacao, tipo, projectId, adicionarAoKB } = req.body;
+
+    if (!numeroProcesso) {
+      return res.status(400).json({
+        success: false,
+        error: 'Número do processo é obrigatório'
+      });
+    }
+
+    logger.info(`📄 Requisição de download de certidão - Processo: ${numeroProcesso}`);
+
+    const certidao = await certidoesDJEService.baixarCertidao({
+      numeroProcesso,
+      tribunal,
+      dataPublicacao,
+      tipo: tipo || 'dje',
+      projectId: projectId || '1',
+      adicionarAoKB: adicionarAoKB !== false // padrão true
+    });
+
+    res.json({
+      success: true,
+      certidao,
+      message: 'Certidão baixada com sucesso'
+    });
+
+  } catch (error) {
+    logger.error('Erro ao baixar certidão:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/certidoes
+ * Listar todas as certidões salvas
+ *
+ * Query params:
+ *   numeroProcesso: string (opcional)
+ *   tribunal: string (opcional)
+ */
+app.get('/api/certidoes', generalLimiter, async (req, res) => {
+  try {
+    const { numeroProcesso, tribunal } = req.query;
+
+    const certidoes = await certidoesDJEService.listarCertidoes({
+      numeroProcesso,
+      tribunal
+    });
+
+    res.json({
+      success: true,
+      certidoes,
+      count: certidoes.length
+    });
+
+  } catch (error) {
+    logger.error('Erro ao listar certidões:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/certidoes/:id
+ * Obter certidão específica por ID ou número
+ */
+app.get('/api/certidoes/:id', generalLimiter, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const certidao = await certidoesDJEService.obterCertidao(id);
+
+    if (!certidao) {
+      return res.status(404).json({
+        success: false,
+        error: 'Certidão não encontrada'
+      });
+    }
+
+    res.json({
+      success: true,
+      certidao
+    });
+
+  } catch (error) {
+    logger.error('Erro ao obter certidão:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/certidoes/:id/juntada
+ * Gerar recomendação de juntada para certidão
+ *
+ * Body: {
+ *   formato: string (opcional: 'peticao' ou 'resumo', padrão: 'peticao'),
+ *   incluirTranscricao: boolean (opcional, padrão: true)
+ * }
+ */
+app.post('/api/certidoes/:id/juntada', generalLimiter, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { formato, incluirTranscricao } = req.body;
+
+    const certidao = await certidoesDJEService.obterCertidao(id);
+
+    if (!certidao) {
+      return res.status(404).json({
+        success: false,
+        error: 'Certidão não encontrada'
+      });
+    }
+
+    const recomendacao = certidoesDJEService.gerarRecomendacaoJuntada(certidao, {
+      formato: formato || 'peticao',
+      incluirTranscricao: incluirTranscricao !== false
+    });
+
+    res.json({
+      success: true,
+      recomendacao
+    });
+
+  } catch (error) {
+    logger.error('Erro ao gerar recomendação de juntada:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * DELETE /api/certidoes/:id
+ * Deletar certidão
+ */
+app.delete('/api/certidoes/:id', generalLimiter, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const success = await certidoesDJEService.deletarCertidao(id);
+
+    if (!success) {
+      return res.status(404).json({
+        success: false,
+        error: 'Certidão não encontrada ou erro ao deletar'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Certidão deletada com sucesso'
+    });
+
+  } catch (error) {
+    logger.error('Erro ao deletar certidão:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+logger.info('✅ API de Certidões DJe/DJEN inicializada');
+
+// ====================================================================
 
 logger.info('Sistema inicializado com todos os middlewares de otimização');
 

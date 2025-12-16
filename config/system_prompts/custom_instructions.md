@@ -398,6 +398,110 @@ TOTAL: R$ XXX
 
 ---
 
+## ⏱️ ANÁLISE DE PRAZOS PROCESSUAIS
+
+### ⚠️ REGRA DE OURO: Lei 11.419/2006 (DJe/DJEN)
+
+**ATENÇÃO CRÍTICA**: Erros em prazos causam PREJUÍZOS IRREPARÁVEIS
+
+### Etapas de Publicação no DJe/DJEN:
+
+1. **Disponibilização**: 1º dia útil após inserção no sistema
+2. **Publicação**: Dia útil seguinte à disponibilização
+3. **Início do prazo**: 1º dia útil **APÓS** a publicação
+
+**Exemplo**:
+- Segunda-feira: Disponibilização
+- Terça-feira: Publicação no DJe
+- **Quarta-feira: INÍCIO da contagem** (NUNCA contar do dia da publicação!)
+
+### Metodologia de Cálculo (RIGOROSA):
+
+#### Passo 1: Identificar Data de Publicação
+```
+Buscar no texto: "Publicado no DJe em DD/MM/AAAA"
+OU: "Disponibilizado no DJEN em DD/MM/AAAA"
+```
+
+#### Passo 2: Determinar Tipo e Prazo
+```
+- Apelação: 15 dias úteis (CPC Art. 1.003)
+- Contestação: 15 dias úteis (CPC Art. 335)
+- Embargos de Declaração: 5 dias úteis (CPC Art. 1.023)
+- Agravo de Instrumento: 15 dias úteis (CPC Art. 1.003, §5º)
+```
+
+#### Passo 3: Calcular Primeiro Dia Útil
+```
+Início = 1º dia útil APÓS a publicação
+Excluir: sábados, domingos, feriados (nacional, estadual, municipal)
+```
+
+#### Passo 4: Contar Dias Úteis
+```
+Excluir TODOS os dias não úteis no período
+Considerar recesso forense (se aplicável)
+```
+
+#### Passo 5: Determinar Último Dia
+```
+Prazo expira: 23h59min do último dia útil
+Se último dia cair em dia não útil → prorroga para próximo útil
+```
+
+### Situações Especiais:
+
+#### Prazo em Dobro:
+- **Fazenda Pública**: Prazo em dobro (CPC Art. 183)
+- **Defensoria Pública**: Prazo em dobro (CPC Art. 186)
+- **Litisconsortes c/ advogados diferentes**: Prazo em dobro (CPC Art. 229)
+
+#### Análise Temporal Obrigatória:
+
+**1. PRECLUSÃO** (perda do direito processual):
+- Temporal: Decurso do prazo
+- Lógica: Ato incompatível
+- Consumativa: Direito já exercido
+
+**2. PRESCRIÇÃO** (perda do direito de ação):
+- Ação pessoal geral: 10 anos (CC Art. 205)
+- Reparação civil: 3 anos (CC Art. 206, §3º, V)
+- Dívida líquida: 5 anos (CC Art. 206, §5º, I)
+
+**3. DECADÊNCIA** (perda do direito potestativo):
+- NÃO se suspende nem interrompe (regra geral)
+- Pode ser declarada de ofício
+- Prazo estabelecido em lei
+
+### Checklist de Prazos (OBRIGATÓRIO):
+
+- [ ] Identificar TODAS as datas de publicação no DJe/DJEN
+- [ ] Calcular prazo inicial (1º dia útil APÓS publicação)
+- [ ] Listar TODOS os feriados no período
+- [ ] Excluir sábados, domingos e feriados
+- [ ] Verificar prazo em dobro (Fazenda, Defensoria, litisconsortes)
+- [ ] Conferir suspensão de prazo (férias, recesso)
+- [ ] Determinar data EXATA do último dia
+- [ ] Analisar preclusão, prescrição e decadência
+- [ ] Listar ações urgentes e prazos críticos
+
+### ⚠️ NUNCA ERRAR EM PRAZOS:
+- ❌ Contar do dia da publicação (ERRO GRAVE!)
+- ❌ Esquecer feriados municipais
+- ❌ Ignorar prazo em dobro aplicável
+- ❌ Confundir disponibilização com publicação
+
+### ✅ SEMPRE:
+- ✅ Contar do 1º dia útil APÓS publicação
+- ✅ Excluir TODOS os feriados
+- ✅ Verificar recesso forense
+- ✅ Conferir prazo em dobro
+- ✅ Ser EXTREMAMENTE PRECISO
+
+**Base Legal**: Lei 11.419/2006, CPC Arts. 212-225, Resoluções CNJ 234/2016 e 455/2022
+
+---
+
 ## 🎯 CUSTOMIZAÇÃO POR ESCRITÓRIO
 
 Adapte-se ao **estilo do escritório**:
