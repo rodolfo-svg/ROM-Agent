@@ -18,6 +18,9 @@ import {
   ListInferenceProfilesCommand
 } from '@aws-sdk/client-bedrock';
 
+// Integração com ROM Tools (KB, Jurisprudência, CNJ)
+import { BEDROCK_TOOLS, executeTool } from './bedrock-tools.js';
+
 // ============================================================
 // CONFIGURAÇÃO
 // ============================================================
@@ -146,13 +149,14 @@ export async function conversar(prompt, options = {}) {
     historico = [],
     maxTokens = CONFIG.maxTokens,
     temperature = CONFIG.temperature,
-    topP = 0.9
+    topP = 0.9,
+    enableTools = true  // ← NOVO: habilitar tools por padrão
   } = options;
 
   const client = getBedrockRuntimeClient();
 
-  // Construir mensagens
-  const messages = [
+  // Construir mensagens iniciais
+  const initialMessages = [
     ...historico.map(msg => ({
       role: msg.role,
       content: [{ text: msg.content }]
@@ -164,7 +168,6 @@ export async function conversar(prompt, options = {}) {
   ];
 
   // Configurar inferência
-  // Nota: Claude 4.5 não suporta temperature/topP
   const modeloId = INFERENCE_PROFILES[modelo] || modelo;
   const isClaude45 = modeloId.includes('claude-haiku-4-5') ||
                      modeloId.includes('claude-sonnet-4-5') ||
@@ -174,50 +177,130 @@ export async function conversar(prompt, options = {}) {
     ? { maxTokens }
     : { maxTokens, temperature, topP };
 
-  // Montar comando
-  const commandParams = {
-    modelId: INFERENCE_PROFILES[modelo] || modelo,
-    messages,
-    inferenceConfig
-  };
-
-  // Adicionar system prompt se fornecido
-  if (systemPrompt) {
-    commandParams.system = [{ text: systemPrompt }];
-  }
-
   try {
-    const command = new ConverseCommand(commandParams);
-    const response = await client.send(command);
+    // ═══════════════════════════════════════════════════════════
+    // LOOP DE TOOL USE
+    // ═══════════════════════════════════════════════════════════
+    let currentMessages = initialMessages;
+    let loopCount = 0;
+    const MAX_LOOPS = 10;  // Prevenir loops infinitos
+    let totalTokensUsed = { input: 0, output: 0 };
+    const toolsUsed = [];
 
-    // Extrair resposta (suporte a modelos de raciocínio como DeepSeek R1)
-    const content = response.output.message.content[0];
-    let resposta = '';
-    let raciocinio = null;
+    while (loopCount < MAX_LOOPS) {
+      // Montar comando
+      const commandParams = {
+        modelId: INFERENCE_PROFILES[modelo] || modelo,
+        messages: currentMessages,
+        inferenceConfig
+      };
 
-    if (content.text) {
-      // Resposta normal (Claude, Nova, Llama, etc)
-      resposta = content.text;
-    } else if (content.reasoningContent) {
-      // Modelo de raciocínio (DeepSeek R1)
-      raciocinio = content.reasoningContent.reasoningText?.text || '';
-      resposta = raciocinio;
+      // Adicionar system prompt
+      if (systemPrompt) {
+        commandParams.system = [{ text: systemPrompt }];
+      }
+
+      // Adicionar tools (se habilitado)
+      if (enableTools) {
+        commandParams.toolConfig = { tools: BEDROCK_TOOLS };
+      }
+
+      const command = new ConverseCommand(commandParams);
+      const response = await client.send(command);
+
+      // Acumular uso de tokens
+      totalTokensUsed.input += response.usage.inputTokens;
+      totalTokensUsed.output += response.usage.outputTokens;
+
+      // ────────────────────────────────────────────────────────
+      // VERIFICAR SE MODELO QUER USAR TOOL
+      // ────────────────────────────────────────────────────────
+      if (response.stopReason === 'tool_use') {
+        const toolUses = response.output.message.content.filter(c => c.toolUse);
+
+        // Adicionar mensagem do assistente (com tool_use)
+        currentMessages.push(response.output.message);
+
+        // Executar cada tool solicitada
+        const toolResults = [];
+        for (const toolUseBlock of toolUses) {
+          const { toolUseId, name, input } = toolUseBlock.toolUse;
+
+          console.log(`🔧 [Tool Use] ${name}:`, JSON.stringify(input, null, 2));
+          toolsUsed.push({ name, input });
+
+          try {
+            const result = await executeTool(name, input);
+
+            toolResults.push({
+              toolResult: {
+                toolUseId,
+                content: [{
+                  text: result.success ? result.content : `Erro: ${result.error || result.content}`
+                }]
+              }
+            });
+
+            console.log(`✅ [Tool Use] ${name} executada com sucesso`);
+          } catch (error) {
+            console.error(`❌ [Tool Use] Erro ao executar ${name}:`, error);
+
+            toolResults.push({
+              toolResult: {
+                toolUseId,
+                content: [{ text: `Erro ao executar tool: ${error.message}` }]
+              }
+            });
+          }
+        }
+
+        // Adicionar resultados das tools como nova mensagem do user
+        currentMessages.push({
+          role: 'user',
+          content: toolResults
+        });
+
+        loopCount++;
+        continue;  // Fazer nova chamada com os resultados
+      }
+
+      // ────────────────────────────────────────────────────────
+      // MODELO NÃO QUER MAIS USAR TOOLS - RETORNAR RESPOSTA
+      // ────────────────────────────────────────────────────────
+      const content = response.output.message.content[0];
+      let resposta = '';
+      let raciocinio = null;
+
+      if (content.text) {
+        // Resposta normal (Claude, Nova, Llama, etc)
+        resposta = content.text;
+      } else if (content.reasoningContent) {
+        // Modelo de raciocínio (DeepSeek R1)
+        raciocinio = content.reasoningContent.reasoningText?.text || '';
+        resposta = raciocinio;
+      }
+
+      return {
+        sucesso: true,
+        resposta,
+        raciocinio,
+        modelo,
+        uso: {
+          tokensEntrada: totalTokensUsed.input,
+          tokensSaida: totalTokensUsed.output,
+          tokensTotal: totalTokensUsed.input + totalTokensUsed.output
+        },
+        toolsUsadas: toolsUsed.length > 0 ? toolsUsed : undefined,  // ← NOVO
+        latencia: response.metrics?.latencyMs || null,
+        motivoParada: response.stopReason
+      };
     }
 
-    return {
-      sucesso: true,
-      resposta,
-      raciocinio, // Pensamento do modelo (DeepSeek R1)
-      modelo,
-      uso: {
-        tokensEntrada: response.usage.inputTokens,
-        tokensSaida: response.usage.outputTokens,
-        tokensTotal: response.usage.totalTokens
-      },
-      latencia: response.metrics?.latencyMs || null,
-      motivoParada: response.stopReason
-    };
+    // Se chegou ao limite de loops
+    throw new Error(`Limite de tool use loops atingido (${MAX_LOOPS} iterações)`);
+
   } catch (error) {
+    console.error('❌ [Bedrock] Erro na conversação:', error);
     return {
       sucesso: false,
       erro: error.message,

@@ -7080,6 +7080,72 @@ app.post('/api/pricing/calculate', generalLimiter, (req, res) => {
 });
 
 /**
+ * Baixar certidão do DJe/DJEN (CNJ)
+ * POST /api/certidoes/baixar
+ *
+ * Integração com CNJ para download automático de certidões
+ * e cálculo de prazos processuais
+ */
+app.post('/api/certidoes/baixar', authSystem.authMiddleware(), async (req, res) => {
+  try {
+    const { numeroProcesso, tribunal, dataPublicacao, tipo, adicionarAoKB } = req.body;
+
+    // Validação
+    if (!numeroProcesso) {
+      return res.status(400).json({
+        success: false,
+        error: 'Número do processo é obrigatório'
+      });
+    }
+
+    logger.info('📄 Baixando certidão DJe/DJEN', {
+      numeroProcesso,
+      tribunal,
+      tipo: tipo || 'dje'
+    });
+
+    // Baixar certidão via serviço
+    const certidao = await certidoesDJEService.baixarCertidao({
+      numeroProcesso,
+      tribunal: tribunal || 'TJRJ',
+      dataPublicacao,
+      tipo: tipo || 'dje',
+      projectId: '1',  // Projeto ROM
+      adicionarAoKB: adicionarAoKB !== false  // Padrão: true
+    });
+
+    logger.info('✅ Certidão baixada com sucesso', {
+      numeroCertidao: certidao.numeroCertidao,
+      prazoFinal: certidao.prazo?.dataFinal
+    });
+
+    res.json({
+      success: true,
+      certidao,
+      message: `Certidão baixada${adicionarAoKB !== false ? ' e adicionada ao KB' : ''} com sucesso`,
+      prazo: certidao.prazo ? {
+        dataPublicacao: certidao.prazo.dataPublicacao,
+        primeiroDiaUtil: certidao.prazo.primeiroDiaUtil,
+        dataFinal: certidao.prazo.dataFinal,
+        diasUteis: certidao.prazo.diasUteis
+      } : null
+    });
+
+  } catch (error) {
+    logger.error('❌ Erro ao baixar certidão', {
+      error: error.message,
+      numeroProcesso: req.body.numeroProcesso
+    });
+
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      details: error.stack
+    });
+  }
+});
+
+/**
  * Obter tabela de preços completa
  * GET /api/pricing/table
  */
