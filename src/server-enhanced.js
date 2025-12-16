@@ -367,7 +367,7 @@ app.post('/api/chat', async (req, res) => {
     // 🔍 BUSCAR DOCUMENTOS RELEVANTES NO KB
     let kbContext = '';
     try {
-      const kbDocsPath = path.join(ACTIVE_PATHS.KB, 'documents');
+      const kbDocsPath = path.join(ACTIVE_PATHS.kb, 'documents');
       if (fs.existsSync(kbDocsPath)) {
         const files = await fs.promises.readdir(kbDocsPath);
         const txtFiles = files.filter(f => f.endsWith('.txt'));
@@ -827,7 +827,7 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
 
         // 💾 SALVAR NO KB para o chat poder acessar
         try {
-          const kbPath = path.join(ACTIVE_PATHS.KB, 'documents', `${Date.now()}_${file.originalname}.txt`);
+          const kbPath = path.join(ACTIVE_PATHS.kb, 'documents', `${Date.now()}_${file.originalname}.txt`);
           await fs.promises.mkdir(path.dirname(kbPath), { recursive: true });
           await fs.promises.writeFile(kbPath, extractedData.extractedText, 'utf8');
 
@@ -2532,7 +2532,7 @@ app.delete('/api/kb/documents/:id', authSystem.authMiddleware(), (req, res) => {
 // 📚 Novo endpoint: Listar documentos REAIS extraídos em KB/documents/
 app.get('/api/kb/extracted-documents', async (req, res) => {
   try {
-    const kbDocsPath = path.join(ACTIVE_PATHS.KB, 'documents');
+    const kbDocsPath = path.join(ACTIVE_PATHS.kb, 'documents');
 
     // Verificar se pasta existe
     if (!fs.existsSync(kbDocsPath)) {
@@ -2602,7 +2602,7 @@ app.get('/api/kb/extracted-documents', async (req, res) => {
 app.get('/api/kb/extracted-documents/:id/download', async (req, res) => {
   try {
     const { id } = req.params;
-    const filePath = path.join(ACTIVE_PATHS.KB, 'documents', `${id}.txt`);
+    const filePath = path.join(ACTIVE_PATHS.kb, 'documents', `${id}.txt`);
 
     if (!fs.existsSync(filePath)) {
       return res.status(404).json({ error: 'Documento não encontrado' });
@@ -2628,7 +2628,7 @@ app.get('/api/kb/extracted-documents/:id/download', async (req, res) => {
 app.delete('/api/kb/extracted-documents/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const filePath = path.join(ACTIVE_PATHS.KB, 'documents', `${id}.txt`);
+    const filePath = path.join(ACTIVE_PATHS.kb, 'documents', `${id}.txt`);
     const metadataPath = filePath.replace('.txt', '.metadata.json');
 
     if (!fs.existsSync(filePath)) {
@@ -5958,7 +5958,7 @@ app.listen(PORT, async () => {
           logger.info(`✅ Extração concluída: ${result.charCount} caracteres`);
 
           // Salvar no KB
-          const kbPath = path.join(ACTIVE_PATHS.KB, 'documents', `${Date.now()}_emergencia_${fileName}.txt`);
+          const kbPath = path.join(ACTIVE_PATHS.kb, 'documents', `${Date.now()}_emergencia_${fileName}.txt`);
           await fs.promises.mkdir(path.dirname(kbPath), { recursive: true });
           await fs.promises.writeFile(kbPath, result.text, 'utf8');
 
