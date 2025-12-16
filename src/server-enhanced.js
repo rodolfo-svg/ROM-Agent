@@ -41,6 +41,9 @@ import schedulerRoutes from '../lib/api-routes-scheduler.js';
 import partnerSettingsRoutes from '../lib/api-routes-partner-settings.js';
 import romProjectService from './services/rom-project-service.js';
 import romProjectRouter from './routes/rom-project.js';
+import romCaseProcessorService from './services/processors/rom-case-processor-service.js';
+import caseProcessorRouter from './routes/case-processor.js';
+import caseProcessorSSE from './routes/case-processor-sse.js';
 import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
@@ -153,6 +156,10 @@ app.use('/api', storageRoutes);
 app.use('/api', schedulerRoutes);
 app.use('/api', partnerSettingsRoutes);
 app.use('/api/rom-project', romProjectRouter);
+
+// Rotas de Processamento de Casos (Extração + 5 Layers)
+app.use('/api/case-processor', caseProcessorRouter);
+app.use('/api/case-processor', caseProcessorSSE);
 
 logger.info('Sistema inicializado com todos os middlewares de otimização');
 
@@ -5635,6 +5642,15 @@ app.listen(PORT, async () => {
     })
     .catch(error => {
       logger.error('Erro ao inicializar Projeto ROM:', error);
+    });
+
+  // Inicializar ROM Case Processor (Sistema de Extração + 5 Layers)
+  romCaseProcessorService.init()
+    .then(() => {
+      logger.info('✅ ROM Case Processor inicializado - Sistema de extração e processamento de casos ativo');
+    })
+    .catch(error => {
+      logger.error('Erro ao inicializar ROM Case Processor:', error);
     });
 
   // Pré-carregar modelos
