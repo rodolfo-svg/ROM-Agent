@@ -2192,12 +2192,18 @@ Memória: ${data.memory?.heapUsed}
             }
 
             try {
+                alert('🔄 Iniciando requisição HTTP para /api/upload-documents...');
+
                 const response = await fetch('/api/upload-documents', {
                     method: 'POST',
                     body: formData
                 });
 
+                alert(`📡 Resposta recebida! Status: ${response.status} ${response.statusText}`);
+
                 const result = await response.json();
+
+                alert(`📦 JSON parseado! success: ${result.success}, filesCount: ${result.filesCount || 0}`);
 
                 // Remove loading message
                 if (loadingMsg) loadingMsg.remove();
