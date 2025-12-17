@@ -3810,36 +3810,80 @@ app.post('/api/kb/upload', authSystem.authMiddleware(), upload.array('files', 20
     const userName = req.user.name || 'Unknown';
     const uploadedDocs = [];
 
-    // Processar cada arquivo
+    // Processar cada arquivo COM DOCUMENTOS ESTRUTURADOS
     for (const file of req.files) {
       try {
         console.log(`📤 KB Upload: ${file.originalname} por ${userName}`);
+        console.log(`🔍 Processando com 33 ferramentas + documentos estruturados...`);
 
-        // Extrair conteúdo usando pipeline
-        const extractionResult = await extractDocument(file.path);
+        // 🚀 USAR processFile() PARA GERAR DOCUMENTOS ESTRUTURADOS
+        const processResult = await processFile(file.path);
 
-        // Criar documento KB
+        if (!processResult.success) {
+          throw new Error(processResult.error || 'Falha na extração');
+        }
+
+        // Copiar arquivo extraído para KB
+        const extractedTextPath = path.join(EXTRACTOR_CONFIG.extractedFolder, processResult.extracted);
+        const extractedText = await fs.promises.readFile(extractedTextPath, 'utf8');
+
+        const baseFilename = file.originalname.replace(/\.txt$/i, '');
+        const kbPath = path.join(ACTIVE_PATHS.kb, 'documents', `${Date.now()}_${baseFilename}.txt`);
+
+        await fs.promises.mkdir(path.dirname(kbPath), { recursive: true });
+        await fs.promises.copyFile(extractedTextPath, kbPath);
+
+        console.log(`   💾 KB: Copiado ${path.basename(kbPath)}`);
+
+        // 🚀 COPIAR OS 7 DOCUMENTOS ESTRUTURADOS
+        const structuredDocs = [];
+        if (processResult.structuredDocuments?.outputPath) {
+          try {
+            const structuredFiles = await fs.promises.readdir(processResult.structuredDocuments.outputPath);
+
+            for (const structFile of structuredFiles) {
+              const sourcePath = path.join(processResult.structuredDocuments.outputPath, structFile);
+              const timestamp = Date.now();
+              const destPath = path.join(ACTIVE_PATHS.kb, 'documents', `${timestamp}_${baseFilename}_${structFile}`);
+
+              await fs.promises.copyFile(sourcePath, destPath);
+              structuredDocs.push({
+                name: structFile,
+                path: destPath,
+                type: path.extname(structFile)
+              });
+
+              console.log(`   📄 KB: ${structFile}`);
+            }
+
+            console.log(`   ✅ ${structuredDocs.length} documentos estruturados copiados`);
+          } catch (error) {
+            console.warn(`   ⚠️ Erro ao copiar docs estruturados: ${error.message}`);
+          }
+        }
+
+        // Criar documento KB principal
         const doc = {
           id: `kb-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
           name: file.originalname,
           type: file.mimetype,
           size: file.size,
-          path: file.path,
+          path: kbPath,
           userId: userId,
           userName: userName,
           uploadedAt: new Date().toISOString(),
-          extractedText: extractionResult.text || '',
-          textLength: extractionResult.textLength || 0,
+          extractedText: extractedText,
+          textLength: processResult.extraction?.charCount || 0,
           metadata: {
-            toolsUsed: extractionResult.toolsUsed || [],
-            documentType: detectDocumentType(extractionResult.text),
-            processNumber: extractProcessNumber(extractionResult.text),
-            parties: extractParties(extractionResult.text),
-            court: extractCourt(extractionResult.text)
+            toolsUsed: processResult.toolsUsed || [],
+            structuredDocuments: processResult.structuredDocuments?.filesGenerated || 0,
+            structuredDocsPath: processResult.structuredDocuments?.outputPath,
+            wordCount: processResult.extraction?.wordCount || 0,
+            structuredDocsInKB: structuredDocs
           }
         };
 
-        // Salvar documento no KB
+        // Salvar no kb-documents.json
         const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
         let kbDocs = [];
 
@@ -3849,6 +3893,31 @@ app.post('/api/kb/upload', authSystem.authMiddleware(), upload.array('files', 20
         }
 
         kbDocs.push(doc);
+
+        // 📄 ADICIONAR OS 7 DOCUMENTOS ESTRUTURADOS AO REGISTRO
+        for (const structDoc of structuredDocs) {
+          const structContent = await fs.promises.readFile(structDoc.path, 'utf8');
+
+          kbDocs.push({
+            id: `kb-struct-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+            name: `${file.originalname} - ${structDoc.name}`,
+            type: structDoc.type === '.md' ? 'text/markdown' : 'application/json',
+            size: structContent.length,
+            path: structDoc.path,
+            userId: userId,
+            userName: userName,
+            uploadedAt: new Date().toISOString(),
+            extractedText: structContent,
+            textLength: structContent.length,
+            metadata: {
+              isStructuredDocument: true,
+              parentDocument: file.originalname,
+              documentType: structDoc.name.split('_')[1]?.replace('.md', '').replace('.json', ''),
+              structuredType: structDoc.name
+            }
+          });
+        }
+
         fs.writeFileSync(kbDocsPath, JSON.stringify(kbDocs, null, 2));
 
         uploadedDocs.push({
@@ -3856,10 +3925,11 @@ app.post('/api/kb/upload', authSystem.authMiddleware(), upload.array('files', 20
           name: doc.name,
           size: doc.size,
           uploadedAt: doc.uploadedAt,
+          structuredDocs: structuredDocs.length,
           status: 'success'
         });
 
-        console.log(`✅ KB: ${file.originalname} salvo com sucesso`);
+        console.log(`✅ KB: ${file.originalname} + ${structuredDocs.length} docs estruturados salvos`);
       } catch (fileError) {
         console.error(`❌ Erro ao processar ${file.originalname}:`, fileError);
         uploadedDocs.push({
