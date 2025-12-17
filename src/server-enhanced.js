@@ -1006,7 +1006,9 @@ app.post('/api/chat', async (req, res) => {
     const conversationId = req.session.conversationId;
 
     // 🔍 DETECÇÃO AUTOMÁTICA DE MODO EXAUSTIVO (PLANO ANTI-429)
-    const isExhaustive = exhaustiveJobManager.isExhaustiveRequest(message);
+    // ⚡ MODO ONLINE SEMPRE ATIVO - Processamento síncrono com streaming
+    // (Desabilitado job assíncrono para permitir análises exaustivas online)
+    const isExhaustive = false; // exhaustiveJobManager.isExhaustiveRequest(message);
 
     if (isExhaustive) {
       logger.info('🚀 Pedido EXAUSTIVO detectado - disparando job assíncrono', {
