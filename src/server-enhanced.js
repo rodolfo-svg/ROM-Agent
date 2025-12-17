@@ -28,6 +28,7 @@ import dotenv from 'dotenv';
 import compression from 'compression';
 import logger, { requestLogger, logAIOperation, logKBOperation } from '../lib/logger.js';
 import { generalLimiter, chatLimiter, uploadLimiter, authLimiter, searchLimiter } from '../lib/rate-limiter.js';
+import contextManager from './utils/context-manager.js';
 import semanticSearch from '../lib/semantic-search.js';
 import documentVersioning from '../lib/versioning.js';
 import templatesManager from '../lib/templates-manager.js';
@@ -1035,7 +1036,7 @@ app.post('/api/chat', async (req, res) => {
       content: message
     });
 
-    // 🔍 BUSCAR DOCUMENTOS RELEVANTES NO KB
+    // 🔍 BUSCAR DOCUMENTOS RELEVANTES NO KB COM GERENCIAMENTO INTELIGENTE DE CONTEXTO
     let kbContext = '';
     let relevantDocs = []; // Declarar no escopo correto
     try {
@@ -1063,96 +1064,72 @@ app.post('/api/chat', async (req, res) => {
             return { file, content, metadata };
           }));
 
-          // 🎯 BUSCA AMPLIADA: Se usuário pedir "análise completa" ou "todos documentos", enviar TUDO
-          if (message.toLowerCase().includes('todos') ||
-              message.toLowerCase().includes('completo') ||
-              message.toLowerCase().includes('íntegra') ||
-              message.toLowerCase().includes('integra') ||
-              message.toLowerCase().includes('exaustivamente')) {
-            console.log('🔍 Modo EXAUSTIVO ativado: Enviando TODOS os documentos do KB');
-            relevantDocs = docs; // Enviar TODOS
+          // 🎯 BUSCA INTELIGENTE: Filtrar documentos relevantes
+          const lowerMessage = message.toLowerCase();
+          const searchTerms = message.split(/\s+/).filter(word => word.length > 3);
+
+          // Detectar se é análise exaustiva (mas agora com limitação de tokens)
+          const isExhaustiveAnalysis = (
+            lowerMessage.includes('todos') ||
+            lowerMessage.includes('completo') ||
+            lowerMessage.includes('íntegra') ||
+            lowerMessage.includes('integra') ||
+            lowerMessage.includes('exaustivamente')
+          );
+
+          if (isExhaustiveAnalysis) {
+            logger.info('🔍 Análise EXAUSTIVA solicitada - Usando TODOS documentos com limitação inteligente');
+            relevantDocs = docs;
           } else {
-            // Buscar documentos relevantes (busca ampliada por palavras-chave)
+            // Buscar documentos relevantes por palavras-chave
             relevantDocs = docs.filter(doc => {
-              const lowerMessage = message.toLowerCase();
               const lowerContent = doc.content.toLowerCase();
 
-              // Verificar se a pergunta menciona termos do documento
-              return (
+              // Busca por metadados específicos
+              const metadataMatch = (
                 (doc.metadata.processNumber && lowerMessage.includes('processo')) ||
                 (doc.metadata.parties && lowerMessage.includes('parte')) ||
-                (doc.metadata.court && lowerMessage.includes('tribunal')) ||
-                lowerContent.includes(lowerMessage) ||
-                message.split(' ').some(word => word.length > 4 && lowerContent.includes(word.toLowerCase()))
+                (doc.metadata.court && lowerMessage.includes('tribunal'))
               );
+
+              // Busca por conteúdo
+              const contentMatch = searchTerms.some(term =>
+                lowerContent.includes(term.toLowerCase())
+              );
+
+              return metadataMatch || contentMatch;
             });
+
+            logger.info(`✅ ${relevantDocs.length} documento(s) relevante(s) encontrado(s) por palavras-chave`);
           }
 
           if (relevantDocs.length > 0) {
-            console.log(`✅ ${relevantDocs.length} documento(s) relevante(s) encontrado(s)`);
+            // 🚀 USAR CONTEXT MANAGER PARA OTIMIZAR O CONTEXTO
+            const selectedModelForContext = selectedModel || 'claude-3-5-sonnet-20241022';
 
-            kbContext = '\n\n📚 DOCUMENTOS DISPONÍVEIS NO KNOWLEDGE BASE:\n\n';
-            relevantDocs.forEach((doc, i) => { // ENVIAR TODOS OS DOCUMENTOS RELEVANTES
-              kbContext += `--- DOCUMENTO ${i + 1}: ${doc.metadata.originalFilename || doc.file} ---\n`;
-              if (doc.metadata.type) kbContext += `Tipo: ${doc.metadata.type}\n`;
-              if (doc.metadata.processNumber) kbContext += `Processo: ${doc.metadata.processNumber}\n`;
-              if (doc.metadata.parties) kbContext += `Partes: ${doc.metadata.parties}\n`;
-              if (doc.metadata.court) kbContext += `Tribunal: ${doc.metadata.court}\n`;
+            logger.info(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+            logger.info(`🧠 CONTEXT MANAGER - Otimizando ${relevantDocs.length} documento(s)`);
+            logger.info(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
 
-              // 🚀 BUSCA INTELIGENTE: Enviar partes relevantes do documento
-              let contentToSend = '';
-              const lowerMessage = message.toLowerCase();
+            const managedContext = contextManager.manageMultiDocumentContext(
+              relevantDocs,
+              message,
+              selectedModelForContext
+            );
 
-              // Se mencionar "sentença", "decisão", "dispositiv", "folha", buscar essas seções
-              if (lowerMessage.includes('sentença') || lowerMessage.includes('decisão') ||
-                  lowerMessage.includes('dispositiv') || lowerMessage.includes('folha') ||
-                  lowerMessage.includes('última') || lowerMessage.includes('julg')) {
+            kbContext = contextManager.formatContextForPrompt(managedContext);
 
-                // Buscar seções relevantes no documento
-                const lines = doc.content.split('\n');
-                const relevantSections = [];
+            logger.info(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`);
 
-                for (let i = 0; i < lines.length; i++) {
-                  const line = lines[i].toLowerCase();
-                  if (line.includes('sentença') || line.includes('decisão') ||
-                      line.includes('dispositiv') || line.includes('julg') ||
-                      line.match(/fl\.\s*\d+/) || line.match(/folha\s*\d+/)) {
-                    // Capturar contexto: 50 linhas antes e 50 depois
-                    const start = Math.max(0, i - 50);
-                    const end = Math.min(lines.length, i + 50);
-                    relevantSections.push(lines.slice(start, end).join('\n'));
-                  }
-                }
-
-                if (relevantSections.length > 0) {
-                  // Enviar TODAS as seções relevantes SEM LIMITE (processos grandes)
-                  contentToSend = relevantSections.join('\n\n--- SEÇÃO ---\n\n');
-                  console.log(`   📍 Encontradas ${relevantSections.length} seções relevantes (${contentToSend.length} caracteres)`);
-                } else {
-                  // Fallback: enviar 300KB início + 300KB final (total 600KB)
-                  contentToSend = doc.content.substring(0, 300000) + '\n\n...[MEIO DO DOCUMENTO OMITIDO]...\n\n' +
-                                 doc.content.substring(Math.max(0, doc.content.length - 300000));
-                  console.log(`   📄 Enviando início e fim do documento (${contentToSend.length} caracteres)`);
-                }
-              } else {
-                // Para documentos pequenos (<1MB), enviar COMPLETO
-                // Para documentos grandes, enviar até 500KB
-                if (doc.content.length < 1000000) {
-                  contentToSend = doc.content; // DOCUMENTO COMPLETO
-                  console.log(`   📄 Enviando documento COMPLETO (${contentToSend.length} caracteres)`);
-                } else {
-                  contentToSend = doc.content.substring(0, 500000); // 500KB = ~125 páginas
-                  console.log(`   📄 Enviando primeiros 500KB do documento (${contentToSend.length} caracteres)`);
-                }
-              }
-
-              kbContext += `\nConteúdo:\n${contentToSend}\n\n`;
-            });
+            // Atualizar relevantDocs com os documentos processados
+            relevantDocs = managedContext.documents;
+          } else {
+            logger.info('ℹ️ Nenhum documento relevante encontrado no KB');
           }
         }
       }
     } catch (kbError) {
-      console.error('⚠️ Erro ao buscar no KB:', kbError.message);
+      logger.error('⚠️ Erro ao buscar no KB:', kbError);
     }
 
     // 🎯 INTELLIGENT MODEL SELECTION
