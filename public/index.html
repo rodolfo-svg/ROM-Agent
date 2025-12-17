@@ -2134,39 +2134,10 @@ Memória: ${data.memory?.heapUsed}
 
         // Handle file upload to KB
         async function handleFileUpload(event) {
-            const debugLog = [];
-            try {
-                debugLog.push('1. Função handleFileUpload foi chamada');
-
-                debugLog.push(`2. event: ${event ? 'existe' : 'NULL'}`);
-                debugLog.push(`3. event.target: ${event?.target ? 'existe' : 'NULL'}`);
-
-                const files = event.target.files;
-                debugLog.push(`4. event.target.files: ${files ? `existe` : 'NULL'}`);
-                debugLog.push(`5. files.length: ${files ? files.length : 'N/A'}`);
-
-                if (!files || files.length === 0) {
-                    debugLog.push('6. ❌ NENHUM ARQUIVO DETECTADO');
-                    alert('🔍 DEBUG:\n\n' + debugLog.join('\n'));
-                    return;
-                }
-
-                const fileNames = Array.from(files).map(f => f.name).join(', ');
-                debugLog.push(`7. ✅ Arquivos: ${fileNames}`);
-                debugLog.push('8. Iniciando upload...');
-
-                // Mostrar debug e continuar
-                console.log('🔍 DEBUG COMPLETO:', debugLog);
-                alert('🔍 DEBUG:\n\n' + debugLog.join('\n') + '\n\n[Continuando com upload...]');
-
-            } catch (debugError) {
-                debugLog.push(`❌ ERRO: ${debugError.message}`);
-                alert('🔍 DEBUG (COM ERRO):\n\n' + debugLog.join('\n') + '\n\n' + debugError.stack);
-                return;
-            }
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
 
             const formData = new FormData();
-            const files = event.target.files;
             for (let file of files) {
                 formData.append('files', file);
             }
@@ -2192,18 +2163,12 @@ Memória: ${data.memory?.heapUsed}
             }
 
             try {
-                alert('🔄 Iniciando requisição HTTP para /api/upload-documents...');
-
                 const response = await fetch('/api/upload-documents', {
                     method: 'POST',
                     body: formData
                 });
 
-                alert(`📡 Resposta recebida! Status: ${response.status} ${response.statusText}`);
-
                 const result = await response.json();
-
-                alert(`📦 JSON parseado! success: ${result.success}, filesCount: ${result.filesCount || 0}`);
 
                 // Remove loading message
                 if (loadingMsg) loadingMsg.remove();
