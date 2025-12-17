@@ -1240,14 +1240,17 @@ Enquanto isso, pode continuar usando o sistema normalmente.
     console.log(`✅ [DEBUG] Agente obtido com sucesso, iniciando processamento...`);
 
     // 🚀 DETECTAR ANÁLISE COMPLETA E USAR CASE PROCESSOR (5 LAYERS)
+    // 🔥 TEMPORARIAMENTE DESABILITADO - Case Processor não tem Context Manager
+    // TODO: Integrar Context Manager no Case Processor antes de reabilitar
     const lowerMessage = message.toLowerCase();
-    const isAnaliseCompleta = (
+    const isAnaliseCompleta = false; // DESABILITADO: Case Processor envia contexto sem gerenciamento de tokens
+    /* const isAnaliseCompleta = (
       (lowerMessage.includes('analise') || lowerMessage.includes('análise')) &&
       (lowerMessage.includes('integra') || lowerMessage.includes('íntegra') || lowerMessage.includes('completa'))
     ) || lowerMessage.includes('resumo executivo') ||
        lowerMessage.includes('fichamento') ||
        lowerMessage.includes('embargos') ||
-       lowerMessage.includes('processo completo');
+       lowerMessage.includes('processo completo'); */
 
     let resposta;
 
