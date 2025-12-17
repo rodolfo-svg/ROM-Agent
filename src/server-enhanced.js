@@ -52,6 +52,7 @@ import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 import featureFlags from '../lib/feature-flags.js';
+import spellChecker from '../lib/spell-checker.js';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
@@ -4316,6 +4317,57 @@ app.get('/api/feature-flags/validate', generalLimiter, (req, res) => {
 });
 
 logger.info('✅ APIs de Feature Flags inicializadas (BACKSPEC BETA - ETAPA 3)');
+
+// ============================================
+// ✍️  SPELL CHECK APIs (BACKSPEC BETA - ETAPA 4)
+// ============================================
+
+/**
+ * POST /api/spell-check
+ * Verifica ortografia e gramática de um texto
+ */
+app.post('/api/spell-check', generalLimiter, async (req, res) => {
+  try {
+    const { text, language, autoCorrect } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ error: 'Texto não fornecido' });
+    }
+
+    const result = await spellChecker.checkText(text, {
+      language: language || 'pt-BR',
+      autoCorrect: autoCorrect !== undefined ? autoCorrect : false
+    });
+
+    res.json({
+      success: true,
+      result
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao verificar ortografia:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/spell-check/info
+ * Retorna informações sobre o spell checker
+ */
+app.get('/api/spell-check/info', generalLimiter, (req, res) => {
+  try {
+    const info = spellChecker.getInfo();
+
+    res.json({
+      success: true,
+      info
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao obter info do spell checker:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+logger.info('✅ APIs de Spell Check inicializadas (BACKSPEC BETA - ETAPA 4)');
 
 // 📊 Endpoint para listar documentos estruturados (7 tipos)
 app.get('/api/kb/structured-documents', async (req, res) => {
