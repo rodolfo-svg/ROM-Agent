@@ -51,6 +51,7 @@ import autoPipelineService from './services/auto-pipeline-service.js';
 import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
+import featureFlags from '../lib/feature-flags.js';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
@@ -4168,6 +4169,153 @@ app.get('/api/kb/statistics', generalLimiter, async (req, res) => {
 });
 
 logger.info('✅ APIs de Gerenciamento do KB inicializadas (BACKSPEC BETA - ETAPA 1)');
+
+// ============================================
+// 🚩 FEATURE FLAGS APIs (BACKSPEC BETA - ETAPA 3)
+// ============================================
+
+/**
+ * GET /api/feature-flags
+ * Retorna todas as feature flags
+ */
+app.get('/api/feature-flags', generalLimiter, (req, res) => {
+  try {
+    const allFlags = featureFlags.getAll();
+    const stats = featureFlags.getStats();
+    const validation = featureFlags.validate();
+
+    res.json({
+      success: true,
+      flags: allFlags,
+      stats,
+      validation
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao buscar feature flags:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/feature-flags/:category
+ * Retorna feature flags de uma categoria específica
+ */
+app.get('/api/feature-flags/:category', generalLimiter, (req, res) => {
+  try {
+    const { category } = req.params;
+    const categoryFlags = featureFlags.getByCategory(category);
+
+    res.json({
+      success: true,
+      category,
+      flags: categoryFlags
+    });
+  } catch (error) {
+    logger.error(`❌ Erro ao buscar flags da categoria ${req.params.category}:`, error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * PUT /api/feature-flags/:flagName
+ * Atualiza uma feature flag específica
+ */
+app.put('/api/feature-flags/:flagName', generalLimiter, async (req, res) => {
+  try {
+    const { flagName } = req.params;
+    const { value } = req.body;
+
+    if (value === undefined) {
+      return res.status(400).json({ error: 'Valor não fornecido' });
+    }
+
+    const success = featureFlags.set(flagName, value, true);
+
+    if (success) {
+      logger.info(`🚩 Feature flag atualizada: ${flagName} = ${value}`);
+
+      res.json({
+        success: true,
+        flagName,
+        value,
+        message: `Feature flag ${flagName} atualizada com sucesso`
+      });
+    } else {
+      res.status(500).json({ error: 'Erro ao atualizar feature flag' });
+    }
+  } catch (error) {
+    logger.error(`❌ Erro ao atualizar feature flag ${req.params.flagName}:`, error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/feature-flags/bulk
+ * Atualiza múltiplas feature flags de uma vez
+ */
+app.post('/api/feature-flags/bulk', generalLimiter, async (req, res) => {
+  try {
+    const { flags } = req.body;
+
+    if (!flags || typeof flags !== 'object') {
+      return res.status(400).json({ error: 'Objeto flags não fornecido' });
+    }
+
+    featureFlags.setMultiple(flags, true);
+
+    logger.info(`🚩 ${Object.keys(flags).length} feature flags atualizadas em bulk`);
+
+    res.json({
+      success: true,
+      updated: Object.keys(flags).length,
+      flags
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao atualizar feature flags em bulk:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/feature-flags/reset
+ * Reseta todas as feature flags para os valores padrão
+ */
+app.post('/api/feature-flags/reset', generalLimiter, async (req, res) => {
+  try {
+    featureFlags.reset();
+
+    logger.info('🔄 Feature flags resetadas para valores padrão');
+
+    res.json({
+      success: true,
+      message: 'Feature flags resetadas para valores padrão',
+      flags: featureFlags.getAll()
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao resetar feature flags:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/feature-flags/validate
+ * Valida as feature flags atuais
+ */
+app.get('/api/feature-flags/validate', generalLimiter, (req, res) => {
+  try {
+    const validation = featureFlags.validate();
+
+    res.json({
+      success: true,
+      validation
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao validar feature flags:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+logger.info('✅ APIs de Feature Flags inicializadas (BACKSPEC BETA - ETAPA 3)');
 
 // 📊 Endpoint para listar documentos estruturados (7 tipos)
 app.get('/api/kb/structured-documents', async (req, res) => {
