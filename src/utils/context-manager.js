@@ -16,6 +16,7 @@ import logger from '../../lib/logger.js';
  * Limites de tokens por modelo
  */
 const MODEL_LIMITS = {
+  // Anthropic Claude Models
   'claude-3-5-sonnet-20241022': 200000,
   'claude-3-5-haiku-20241022': 200000,
   'claude-3-opus-20240229': 200000,
@@ -25,6 +26,38 @@ const MODEL_LIMITS = {
   'anthropic.claude-3-5-haiku-20241022-v1:0': 200000,
   'anthropic.claude-sonnet-4-20250514-v1:0': 200000,
   'anthropic.claude-sonnet-4-5-20250929-v1:0': 200000,  // Sonnet 4.5 (default do sistema)
+  'anthropic.claude-opus-4-5-20251101-v1:0': 200000,    // Opus 4.5
+  'anthropic.claude-opus-4-20250514-v1:0': 200000,      // Opus 4
+  'anthropic.claude-haiku-4-5-20251001-v1:0': 200000,   // Haiku 4.5
+
+  // Amazon Nova Models
+  'amazon.nova-pro-v1:0': 300000,       // Nova Pro: 300K tokens
+  'amazon.nova-lite-v1:0': 300000,      // Nova Lite: 300K tokens
+  'amazon.nova-micro-v1:0': 128000,     // Nova Micro: 128K tokens
+  'amazon.titan-text-express-v1': 8000, // Titan: 8K tokens
+
+  // Meta Llama Models
+  'meta.llama3-3-70b-instruct-v1:0': 128000,   // Llama 3.3 70B
+  'meta.llama3-2-90b-instruct-v1:0': 128000,   // Llama 3.2 90B
+  'meta.llama3-2-11b-instruct-v1:0': 128000,   // Llama 3.2 11B
+  'meta.llama3-1-70b-instruct-v1:0': 128000,   // Llama 3.1 70B
+  'meta.llama3-1-8b-instruct-v1:0': 128000,    // Llama 3.1 8B
+  'meta.llama4-scout-17b-instruct-v1:0': 128000,   // Llama 4 Scout
+  'meta.llama4-maverick-17b-instruct-v1:0': 128000, // Llama 4 Maverick
+
+  // DeepSeek Models
+  'deepseek.r1-v1:0': 64000,            // DeepSeek R1: 64K tokens
+
+  // Mistral Models
+  'mistral.mistral-large-3-675b-instruct': 128000,  // Mistral Large 3
+  'mistral.pixtral-large-2502-v1:0': 128000,        // Pixtral Large
+  'mistral.ministral-3-14b-instruct': 128000,       // Ministral 14B
+  'mistral.ministral-3-8b-instruct': 128000,        // Ministral 8B
+
+  // Cohere Models
+  'cohere.command-r-plus-v1:0': 128000,  // Command R+
+  'cohere.command-r-v1:0': 128000,       // Command R
+
   'default': 200000
 };
 

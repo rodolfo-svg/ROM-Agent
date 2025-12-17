@@ -162,9 +162,12 @@ export async function conversar(prompt, options = {}) {
   const client = getBedrockRuntimeClient();
 
   // 🔥 TRUNCAR HISTÓRICO PARA EVITAR "Input is too long"
+  // Calcular limite baseado no modelo específico (cada modelo tem limite diferente)
+  const safeLimit = contextManager.getSafeContextLimit(modelo); // 70% do limite do modelo
+
   const truncatedHistory = contextManager.truncateHistory(
     historico,
-    140000,  // 140K tokens disponíveis (70% de 200K)
+    safeLimit,  // Limite seguro baseado no modelo específico
     kbContext,
     prompt
   );
@@ -346,12 +349,18 @@ export async function conversarStream(prompt, onChunk, options = {}) {
   const client = getBedrockRuntimeClient();
 
   // 🔥 TRUNCAR HISTÓRICO PARA EVITAR "Input is too long"
+  // Calcular limite baseado no modelo específico (cada modelo tem limite diferente)
+  const safeLimit = contextManager.getSafeContextLimit(modelo); // 70% do limite do modelo
+
   const truncatedHistory = contextManager.truncateHistory(
     historico,
-    140000,  // 140K tokens disponíveis (70% de 200K)
+    safeLimit,  // Limite seguro baseado no modelo específico
     kbContext,
     prompt
   );
+
+  // 🔥 CONCATENAR KB CONTEXT DEPOIS DO TRUNCAMENTO
+  const finalPrompt = kbContext ? prompt + '\n\n' + kbContext : prompt;
 
   const messages = [
     ...truncatedHistory.map(msg => ({
@@ -360,7 +369,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
     })),
     {
       role: 'user',
-      content: [{ text: prompt }]
+      content: [{ text: finalPrompt }]  // 🔥 Usar prompt final com KB
     }
   ];
 
