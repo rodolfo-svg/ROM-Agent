@@ -53,6 +53,7 @@ import { deployJob } from './jobs/deploy-job.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 import featureFlags from '../lib/feature-flags.js';
 import spellChecker from '../lib/spell-checker.js';
+import paradigmasManager from '../lib/paradigmas-manager.js';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
@@ -4368,6 +4369,199 @@ app.get('/api/spell-check/info', generalLimiter, (req, res) => {
 });
 
 logger.info('✅ APIs de Spell Check inicializadas (BACKSPEC BETA - ETAPA 4)');
+
+// ============================================
+// 📚 PARADIGMAS APIs (BETA PRÉ-MULTIUSUÁRIOS - BETA-1)
+// ============================================
+
+/**
+ * POST /api/paradigmas
+ * Cria um novo paradigma
+ */
+app.post('/api/paradigmas', generalLimiter, async (req, res) => {
+  try {
+    const paradigma = await paradigmasManager.add(req.body);
+
+    res.json({
+      success: true,
+      paradigma
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao criar paradigma:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/paradigmas
+ * Lista paradigmas com filtros
+ */
+app.get('/api/paradigmas', generalLimiter, async (req, res) => {
+  try {
+    const filters = {
+      tipo: req.query.tipo,
+      area: req.query.area,
+      tribunal: req.query.tribunal,
+      materia: req.query.materia,
+      status: req.query.status,
+      tags: req.query.tags,
+      search: req.query.search,
+      sortBy: req.query.sortBy,
+      sortOrder: req.query.sortOrder,
+      page: parseInt(req.query.page) || 1,
+      limit: parseInt(req.query.limit) || 50
+    };
+
+    const result = await paradigmasManager.list(filters);
+
+    res.json({
+      success: true,
+      ...result
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao listar paradigmas:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/paradigmas/:id
+ * Retorna um paradigma específico
+ */
+app.get('/api/paradigmas/:id', generalLimiter, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const includeContent = req.query.includeContent === 'true';
+
+    const paradigma = await paradigmasManager.get(id, includeContent);
+
+    if (!paradigma) {
+      return res.status(404).json({ error: 'Paradigma não encontrado' });
+    }
+
+    res.json({
+      success: true,
+      paradigma
+    });
+  } catch (error) {
+    logger.error(`❌ Erro ao buscar paradigma ${req.params.id}:`, error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * PUT /api/paradigmas/:id
+ * Atualiza um paradigma
+ */
+app.put('/api/paradigmas/:id', generalLimiter, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const paradigma = await paradigmasManager.update(id, req.body);
+
+    res.json({
+      success: true,
+      paradigma
+    });
+  } catch (error) {
+    logger.error(`❌ Erro ao atualizar paradigma ${req.params.id}:`, error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+/**
+ * DELETE /api/paradigmas/:id
+ * Remove um paradigma
+ */
+app.delete('/api/paradigmas/:id', generalLimiter, async (req, res) => {
+  try {
+    const { id } = req.params;
+    await paradigmasManager.delete(id);
+
+    res.json({
+      success: true,
+      message: `Paradigma ${id} removido com sucesso`
+    });
+  } catch (error) {
+    logger.error(`❌ Erro ao remover paradigma ${req.params.id}:`, error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/paradigmas/:id/use
+ * Registra uso de um paradigma
+ */
+app.post('/api/paradigmas/:id/use', generalLimiter, async (req, res) => {
+  try {
+    const { id } = req.params;
+    await paradigmasManager.registerUse(id);
+
+    res.json({
+      success: true,
+      message: 'Uso registrado'
+    });
+  } catch (error) {
+    logger.error(`❌ Erro ao registrar uso do paradigma ${req.params.id}:`, error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * POST /api/paradigmas/:id/feedback
+ * Adiciona feedback a um paradigma
+ */
+app.post('/api/paradigmas/:id/feedback', generalLimiter, async (req, res) => {
+  try {
+    const { id } = req.params;
+    await paradigmasManager.addFeedback(id, req.body);
+
+    res.json({
+      success: true,
+      message: 'Feedback adicionado'
+    });
+  } catch (error) {
+    logger.error(`❌ Erro ao adicionar feedback ao paradigma ${req.params.id}:`, error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/paradigmas/stats/general
+ * Retorna estatísticas gerais dos paradigmas
+ */
+app.get('/api/paradigmas/stats/general', generalLimiter, async (req, res) => {
+  try {
+    const stats = await paradigmasManager.getStatistics();
+
+    res.json({
+      success: true,
+      stats
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao obter estatísticas de paradigmas:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/paradigmas/categories
+ * Retorna categorias disponíveis
+ */
+app.get('/api/paradigmas/categories', generalLimiter, (req, res) => {
+  try {
+    const categories = paradigmasManager.getCategories();
+
+    res.json({
+      success: true,
+      categories
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao obter categorias:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+logger.info('✅ APIs de Paradigmas inicializadas (BETA PRÉ-MULTIUSUÁRIOS - BETA-1)');
 
 // 📊 Endpoint para listar documentos estruturados (7 tipos)
 app.get('/api/kb/structured-documents', async (req, res) => {
