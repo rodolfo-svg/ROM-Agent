@@ -16,7 +16,7 @@ const totalCPUs = os.cpus().length;
 
 // 🔧 LIMITE DE WORKERS baseado no ambiente
 const isRender = process.env.RENDER === 'true';
-const MAX_WORKERS_RENDER = 6; // Render Standard: máx 6 workers (2GB RAM / ~330MB por worker)
+const MAX_WORKERS_RENDER = 4; // Render Standard: máx 4 workers (2GB RAM / ~500MB por worker + documentos grandes)
 const numCPUs = isRender ? Math.min(totalCPUs, MAX_WORKERS_RENDER) : totalCPUs;
 
 if (isRender) {
