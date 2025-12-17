@@ -254,23 +254,37 @@ class JurisprudenceSearchService {
     const { limit = 10, tribunal = null } = options;
 
     try {
-      // Construir URL de busca
-      const query = encodeURIComponent(tese + (tribunal ? ` ${tribunal}` : ''));
-      const url = `${this.config.jusbrasil.apiUrl}?q=${query}`;
+      // Importar dinamicamente o cliente JusBrasil
+      const { JusBrasilClient } = await import('../../lib/jusbrasil-client.js');
 
-      // Nota: JusBrasil requer scraping ou API paga
-      // Esta é uma implementação placeholder
-      console.warn('⚠️ JusBrasil: Implementação via scraping pendente - retornando dados mock');
+      const client = new JusBrasilClient({
+        email: process.env.JUSBRASIL_EMAIL,
+        senha: process.env.JUSBRASIL_SENHA,
+        headless: true
+      });
 
-      return {
-        success: true,
-        source: 'jusbrasil',
-        results: this.generateMockJusBrasilResults(tese, limit),
-        note: 'Implementação real requer integração com API ou web scraping'
-      };
+      try {
+        const result = await client.search(tese, { limit, tribunal });
+        return result;
+      } finally {
+        // Sempre fechar o browser
+        await client.close();
+      }
 
     } catch (error) {
       console.error('Erro ao buscar no JusBrasil:', error.message);
+
+      // Se credenciais não configuradas, retornar aviso amigável
+      if (error.message?.includes('Credenciais')) {
+        return {
+          success: false,
+          source: 'jusbrasil',
+          error: 'JusBrasil não configurado - configure JUSBRASIL_EMAIL e JUSBRASIL_SENHA',
+          needsSetup: true,
+          results: []
+        };
+      }
+
       return {
         success: false,
         source: 'jusbrasil',
@@ -281,30 +295,47 @@ class JurisprudenceSearchService {
   }
 
   /**
-   * Buscar via Web Search (Google, etc)
+   * Buscar via Web Search (Google Custom Search API - IMPLEMENTAÇÃO REAL)
    */
   async searchWeb(tese, options = {}) {
-    const { limit = 10 } = options;
+    const { limit = 10, tribunal = null } = options;
 
     try {
-      // Construir query otimizada para jurisprudência
-      const query = `jurisprudência ${tese} site:stf.jus.br OR site:stj.jus.br OR site:trf1.jus.br`;
+      // Importar dinamicamente o cliente Google Search
+      const { GoogleSearchClient } = await import('../../lib/google-search-client.js');
 
-      // Nota: Busca web requer integração com Google Custom Search API ou similar
-      console.warn('⚠️ Web Search: Implementação pendente - retornando dados mock');
+      const client = new GoogleSearchClient({
+        apiKey: process.env.GOOGLE_SEARCH_API_KEY,
+        cx: process.env.GOOGLE_SEARCH_CX
+      });
 
-      return {
-        success: true,
-        source: 'websearch',
-        results: this.generateMockWebSearchResults(tese, limit),
-        note: 'Implementação real requer Google Custom Search API ou similar'
-      };
+      // Verificar se está configurado
+      if (!client.isConfigured()) {
+        console.warn('⚠️ Google Search API não configurada');
+        return {
+          success: false,
+          source: 'google-search',
+          error: 'Google Search não configurado - configure GOOGLE_SEARCH_API_KEY e GOOGLE_SEARCH_CX',
+          needsSetup: true,
+          results: [],
+          setupInstructions: {
+            step1: 'Acesse https://console.cloud.google.com/apis/credentials',
+            step2: 'Crie uma API Key e habilite Custom Search API',
+            step3: 'Acesse https://programmablesearchengine.google.com/',
+            step4: 'Crie um Custom Search Engine e copie o CX ID',
+            step5: 'Configure GOOGLE_SEARCH_API_KEY e GOOGLE_SEARCH_CX no .env'
+          }
+        };
+      }
+
+      const result = await client.search(tese, { limit, tribunal });
+      return result;
 
     } catch (error) {
       console.error('Erro ao buscar na web:', error.message);
       return {
         success: false,
-        source: 'websearch',
+        source: 'google-search',
         error: error.message,
         results: []
       };
