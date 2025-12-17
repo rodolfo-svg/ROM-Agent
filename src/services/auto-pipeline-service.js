@@ -31,7 +31,7 @@ class AutoPipelineService {
           id: 'análise',
           modelo: 'sonnet-4.5',
           prompt: 'Analise criticamente as informações extraídas',
-          maxTokens: 8192
+          maxTokens: 200000
         },
         {
           id: 'fundamentação',

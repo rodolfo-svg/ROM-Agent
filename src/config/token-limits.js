@@ -90,21 +90,25 @@ export const TOKEN_LIMITS = {
   'termo': 16000,
 
   // ═══════════════════════════════════════════════════════════════
-  // CHAT E CONSULTAS - 8K (IGUAL AO CLAUDE.AI)
+  // CHAT E CONSULTAS - 200K (SONNET 4.5 COMPLETO)
   // ═══════════════════════════════════════════════════════════════
-  'chat': 8192,
-  'consulta': 8192,
-  'pergunta': 8192,
-  'esclarecimento': 8192,
+  'chat': 200000,
+  'consulta': 200000,
+  'consulta_kb': 200000,
+  'pergunta': 200000,
+  'esclarecimento': 200000,
+  'analise': 200000,
+  'resumo': 200000,
+  'resumo_executivo': 200000,
 
   // ═══════════════════════════════════════════════════════════════
-  // DEFAULT E OUTROS - 8K (CONSERVADOR)
+  // DEFAULT E OUTROS - 200K (MÁXIMO SONNET 4.5)
   // ═══════════════════════════════════════════════════════════════
-  'default': 8192,
-  'outros': 8192,
-  'other': 8192,
-  'personalizado': 8192,
-  'custom': 8192
+  'default': 200000,
+  'outros': 200000,
+  'other': 200000,
+  'personalizado': 200000,
+  'custom': 200000
 };
 
 /**

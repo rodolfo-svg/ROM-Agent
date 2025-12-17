@@ -63,7 +63,7 @@ const CONFIG = {
   versao: packageJson.version, // Versão dinâmica do package.json
   descricao: 'Redator de Obras Magistrais - Agente de IA para Redação de Peças Jurídicas com Excelência',
   modelo: 'claude-sonnet-4-20250514',
-  maxTokens: 8192, // Limite padrão (dinâmico via getMaxTokens)
+  maxTokens: 200000, // Limite padrão (dinâmico via getMaxTokens) - Sonnet 4.5 completo
   maxTokensDinamico: true, // Sistema inteligente ativo (2-8x superior ao Claude.ai)
   temperatura: 0.7,
 
