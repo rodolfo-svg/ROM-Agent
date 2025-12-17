@@ -1391,118 +1391,231 @@ class ROMCaseProcessorService {
       }
 
       // LAYER 2: Índices
+      const layer2RunId = tracing.startLayer(traceId, 2, 'Índices e Metadados', {
+        documentCount: results.extraction.length,
+        indexLevel
+      });
+
       progressEmitter.startLayer(casoId, 2, 'Índices e Metadados');
       progressEmitter.addStep(casoId, 'Construindo índices inteligentes', 'processing');
+      tracing.addStep(traceId, layer2RunId, 'Construindo índices inteligentes', 'info');
 
-      results.indexes = await this.layer2_buildIndexes(
-        casoId,
-        results.extraction
-      );
+      try {
+        results.indexes = await this.layer2_buildIndexes(
+          casoId,
+          results.extraction
+        );
 
-      progressEmitter.addSuccess(casoId, 'Índices construídos');
-      progressEmitter.addResult(casoId, 'Tipos de documentos', results.indexes.metadata.types.length);
-      progressEmitter.completeLayer(casoId, 2);
+        progressEmitter.addSuccess(casoId, 'Índices construídos');
+        progressEmitter.addResult(casoId, 'Tipos de documentos', results.indexes.metadata.types.length);
+        progressEmitter.completeLayer(casoId, 2);
 
-      // Índice Progressivo
-      progressEmitter.addStep(casoId, `Criando índice progressivo (${indexLevel})`, 'processing');
+        tracing.addStep(traceId, layer2RunId, `Índices construídos: ${results.indexes.metadata.types.length} tipos`, 'success', {
+          documentTypes: results.indexes.metadata.types.length
+        });
 
-      results.progressiveIndex = await this.buildProgressiveIndex(
-        casoId,
-        results.extraction,
-        indexLevel
-      );
+        // Índice Progressivo
+        progressEmitter.addStep(casoId, `Criando índice progressivo (${indexLevel})`, 'processing');
+        tracing.addStep(traceId, layer2RunId, `Criando índice progressivo (${indexLevel})`, 'info');
 
-      progressEmitter.addSuccess(casoId, `Índice ${indexLevel} gerado`);
+        results.progressiveIndex = await this.buildProgressiveIndex(
+          casoId,
+          results.extraction,
+          indexLevel
+        );
+
+        progressEmitter.addSuccess(casoId, `Índice ${indexLevel} gerado`);
+        tracing.addStep(traceId, layer2RunId, `Índice ${indexLevel} gerado`, 'success');
+
+        tracing.endLayer(traceId, layer2RunId, {
+          documentTypes: results.indexes.metadata.types.length,
+          indexLevel
+        });
+      } catch (error) {
+        tracing.failLayer(traceId, layer2RunId, error);
+        throw error;
+      }
 
       // LAYER 3: Análises Especializadas
+      const layer3RunId = tracing.startLayer(traceId, 3, 'Análises Especializadas', {
+        documentCount: results.extraction.length
+      });
+
       progressEmitter.startLayer(casoId, 3, 'Análises Especializadas');
       progressEmitter.addStep(casoId, 'Processando análises em paralelo', 'processing');
       progressEmitter.addInfo(casoId, 'Criando microfichamentos...');
+      tracing.addStep(traceId, layer3RunId, 'Processando análises especializadas em paralelo', 'info');
 
-      results.analysis = await this.layer3_specializedAnalysis(
-        casoId,
-        results.extraction,
-        results.indexes
-      );
+      try {
+        results.analysis = await this.layer3_specializedAnalysis(
+          casoId,
+          results.extraction,
+          results.indexes
+        );
 
-      progressEmitter.addSuccess(casoId, 'Análises especializadas concluídas');
-      progressEmitter.addResult(casoId, 'Microfichamentos criados', results.analysis.microfichamentos.length);
-      progressEmitter.addResult(casoId, 'Teses identificadas', results.analysis.consolidacoes.teses?.length || 0);
-      progressEmitter.completeLayer(casoId, 3);
+        progressEmitter.addSuccess(casoId, 'Análises especializadas concluídas');
+        progressEmitter.addResult(casoId, 'Microfichamentos criados', results.analysis.microfichamentos.length);
+        progressEmitter.addResult(casoId, 'Teses identificadas', results.analysis.consolidacoes.teses?.length || 0);
+        progressEmitter.completeLayer(casoId, 3);
+
+        tracing.addStep(traceId, layer3RunId, `Análises concluídas: ${results.analysis.microfichamentos.length} microfichamentos`, 'success', {
+          microfichamentos: results.analysis.microfichamentos.length,
+          teses: results.analysis.consolidacoes.teses?.length || 0
+        });
+
+        tracing.endLayer(traceId, layer3RunId, {
+          microfichamentos: results.analysis.microfichamentos.length,
+          teses: results.analysis.consolidacoes.teses?.length || 0
+        });
+      } catch (error) {
+        tracing.failLayer(traceId, layer3RunId, error);
+        throw error;
+      }
 
       // LAYER 4: Jurisprudência (somente se teses identificadas)
       if (results.analysis.consolidacoes.teses && results.analysis.consolidacoes.teses.length > 0) {
+        const layer4RunId = tracing.startLayer(traceId, 4, 'Jurisprudência Verificável', {
+          tesesCount: results.analysis.consolidacoes.teses.length
+        });
+
         progressEmitter.startLayer(casoId, 4, 'Jurisprudência Verificável');
         progressEmitter.addStep(casoId, `Buscando jurisprudência para ${results.analysis.consolidacoes.teses.length} teses`, 'processing');
+        tracing.addStep(traceId, layer4RunId, `Buscando jurisprudência para ${results.analysis.consolidacoes.teses.length} teses`, 'info');
 
-        results.jurisprudence = await this.layer4_jurisprudenceSearch(
-          casoId,
-          results.analysis.consolidacoes.teses,
-          searchServices
-        );
+        try {
+          results.jurisprudence = await this.layer4_jurisprudenceSearch(
+            casoId,
+            results.analysis.consolidacoes.teses,
+            searchServices
+          );
 
-        progressEmitter.addSuccess(casoId, 'Busca de jurisprudência concluída');
-        progressEmitter.addResult(casoId, 'Precedentes encontrados', results.jurisprudence.totalPrecedentes || 0);
-        progressEmitter.addResult(casoId, 'Cache hits', `${results.jurisprudence.cacheHits || 0}/${results.analysis.consolidacoes.teses.length}`);
-        progressEmitter.completeLayer(casoId, 4);
+          progressEmitter.addSuccess(casoId, 'Busca de jurisprudência concluída');
+          progressEmitter.addResult(casoId, 'Precedentes encontrados', results.jurisprudence.totalPrecedentes || 0);
+          progressEmitter.addResult(casoId, 'Cache hits', `${results.jurisprudence.cacheHits || 0}/${results.analysis.consolidacoes.teses.length}`);
+          progressEmitter.completeLayer(casoId, 4);
+
+          tracing.addStep(traceId, layer4RunId, `Jurisprudência concluída: ${results.jurisprudence.totalPrecedentes || 0} precedentes`, 'success', {
+            totalPrecedentes: results.jurisprudence.totalPrecedentes || 0,
+            cacheHits: results.jurisprudence.cacheHits || 0
+          });
+
+          tracing.endLayer(traceId, layer4RunId, {
+            totalPrecedentes: results.jurisprudence.totalPrecedentes || 0,
+            cacheHits: results.jurisprudence.cacheHits || 0
+          });
+        } catch (error) {
+          tracing.failLayer(traceId, layer4RunId, error);
+          throw error;
+        }
       } else {
         progressEmitter.addInfo(casoId, 'Nenhuma tese identificada - Layer 4 (jurisprudência) não será executada');
+        tracing.addStep(traceId, traceId, 'Layer 4 pulada: nenhuma tese identificada', 'info');
       }
 
       // LAYER 4.5: JURIMETRIA (Análise do padrão de julgamento do magistrado prevento)
+      const layer45RunId = tracing.startLayer(traceId, '4.5', 'Análise Jurímétrica do Magistrado', {});
+
       progressEmitter.startLayer(casoId, '4.5', 'Análise Jurímétrica do Magistrado');
       progressEmitter.addStep(casoId, 'Extraindo informações do magistrado prevento', 'processing');
+      tracing.addStep(traceId, layer45RunId, 'Extraindo informações do magistrado prevento', 'info');
 
-      // Enriquecer dados do caso para jurimetria
-      const dadosCasoJurimetria = await jurimetriaIntegration.enriquecerDadosCaso(
-        casoId,
-        results.analysis.consolidacoes
-      );
-
-      if (dadosCasoJurimetria.magistrado) {
-        progressEmitter.addInfo(casoId, `Magistrado identificado: ${dadosCasoJurimetria.magistrado}`);
-
-        // Executar análise jurímétrica
-        results.jurimetria = await jurimetriaIntegration.layer45_jurimetricAnalysis(
+      try {
+        // Enriquecer dados do caso para jurimetria
+        const dadosCasoJurimetria = await jurimetriaIntegration.enriquecerDadosCaso(
           casoId,
-          dadosCasoJurimetria,
-          results.jurisprudence || {}
+          results.analysis.consolidacoes
         );
 
-        if (results.jurimetria.executada) {
-          progressEmitter.addSuccess(casoId, 'Análise jurímétrica concluída');
-          progressEmitter.addResult(casoId, 'Total de decisões analisadas', results.jurimetria.totalDecisoes || 0);
-          progressEmitter.addResult(casoId, 'Precedentes favoráveis', results.jurimetria.precedentesFavoraveis || 0);
-          progressEmitter.addResult(casoId, 'Precedentes desfavoráveis', results.jurimetria.precedentesDesfavoraveis || 0);
-          if (results.jurimetria.contradicoes > 0) {
-            progressEmitter.addResult(casoId, 'Contradições identificadas', results.jurimetria.contradicoes);
+        if (dadosCasoJurimetria.magistrado) {
+          progressEmitter.addInfo(casoId, `Magistrado identificado: ${dadosCasoJurimetria.magistrado}`);
+          tracing.addStep(traceId, layer45RunId, `Magistrado identificado: ${dadosCasoJurimetria.magistrado}`, 'info');
+
+          // Executar análise jurímétrica
+          results.jurimetria = await jurimetriaIntegration.layer45_jurimetricAnalysis(
+            casoId,
+            dadosCasoJurimetria,
+            results.jurisprudence || {}
+          );
+
+          if (results.jurimetria.executada) {
+            progressEmitter.addSuccess(casoId, 'Análise jurímétrica concluída');
+            progressEmitter.addResult(casoId, 'Total de decisões analisadas', results.jurimetria.totalDecisoes || 0);
+            progressEmitter.addResult(casoId, 'Precedentes favoráveis', results.jurimetria.precedentesFavoraveis || 0);
+            progressEmitter.addResult(casoId, 'Precedentes desfavoráveis', results.jurimetria.precedentesDesfavoraveis || 0);
+            if (results.jurimetria.contradicoes > 0) {
+              progressEmitter.addResult(casoId, 'Contradições identificadas', results.jurimetria.contradicoes);
+            }
+            progressEmitter.completeLayer(casoId, '4.5');
+
+            tracing.addStep(traceId, layer45RunId, `Jurimetria concluída: ${results.jurimetria.totalDecisoes || 0} decisões analisadas`, 'success', {
+              totalDecisoes: results.jurimetria.totalDecisoes || 0,
+              precedentesFavoraveis: results.jurimetria.precedentesFavoraveis || 0,
+              precedentesDesfavoraveis: results.jurimetria.precedentesDesfavoraveis || 0,
+              contradicoes: results.jurimetria.contradicoes || 0
+            });
+
+            tracing.endLayer(traceId, layer45RunId, {
+              executada: true,
+              totalDecisoes: results.jurimetria.totalDecisoes || 0,
+              precedentesFavoraveis: results.jurimetria.precedentesFavoraveis || 0
+            });
+          } else {
+            progressEmitter.addWarning(casoId, `Layer 4.5 não executada: ${results.jurimetria.motivo || results.jurimetria.erro}`);
+            progressEmitter.completeLayer(casoId, '4.5', { skipped: true });
+
+            tracing.addStep(traceId, layer45RunId, `Layer 4.5 não executada: ${results.jurimetria.motivo || results.jurimetria.erro}`, 'warning');
+            tracing.endLayer(traceId, layer45RunId, { executada: false, motivo: results.jurimetria.motivo });
           }
-          progressEmitter.completeLayer(casoId, '4.5');
         } else {
-          progressEmitter.addWarning(casoId, `Layer 4.5 não executada: ${results.jurimetria.motivo || results.jurimetria.erro}`);
+          progressEmitter.addInfo(casoId, 'Magistrado não identificado - Layer 4.5 (jurimetria) não será executada');
           progressEmitter.completeLayer(casoId, '4.5', { skipped: true });
+          results.jurimetria = { executada: false, motivo: 'Magistrado não identificado' };
+
+          tracing.addStep(traceId, layer45RunId, 'Layer 4.5 pulada: magistrado não identificado', 'info');
+          tracing.endLayer(traceId, layer45RunId, { executada: false, motivo: 'Magistrado não identificado' });
         }
-      } else {
-        progressEmitter.addInfo(casoId, 'Magistrado não identificado - Layer 4.5 (jurimetria) não será executada');
-        progressEmitter.completeLayer(casoId, '4.5', { skipped: true });
-        results.jurimetria = { executada: false, motivo: 'Magistrado não identificado' };
+      } catch (error) {
+        tracing.failLayer(traceId, layer45RunId, error);
+        throw error;
       }
 
       // LAYER 5: Redação Final (somente se solicitado)
       if (generateDocument) {
+        const layer5RunId = tracing.startLayer(traceId, 5, 'Redação Final', {
+          documentType
+        });
+
         progressEmitter.startLayer(casoId, 5, 'Redação Final');
         progressEmitter.addStep(casoId, `Gerando documento: ${documentType}`, 'processing');
+        tracing.addStep(traceId, layer5RunId, `Gerando documento: ${documentType}`, 'info');
 
-        results.document = await this.layer5_generateDocument(
-          casoId,
-          documentType,
-          results.analysis.consolidacoes,
-          results.jurisprudence
-        );
+        try {
+          results.document = await this.layer5_generateDocument(
+            casoId,
+            documentType,
+            results.analysis.consolidacoes,
+            results.jurisprudence
+          );
 
-        progressEmitter.addSuccess(casoId, `Documento ${documentType} gerado`);
-        progressEmitter.addResult(casoId, 'Tamanho do documento', `${(results.document.texto?.length || 0).toLocaleString('pt-BR')} caracteres`);
-        progressEmitter.completeLayer(casoId, 5);
+          progressEmitter.addSuccess(casoId, `Documento ${documentType} gerado`);
+          progressEmitter.addResult(casoId, 'Tamanho do documento', `${(results.document.texto?.length || 0).toLocaleString('pt-BR')} caracteres`);
+          progressEmitter.completeLayer(casoId, 5);
+
+          tracing.addStep(traceId, layer5RunId, `Documento gerado: ${(results.document.texto?.length || 0).toLocaleString('pt-BR')} caracteres`, 'success', {
+            documentType,
+            characterCount: results.document.texto?.length || 0
+          });
+
+          tracing.endLayer(traceId, layer5RunId, {
+            documentType,
+            characterCount: results.document.texto?.length || 0
+          });
+        } catch (error) {
+          tracing.failLayer(traceId, layer5RunId, error);
+          throw error;
+        }
+      } else {
+        tracing.addStep(traceId, traceId, 'Layer 5 pulada: geração de documento não solicitada', 'info');
       }
 
       const endTime = Date.now();
@@ -1533,9 +1646,23 @@ class ROMCaseProcessorService {
         exportacao: exportacao?.baseDir || null
       });
 
+      // Finalizar trace com sucesso
+      const traceResult = tracing.endTrace(traceId, {
+        success: true,
+        casoId,
+        duration: `${duration} minutos`,
+        totalDocuments: results.extraction.length,
+        totalPages: results.extraction.reduce((sum, d) => sum + (d.pages || 0), 0),
+        cacheHitRate,
+        exportacao: exportacao?.baseDir || null
+      });
+
+      console.log(`📊 Trace completo salvo: logs/traces/${traceId}.json`);
+
       return {
         success: true,
         casoId,
+        traceId,
         duration: `${duration} minutos`,
         results,
         exportacao,
@@ -1548,9 +1675,14 @@ class ROMCaseProcessorService {
       // Marcar sessão como falha
       progressEmitter.failSession(casoId, error);
 
+      // Finalizar trace com erro
+      tracing.failTrace(traceId, error);
+      console.log(`📊 Trace com erro salvo: logs/traces/${traceId}.json`);
+
       return {
         success: false,
         casoId,
+        traceId,
         error: error.message,
         processedAt: new Date().toISOString()
       };
