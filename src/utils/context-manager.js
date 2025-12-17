@@ -192,8 +192,16 @@ export function manageMultiDocumentContext(documents, query, model) {
   logger.info(`📚 Gerenciando contexto de ${docsCount} documento(s)`);
   logger.info(`🎯 Limite seguro: ${safeLimit.toLocaleString()} tokens (~${Math.floor(safeLimit * 3.5 / 1000)}KB)`);
 
+  // 🔥 AJUSTE DINÂMICO: Reservar espaço para histórico e system prompt
+  // Para análises exaustivas, usar apenas 50% do limite para documentos (70K tokens)
+  // Deixar 50% para histórico + system prompt (70K tokens)
+  const kbBudget = Math.floor(safeLimit * 0.5); // 70K tokens para KB
+
+  logger.info(`💡 Orçamento ajustado para KB: ${kbBudget.toLocaleString()} tokens (50% do limite)`);
+  logger.info(`   Reservado para histórico+system: ${(safeLimit - kbBudget).toLocaleString()} tokens`);
+
   // Calcular budget de tokens por documento
-  const tokensPerDoc = Math.floor(safeLimit / docsCount);
+  const tokensPerDoc = Math.floor(kbBudget / docsCount);
   const maxCharsPerDoc = tokensPerDoc * 3.5;
 
   logger.info(`📊 Budget por documento: ${tokensPerDoc.toLocaleString()} tokens (~${Math.floor(maxCharsPerDoc / 1000)}KB)`);
@@ -248,16 +256,16 @@ export function manageMultiDocumentContext(documents, query, model) {
 
   logger.info(`\n✅ Contexto otimizado:`);
   logger.info(`   Documentos: ${docsCount}`);
-  logger.info(`   Tokens totais: ${totalTokens.toLocaleString()} / ${safeLimit.toLocaleString()}`);
-  logger.info(`   Uso: ${(totalTokens / safeLimit * 100).toFixed(1)}%`);
+  logger.info(`   Tokens totais: ${totalTokens.toLocaleString()} / ${kbBudget.toLocaleString()}`);
+  logger.info(`   Uso do budget KB: ${(totalTokens / kbBudget * 100).toFixed(1)}%`);
 
   return {
     documents: processedDocs,
     stats: {
       documentsCount: docsCount,
       totalTokens,
-      limitTokens: safeLimit,
-      usagePercent: (totalTokens / safeLimit * 100).toFixed(1),
+      limitTokens: kbBudget,  // Usar kbBudget ao invés de safeLimit
+      usagePercent: (totalTokens / kbBudget * 100).toFixed(1),
       model
     }
   };
@@ -312,11 +320,73 @@ export function formatContextForPrompt(managedContext) {
   return context;
 }
 
+/**
+ * Truncar histórico de chat para caber dentro do limite de tokens
+ * Mantém as mensagens mais recentes e resume ou descarta mensagens antigas
+ * @param {Array} history - Array de mensagens {role, content}
+ * @param {number} maxTokens - Limite de tokens para o histórico
+ * @param {string} kbContext - Contexto do KB (para subtrair do orçamento total)
+ * @param {string} currentMessage - Mensagem atual (para subtrair do orçamento total)
+ * @returns {Array} Histórico truncado
+ */
+export function truncateHistory(history, maxTokens = 20000, kbContext = '', currentMessage = '') {
+  if (!history || history.length === 0) return [];
+
+  // Estimar tokens já usados pelo KB e mensagem atual
+  const kbTokens = estimateTokens(kbContext);
+  const messageTokens = estimateTokens(currentMessage);
+  const systemPromptTokens = 5000; // Estimativa conservadora para system prompt jurídico
+
+  // Calcular budget disponível para histórico
+  const availableForHistory = Math.max(0, maxTokens - kbTokens - messageTokens - systemPromptTokens);
+
+  logger.info(`\n📝 TRUNCAMENTO DE HISTÓRICO:`);
+  logger.info(`   Total budget: ${maxTokens.toLocaleString()} tokens`);
+  logger.info(`   KB Context: ${kbTokens.toLocaleString()} tokens`);
+  logger.info(`   Current Message: ${messageTokens.toLocaleString()} tokens`);
+  logger.info(`   System Prompt: ~${systemPromptTokens.toLocaleString()} tokens`);
+  logger.info(`   Available for History: ${availableForHistory.toLocaleString()} tokens`);
+  logger.info(`   History size: ${history.length} mensagens`);
+
+  // Se o histórico cabe, retornar completo
+  const totalHistoryTokens = history.reduce((sum, msg) => sum + estimateTokens(msg.content), 0);
+
+  if (totalHistoryTokens <= availableForHistory) {
+    logger.info(`   ✅ Histórico completo cabe (${totalHistoryTokens.toLocaleString()} tokens)`);
+    return history;
+  }
+
+  // Estratégia: manter as mensagens mais recentes
+  const truncatedHistory = [];
+  let currentTokens = 0;
+
+  // Percorrer do mais recente para o mais antigo
+  for (let i = history.length - 1; i >= 0; i--) {
+    const msg = history[i];
+    const msgTokens = estimateTokens(msg.content);
+
+    if (currentTokens + msgTokens <= availableForHistory) {
+      truncatedHistory.unshift(msg); // Adicionar no início
+      currentTokens += msgTokens;
+    } else {
+      // Não cabe mais - parar
+      break;
+    }
+  }
+
+  const removedCount = history.length - truncatedHistory.length;
+  logger.info(`   ✂️ Histórico truncado: ${removedCount} mensagem(ns) antiga(s) removida(s)`);
+  logger.info(`   📊 Mantidas ${truncatedHistory.length} mensagens (${currentTokens.toLocaleString()} tokens)`);
+
+  return truncatedHistory;
+}
+
 export default {
   estimateTokens,
   getModelLimit,
   getSafeContextLimit,
   extractRelevantSections,
   manageMultiDocumentContext,
-  formatContextForPrompt
+  formatContextForPrompt,
+  truncateHistory
 };

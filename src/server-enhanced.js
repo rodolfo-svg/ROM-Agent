@@ -1006,29 +1006,9 @@ app.post('/api/chat', async (req, res) => {
     const conversationId = req.session.conversationId;
 
     // 🔍 DETECÇÃO AUTOMÁTICA DE MODO EXAUSTIVO (PLANO ANTI-429)
-    // ⚡ Contar PROCESSOS (não arquivos individuais) - cada processo gera ~8 arquivos
-    const structuredDocsPath = path.join(ACTIVE_PATHS.extracted, 'structured');
-    let processCount = 0;
-    try {
-      if (fs.existsSync(structuredDocsPath)) {
-        const dirs = await fs.promises.readdir(structuredDocsPath);
-        // Cada diretório = 1 processo
-        processCount = dirs.filter(d => {
-          const fullPath = path.join(structuredDocsPath, d);
-          return fs.statSync(fullPath).isDirectory();
-        }).length;
-      }
-    } catch (e) {}
-
-    const isExhaustiveKeywords = exhaustiveJobManager.isExhaustiveRequest(message);
-    const hasManyProcesses = processCount > 3; // Mais de 3 PROCESSOS (não arquivos)
-    const isExhaustive = isExhaustiveKeywords && hasManyProcesses;
-
-    if (isExhaustive) {
-      logger.info(`🚀 Análise EXAUSTIVA com ${processCount} processos - Criando job assíncrono`);
-    } else if (isExhaustiveKeywords && !hasManyProcesses) {
-      logger.info(`⚡ Análise exaustiva com ${processCount} processo(s) - Processando ONLINE`);
-    }
+    // Desabilitado temporariamente - forçar sempre modo ONLINE
+    // O contextManager vai limitar o tamanho do contexto automaticamente
+    const isExhaustive = false;
 
     if (isExhaustive) {
       logger.info('🚀 Pedido EXAUSTIVO detectado - disparando job assíncrono', {
@@ -1385,7 +1365,10 @@ Enquanto isso, pode continuar usando o sistema normalmente.
       const messageWithContext = kbContext ? message + kbContext : message;
 
       console.log(`🔄 Enviando mensagem para agente Bedrock (${messageWithContext.length} caracteres)...`);
-      const resultado = await agent.enviar(messageWithContext);
+
+      // 🔥 PASSAR KB CONTEXT PARA O AGENTE TRUNCAR O HISTÓRICO CORRETAMENTE
+      const resultado = await agent.enviar(messageWithContext, { kbContext });
+
       console.log(`✅ Agente respondeu: sucesso=${resultado.sucesso}, resposta=${resultado.resposta?.length || 0} caracteres`);
 
       if (!resultado.sucesso) {

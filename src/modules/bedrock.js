@@ -21,6 +21,9 @@ import {
 // Integração com ROM Tools (KB, Jurisprudência, CNJ)
 import { BEDROCK_TOOLS, executeTool } from './bedrock-tools.js';
 
+// Context Manager para limitação inteligente de tokens
+import contextManager from '../utils/context-manager.js';
+
 // ============================================================
 // CONFIGURAÇÃO
 // ============================================================
@@ -152,14 +155,23 @@ export async function conversar(prompt, options = {}) {
     maxTokens = CONFIG.maxTokens,
     temperature = CONFIG.temperature,
     topP = 0.9,
-    enableTools = true  // ← NOVO: habilitar tools por padrão
+    enableTools = true,  // ← NOVO: habilitar tools por padrão
+    kbContext = ''  // ← NOVO: contexto do KB para cálculo de tokens
   } = options;
 
   const client = getBedrockRuntimeClient();
 
+  // 🔥 TRUNCAR HISTÓRICO PARA EVITAR "Input is too long"
+  const truncatedHistory = contextManager.truncateHistory(
+    historico,
+    140000,  // 140K tokens disponíveis (70% de 200K)
+    kbContext,
+    prompt
+  );
+
   // Construir mensagens iniciais
   const initialMessages = [
-    ...historico.map(msg => ({
+    ...truncatedHistory.map(msg => ({
       role: msg.role,
       content: [{ text: msg.content }]
     })),
@@ -324,13 +336,22 @@ export async function conversarStream(prompt, onChunk, options = {}) {
     systemPrompt = null,
     historico = [],
     maxTokens = CONFIG.maxTokens,
-    temperature = CONFIG.temperature
+    temperature = CONFIG.temperature,
+    kbContext = ''  // ← NOVO: contexto do KB para cálculo de tokens
   } = options;
 
   const client = getBedrockRuntimeClient();
 
+  // 🔥 TRUNCAR HISTÓRICO PARA EVITAR "Input is too long"
+  const truncatedHistory = contextManager.truncateHistory(
+    historico,
+    140000,  // 140K tokens disponíveis (70% de 200K)
+    kbContext,
+    prompt
+  );
+
   const messages = [
-    ...historico.map(msg => ({
+    ...truncatedHistory.map(msg => ({
       role: msg.role,
       content: [{ text: msg.content }]
     })),
