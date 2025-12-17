@@ -169,6 +169,9 @@ export async function conversar(prompt, options = {}) {
     prompt
   );
 
+  // 🔥 CONCATENAR KB CONTEXT DEPOIS DO TRUNCAMENTO
+  const finalPrompt = kbContext ? prompt + '\n\n' + kbContext : prompt;
+
   // Construir mensagens iniciais
   const initialMessages = [
     ...truncatedHistory.map(msg => ({
@@ -177,7 +180,7 @@ export async function conversar(prompt, options = {}) {
     })),
     {
       role: 'user',
-      content: [{ text: prompt }]
+      content: [{ text: finalPrompt }]  // 🔥 Usar prompt final com KB
     }
   ];
 
@@ -569,11 +572,10 @@ export class BedrockAgent {
   }
 
   async enviar(mensagem, options = {}) {
-    // Se houver kbContext, concatenar DEPOIS do truncamento
+    // 🔥 NÃO concatenar aqui - deixar conversar() fazer isso DEPOIS do truncamento
     const { kbContext, ...restOptions } = options;
-    const mensagemFinal = kbContext ? mensagem + kbContext : mensagem;
 
-    const resultado = await conversar(mensagemFinal, {
+    const resultado = await conversar(mensagem, {
       modelo: this.modelo,
       systemPrompt: this.systemPrompt,
       historico: this.historico,
