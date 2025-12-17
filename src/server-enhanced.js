@@ -2522,22 +2522,58 @@ app.get('/api/info', async (req, res) => {
       },
 
       // ✅ STORAGE DIAGNOSTIC (debug disco persistente)
-      storage: {
-        isRender: process.env.RENDER === 'true',
-        hasRenderEnv: !!process.env.RENDER,
-        renderValue: process.env.RENDER,
-        renderServiceName: process.env.RENDER_SERVICE_NAME || 'not set',
-        uploadFolder: process.env.UPLOAD_FOLDER || 'not set',
-        extractedFolder: process.env.EXTRACTED_FOLDER || 'not set',
-        processedFolder: process.env.PROCESSED_FOLDER || 'not set',
-        varDataExists: fs.existsSync('/var/data'),
-        varDataIsDir: fs.existsSync('/var/data') ? fs.statSync('/var/data').isDirectory() : false,
-        activePaths: {
-          upload: EXTRACTOR_CONFIG.uploadFolder,
-          extracted: EXTRACTOR_CONFIG.extractedFolder,
-          processed: EXTRACTOR_CONFIG.processedFolder
+      storage: (() => {
+        const varDataExists = fs.existsSync('/var/data');
+        let varDataStats = null;
+        let varDataError = null;
+
+        try {
+          if (varDataExists) {
+            varDataStats = fs.statSync('/var/data');
+          }
+        } catch (err) {
+          varDataError = err.message;
         }
-      },
+
+        // Tentar listar diretórios em /var
+        let varContents = null;
+        let varError = null;
+        try {
+          if (fs.existsSync('/var')) {
+            varContents = fs.readdirSync('/var');
+          }
+        } catch (err) {
+          varError = err.message;
+        }
+
+        return {
+          isRender: process.env.RENDER === 'true',
+          hasRenderEnv: !!process.env.RENDER,
+          renderValue: process.env.RENDER,
+          renderServiceName: process.env.RENDER_SERVICE_NAME || 'not set',
+          uploadFolder: process.env.UPLOAD_FOLDER || 'not set',
+          extractedFolder: process.env.EXTRACTED_FOLDER || 'not set',
+          processedFolder: process.env.PROCESSED_FOLDER || 'not set',
+
+          // /var/data checks
+          varDataExists,
+          varDataIsDir: varDataStats ? varDataStats.isDirectory() : false,
+          varDataPermissions: varDataStats ? varDataStats.mode.toString(8) : null,
+          varDataError,
+
+          // /var directory listing
+          varExists: fs.existsSync('/var'),
+          varContents,
+          varError,
+
+          // Active paths being used
+          activePaths: {
+            upload: EXTRACTOR_CONFIG.uploadFolder,
+            extracted: EXTRACTOR_CONFIG.extractedFolder,
+            processed: EXTRACTOR_CONFIG.processedFolder
+          }
+        };
+      })(),
 
       // Timestamp
       timestamp: new Date().toISOString()
