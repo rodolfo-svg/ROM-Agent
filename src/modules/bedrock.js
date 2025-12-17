@@ -185,7 +185,7 @@ export async function conversar(prompt, options = {}) {
     // ═══════════════════════════════════════════════════════════
     let currentMessages = initialMessages;
     let loopCount = 0;
-    const MAX_LOOPS = 10;  // Prevenir loops infinitos
+    const MAX_LOOPS = 100;  // Aumentado de 10 para 100 para análises exaustivas (BACKSPEC BETA)
     let totalTokensUsed = { input: 0, output: 0 };
     const toolsUsed = [];
 

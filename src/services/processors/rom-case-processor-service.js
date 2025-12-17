@@ -32,6 +32,7 @@ import progressEmitter from '../../utils/progress-emitter.js';
 import { BedrockRuntimeClient, ConverseCommand } from '@aws-sdk/client-bedrock-runtime';
 import prazosProcessuaisService from '../../modules/prazos-processuais.js';
 import * as portugues from '../../modules/portugues.js';
+import tracing from '../../../lib/tracing.js';
 
 class ROMCaseProcessorService {
   constructor() {
@@ -1303,6 +1304,22 @@ class ROMCaseProcessorService {
 
     const startTime = Date.now();
 
+    // ═══════════════════════════════════════════════════════════
+    // BACKSPEC BETA - ETAPA 1: TRACING END-TO-END
+    // ═══════════════════════════════════════════════════════════
+    const traceId = tracing.startTrace(
+      options.userId || 'system',
+      options.projectId || null,
+      casoId,
+      {
+        operation: 'case-processor',
+        documentCount: options.documentPaths?.length || 0,
+        indexLevel: options.indexLevel || 'quick',
+        generateDocument: options.generateDocument || false,
+        documentType: options.documentType || 'peticao-inicial'
+      }
+    );
+
     try {
       const {
         documentPaths = [],
@@ -1327,27 +1344,51 @@ class ROMCaseProcessorService {
         totalDocuments: documentPaths.length,
         indexLevel,
         generateDocument,
-        documentType
+        documentType,
+        traceId // Incluir trace_id no progresso
       });
 
       const results = {};
 
+      // ═══════════════════════════════════════════════════════════
       // LAYER 1: Extração
+      // ═══════════════════════════════════════════════════════════
+      const layer1RunId = tracing.startLayer(traceId, 1, 'Extração Bruta', {
+        documentCount: documentPaths.length
+      });
+
       progressEmitter.startLayer(casoId, 1, 'Extração Bruta');
       progressEmitter.addStep(casoId, `Extraindo ${documentPaths.length} documentos em paralelo`, 'processing');
+      tracing.addStep(traceId, layer1RunId, `Extraindo ${documentPaths.length} documentos em paralelo`, 'info');
 
-      results.extraction = await this.layer1_extractDocuments(
-        casoId,
-        documentPaths,
-        extractorService
-      );
+      try {
+        results.extraction = await this.layer1_extractDocuments(
+          casoId,
+          documentPaths,
+          extractorService
+        );
 
-      progressEmitter.addSuccess(casoId, `${results.extraction.length} documentos extraídos`);
-      progressEmitter.addResult(casoId, 'Total de páginas', results.extraction.reduce((sum, d) => sum + (d.pages || 0), 0));
-      progressEmitter.completeLayer(casoId, 1, {
-        documentsProcessed: results.extraction.length,
-        totalPages: results.extraction.reduce((sum, d) => sum + (d.pages || 0), 0)
-      });
+        const totalPages = results.extraction.reduce((sum, d) => sum + (d.pages || 0), 0);
+
+        progressEmitter.addSuccess(casoId, `${results.extraction.length} documentos extraídos`);
+        progressEmitter.addResult(casoId, 'Total de páginas', totalPages);
+        progressEmitter.completeLayer(casoId, 1, {
+          documentsProcessed: results.extraction.length,
+          totalPages
+        });
+
+        tracing.addStep(traceId, layer1RunId, `${results.extraction.length} documentos extraídos`, 'success', {
+          documentsProcessed: results.extraction.length,
+          totalPages
+        });
+        tracing.endLayer(traceId, layer1RunId, {
+          documentsProcessed: results.extraction.length,
+          totalPages
+        });
+      } catch (error) {
+        tracing.failLayer(traceId, layer1RunId, error);
+        throw error;
+      }
 
       // LAYER 2: Índices
       progressEmitter.startLayer(casoId, 2, 'Índices e Metadados');
