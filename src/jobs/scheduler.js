@@ -6,6 +6,7 @@
 import cron from 'node-cron';
 import { deployJob } from './deploy-job.js';
 import { logger } from '../utils/logger.js';
+import oneDriveBackup from '../../lib/onedrive-backup.js';
 
 class JobScheduler {
   constructor() {
@@ -37,6 +38,20 @@ class JobScheduler {
     }, {
       timezone: 'America/Sao_Paulo',
       description: 'Verificação de saúde do scheduler'
+    });
+
+    // Backup automático OneDrive - executa às 04h todos os dias
+    this.scheduleJob('onedrive-backup', '0 4 * * *', async () => {
+      logger.info('🔄 Iniciando backup automático para OneDrive...');
+      try {
+        const result = await oneDriveBackup.backup();
+        logger.info(`✅ Backup OneDrive concluído: ${result.success.length} itens salvos`);
+      } catch (error) {
+        logger.error('❌ Erro no backup OneDrive:', error);
+      }
+    }, {
+      timezone: 'America/Sao_Paulo',
+      description: 'Backup automático OneDrive às 04h'
     });
 
     this.isRunning = true;
