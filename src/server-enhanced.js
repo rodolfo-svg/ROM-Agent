@@ -54,6 +54,8 @@ import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/stora
 import featureFlags from '../lib/feature-flags.js';
 import spellChecker from '../lib/spell-checker.js';
 import paradigmasManager from '../lib/paradigmas-manager.js';
+import bedrockQueue from '../lib/bedrock-queue-manager.js';
+import exhaustiveJobManager from '../lib/exhaustive-job-manager.js';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
@@ -997,6 +999,79 @@ app.post('/api/chat', async (req, res) => {
     }
 
     const conversationId = req.session.conversationId;
+
+    // 🔍 DETECÇÃO AUTOMÁTICA DE MODO EXAUSTIVO (PLANO ANTI-429)
+    const isExhaustive = exhaustiveJobManager.isExhaustiveRequest(message);
+
+    if (isExhaustive) {
+      logger.info('🚀 Pedido EXAUSTIVO detectado - disparando job assíncrono', {
+        message: message.substring(0, 100),
+        conversationId,
+        projectId
+      });
+
+      // Criar job assíncrono
+      const job = await exhaustiveJobManager.createJob({
+        projectId: projectId || 'default',
+        userId: req.session.userId || 'anonymous',
+        traceId: req.headers['x-trace-id'] || `trace_${Date.now()}`,
+        request: message,
+        metadata: {
+          conversationId,
+          sessionId: req.session.id
+        }
+      });
+
+      // Retornar resposta imediata ao usuário
+      const exhaustiveResponse = `🔍 **Análise Exaustiva Iniciada**
+
+Detectei que você solicitou análise da **INTEGRALIDADE** do processo.
+Devido à complexidade e volume de informações, isso será processado como **JOB ASSÍNCRONO**.
+
+📊 **Status**: Em processamento
+⏱️ **Estimativa**: ${job.estimatedTime}
+🔗 **Acompanhe**: ${job.trackingUrl}
+🆔 **Job ID**: \`${job.jobId}\`
+
+**O que está sendo feito:**
+1. ✅ Inventariando todos os documentos do projeto
+2. 📝 Analisando cada documento detalhadamente
+3. 🔗 Consolidando informações por tema jurídico
+4. 📊 Gerando resumo executivo + tabelas estruturadas
+5. 💾 Preparando export completo (JSON + Markdown)
+
+**Você será notificado quando concluir.**
+Enquanto isso, pode continuar usando o sistema normalmente.
+
+*Para acompanhar o progresso em tempo real, acesse: \`GET ${job.trackingUrl}\`*`;
+
+      // Adicionar resposta ao histórico
+      history.push({
+        role: 'assistant',
+        content: exhaustiveResponse,
+        timestamp: new Date(),
+        isExhaustiveJob: true,
+        jobId: job.jobId
+      });
+
+      // Salvar na conversação
+      conversationsManager.addMessage(conversationId, {
+        role: 'assistant',
+        content: exhaustiveResponse
+      });
+
+      // Retornar resposta
+      return res.json({
+        response: exhaustiveResponse,
+        conversationId,
+        exhaustiveJob: {
+          jobId: job.jobId,
+          status: job.status,
+          trackingUrl: job.trackingUrl,
+          estimatedTime: job.estimatedTime
+        }
+      });
+    }
 
     // ✅ VERIFICAÇÃO E ANÁLISE DO SISTEMA DE AUTO-ATUALIZAÇÃO
     let contextoEnriquecido = null;
@@ -4564,25 +4639,221 @@ app.post('/api/paradigmas/:id/feedback', generalLimiter, async (req, res) => {
   }
 });
 
+logger.info('✅ APIs de Paradigmas inicializadas (BETA PRÉ-MULTIUSUÁRIOS - BETA-1)');
+
+// ============================================
+// 🔄 EXHAUSTIVE JOBS APIs (PLANO ANTI-429)
+// ============================================
+
 /**
- * GET /api/paradigmas/stats/general
- * Retorna estatísticas gerais dos paradigmas
+ * POST /api/jobs/exhaustive
+ * Cria job de análise exaustiva
  */
-app.get('/api/paradigmas/stats/general', generalLimiter, async (req, res) => {
+app.post('/api/jobs/exhaustive', generalLimiter, async (req, res) => {
   try {
-    const stats = await paradigmasManager.getStatistics();
+    const { projectId, request: userRequest, metadata = {} } = req.body;
+    const userId = req.session?.user?.id || 'anonymous';
+    const traceId = req.headers['x-trace-id'] || `trace_${Date.now()}`;
+
+    if (!projectId || !userRequest) {
+      return res.status(400).json({
+        error: 'projectId e request são obrigatórios'
+      });
+    }
+
+    // Criar job
+    const job = await exhaustiveJobManager.createJob({
+      projectId,
+      userId,
+      traceId,
+      request: userRequest,
+      metadata
+    });
+
+    logger.info('🚀 Job de análise exaustiva criado via API', {
+      jobId: job.jobId,
+      projectId,
+      userId,
+      traceId
+    });
 
     res.json({
       success: true,
-      stats
+      job: {
+        jobId: job.jobId,
+        status: job.status,
+        message: job.message,
+        estimatedTime: job.estimatedTime,
+        trackingUrl: job.trackingUrl
+      }
     });
   } catch (error) {
-    logger.error('❌ Erro ao obter estatísticas de paradigmas:', error);
+    logger.error('❌ Erro ao criar job exaustivo:', error);
     res.status(500).json({ error: error.message });
   }
 });
 
-logger.info('✅ APIs de Paradigmas inicializadas (BETA PRÉ-MULTIUSUÁRIOS - BETA-1)');
+/**
+ * GET /api/jobs/:jobId/status
+ * Obtém status de um job
+ */
+app.get('/api/jobs/:jobId/status', generalLimiter, (req, res) => {
+  try {
+    const { jobId } = req.params;
+
+    const status = exhaustiveJobManager.getJobStatus(jobId);
+
+    if (!status) {
+      return res.status(404).json({
+        error: 'Job não encontrado'
+      });
+    }
+
+    res.json({
+      success: true,
+      status
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao obter status do job:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/jobs/:jobId/results
+ * Obtém resultados de um job completo
+ */
+app.get('/api/jobs/:jobId/results', generalLimiter, (req, res) => {
+  try {
+    const { jobId } = req.params;
+
+    const results = exhaustiveJobManager.getJobResults(jobId);
+
+    if (!results) {
+      return res.status(404).json({
+        error: 'Resultados não disponíveis. Job pode ainda estar em andamento ou não existir.'
+      });
+    }
+
+    res.json({
+      success: true,
+      results
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao obter resultados do job:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/jobs/project/:projectId
+ * Lista todos os jobs de um projeto
+ */
+app.get('/api/jobs/project/:projectId', generalLimiter, (req, res) => {
+  try {
+    const { projectId } = req.params;
+
+    const jobs = exhaustiveJobManager.getProjectJobs(projectId);
+
+    res.json({
+      success: true,
+      projectId,
+      count: jobs.length,
+      jobs
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao listar jobs do projeto:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/jobs/user/:userId
+ * Lista todos os jobs de um usuário
+ */
+app.get('/api/jobs/user/:userId', generalLimiter, (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const jobs = exhaustiveJobManager.getUserJobs(userId);
+
+    res.json({
+      success: true,
+      userId,
+      count: jobs.length,
+      jobs
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao listar jobs do usuário:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * DELETE /api/jobs/:jobId
+ * Cancela um job em andamento
+ */
+app.delete('/api/jobs/:jobId', generalLimiter, (req, res) => {
+  try {
+    const { jobId } = req.params;
+
+    const cancelled = exhaustiveJobManager.cancelJob(jobId);
+
+    if (!cancelled) {
+      return res.status(404).json({
+        error: 'Job não encontrado ou já concluído'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Job cancelado com sucesso'
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao cancelar job:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/bedrock/queue/status
+ * Obtém status da fila do Bedrock
+ */
+app.get('/api/bedrock/queue/status', generalLimiter, (req, res) => {
+  try {
+    const status = bedrockQueue.getQueueStatus();
+    const metrics = bedrockQueue.getMetrics();
+
+    res.json({
+      success: true,
+      queue: status,
+      metrics
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao obter status da fila:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/bedrock/queue/metrics
+ * Obtém métricas da fila do Bedrock
+ */
+app.get('/api/bedrock/queue/metrics', generalLimiter, (req, res) => {
+  try {
+    const metrics = bedrockQueue.getMetrics();
+
+    res.json({
+      success: true,
+      metrics
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao obter métricas da fila:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+logger.info('✅ APIs de Exhaustive Jobs e Bedrock Queue inicializadas (PLANO ANTI-429)');
 
 // 📊 Endpoint para listar documentos estruturados (7 tipos)
 app.get('/api/kb/structured-documents', async (req, res) => {
