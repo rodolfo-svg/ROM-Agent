@@ -1487,7 +1487,7 @@ app.post('/api/chat-with-tools', async (req, res) => {
 Quando precisar de jurisprudência ou precedentes judiciais para fundamentar sua resposta, use a ferramenta pesquisar_jurisprudencia automaticamente.
 
 Sempre cite as fontes corretamente e formate as referências em ABNT.`,
-      historico: history.slice(-10) // Últimas 10 mensagens
+      historico: history.slice(-5) // Últimas 5 mensagens (reduzido para evitar overflow de contexto)
     });
 
     if (!resultado.sucesso) {
