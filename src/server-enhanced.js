@@ -48,6 +48,7 @@ import caseProcessorSSE from './routes/case-processor-sse.js';
 import certidoesDJEService from './services/certidoes-dje-service.js';
 import multiAgentPipelineService from './services/multi-agent-pipeline-service.js';
 import autoPipelineService from './services/auto-pipeline-service.js';
+import { DocumentDeduplicator } from '../lib/document-deduplicator.js';
 import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
@@ -95,6 +96,10 @@ const modelMonitor = new ModelMonitor();
 // Inicializar validador de qualidade
 const qualityValidator = new QualityValidator();
 console.log('✅ Validador de Qualidade inicializado - evita retrabalho');
+
+// Inicializar deduplicador de documentos
+const documentDeduplicator = new DocumentDeduplicator();
+console.log('✅ Deduplicador de Documentos inicializado - evita duplicatas no KB');
 
 // Inicializar sistema de upload sincronizado
 let uploadSync = null;
@@ -1920,6 +1925,25 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
           // Ler conteúdo do arquivo extraído
           const extractedText = await fs.promises.readFile(extractedTextPath, 'utf8');
 
+          // 🔍 VERIFICAR DUPLICATAS usando SHA256
+          if (documentDeduplicator.isDuplicate(extractedText)) {
+            const original = documentDeduplicator.getOriginal(extractedText);
+            console.log(`   ⚠️ DUPLICATA DETECTADA: ${file.originalname}`);
+            console.log(`   📄 Original: ${original.filename} (${original.uploadedAt})`);
+
+            extractions.push({
+              filename: file.originalname,
+              success: false,
+              skipped: true,
+              reason: 'duplicate',
+              originalDocument: original.filename,
+              message: `Documento duplicado. Original: "${original.filename}" enviado em ${new Date(original.uploadedAt).toLocaleString('pt-BR')}`
+            });
+
+            // Pular para próximo arquivo
+            continue;
+          }
+
           // Criar nome único para KB (remover extensão se já houver .txt)
           const baseFilename = file.originalname.replace(/\.txt$/i, '');
           const kbPath = path.join(ACTIVE_PATHS.kb, 'documents', `${Date.now()}_${baseFilename}.txt`);
@@ -1930,6 +1954,14 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
           // Copiar arquivo principal
           await fs.promises.copyFile(extractedTextPath, kbPath);
           console.log(`   💾 KB: Copiado ${path.basename(kbPath)}`);
+
+          // 📝 REGISTRAR no deduplicador
+          const docHash = documentDeduplicator.register(
+            path.basename(kbPath),
+            extractedText,
+            file.originalname
+          );
+          console.log(`   🔐 Hash SHA256: ${docHash.substring(0, 16)}...`);
 
           // 🚀 CORREÇÃO CRÍTICA: Copiar os 7 documentos estruturados para o KB
           const structuredDocs = [];

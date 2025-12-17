@@ -1,1 +1,24 @@
-[]
+[
+  {
+    "id": "kb-1765947970424-rlhkvim98",
+    "name": "teste_kb.txt",
+    "type": "text/plain",
+    "size": 93,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1765918931923_teste_kb.txt.txt",
+    "userId": "system",
+    "userName": "Sistema",
+    "uploadedAt": "2025-12-16T21:02:11.923Z",
+    "extractedText": "Teste de upload para KB\nEste é um arquivo de teste simples para validar a cópia para o KB.\n",
+    "textLength": 91,
+    "metadata": {
+      "hash": "d52e6b1bb2ca524a",
+      "wordCount": 20,
+      "toolsUsed": [
+        "direct-read",
+        "33-ferramentas-processamento",
+        "10-processadores-otimizacao"
+      ],
+      "reindexedAt": "2025-12-17T05:06:10.424Z"
+    }
+  }
+]
