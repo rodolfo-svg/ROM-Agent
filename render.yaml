@@ -30,6 +30,16 @@ services:
       - key: PORT
         value: 10000
 
+      # ✅ FORÇAR USO DO DISCO PERSISTENTE /var/data
+      - key: RENDER
+        value: true
+      - key: UPLOAD_FOLDER
+        value: /var/data/upload
+      - key: EXTRACTED_FOLDER
+        value: /var/data/extracted
+      - key: PROCESSED_FOLDER
+        value: /var/data/processed
+
       # AWS Bedrock (obrigatório)
       - key: AWS_ACCESS_KEY_ID
         sync: false
