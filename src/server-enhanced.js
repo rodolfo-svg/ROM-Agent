@@ -2521,6 +2521,21 @@ app.get('/api/info', async (req, res) => {
         external: Math.round(memoryUsage.external / 1024 / 1024) + ' MB'
       },
 
+      // ✅ STORAGE DIAGNOSTIC (debug disco persistente)
+      storage: {
+        isRender: process.env.RENDER === 'true',
+        hasRenderEnv: !!process.env.RENDER,
+        renderValue: process.env.RENDER,
+        uploadFolder: process.env.UPLOAD_FOLDER || 'not set',
+        extractedFolder: process.env.EXTRACTED_FOLDER || 'not set',
+        processedFolder: process.env.PROCESSED_FOLDER || 'not set',
+        activePaths: {
+          upload: EXTRACTOR_CONFIG.uploadFolder,
+          extracted: EXTRACTOR_CONFIG.extractedFolder,
+          processed: EXTRACTOR_CONFIG.processedFolder
+        }
+      },
+
       // Timestamp
       timestamp: new Date().toISOString()
     };
