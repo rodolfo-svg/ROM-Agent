@@ -3522,21 +3522,7 @@ app.post('/api/kb/approve-and-clean', authSystem.authMiddleware(), (req, res) =>
   }
 });
 
-// Remover documento específico do KB
-app.delete('/api/kb/documents/:docId', authSystem.authMiddleware(), (req, res) => {
-  try {
-    const { docId } = req.params;
-    const result = kbCleaner.removeDocument(docId);
-
-    res.json({
-      success: result.success,
-      result
-    });
-  } catch (error) {
-    console.error('Erro ao remover documento:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
+// REMOVIDO: Rota antiga de deleção de KB (substituída pela rota BACKSPEC BETA linha ~3990)
 
 // Limpar arquivos órfãos
 app.post('/api/kb/clean-orphans', authSystem.authMiddleware(), authSystem.requireRole('master_admin'), (req, res) => {
@@ -3804,52 +3790,7 @@ app.get('/api/kb/documents/:id/download', authSystem.authMiddleware(), (req, res
   }
 });
 
-// Deletar documento do KB (requer autenticação e ownership)
-app.delete('/api/kb/documents/:id', authSystem.authMiddleware(), (req, res) => {
-  try {
-    const { id } = req.params;
-    const userId = req.user.userId;
-    const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
-
-    if (!fs.existsSync(kbDocsPath)) {
-      return res.status(404).json({ error: 'Documento não encontrado' });
-    }
-
-    const data = fs.readFileSync(kbDocsPath, 'utf8');
-    let allDocs = JSON.parse(data);
-    const docIndex = allDocs.findIndex(d => d.id === id);
-
-    if (docIndex === -1) {
-      return res.status(404).json({ error: 'Documento não encontrado' });
-    }
-
-    const doc = allDocs[docIndex];
-
-    // Verificar ownership
-    if (doc.userId !== userId && req.user.role !== 'master_admin') {
-      return res.status(403).json({ error: 'Acesso negado' });
-    }
-
-    // Deletar arquivo físico
-    if (fs.existsSync(doc.path)) {
-      fs.unlinkSync(doc.path);
-    }
-
-    // Remover do JSON
-    allDocs.splice(docIndex, 1);
-    fs.writeFileSync(kbDocsPath, JSON.stringify(allDocs, null, 2));
-
-    console.log(`🗑️ KB: Documento ${doc.name} deletado por ${req.user.name}`);
-
-    res.json({
-      success: true,
-      message: 'Documento excluído com sucesso'
-    });
-  } catch (error) {
-    console.error('❌ Erro ao deletar documento KB:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
+// REMOVIDO: Rota antiga de deleção de KB com auth (substituída pela rota BACKSPEC BETA linha ~3990)
 
 // 📚 Novo endpoint: Listar documentos REAIS extraídos em KB/documents/
 app.get('/api/kb/extracted-documents', async (req, res) => {
