@@ -1,13 +1,14 @@
 /**
  * ROM Case Processor Service
  *
- * Arquitetura Layer Cake com 5 Camadas + Layer 4.5 Jurimetria + Índice Progressivo
+ * Arquitetura Layer Cake com 5 Camadas + Layer 4.5 Jurimetria + Layer 4.7 Certidões + Índice Progressivo
  *
  * LAYER 1: Extração Bruta (executada uma vez)
  * LAYER 2: Índices e Metadados (cache persistente)
  * LAYER 3: Análises Especializadas (processamento paralelo)
  * LAYER 4: Jurisprudência Verificável (busca on-demand)
  * LAYER 4.5: Jurimetria - Análise do Magistrado Prevento (padrão de julgamento)
+ * LAYER 4.7: Certidões DJe/DJEN - Download automático de certidões do CNJ (integração real)
  * LAYER 5: Redação Final (apenas quando solicitado)
  *
  * + Índice Progressivo:
@@ -33,6 +34,7 @@ import { BedrockRuntimeClient, ConverseCommand } from '@aws-sdk/client-bedrock-r
 import prazosProcessuaisService from '../../modules/prazos-processuais.js';
 import * as portugues from '../../modules/portugues.js';
 import tracing from '../../../lib/tracing.js';
+import certidoesDJEService from '../certidoes-dje-service.js';
 
 class ROMCaseProcessorService {
   constructor() {
@@ -1577,6 +1579,118 @@ class ROMCaseProcessorService {
       } catch (error) {
         tracing.failLayer(traceId, layer45RunId, error);
         throw error;
+      }
+
+      // LAYER 4.7: CERTIDÕES DJE/DJEN (CNJ)
+      const layer47RunId = tracing.startLayer(traceId, '4.7', 'Certidões DJe/DJEN', {});
+
+      progressEmitter.startLayer(casoId, '4.7', 'Certidões DJe/DJEN');
+      progressEmitter.addStep(casoId, 'Buscando certidões de publicação no CNJ', 'processing');
+      tracing.addStep(traceId, layer47RunId, 'Buscando certidões de publicação no CNJ', 'info');
+
+      try {
+        // Extrair número do processo dos metadados
+        const numeroProcesso = results.indexes?.metadata?.numeroProcesso ||
+                              results.analysis?.consolidacoes?.numeroProcesso;
+
+        const tribunal = results.indexes?.metadata?.tribunal ||
+                        results.analysis?.consolidacoes?.tribunal ||
+                        'TJRJ';
+
+        if (numeroProcesso) {
+          progressEmitter.addInfo(casoId, `Processo identificado: ${numeroProcesso}`);
+          tracing.addStep(traceId, layer47RunId, `Processo identificado: ${numeroProcesso}`, 'info');
+
+          // Buscar certidões DJe e DJEN
+          results.certidoes = {
+            dje: null,
+            djen: null,
+            executada: false
+          };
+
+          try {
+            // Tentar buscar DJe
+            const certidaoDJe = await certidoesDJEService.baixarCertidao({
+              numeroProcesso,
+              tribunal,
+              tipo: 'dje',
+              projectId: options.projectId || '1',
+              adicionarAoKB: true  // Adiciona automaticamente ao KB
+            });
+
+            results.certidoes.dje = certidaoDJe;
+            progressEmitter.addSuccess(casoId, `Certidão DJe baixada: ${certidaoDJe.numeroCertidao}`);
+
+            if (certidaoDJe.prazo) {
+              progressEmitter.addResult(casoId, 'Prazo final DJe', certidaoDJe.prazo.dataFinal);
+            }
+
+            tracing.addStep(traceId, layer47RunId, `Certidão DJe baixada: ${certidaoDJe.numeroCertidao}`, 'success');
+          } catch (erroDJe) {
+            progressEmitter.addWarning(casoId, `Certidão DJe não encontrada: ${erroDJe.message}`);
+            tracing.addStep(traceId, layer47RunId, `Certidão DJe não encontrada: ${erroDJe.message}`, 'warning');
+          }
+
+          try {
+            // Tentar buscar DJEN
+            const certidaoDJEN = await certidoesDJEService.baixarCertidao({
+              numeroProcesso,
+              tribunal,
+              tipo: 'djen',
+              projectId: options.projectId || '1',
+              adicionarAoKB: true
+            });
+
+            results.certidoes.djen = certidaoDJEN;
+            progressEmitter.addSuccess(casoId, `Certidão DJEN baixada: ${certidaoDJEN.numeroCertidao}`);
+
+            if (certidaoDJEN.prazo) {
+              progressEmitter.addResult(casoId, 'Prazo final DJEN', certidaoDJEN.prazo.dataFinal);
+            }
+
+            tracing.addStep(traceId, layer47RunId, `Certidão DJEN baixada: ${certidaoDJEN.numeroCertidao}`, 'success');
+          } catch (erroDJEN) {
+            progressEmitter.addWarning(casoId, `Certidão DJEN não encontrada: ${erroDJEN.message}`);
+            tracing.addStep(traceId, layer47RunId, `Certidão DJEN não encontrada: ${erroDJEN.message}`, 'warning');
+          }
+
+          results.certidoes.executada = true;
+
+          const totalCertidoes = (results.certidoes.dje ? 1 : 0) + (results.certidoes.djen ? 1 : 0);
+          progressEmitter.addResult(casoId, 'Certidões encontradas', totalCertidoes);
+          progressEmitter.completeLayer(casoId, '4.7');
+
+          tracing.addStep(traceId, layer47RunId, `Layer 4.7 concluída: ${totalCertidoes} certidões`, 'success', {
+            totalCertidoes,
+            dje: !!results.certidoes.dje,
+            djen: !!results.certidoes.djen
+          });
+
+          tracing.endLayer(traceId, layer47RunId, {
+            executada: true,
+            totalCertidoes,
+            dje: !!results.certidoes.dje,
+            djen: !!results.certidoes.djen
+          });
+
+        } else {
+          progressEmitter.addInfo(casoId, 'Número do processo não identificado - Layer 4.7 (certidões) não será executada');
+          progressEmitter.completeLayer(casoId, '4.7', { skipped: true });
+          results.certidoes = { executada: false, motivo: 'Número do processo não identificado' };
+
+          tracing.addStep(traceId, layer47RunId, 'Layer 4.7 pulada: número do processo não identificado', 'info');
+          tracing.endLayer(traceId, layer47RunId, { executada: false, motivo: 'Número do processo não identificado' });
+        }
+      } catch (error) {
+        progressEmitter.addWarning(casoId, `Erro ao buscar certidões: ${error.message}`);
+        progressEmitter.completeLayer(casoId, '4.7', { error: true });
+        results.certidoes = { executada: false, erro: error.message };
+
+        tracing.addStep(traceId, layer47RunId, `Erro ao buscar certidões: ${error.message}`, 'error');
+        tracing.endLayer(traceId, layer47RunId, { executada: false, erro: error.message });
+
+        // Não falhar o processamento inteiro se certidões falharem
+        console.warn('⚠️  Erro ao buscar certidões (não crítico):', error.message);
       }
 
       // LAYER 5: Redação Final (somente se solicitado)
