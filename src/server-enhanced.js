@@ -46,6 +46,7 @@ import caseProcessorRouter from './routes/case-processor.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
 import certidoesDJEService from './services/certidoes-dje-service.js';
 import multiAgentPipelineService from './services/multi-agent-pipeline-service.js';
+import autoPipelineService from './services/auto-pipeline-service.js';
 import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
@@ -1468,26 +1469,29 @@ app.post('/api/approve-document', async (req, res) => {
 // API - Chat com Tool Use (Jurisprudência Automática)
 app.post('/api/chat-with-tools', async (req, res) => {
   try {
-    const { message, modelo = 'amazon.nova-pro-v1:0', systemPrompt = null } = req.body;
+    const { message, modelo = null, systemPrompt = null, tipo = null, prioridade = 'equilibrado' } = req.body;
     const history = getHistory(req.session.id);
 
-    console.log('🔧 [Tool Use] Processando mensagem com ferramentas automáticas');
+    console.log('🤖 [Auto Pipeline] Processando com seleção automática de estratégia');
 
-    // Usar conversação com tool use
-    const resultado = await conversarComTools(message, {
-      modelo,
+    // ═══════════════════════════════════════════════════════════
+    // USAR AUTO PIPELINE SERVICE (Seleção automática inteligente)
+    // ═══════════════════════════════════════════════════════════
+    const resultado = await autoPipelineService.process({
+      prompt: message,
+      tipo,
+      prioridade,
+      forceModel: modelo,  // Se usuário passou modelo específico, respeitar
       systemPrompt: systemPrompt || `Você é o ROM Agent, um assistente especializado em Direito brasileiro.
 
 Quando precisar de jurisprudência ou precedentes judiciais para fundamentar sua resposta, use a ferramenta pesquisar_jurisprudencia automaticamente.
 
 Sempre cite as fontes corretamente e formate as referências em ABNT.`,
-      historico: history.slice(-10), // Últimas 10 mensagens
-      maxTokens: 4096,
-      temperature: 0.7
+      historico: history.slice(-10) // Últimas 10 mensagens
     });
 
     if (!resultado.sucesso) {
-      return res.status(500).json({ error: resultado.erro });
+      return res.status(500).json({ error: resultado.erro || 'Erro no processamento' });
     }
 
     // Adicionar ao histórico
@@ -1501,14 +1505,18 @@ Sempre cite as fontes corretamente e formate as referências em ABNT.`,
       role: 'assistant',
       content: resultado.resposta,
       toolsUsadas: resultado.toolsUsadas || [],
+      modelo: resultado.modelo,
+      estrategia: resultado.estrategia,
       timestamp: new Date()
     });
 
     res.json({
       response: resultado.resposta,
       toolsUsadas: resultado.toolsUsadas || [],
-      iteracoes: resultado.iteracoes || 1,
-      modelo,
+      modelo: resultado.modelo,
+      estrategia: resultado.estrategia,
+      selecao: resultado.selecao,  // Metadados da seleção automática
+      duracao: resultado.duracao,
       uso: resultado.uso
     });
 
