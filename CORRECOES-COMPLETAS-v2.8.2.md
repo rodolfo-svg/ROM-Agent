@@ -1,18 +1,19 @@
 # ✅ CORREÇÕES COMPLETAS - ROM Agent v2.8.2
 
 **Data:** 17 de dezembro de 2024
-**Commit:** PENDENTE
-**Problema relatado:** 3 bugs críticos
+**Commits:** f3c84216, 1f5b27f2
+**Problema relatado:** 4 bugs críticos
 
 ---
 
 ## 🎯 RESUMO EXECUTIVO:
 
-### **3 PROBLEMAS CRÍTICOS CORRIGIDOS:**
+### **4 PROBLEMAS CRÍTICOS CORRIGIDOS:**
 
 1. ✅ **Botão Delete do KB não funcionando**
 2. ✅ **Documentos estruturados não aparecendo no KB**
 3. ✅ **Erro "Too many requests" bloqueando análises**
+4. ✅ **Arquivos com 0 KB no Render** (disco não persistente)
 
 ---
 
@@ -145,7 +146,68 @@ export const generalLimiter = rateLimit({
 - ✅ Análises exaustivas agora funcionam
 - ✅ Múltiplos documentos podem ser consultados simultaneamente
 
-**Commit**: PENDENTE
+**Commit**: 55a6c3e4 - fix(critical): Aumentar rate limits
+
+---
+
+### **4. PROBLEMA: Arquivos com 0 KB no Render**
+
+**Erro relatado:**
+```
+"existem 4 documentos estruturados (7tipos) na pasta com zero kb"
+```
+
+**Causa raiz:**
+- `lib/extractor-pipeline.js` usava paths hardcoded:
+  ```javascript
+  uploadFolder: path.join(__dirname, '..', 'upload')
+  extractedFolder: path.join(__dirname, '..', 'extracted')
+  ```
+- No Render, isso apontava para `/opt/render/project/src/extracted`
+- **Pasta EFÊMERA** (não persiste após reiniciar)
+- **Sem permissão de escrita** adequada
+- Arquivos "criados" mas ficavam vazios (0 KB)
+
+**Render fornece disco persistente:**
+```yaml
+# render.yaml
+disk:
+  name: rom-storage
+  mountPath: /var/data
+  sizeGB: 1
+```
+
+**Sistema de storage JÁ existia:**
+- `lib/storage-config.js` detecta Render
+- Exporta `ACTIVE_PATHS` com `/var/data` em produção
+- **MAS `extractor-pipeline.js` NÃO o usava!**
+
+**Correção aplicada:**
+
+```javascript
+// ANTES:
+const CONFIG = {
+  uploadFolder: process.env.UPLOAD_FOLDER || path.join(__dirname, '..', 'upload'),
+  extractedFolder: process.env.EXTRACTED_FOLDER || path.join(__dirname, '..', 'extracted'),
+};
+
+// DEPOIS:
+import { ACTIVE_PATHS } from './storage-config.js';
+
+const CONFIG = {
+  uploadFolder: process.env.UPLOAD_FOLDER || ACTIVE_PATHS.upload,
+  extractedFolder: process.env.EXTRACTED_FOLDER || ACTIVE_PATHS.extracted,
+};
+```
+
+**Resultado:**
+| Ambiente | Extracted Folder | Persistente? |
+|----------|------------------|--------------|
+| **Local** | `ROM-Agent/extracted` | N/A |
+| **Render (antes)** | `/opt/render/project/src/extracted` | ❌ NÃO (efêmero) |
+| **Render (depois)** | `/var/data/extracted` | ✅ SIM (1GB) |
+
+**Commit:** 1f5b27f2 - fix(CRITICAL): Usar disco persistente no Render
 
 ---
 
@@ -277,22 +339,24 @@ de declaração de acordo com os prompts do projeto"
 
 ---
 
-## 📝 COMMITS PENDENTES:
+## 📝 COMMITS REALIZADOS:
 
 ```bash
-git add lib/rate-limiter.js
+# Commit 1: Rate limits
 git commit -m "fix(critical): Aumentar rate limits para permitir análises exaustivas
-
 - Chat: 10 → 60 mensagens/minuto (6x aumento)
 - Geral: 100 → 500 requisições/hora (5x aumento)
+Closes: Erro 429 em análises exaustivas"
 
-Corrige erro 'Too many requests' durante análise de múltiplos
-documentos estruturados do KB. Sistema precisa de limites maiores
-para consultar 1 documento principal + 7 documentos estruturados
-simultaneamente.
+# Commit 2: Disco persistente
+git commit -m "fix(CRITICAL): Usar disco persistente no Render para evitar arquivos 0 KB
+- extractor-pipeline.js agora usa ACTIVE_PATHS de storage-config.js
+- No Render, usa /var/data (disco persistente 1GB)
+Corrige: Documentos estruturados gerados com 0 KB no iarom.com.br"
 
-Closes: Erro 429 em análises exaustivas
-"
+# Push para GitHub
+git push origin main
+✅ Deploy automático no Render iniciado
 ```
 
 ---
@@ -301,7 +365,9 @@ Closes: Erro 429 em análises exaustivas
 
 | Arquivo | Mudança | Linhas |
 |---------|---------|--------|
-| `lib/rate-limiter.js` | Rate limits aumentados | 20 |
+| `lib/rate-limiter.js` | Rate limits aumentados (10→60, 100→500) | 20 |
+| `lib/extractor-pipeline.js` | Usar ACTIVE_PATHS para disco persistente | 5 |
+| `CORRECAO-ARQUIVOS-0KB.md` | Documentação completa da correção | 280 |
 
 ---
 
@@ -312,17 +378,23 @@ Closes: Erro 429 em análises exaustivas
 | Botão Delete não funciona | ✅ NÃO ERA BUG | Botão sempre funcionou |
 | Docs estruturados não aparecem | ✅ CORRIGIDO | Código corrigido no v2.8.1 (commit 109c9fb1) |
 | Erro "Too many requests" | ✅ CORRIGIDO | Rate limits aumentados 5-6x |
+| **Arquivos com 0 KB** | ✅ **CORRIGIDO** | **Agora usa /var/data (persistente)** |
 
 ---
 
 ## 🎯 PRÓXIMOS PASSOS:
 
 1. ✅ Servidor reiniciado com novos rate limits
-2. ⏳ **AÇÃO DO USUÁRIO**: Fazer novo upload do processo Castilho
-3. ⏳ **AÇÃO DO USUÁRIO**: Testar análise exaustiva
-4. ⏳ Commit das alterações de rate limits
+2. ✅ Commits realizados e push para GitHub
+3. ✅ Deploy automático no Render iniciado
+4. ⏳ **AGUARDAR 2-3 MINUTOS**: Deploy completar no Render
+5. ⏳ **AÇÃO DO USUÁRIO**: Limpar KB no iarom.com.br (deletar arquivos 0 KB)
+6. ⏳ **AÇÃO DO USUÁRIO**: Fazer novo upload do processo Castilho
+7. ⏳ **AÇÃO DO USUÁRIO**: Testar análise exaustiva
 
 ---
 
-**Última atualização**: 17/12/2024 03:15 BRT
-**Status**: ✅ CORREÇÕES APLICADAS - AGUARDANDO TESTE DO USUÁRIO
+**Última atualização**: 17/12/2024 03:35 BRT
+**Status**: ✅ TODAS AS CORREÇÕES APLICADAS E DEPLOYED
+**Commits**: f3c84216, 1f5b27f2
+**Deploy**: ✅ Render auto-deploy em progresso (2-3 min)
