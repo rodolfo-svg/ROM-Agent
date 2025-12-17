@@ -31,7 +31,7 @@ import contextManager from '../utils/context-manager.js';
 const CONFIG = {
   region: process.env.AWS_REGION || 'us-east-1',
   defaultModel: 'anthropic.claude-sonnet-4-5-20250929-v1:0',  // Sonnet 4.5 como padrão
-  maxTokens: 65536,  // 65K tokens output (Sonnet 4.5 suporta até 131k) - otimizado para análises completas
+  maxTokens: 64000,  // 64K tokens output (limite do Bedrock para Sonnet 4.5)
   temperature: 0.7,
   autoModelSelection: true,  // Habilitar seleção automática de modelo
   maxContextTokens: 200000  // Limite de contexto de entrada (200k tokens - Sonnet 4.5)
