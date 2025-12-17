@@ -1,12 +1,13 @@
 /**
  * ROM Case Processor Service
  *
- * Arquitetura Layer Cake com 5 Camadas + Índice Progressivo
+ * Arquitetura Layer Cake com 5 Camadas + Layer 4.5 Jurimetria + Índice Progressivo
  *
  * LAYER 1: Extração Bruta (executada uma vez)
  * LAYER 2: Índices e Metadados (cache persistente)
  * LAYER 3: Análises Especializadas (processamento paralelo)
  * LAYER 4: Jurisprudência Verificável (busca on-demand)
+ * LAYER 4.5: Jurimetria - Análise do Magistrado Prevento (padrão de julgamento)
  * LAYER 5: Redação Final (apenas quando solicitado)
  *
  * + Índice Progressivo:
@@ -26,6 +27,7 @@ import parallelProcessorService from './parallel-processor-service.js';
 import romProjectService from '../rom-project-service.js';
 import microfichamentoTemplatesService from '../microfichamento-templates-service.js';
 import jurisprudenceSearchService from '../jurisprudence-search-service.js';
+import jurimetriaIntegration from './jurimetria-integration.js';
 import progressEmitter from '../../utils/progress-emitter.js';
 import { BedrockRuntimeClient, ConverseCommand } from '@aws-sdk/client-bedrock-runtime';
 import prazosProcessuaisService from '../../modules/prazos-processuais.js';
@@ -1189,7 +1191,52 @@ class ROMCaseProcessorService {
         console.log(`✅ Jurisprudência (MD): ${jurisMdPath}`);
       }
 
-      // 6. DOCUMENTO FINAL (se gerado)
+      // 6. JURIMETRIA (Análise do Magistrado)
+      if (results.jurimetria && results.jurimetria.executada) {
+        console.log('⚖️  Gerando relatório de jurimetria...');
+
+        const jurimetriaPath = path.join(baseDir, 'jurimetria-magistrado.json');
+        await fs.writeFile(jurimetriaPath, JSON.stringify(results.jurimetria, null, 2), 'utf-8');
+        exportedFiles.jurimetria = jurimetriaPath;
+
+        // Markdown com relatório completo
+        let jurimetriaMd = results.jurimetria.relatorioCompleto || '';
+
+        // Se não houver relatório completo, gerar um resumo
+        if (!jurimetriaMd) {
+          jurimetriaMd = '# ANÁLISE JURÍMÉTRICA DO MAGISTRADO\n\n';
+          jurimetriaMd += `**Magistrado:** ${results.jurimetria.magistrado}\n`;
+          jurimetriaMd += `**Total de decisões analisadas:** ${results.jurimetria.totalDecisoes || 0}\n`;
+          jurimetriaMd += `**Decisões validadas:** ${results.jurimetria.decisoesValidadas || 0}\n`;
+          jurimetriaMd += `**Precedentes favoráveis:** ${results.jurimetria.precedentesFavoraveis || 0}\n`;
+          jurimetriaMd += `**Precedentes desfavoráveis:** ${results.jurimetria.precedentesDesfavoraveis || 0}\n`;
+          if (results.jurimetria.contradicoes) {
+            jurimetriaMd += `**Contradições identificadas:** ${results.jurimetria.contradicoes}\n`;
+          }
+          jurimetriaMd += `\n---\n\n`;
+
+          // Adicionar quadros se existirem
+          if (results.jurimetria.quadros) {
+            if (results.jurimetria.quadros.amoldamento) {
+              jurimetriaMd += results.jurimetria.quadros.amoldamento + '\n\n';
+            }
+            if (results.jurimetria.quadros.distinguishing && results.jurimetria.quadros.distinguishing.length > 0) {
+              results.jurimetria.quadros.distinguishing.forEach(dist => {
+                jurimetriaMd += dist + '\n\n';
+              });
+            }
+          }
+        }
+
+        const jurimetriaMdPath = path.join(baseDir, 'jurimetria-magistrado.md');
+        await fs.writeFile(jurimetriaMdPath, jurimetriaMd, 'utf-8');
+        exportedFiles.jurimetriaMd = jurimetriaMdPath;
+
+        console.log(`✅ Jurimetria (JSON): ${jurimetriaPath}`);
+        console.log(`✅ Jurimetria (MD): ${jurimetriaMdPath}`);
+      }
+
+      // 7. DOCUMENTO FINAL (se gerado)
       if (results.document) {
         console.log('📝 Salvando documento final...');
 
@@ -1200,7 +1247,7 @@ class ROMCaseProcessorService {
         console.log(`✅ Documento final: ${documentoPath}`);
       }
 
-      // 7. RESUMO DA EXPORTAÇÃO
+      // 8. RESUMO DA EXPORTAÇÃO
       const resumo = {
         casoId,
         exportadoEm: new Date().toISOString(),
@@ -1210,7 +1257,14 @@ class ROMCaseProcessorService {
           totalDocumentos: results.extraction?.length || 0,
           totalMicrofichamentos: results.analysis?.microfichamentos?.length || 0,
           totalTeses: results.jurisprudence?.totalTeses || 0,
-          totalPrecedentes: results.jurisprudence?.totalPrecedentes || 0
+          totalPrecedentes: results.jurisprudence?.totalPrecedentes || 0,
+          jurimetria: results.jurimetria?.executada ? {
+            magistrado: results.jurimetria.magistrado,
+            totalDecisoes: results.jurimetria.totalDecisoes || 0,
+            precedentesFavoraveis: results.jurimetria.precedentesFavoraveis || 0,
+            precedentesDesfavoraveis: results.jurimetria.precedentesDesfavoraveis || 0,
+            contradicoes: results.jurimetria.contradicoes || 0
+          } : null
         }
       };
 
@@ -1352,6 +1406,45 @@ class ROMCaseProcessorService {
         progressEmitter.completeLayer(casoId, 4);
       } else {
         progressEmitter.addInfo(casoId, 'Nenhuma tese identificada - Layer 4 (jurisprudência) não será executada');
+      }
+
+      // LAYER 4.5: JURIMETRIA (Análise do padrão de julgamento do magistrado prevento)
+      progressEmitter.startLayer(casoId, '4.5', 'Análise Jurímétrica do Magistrado');
+      progressEmitter.addStep(casoId, 'Extraindo informações do magistrado prevento', 'processing');
+
+      // Enriquecer dados do caso para jurimetria
+      const dadosCasoJurimetria = await jurimetriaIntegration.enriquecerDadosCaso(
+        casoId,
+        results.analysis.consolidacoes
+      );
+
+      if (dadosCasoJurimetria.magistrado) {
+        progressEmitter.addInfo(casoId, `Magistrado identificado: ${dadosCasoJurimetria.magistrado}`);
+
+        // Executar análise jurímétrica
+        results.jurimetria = await jurimetriaIntegration.layer45_jurimetricAnalysis(
+          casoId,
+          dadosCasoJurimetria,
+          results.jurisprudence || {}
+        );
+
+        if (results.jurimetria.executada) {
+          progressEmitter.addSuccess(casoId, 'Análise jurímétrica concluída');
+          progressEmitter.addResult(casoId, 'Total de decisões analisadas', results.jurimetria.totalDecisoes || 0);
+          progressEmitter.addResult(casoId, 'Precedentes favoráveis', results.jurimetria.precedentesFavoraveis || 0);
+          progressEmitter.addResult(casoId, 'Precedentes desfavoráveis', results.jurimetria.precedentesDesfavoraveis || 0);
+          if (results.jurimetria.contradicoes > 0) {
+            progressEmitter.addResult(casoId, 'Contradições identificadas', results.jurimetria.contradicoes);
+          }
+          progressEmitter.completeLayer(casoId, '4.5');
+        } else {
+          progressEmitter.addWarning(casoId, `Layer 4.5 não executada: ${results.jurimetria.motivo || results.jurimetria.erro}`);
+          progressEmitter.completeLayer(casoId, '4.5', { skipped: true });
+        }
+      } else {
+        progressEmitter.addInfo(casoId, 'Magistrado não identificado - Layer 4.5 (jurimetria) não será executada');
+        progressEmitter.completeLayer(casoId, '4.5', { skipped: true });
+        results.jurimetria = { executada: false, motivo: 'Magistrado não identificado' };
       }
 
       // LAYER 5: Redação Final (somente se solicitado)
