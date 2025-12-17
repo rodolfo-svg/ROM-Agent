@@ -3952,7 +3952,7 @@ app.get('/api/kb/extracted-documents/:id/download', async (req, res) => {
   }
 });
 
-// 🗑️ Endpoint para deletar documento extraído
+// 🗑️ Endpoint para deletar documento extraído (simples - apenas .txt e .metadata.json)
 app.delete('/api/kb/extracted-documents/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -3977,6 +3977,256 @@ app.delete('/api/kb/extracted-documents/:id', async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+
+// ===========================================
+// 🗄️ KB MANAGEMENT APIs (BACKSPEC BETA - ETAPA 1)
+// ===========================================
+
+/**
+ * DELETE /api/kb/documents/:id
+ * Deletar documento do KB com limpeza completa (usa kb-cleaner.cjs)
+ * Deleta documento do sistema antigo (KB/) e também de data/kb-documents.json
+ */
+app.delete('/api/kb/documents/:id', generalLimiter, async (req, res) => {
+  try {
+    const { id } = req.params;
+    logger.info(`🗑️ Iniciando deleção completa do documento: ${id}`);
+
+    const KBCleaner = require('../lib/kb-cleaner.cjs');
+    const cleaner = new KBCleaner();
+
+    // Tentar remover do sistema antigo (KB/)
+    const cleanerResult = cleaner.removeDocument(id);
+
+    // Também remover de data/kb-documents.json (sistema novo)
+    const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
+    let removedFromNew = false;
+
+    if (fs.existsSync(kbDocsPath)) {
+      const kbDocs = JSON.parse(await fs.promises.readFile(kbDocsPath, 'utf8'));
+      const originalLength = kbDocs.length;
+      const filtered = kbDocs.filter(doc => doc.id !== id);
+
+      if (filtered.length < originalLength) {
+        await fs.promises.writeFile(kbDocsPath, JSON.stringify(filtered, null, 2));
+        removedFromNew = true;
+        logger.info(`✅ Documento ${id} removido de kb-documents.json`);
+      }
+    }
+
+    // Também remover de KB/documents/ (sistema de extração)
+    const extractedPath = path.join(ACTIVE_PATHS.kb, 'documents', `${id}.txt`);
+    const extractedMetadata = extractedPath.replace('.txt', '.metadata.json');
+    let removedExtracted = false;
+
+    if (fs.existsSync(extractedPath)) {
+      await fs.promises.unlink(extractedPath);
+      if (fs.existsSync(extractedMetadata)) {
+        await fs.promises.unlink(extractedMetadata);
+      }
+      removedExtracted = true;
+      logger.info(`✅ Documento ${id} removido de KB/documents/`);
+    }
+
+    // Verificar se removeu de algum lugar
+    if (!cleanerResult.success && !removedFromNew && !removedExtracted) {
+      logger.warn(`⚠️ Documento ${id} não encontrado em nenhum sistema`);
+      return res.status(404).json({
+        success: false,
+        error: 'Documento não encontrado'
+      });
+    }
+
+    const result = {
+      success: true,
+      message: `Documento ${id} deletado com sucesso`,
+      details: {
+        removedFromKBCleaner: cleanerResult.success,
+        removedFromKBDocuments: removedFromNew,
+        removedFromExtracted: removedExtracted,
+        filesDeleted: cleanerResult.filesDeleted || (removedExtracted ? 2 : 0),
+        spaceSaved: cleaner.formatBytes(cleanerResult.spaceSaved || 0)
+      }
+    };
+
+    logger.info(`✅ Deleção completa concluída:`, result.details);
+    res.json(result);
+
+  } catch (error) {
+    logger.error('❌ Erro ao deletar documento do KB:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * POST /api/kb/reindex
+ * Reindexar Knowledge Base completo
+ * Reconstrói índices de KB/ e valida data/kb-documents.json
+ */
+app.post('/api/kb/reindex', generalLimiter, async (req, res) => {
+  try {
+    const startTime = Date.now();
+    logger.info('🔄 Iniciando reindexação completa do Knowledge Base');
+
+    const stats = {
+      oldSystemReindexed: false,
+      newSystemValidated: false,
+      documentsFound: 0,
+      documentsIndexed: 0,
+      orphansRemoved: 0,
+      errors: [],
+      duration: 0
+    };
+
+    // 1. Reindexar sistema antigo (KB/)
+    const KBCleaner = require('../lib/kb-cleaner.cjs');
+    const cleaner = new KBCleaner();
+
+    try {
+      // Limpar órfãos primeiro
+      const orphanResult = cleaner.cleanOrphanedFiles();
+      stats.orphansRemoved = orphanResult.orphansRemoved || 0;
+      logger.info(`🧹 Órfãos removidos: ${stats.orphansRemoved}`);
+
+      // Reconstruir índice KB/index.json
+      const kbIndexPath = path.join(ACTIVE_PATHS.kb || path.join(__dirname, '../KB'), 'index.json');
+      const kbDocsPath = path.join(ACTIVE_PATHS.kb || path.join(__dirname, '../KB'), 'documents');
+
+      if (fs.existsSync(kbDocsPath)) {
+        const folders = await fs.promises.readdir(kbDocsPath);
+        const documents = [];
+
+        for (const folder of folders) {
+          const folderPath = path.join(kbDocsPath, folder);
+          const stat = await fs.promises.stat(folderPath);
+
+          if (stat.isDirectory()) {
+            documents.push({
+              id: folder,
+              uploadedAt: stat.mtime.toISOString(),
+              size: 0 // Será calculado se necessário
+            });
+          }
+        }
+
+        const newIndex = {
+          documents,
+          totalDocuments: documents.length,
+          lastUpdated: new Date().toISOString()
+        };
+
+        await fs.promises.writeFile(kbIndexPath, JSON.stringify(newIndex, null, 2));
+        stats.documentsIndexed = documents.length;
+        stats.oldSystemReindexed = true;
+        logger.info(`✅ KB/index.json reconstruído: ${documents.length} documentos`);
+      }
+
+    } catch (error) {
+      stats.errors.push(`Erro ao reindexar sistema antigo: ${error.message}`);
+      logger.error('⚠️ Erro ao reindexar sistema antigo:', error);
+    }
+
+    // 2. Validar sistema novo (data/kb-documents.json)
+    try {
+      const kbDocsJsonPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
+
+      if (fs.existsSync(kbDocsJsonPath)) {
+        const kbDocs = JSON.parse(await fs.promises.readFile(kbDocsJsonPath, 'utf8'));
+        stats.documentsFound = kbDocs.length;
+
+        // Validar que os arquivos existem
+        const validDocs = [];
+        for (const doc of kbDocs) {
+          if (doc.path && fs.existsSync(doc.path)) {
+            validDocs.push(doc);
+          } else {
+            logger.warn(`⚠️ Documento órfão removido: ${doc.id} (arquivo não existe)`);
+          }
+        }
+
+        // Reescrever se houver mudanças
+        if (validDocs.length !== kbDocs.length) {
+          await fs.promises.writeFile(kbDocsJsonPath, JSON.stringify(validDocs, null, 2));
+          logger.info(`🧹 Removidos ${kbDocs.length - validDocs.length} documentos órfãos de kb-documents.json`);
+        }
+
+        stats.newSystemValidated = true;
+        logger.info(`✅ kb-documents.json validado: ${validDocs.length} documentos válidos`);
+      }
+
+    } catch (error) {
+      stats.errors.push(`Erro ao validar sistema novo: ${error.message}`);
+      logger.error('⚠️ Erro ao validar sistema novo:', error);
+    }
+
+    stats.duration = Date.now() - startTime;
+
+    logger.info(`✅ Reindexação completa concluída em ${stats.duration}ms`);
+
+    res.json({
+      success: true,
+      message: 'Knowledge Base reindexado com sucesso',
+      stats
+    });
+
+  } catch (error) {
+    logger.error('❌ Erro ao reindexar KB:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
+ * GET /api/kb/statistics
+ * Obter estatísticas completas do Knowledge Base
+ */
+app.get('/api/kb/statistics', generalLimiter, async (req, res) => {
+  try {
+    const KBCleaner = require('../lib/kb-cleaner.cjs');
+    const cleaner = new KBCleaner();
+
+    const cleanerStats = cleaner.getStatistics();
+
+    // Também pegar stats de data/kb-documents.json
+    let newSystemStats = {
+      totalDocuments: 0,
+      totalSize: 0
+    };
+
+    const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
+    if (fs.existsSync(kbDocsPath)) {
+      const kbDocs = JSON.parse(await fs.promises.readFile(kbDocsPath, 'utf8'));
+      newSystemStats.totalDocuments = kbDocs.length;
+      newSystemStats.totalSize = kbDocs.reduce((sum, doc) => sum + (doc.size || 0), 0);
+    }
+
+    res.json({
+      success: true,
+      stats: {
+        oldSystem: cleanerStats,
+        newSystem: newSystemStats,
+        combined: {
+          totalDocuments: cleanerStats.kb.totalDocuments + newSystemStats.totalDocuments,
+          message: 'Sistema híbrido (KB/ + data/kb-documents.json)'
+        }
+      }
+    });
+
+  } catch (error) {
+    logger.error('❌ Erro ao obter estatísticas do KB:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+logger.info('✅ APIs de Gerenciamento do KB inicializadas (BACKSPEC BETA - ETAPA 1)');
 
 // 📊 Endpoint para listar documentos estruturados (7 tipos)
 app.get('/api/kb/structured-documents', async (req, res) => {
