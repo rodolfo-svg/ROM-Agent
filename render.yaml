@@ -32,7 +32,7 @@ services:
 
       # ✅ FORÇAR USO DO DISCO PERSISTENTE /var/data
       - key: RENDER
-        value: true
+        value: "true"
       - key: UPLOAD_FOLDER
         value: /var/data/upload
       - key: EXTRACTED_FOLDER
