@@ -1362,12 +1362,14 @@ Enquanto isso, pode continuar usando o sistema normalmente.
       }
     } else {
       // Processamento normal com agente Bedrock
-      const messageWithContext = kbContext ? message + kbContext : message;
+      // NÃO concatenar ainda - deixar o agente fazer isso após truncar o histórico
 
-      console.log(`🔄 Enviando mensagem para agente Bedrock (${messageWithContext.length} caracteres)...`);
+      console.log(`🔄 Enviando mensagem para agente Bedrock...`);
+      console.log(`   - Mensagem: ${message.length} caracteres`);
+      console.log(`   - KB Context: ${kbContext.length} caracteres`);
 
-      // 🔥 PASSAR KB CONTEXT PARA O AGENTE TRUNCAR O HISTÓRICO CORRETAMENTE
-      const resultado = await agent.enviar(messageWithContext, { kbContext });
+      // 🔥 PASSAR MENSAGEM E KB SEPARADOS PARA TRUNCAMENTO CORRETO DO HISTÓRICO
+      const resultado = await agent.enviar(message, { kbContext });
 
       console.log(`✅ Agente respondeu: sucesso=${resultado.sucesso}, resposta=${resultado.resposta?.length || 0} caracteres`);
 

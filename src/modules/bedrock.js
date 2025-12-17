@@ -569,14 +569,20 @@ export class BedrockAgent {
   }
 
   async enviar(mensagem, options = {}) {
-    const resultado = await conversar(mensagem, {
+    // Se houver kbContext, concatenar DEPOIS do truncamento
+    const { kbContext, ...restOptions } = options;
+    const mensagemFinal = kbContext ? mensagem + kbContext : mensagem;
+
+    const resultado = await conversar(mensagemFinal, {
       modelo: this.modelo,
       systemPrompt: this.systemPrompt,
       historico: this.historico,
-      ...options
+      kbContext: kbContext || '',  // Passar para truncamento correto
+      ...restOptions
     });
 
     if (resultado.sucesso) {
+      // Salvar no histórico a mensagem ORIGINAL (sem KB) para economizar espaço
       this.historico.push({ role: 'user', content: mensagem });
       this.historico.push({ role: 'assistant', content: resultado.resposta });
     }
