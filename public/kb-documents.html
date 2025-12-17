@@ -463,11 +463,16 @@
                 data.documents.forEach(doc => {
                     html += `
                         <div class="document-card" style="margin-bottom: 1.5rem;">
-                            <div class="document-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem; border-radius: 8px 8px 0 0;">
-                                <h3 style="color: white; margin: 0; font-size: 1.125rem;">📁 ${escapeHtml(doc.name)}</h3>
-                                <p style="color: rgba(255,255,255,0.9); margin: 0.25rem 0 0 0; font-size: 0.875rem;">
-                                    ${doc.filesCount} documentos estruturados • Criado em ${formatDate(doc.createdAt)}
-                                </p>
+                            <div class="document-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="color: white; margin: 0; font-size: 1.125rem;">📁 ${escapeHtml(doc.name)}</h3>
+                                    <p style="color: rgba(255,255,255,0.9); margin: 0.25rem 0 0 0; font-size: 0.875rem;">
+                                        ${doc.filesCount} documentos estruturados • Criado em ${formatDate(doc.createdAt)}
+                                    </p>
+                                </div>
+                                <button onclick="deleteStructuredDoc('${doc.id}')" class="btn btn-danger btn-small" style="background: rgba(220, 38, 38, 0.9); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.875rem;">
+                                    🗑️ Deletar Tudo
+                                </button>
                             </div>
                             <div class="document-body" style="padding: 1rem; background: white; border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px;">
                                 <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.75rem;">
@@ -503,6 +508,31 @@
                         <p>${escapeHtml(error.message)}</p>
                     </div>
                 `;
+            }
+        }
+
+        // Função para deletar conjunto de documentos estruturados
+        async function deleteStructuredDoc(id) {
+            if (!confirm('Tem certeza que deseja deletar TODOS os documentos estruturados deste conjunto? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/kb/structured-documents/${encodeURIComponent(id)}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Erro ao deletar');
+                }
+
+                alert('✅ Documentos estruturados deletados com sucesso!');
+                loadStructuredDocuments(); // Recarregar lista
+            } catch (error) {
+                console.error('Erro ao deletar documentos estruturados:', error);
+                alert('❌ Erro ao deletar: ' + error.message);
             }
         }
 

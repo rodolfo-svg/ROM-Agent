@@ -5084,6 +5084,61 @@ app.get('/api/kb/structured-documents/:id/:filename', async (req, res) => {
   }
 });
 
+/**
+ * DELETE /api/kb/structured-documents/:id
+ * Deletar conjunto completo de documentos estruturados
+ */
+app.delete('/api/kb/structured-documents/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const structuredPath = path.join(EXTRACTOR_CONFIG.extractedFolder, 'structured', id);
+
+    logger.info(`🗑️ Deletando documentos estruturados: ${id}`);
+
+    if (!fs.existsSync(structuredPath)) {
+      return res.status(404).json({
+        success: false,
+        error: 'Documentos estruturados não encontrados'
+      });
+    }
+
+    // Contar arquivos antes de deletar
+    const files = await fs.promises.readdir(structuredPath);
+    const filesCount = files.length;
+
+    // Calcular tamanho total
+    let totalSize = 0;
+    for (const file of files) {
+      const filePath = path.join(structuredPath, file);
+      const stats = await fs.promises.stat(filePath);
+      totalSize += stats.size;
+    }
+
+    // Deletar pasta completa
+    await fs.promises.rm(structuredPath, { recursive: true, force: true });
+
+    logger.info(`✅ Deletados ${filesCount} documentos estruturados (${(totalSize / 1024).toFixed(2)} KB)`);
+
+    res.json({
+      success: true,
+      message: `${filesCount} documentos estruturados deletados com sucesso`,
+      details: {
+        id,
+        filesDeleted: filesCount,
+        spaceSaved: totalSize,
+        spaceSavedFormatted: `${(totalSize / 1024).toFixed(2)} KB`
+      }
+    });
+
+  } catch (error) {
+    logger.error('❌ Erro ao deletar documentos estruturados:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 // Estatísticas do KB do usuário (requer autenticação)
 app.get('/api/kb/user-statistics', authSystem.authMiddleware(), (req, res) => {
   try {
