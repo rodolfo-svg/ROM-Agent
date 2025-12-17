@@ -4199,6 +4199,24 @@ app.get('/api/feature-flags', generalLimiter, (req, res) => {
 });
 
 /**
+ * GET /api/feature-flags/validate
+ * Valida as feature flags atuais
+ */
+app.get('/api/feature-flags/validate', generalLimiter, (req, res) => {
+  try {
+    const validation = featureFlags.validate();
+
+    res.json({
+      success: true,
+      validation
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao validar feature flags:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * GET /api/feature-flags/:category
  * Retorna feature flags de uma categoria específica
  */
@@ -4299,24 +4317,6 @@ app.post('/api/feature-flags/reset', generalLimiter, async (req, res) => {
   }
 });
 
-/**
- * GET /api/feature-flags/validate
- * Valida as feature flags atuais
- */
-app.get('/api/feature-flags/validate', generalLimiter, (req, res) => {
-  try {
-    const validation = featureFlags.validate();
-
-    res.json({
-      success: true,
-      validation
-    });
-  } catch (error) {
-    logger.error('❌ Erro ao validar feature flags:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
 logger.info('✅ APIs de Feature Flags inicializadas (BACKSPEC BETA - ETAPA 3)');
 
 // ============================================
@@ -4393,6 +4393,44 @@ app.post('/api/paradigmas', generalLimiter, async (req, res) => {
 });
 
 /**
+ * GET /api/paradigmas/categories
+ * Retorna categorias disponíveis
+ * DEVE VIR ANTES DE /:id
+ */
+app.get('/api/paradigmas/categories', generalLimiter, (req, res) => {
+  try {
+    const categories = paradigmasManager.getCategories();
+
+    res.json({
+      success: true,
+      categories
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao obter categorias:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/paradigmas/stats/general
+ * Retorna estatísticas gerais dos paradigmas
+ * DEVE VIR ANTES DE /:id
+ */
+app.get('/api/paradigmas/stats/general', generalLimiter, async (req, res) => {
+  try {
+    const stats = await paradigmasManager.getStatistics();
+
+    res.json({
+      success: true,
+      stats
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao obter estatísticas de paradigmas:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * GET /api/paradigmas
  * Lista paradigmas com filtros
  */
@@ -4427,6 +4465,7 @@ app.get('/api/paradigmas', generalLimiter, async (req, res) => {
 /**
  * GET /api/paradigmas/:id
  * Retorna um paradigma específico
+ * DEVE VIR DEPOIS DAS ROTAS ESPECÍFICAS
  */
 app.get('/api/paradigmas/:id', generalLimiter, async (req, res) => {
   try {
@@ -4539,24 +4578,6 @@ app.get('/api/paradigmas/stats/general', generalLimiter, async (req, res) => {
     });
   } catch (error) {
     logger.error('❌ Erro ao obter estatísticas de paradigmas:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-/**
- * GET /api/paradigmas/categories
- * Retorna categorias disponíveis
- */
-app.get('/api/paradigmas/categories', generalLimiter, (req, res) => {
-  try {
-    const categories = paradigmasManager.getCategories();
-
-    res.json({
-      success: true,
-      categories
-    });
-  } catch (error) {
-    logger.error('❌ Erro ao obter categorias:', error);
     res.status(500).json({ error: error.message });
   }
 });
