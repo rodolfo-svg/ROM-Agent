@@ -219,11 +219,11 @@ async function retryWithBackoff(fn, maxRetries = 3, baseDelay = 1000) {
   }
 }
 
-// Instância global
+// Instância global (otimizado para Render Standard 2GB RAM)
 const globalRateLimiter = new RateLimiter({
-  maxRequestsPerMinute: 10,   // 10 req/min por IP/parceiro
-  maxRequestsPerHour: 100,     // 100 req/hora por IP/parceiro
-  maxConcurrent: 3             // Máximo 3 requisições simultâneas
+  maxRequestsPerMinute: 20,   // 20 req/min por IP/parceiro (2x melhor)
+  maxRequestsPerHour: 200,     // 200 req/hora por IP/parceiro (2x melhor)
+  maxConcurrent: 8             // Máximo 8 requisições simultâneas (2GB RAM)
 });
 
 export { RateLimiter, globalRateLimiter, retryWithBackoff };

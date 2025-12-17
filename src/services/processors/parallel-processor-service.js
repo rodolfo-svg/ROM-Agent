@@ -14,7 +14,7 @@ import cacheService from '../../utils/cache/cache-service.js';
 
 class ParallelProcessorService {
   constructor() {
-    this.maxConcurrency = 5; // Máximo de processamentos simultâneos
+    this.maxConcurrency = 10; // Máximo de processamentos simultâneos (otimizado para 2GB RAM)
     this.initialized = false;
   }
 
