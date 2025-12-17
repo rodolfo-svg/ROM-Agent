@@ -2142,18 +2142,25 @@ Memória: ${data.memory?.heapUsed}
                 formData.append('files', file);
             }
 
-            // Show loading
+            // Show loading (com verificação se elemento existe)
             const messagesDiv = document.getElementById('messages');
-            const loadingMsg = document.createElement('div');
-            loadingMsg.className = 'message';
-            loadingMsg.innerHTML = `
-                <div class="message-avatar">📤</div>
-                <div class="message-content">
-                    <div style="color: var(--text-secondary);">Enviando ${files.length} arquivo(s) para o Knowledge Base...</div>
-                </div>
-            `;
-            messagesDiv.appendChild(loadingMsg);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            let loadingMsg = null;
+
+            if (messagesDiv) {
+                loadingMsg = document.createElement('div');
+                loadingMsg.className = 'message';
+                loadingMsg.innerHTML = `
+                    <div class="message-avatar">📤</div>
+                    <div class="message-content">
+                        <div style="color: var(--text-secondary);">Enviando ${files.length} arquivo(s) para o Knowledge Base...</div>
+                    </div>
+                `;
+                messagesDiv.appendChild(loadingMsg);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            } else {
+                // Fallback: mostrar alert se não houver área de mensagens
+                console.log(`📤 Enviando ${files.length} arquivo(s)...`);
+            }
 
             try {
                 const response = await fetch('/api/upload-documents', {
@@ -2164,49 +2171,58 @@ Memória: ${data.memory?.heapUsed}
                 const result = await response.json();
 
                 // Remove loading message
-                loadingMsg.remove();
+                if (loadingMsg) loadingMsg.remove();
 
                 // Show result
-                const resultMsg = document.createElement('div');
-                resultMsg.className = 'message';
-                if (result.success && result.extractions) {
-                    // Mostrar resumo da extração
-                    let extractionSummary = '';
-                    result.extractions.forEach(ext => {
-                        if (ext.data) {
-                            extractionSummary += `\n📄 ${ext.filename}:\n`;
-                            if (ext.data['Tipo de Documento']) extractionSummary += `• Tipo: ${ext.data['Tipo de Documento']}\n`;
-                            if (ext.data['Número do Processo']) extractionSummary += `• Processo: ${ext.data['Número do Processo']}\n`;
-                            if (ext.textLength) extractionSummary += `• Texto extraído: ${ext.textLength} caracteres\n`;
-                        }
-                    });
+                if (messagesDiv) {
+                    const resultMsg = document.createElement('div');
+                    resultMsg.className = 'message';
+                    if (result.success && result.extractions) {
+                        // Mostrar resumo da extração
+                        let extractionSummary = '';
+                        result.extractions.forEach(ext => {
+                            if (ext.data) {
+                                extractionSummary += `\n📄 ${ext.filename}:\n`;
+                                if (ext.data['Tipo de Documento']) extractionSummary += `• Tipo: ${ext.data['Tipo de Documento']}\n`;
+                                if (ext.data['Número do Processo']) extractionSummary += `• Processo: ${ext.data['Número do Processo']}\n`;
+                                if (ext.textLength) extractionSummary += `• Texto extraído: ${ext.textLength} caracteres\n`;
+                            }
+                        });
 
-                    resultMsg.innerHTML = `
-                        <div class="message-avatar">✅</div>
-                        <div class="message-content">
-                            <div style="color: var(--text-primary);"><strong>Upload concluído!</strong></div>
-                            <div style="color: var(--text-secondary); margin-top: 8px;">
-                                ${result.message || `${result.filesCount} arquivo(s) processado(s) com sucesso`}
+                        resultMsg.innerHTML = `
+                            <div class="message-avatar">✅</div>
+                            <div class="message-content">
+                                <div style="color: var(--text-primary);"><strong>Upload concluído!</strong></div>
+                                <div style="color: var(--text-secondary); margin-top: 8px;">
+                                    ${result.message || `${result.filesCount} arquivo(s) processado(s) com sucesso`}
+                                </div>
+                                ${extractionSummary ? `<pre style="margin-top: 8px; font-size: 12px; white-space: pre-wrap;">${extractionSummary}</pre>` : ''}
                             </div>
-                            ${extractionSummary ? `<pre style="margin-top: 8px; font-size: 12px; white-space: pre-wrap;">${extractionSummary}</pre>` : ''}
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        resultMsg.innerHTML = `
+                            <div class="message-avatar">❌</div>
+                            <div class="message-content">
+                                <div style="color: var(--text-primary);"><strong>Erro no upload</strong></div>
+                                <div style="color: var(--text-secondary); margin-top: 8px;">
+                                    ${result.error || 'Erro desconhecido'}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    messagesDiv.appendChild(resultMsg);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
                 } else {
-                    resultMsg.innerHTML = `
-                        <div class="message-avatar">❌</div>
-                        <div class="message-content">
-                            <div style="color: var(--text-primary);"><strong>Erro no upload</strong></div>
-                            <div style="color: var(--text-secondary); margin-top: 8px;">
-                                ${result.error || 'Erro desconhecido'}
-                            </div>
-                        </div>
-                    `;
+                    // Fallback: mostrar alert se não houver área de mensagens
+                    if (result.success) {
+                        alert(`✅ Upload concluído!\n${result.message || `${result.filesCount} arquivo(s) processado(s) com sucesso`}`);
+                    } else {
+                        alert(`❌ Erro no upload: ${result.error || 'Erro desconhecido'}`);
+                    }
                 }
-                messagesDiv.appendChild(resultMsg);
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
 
             } catch (error) {
-                loadingMsg.remove();
+                if (loadingMsg) loadingMsg.remove();
                 alert('Erro ao enviar arquivos: ' + error.message);
             }
 
