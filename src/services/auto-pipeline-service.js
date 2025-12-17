@@ -64,7 +64,8 @@ class AutoPipelineService {
       forcePipeline = false,
       forceModel = null,
       systemPrompt = null,
-      historico = []
+      historico = [],
+      kbContext = ''  // 🔥 NOVO: KB Context para cálculo correto de tokens
     } = request;
 
     // ═══════════════════════════════════════════════════════════
@@ -100,7 +101,8 @@ class AutoPipelineService {
         tipo,
         documentos,
         systemPrompt,
-        historico
+        historico,
+        kbContext  // 🔥 Passar KB Context para o pipeline
       });
     } else {
       // Usar modelo único (padrão - 90% dos casos)
@@ -110,7 +112,8 @@ class AutoPipelineService {
         modeloNome: selecao.modeloNome,
         systemPrompt,
         historico,
-        maxTokens: selecao.metadata.tokens
+        maxTokens: selecao.metadata.tokens,
+        kbContext  // 🔥 Passar KB Context para modelo único
       });
     }
 
@@ -138,7 +141,8 @@ class AutoPipelineService {
       modeloNome,
       systemPrompt,
       historico,
-      maxTokens
+      maxTokens,
+      kbContext = ''  // 🔥 KB Context
     } = config;
 
     console.log(`✨ [AutoPipeline] Executando com modelo único: ${modeloNome}`);
@@ -150,7 +154,8 @@ class AutoPipelineService {
       systemPrompt,
       historico,
       maxTokens,
-      enableTools: true  // Tools sempre habilitadas
+      enableTools: true,  // Tools sempre habilitadas
+      kbContext  // 🔥 Passar KB Context para truncamento correto
     });
 
     const endTime = Date.now();
@@ -179,7 +184,8 @@ class AutoPipelineService {
       tipo,
       documentos,
       systemPrompt,
-      historico
+      historico,
+      kbContext = ''  // 🔥 KB Context
     } = config;
 
     console.log(`🔄 [AutoPipeline] Executando pipeline multi-agent (4 estágios)`);
@@ -203,7 +209,8 @@ class AutoPipelineService {
         systemPrompt,
         historico: index === 0 ? historico : [],  // Histórico só no primeiro
         maxTokens: stage.maxTokens,
-        enableTools: index === 0  // Tools apenas no primeiro estágio
+        enableTools: index === 0,  // Tools apenas no primeiro estágio
+        kbContext: index === 0 ? kbContext : ''  // 🔥 KB Context apenas no primeiro estágio
       });
 
       const stageDuracao = Date.now() - stageStartTime;

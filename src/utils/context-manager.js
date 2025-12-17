@@ -24,6 +24,7 @@ const MODEL_LIMITS = {
   'anthropic.claude-3-5-sonnet-20241022-v2:0': 200000,
   'anthropic.claude-3-5-haiku-20241022-v1:0': 200000,
   'anthropic.claude-sonnet-4-20250514-v1:0': 200000,
+  'anthropic.claude-sonnet-4-5-20250929-v1:0': 200000,  // Sonnet 4.5 (default do sistema)
   'default': 200000
 };
 
