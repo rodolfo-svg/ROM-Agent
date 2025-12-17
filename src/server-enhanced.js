@@ -1006,24 +1006,28 @@ app.post('/api/chat', async (req, res) => {
     const conversationId = req.session.conversationId;
 
     // 🔍 DETECÇÃO AUTOMÁTICA DE MODO EXAUSTIVO (PLANO ANTI-429)
-    // ⚡ Usar job assíncrono SE tiver muitos documentos no KB (>5) E for análise exaustiva
-    const kbDocsPath = path.join(ACTIVE_PATHS.kb, 'documents');
-    let kbDocCount = 0;
+    // ⚡ Contar PROCESSOS (não arquivos individuais) - cada processo gera ~8 arquivos
+    const structuredDocsPath = path.join(ACTIVE_PATHS.extracted, 'structured');
+    let processCount = 0;
     try {
-      if (fs.existsSync(kbDocsPath)) {
-        const files = await fs.promises.readdir(kbDocsPath);
-        kbDocCount = files.filter(f => f.endsWith('.txt')).length;
+      if (fs.existsSync(structuredDocsPath)) {
+        const dirs = await fs.promises.readdir(structuredDocsPath);
+        // Cada diretório = 1 processo
+        processCount = dirs.filter(d => {
+          const fullPath = path.join(structuredDocsPath, d);
+          return fs.statSync(fullPath).isDirectory();
+        }).length;
       }
     } catch (e) {}
 
     const isExhaustiveKeywords = exhaustiveJobManager.isExhaustiveRequest(message);
-    const hasManyDocs = kbDocCount > 5; // Mais de 5 documentos no KB
-    const isExhaustive = isExhaustiveKeywords && hasManyDocs;
+    const hasManyProcesses = processCount > 3; // Mais de 3 PROCESSOS (não arquivos)
+    const isExhaustive = isExhaustiveKeywords && hasManyProcesses;
 
     if (isExhaustive) {
-      logger.info(`🚀 Análise EXAUSTIVA com ${kbDocCount} documentos - Criando job assíncrono`);
-    } else if (isExhaustiveKeywords && !hasManyDocs) {
-      logger.info(`⚡ Análise exaustiva com poucos docs (${kbDocCount}) - Processando ONLINE`);
+      logger.info(`🚀 Análise EXAUSTIVA com ${processCount} processos - Criando job assíncrono`);
+    } else if (isExhaustiveKeywords && !hasManyProcesses) {
+      logger.info(`⚡ Análise exaustiva com ${processCount} processo(s) - Processando ONLINE`);
     }
 
     if (isExhaustive) {
