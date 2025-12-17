@@ -422,10 +422,22 @@ export async function executeTool(toolName, toolInput) {
             respostaFormatada += `Tamanho: ${Math.round(doc.textLength / 1000)}k caracteres\n`;
             respostaFormatada += `Upload: ${new Date(doc.uploadedAt).toLocaleDateString('pt-BR')}\n`;
 
-            // Extrair trecho relevante (primeiros 500 caracteres)
+            // Extrair texto completo ou trecho extenso (50k caracteres)
             if (doc.extractedText) {
-              const trecho = doc.extractedText.substring(0, 500).trim();
-              respostaFormatada += `\nTrecho:\n${trecho}...\n`;
+              // Para documentos pequenos: texto completo
+              // Para documentos grandes: primeiros 50k caracteres
+              const maxChars = 50000;
+              const trecho = doc.extractedText.length > maxChars
+                ? doc.extractedText.substring(0, maxChars).trim() + '\n\n[...continua - documento extenso]'
+                : doc.extractedText.trim();
+
+              respostaFormatada += `\nConteúdo do documento:\n${trecho}\n`;
+
+              // Se documento muito grande, sugerir análise exaustiva
+              if (doc.textLength > 100000) {
+                respostaFormatada += `\n⚠️ DOCUMENTO EXTENSO (${Math.round(doc.textLength/1000)}k caracteres)\n`;
+                respostaFormatada += `Para análise completa, use: "analise exaustivamente este documento"\n`;
+              }
             }
 
             if (doc.metadata?.processNumber) {

@@ -28,10 +28,10 @@ import { BEDROCK_TOOLS, executeTool } from './bedrock-tools.js';
 const CONFIG = {
   region: process.env.AWS_REGION || 'us-east-1',
   defaultModel: 'anthropic.claude-sonnet-4-5-20250929-v1:0',  // Sonnet 4.5 como padrão
-  maxTokens: 16384,  // Aumentado para 16k (Sonnet 4.5 suporta 200k contexto, 131k via API)
+  maxTokens: 32768,  // Aumentado para 32k (Sonnet 4.5 suporta até 131k output)
   temperature: 0.7,
   autoModelSelection: true,  // Habilitar seleção automática de modelo
-  maxContextTokens: 100000  // Limite de contexto de entrada (deixar margem para resposta)
+  maxContextTokens: 200000  // Limite de contexto de entrada (200k tokens - Sonnet 4.5)
 };
 
 // Modelos disponíveis organizados por provedor
