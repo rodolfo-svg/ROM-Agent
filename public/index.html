@@ -2134,18 +2134,30 @@ Memória: ${data.memory?.heapUsed}
 
         // Handle file upload to KB
         async function handleFileUpload(event) {
-            // DEBUG: Confirmar que função foi chamada
-            alert('🔍 DEBUG: handleFileUpload foi chamada!');
+            try {
+                // DEBUG: Confirmar que função foi chamada
+                alert('🔍 DEBUG 1: Função chamada!');
 
-            const files = event.target.files;
-            if (!files || files.length === 0) {
-                alert('⚠️ Nenhum arquivo selecionado ou files é null');
+                alert(`🔍 DEBUG 2: event = ${event ? 'existe' : 'null'}, event.target = ${event?.target ? 'existe' : 'null'}`);
+
+                const files = event.target.files;
+                alert(`🔍 DEBUG 3: files = ${files ? `existe (${files.length} arquivo(s))` : 'null ou undefined'}`);
+
+                if (!files || files.length === 0) {
+                    alert('⚠️ DEBUG 4: Nenhum arquivo selecionado ou files é null');
+                    return;
+                }
+
+                const fileNames = Array.from(files).map(f => f.name).join(', ');
+                alert(`✅ DEBUG 5: ${files.length} arquivo(s) selecionado(s): ${fileNames}`);
+
+            } catch (debugError) {
+                alert(`❌ ERRO NO DEBUG: ${debugError.message}\nStack: ${debugError.stack}`);
                 return;
             }
 
-            alert(`✅ ${files.length} arquivo(s) selecionado(s): ${Array.from(files).map(f => f.name).join(', ')}`);
-
             const formData = new FormData();
+            const files = event.target.files;
             for (let file of files) {
                 formData.append('files', file);
             }
