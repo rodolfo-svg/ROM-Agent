@@ -1927,10 +1927,38 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
           // Validação 4: Garantir que diretório KB existe
           await fs.promises.mkdir(path.dirname(kbPath), { recursive: true });
 
-          // Copiar arquivo
+          // Copiar arquivo principal
           await fs.promises.copyFile(extractedTextPath, kbPath);
+          console.log(`   💾 KB: Copiado ${path.basename(kbPath)}`);
 
-          // Salvar metadados no KB
+          // 🚀 CORREÇÃO CRÍTICA: Copiar os 7 documentos estruturados para o KB
+          const structuredDocs = [];
+          if (processResult.structuredDocuments?.outputPath) {
+            try {
+              const structuredFiles = await fs.promises.readdir(processResult.structuredDocuments.outputPath);
+
+              for (const structFile of structuredFiles) {
+                const sourcePath = path.join(processResult.structuredDocuments.outputPath, structFile);
+                const timestamp = Date.now();
+                const destPath = path.join(ACTIVE_PATHS.kb, 'documents', `${timestamp}_${baseFilename}_${structFile}`);
+
+                await fs.promises.copyFile(sourcePath, destPath);
+                structuredDocs.push({
+                  name: structFile,
+                  path: destPath,
+                  type: path.extname(structFile)
+                });
+
+                console.log(`   📄 KB: ${structFile}`);
+              }
+
+              console.log(`   ✅ ${structuredDocs.length} documentos estruturados copiados para KB`);
+            } catch (error) {
+              console.warn(`   ⚠️ Erro ao copiar documentos estruturados: ${error.message}`);
+            }
+          }
+
+          // Salvar metadados no KB (incluindo referências aos 7 docs)
           const kbMetadata = {
             source: 'web-upload',
             originalFilename: file.originalname,
@@ -1939,13 +1967,12 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
             wordCount: processResult.extraction?.wordCount || 0,
             toolsUsed: processResult.toolsUsed || [],
             structuredDocuments: processResult.structuredDocuments,
-            structuredDocsPath: processResult.structuredDocuments?.outputPath
+            structuredDocsPath: processResult.structuredDocuments?.outputPath,
+            structuredDocsInKB: structuredDocs
           };
 
           const kbMetadataPath = kbPath.replace('.txt', '.metadata.json');
           await fs.promises.writeFile(kbMetadataPath, JSON.stringify(kbMetadata, null, 2), 'utf8');
-
-          console.log(`   💾 KB: Copiado ${path.basename(kbPath)}`);
 
           // 📋 REGISTRAR NO kb-documents.json (para aparecer na interface do KB)
           try {
@@ -1957,7 +1984,7 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
               kbDocs = JSON.parse(data);
             }
 
-            // Criar entrada para o documento
+            // Criar entrada para o documento PRINCIPAL
             const kbDoc = {
               id: `kb-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
               name: file.originalname,
@@ -1973,11 +2000,36 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
                 toolsUsed: processResult.toolsUsed || [],
                 structuredDocuments: processResult.structuredDocuments?.filesGenerated || 0,
                 structuredDocsPath: processResult.structuredDocuments?.outputPath,
-                wordCount: processResult.extraction?.wordCount || 0
+                wordCount: processResult.extraction?.wordCount || 0,
+                structuredDocsInKB: structuredDocs
               }
             };
 
             kbDocs.push(kbDoc);
+
+            // 📄 ADICIONAR OS 7 DOCUMENTOS ESTRUTURADOS AO REGISTRO
+            for (const structDoc of structuredDocs) {
+              const structContent = await fs.promises.readFile(structDoc.path, 'utf8');
+
+              kbDocs.push({
+                id: `kb-struct-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+                name: `${file.originalname} - ${structDoc.name}`,
+                type: structDoc.type === '.md' ? 'text/markdown' : 'application/json',
+                size: structContent.length,
+                path: structDoc.path,
+                userId: req.user?.userId || 'web-upload',
+                userName: req.user?.name || 'Web Upload',
+                uploadedAt: new Date().toISOString(),
+                extractedText: structContent,
+                textLength: structContent.length,
+                metadata: {
+                  isStructuredDocument: true,
+                  parentDocument: file.originalname,
+                  documentType: structDoc.name.split('_')[1]?.replace('.md', '').replace('.json', ''),
+                  structuredType: structDoc.name
+                }
+              });
+            }
             fs.writeFileSync(kbDocsPath, JSON.stringify(kbDocs, null, 2));
 
             console.log(`   📋 KB Registry: Registrado em kb-documents.json (${kbDocs.length} total)`);
