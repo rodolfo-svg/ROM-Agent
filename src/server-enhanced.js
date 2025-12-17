@@ -2526,9 +2526,12 @@ app.get('/api/info', async (req, res) => {
         isRender: process.env.RENDER === 'true',
         hasRenderEnv: !!process.env.RENDER,
         renderValue: process.env.RENDER,
+        renderServiceName: process.env.RENDER_SERVICE_NAME || 'not set',
         uploadFolder: process.env.UPLOAD_FOLDER || 'not set',
         extractedFolder: process.env.EXTRACTED_FOLDER || 'not set',
         processedFolder: process.env.PROCESSED_FOLDER || 'not set',
+        varDataExists: fs.existsSync('/var/data'),
+        varDataIsDir: fs.existsSync('/var/data') ? fs.statSync('/var/data').isDirectory() : false,
         activePaths: {
           upload: EXTRACTOR_CONFIG.uploadFolder,
           extracted: EXTRACTOR_CONFIG.extractedFolder,
