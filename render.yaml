@@ -70,8 +70,8 @@ services:
     healthCheckPath: /api/info
 
     # ═══ RECURSOS ═══
+    # Disco persistente (criado automaticamente no primeiro deploy)
     disk:
-      name: rom-storage
       mountPath: /var/data
       sizeGB: 1
 
