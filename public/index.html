@@ -2134,25 +2134,34 @@ Memória: ${data.memory?.heapUsed}
 
         // Handle file upload to KB
         async function handleFileUpload(event) {
+            const debugLog = [];
             try {
-                // DEBUG: Confirmar que função foi chamada
-                alert('🔍 DEBUG 1: Função chamada!');
+                debugLog.push('1. Função handleFileUpload foi chamada');
 
-                alert(`🔍 DEBUG 2: event = ${event ? 'existe' : 'null'}, event.target = ${event?.target ? 'existe' : 'null'}`);
+                debugLog.push(`2. event: ${event ? 'existe' : 'NULL'}`);
+                debugLog.push(`3. event.target: ${event?.target ? 'existe' : 'NULL'}`);
 
                 const files = event.target.files;
-                alert(`🔍 DEBUG 3: files = ${files ? `existe (${files.length} arquivo(s))` : 'null ou undefined'}`);
+                debugLog.push(`4. event.target.files: ${files ? `existe` : 'NULL'}`);
+                debugLog.push(`5. files.length: ${files ? files.length : 'N/A'}`);
 
                 if (!files || files.length === 0) {
-                    alert('⚠️ DEBUG 4: Nenhum arquivo selecionado ou files é null');
+                    debugLog.push('6. ❌ NENHUM ARQUIVO DETECTADO');
+                    alert('🔍 DEBUG:\n\n' + debugLog.join('\n'));
                     return;
                 }
 
                 const fileNames = Array.from(files).map(f => f.name).join(', ');
-                alert(`✅ DEBUG 5: ${files.length} arquivo(s) selecionado(s): ${fileNames}`);
+                debugLog.push(`7. ✅ Arquivos: ${fileNames}`);
+                debugLog.push('8. Iniciando upload...');
+
+                // Mostrar debug e continuar
+                console.log('🔍 DEBUG COMPLETO:', debugLog);
+                alert('🔍 DEBUG:\n\n' + debugLog.join('\n') + '\n\n[Continuando com upload...]');
 
             } catch (debugError) {
-                alert(`❌ ERRO NO DEBUG: ${debugError.message}\nStack: ${debugError.stack}`);
+                debugLog.push(`❌ ERRO: ${debugError.message}`);
+                alert('🔍 DEBUG (COM ERRO):\n\n' + debugLog.join('\n') + '\n\n' + debugError.stack);
                 return;
             }
 
