@@ -27,6 +27,12 @@ import contextManager from '../utils/context-manager.js';
 // Loop Guardrails para prevenção de loops infinitos
 import { loopGuardrails } from '../utils/loop-guardrails.js';
 
+// Retry logic with exponential backoff
+import { retryAwsCommand } from '../utils/retry-with-backoff.js';
+
+// Bottleneck para controle de concorrência e fila
+import bottleneck from '../utils/bottleneck.js';
+
 // ============================================================
 // CONFIGURAÇÃO
 // ============================================================
@@ -234,7 +240,19 @@ export async function conversar(prompt, options = {}) {
       }
 
       const command = new ConverseCommand(commandParams);
-      const response = await client.send(command);
+
+      // Envolver com retry + bottleneck para resiliência e controle de concorrência
+      const response = await bottleneck.schedule(
+        () => retryAwsCommand(client, command, {
+          modelId: commandParams.modelId,
+          operation: 'converse',
+          loopIteration: loopCount
+        }),
+        {
+          operation: 'converse',
+          requestId: options.conversationId || `conv_${Date.now()}`
+        }
+      );
 
       // Acumular uso de tokens
       totalTokensUsed.input += response.usage.inputTokens;
@@ -420,7 +438,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
   try {
     const command = new ConverseStreamCommand(commandParams);
-    const response = await client.send(command);
+    const response = await retryAwsCommand(client, command, { modelId: commandParams.modelId, operation: 'converse_stream' });
 
     let textoCompleto = '';
 
@@ -454,7 +472,7 @@ export async function listarModelos() {
 
   try {
     const command = new ListFoundationModelsCommand({});
-    const response = await client.send(command);
+    const response = await retryAwsCommand(client, command, { operation: 'list_foundation_models' });
 
     return response.modelSummaries.map(model => ({
       id: model.modelId,
@@ -476,7 +494,7 @@ export async function listarInferenceProfiles() {
 
   try {
     const command = new ListInferenceProfilesCommand({});
-    const response = await client.send(command);
+    const response = await retryAwsCommand(client, command, { operation: 'list_inference_profiles' });
 
     return response.inferenceProfileSummaries.map(profile => ({
       id: profile.inferenceProfileId,
