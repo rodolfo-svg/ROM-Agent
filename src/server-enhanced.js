@@ -1369,7 +1369,11 @@ Enquanto isso, pode continuar usando o sistema normalmente.
         const messageWithContext = kbContext ? message + kbContext : message;
         const resultado = await agent.enviar(messageWithContext);
         if (!resultado.sucesso) {
-          return res.status(500).json({ error: resultado.erro || 'Erro ao processar mensagem' });
+          const statusCode = resultado.statusCode || 500;
+          const errorResponse = { error: resultado.erro || 'Erro ao processar mensagem', status: statusCode };
+          if (statusCode === 503 && resultado.retryAfter) res.set('Retry-After', String(resultado.retryAfter));
+          if (resultado.errorCode) errorResponse.code = resultado.errorCode;
+          return res.status(statusCode).json(errorResponse);
         }
         resposta = resultado.resposta;
       }
@@ -1388,7 +1392,25 @@ Enquanto isso, pode continuar usando o sistema normalmente.
 
       if (!resultado.sucesso) {
         console.error(`❌ Erro do agente: ${resultado.erro}`);
-        return res.status(500).json({ error: resultado.erro || 'Erro ao processar mensagem' });
+
+        // Usar statusCode do resultado se disponível (Bottleneck 503, etc)
+        const statusCode = resultado.statusCode || 500;
+
+        const errorResponse = {
+          error: resultado.erro || 'Erro ao processar mensagem',
+          status: statusCode
+        };
+
+        // Adicionar Retry-After header para HTTP 503
+        if (statusCode === 503 && resultado.retryAfter) {
+          res.set('Retry-After', String(resultado.retryAfter));
+        }
+
+        // Incluir campos extras de debug se existirem
+        if (resultado.errorCode) errorResponse.code = resultado.errorCode;
+        if (resultado.errorName) errorResponse.errorName = resultado.errorName;
+
+        return res.status(statusCode).json(errorResponse);
       }
 
       resposta = resultado.resposta;

@@ -374,10 +374,18 @@ export async function conversar(prompt, options = {}) {
 
   } catch (error) {
     console.error('❌ [Bedrock] Erro na conversação:', error);
+
+    // Preservar propriedades do erro (statusCode, retryAfter, etc) no objeto de retorno
     return {
       sucesso: false,
-      erro: error.message,
-      codigo: error.name,
+      erro: error?.message || 'Erro ao processar conversa',
+      statusCode: Number.isInteger(error?.statusCode)
+        ? error.statusCode
+        : (Number.isInteger(error?.status) ? error.status : undefined),
+      retryAfter: error?.retryAfter,
+      // Campos auxiliares para debug
+      errorName: error?.name,
+      errorCode: error?.code,
       modelo
     };
   }
