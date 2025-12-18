@@ -26,6 +26,9 @@ function generateTraceId() {
 export function requestLogger(req, res, next) {
   const startTime = Date.now();
 
+  // Skip metrics tracking for /metrics endpoint to avoid self-tracking
+  const shouldTrackMetrics = req.path !== '/metrics';
+
   // Generate or reuse trace/request IDs
   req.traceId = req.headers['x-trace-id'] || generateTraceId();
   req.requestId = req.headers['x-request-id'] || generateRequestId();
@@ -48,9 +51,11 @@ export function requestLogger(req, res, next) {
   res.on('finish', () => {
     const duration = Date.now() - startTime;
 
-    // Record Prometheus metrics
-    metricsCollector.incrementHttpRequest(req.method, req.path, res.statusCode);
-    metricsCollector.recordHttpDuration(req.method, req.path, duration);
+    // Record Prometheus metrics (skip for /metrics endpoint)
+    if (shouldTrackMetrics) {
+      metricsCollector.incrementHttpRequest(req.method, req.path, res.statusCode);
+      metricsCollector.recordHttpDuration(req.method, req.path, duration);
+    }
 
     logger.info('Request completed', {
       traceId: req.traceId,
