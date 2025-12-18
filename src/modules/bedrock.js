@@ -24,6 +24,9 @@ import { BEDROCK_TOOLS, executeTool } from './bedrock-tools.js';
 // Context Manager para limitação inteligente de tokens
 import contextManager from '../utils/context-manager.js';
 
+// Loop Guardrails para prevenção de loops infinitos
+import { loopGuardrails } from '../utils/loop-guardrails.js';
+
 // ============================================================
 // CONFIGURAÇÃO
 // ============================================================
@@ -201,6 +204,11 @@ export async function conversar(prompt, options = {}) {
     // ═══════════════════════════════════════════════════════════
     // LOOP DE TOOL USE
     // ═══════════════════════════════════════════════════════════
+    const conversationId = `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    // Inicializar guardrails para esta conversação
+    loopGuardrails.initConversation(conversationId);
+
     let currentMessages = initialMessages;
     let loopCount = 0;
     const MAX_LOOPS = 100;  // Aumentado de 10 para 100 para análises exaustivas (BACKSPEC BETA)
@@ -245,6 +253,29 @@ export async function conversar(prompt, options = {}) {
         const toolResults = [];
         for (const toolUseBlock of toolUses) {
           const { toolUseId, name, input } = toolUseBlock.toolUse;
+
+          // ──────────────────────────────────────────────────────
+          // GUARDRAIL: Verificar antes de executar tool
+          // ──────────────────────────────────────────────────────
+          const guardrailCheck = loopGuardrails.trackToolUse(conversationId, name);
+
+          if (!guardrailCheck.allowed) {
+            console.error(`🛡️ [Guardrail] ${guardrailCheck.reason.toUpperCase()} - Bloqueando execução`);
+
+            // Adicionar mensagem de erro como resultado da tool
+            toolResults.push({
+              toolResult: {
+                toolUseId,
+                content: [{
+                  text: `[GUARDRAIL ATIVADO] ${guardrailCheck.message}`
+                }]
+              }
+            });
+
+            // Forçar fim do loop
+            loopCount = MAX_LOOPS;
+            break;
+          }
 
           console.log(`🔧 [Tool Use] ${name}:`, JSON.stringify(input, null, 2));
           toolsUsed.push({ name, input });
@@ -300,6 +331,9 @@ export async function conversar(prompt, options = {}) {
         resposta = raciocinio;
       }
 
+      // Cleanup guardrails após conversação bem-sucedida
+      loopGuardrails.cleanupConversation(conversationId);
+
       return {
         sucesso: true,
         resposta,
@@ -312,7 +346,8 @@ export async function conversar(prompt, options = {}) {
         },
         toolsUsadas: toolsUsed.length > 0 ? toolsUsed : undefined,  // ← NOVO
         latencia: response.metrics?.latencyMs || null,
-        motivoParada: response.stopReason
+        motivoParada: response.stopReason,
+        guardrailStats: loopGuardrails.getStats(conversationId)  // ← NOVO: stats do guardrail
       };
     }
 
