@@ -993,6 +993,12 @@ app.get('/', (req, res) => {
 app.post('/api/chat', async (req, res) => {
   try {
     const { message, metadata = {}, projectId = null } = req.body;
+
+    // Guard: validar mensagem
+    if (!message || typeof message !== 'string') {
+      return res.status(400).json({ error: 'Mensagem inválida ou ausente' });
+    }
+
     const history = getHistory(req.session.id);
 
     // ✅ GERENCIAMENTO DE CONVERSAÇÃO
