@@ -16,6 +16,22 @@ class MetricsCollector {
       bedrock_errors_total: {},
       guardrails_triggered_total: {},
       active_requests: 0,
+      // Bottleneck metrics
+      bottleneck_running: 0,
+      bottleneck_queue_depth: 0,
+      bottleneck_rejected_total: {},
+      bottleneck_completed_total: {},
+      bottleneck_failed_total: {},
+      // Circuit Breaker metrics
+      circuit_breaker_state: 'CLOSED',
+      circuit_breaker_rejected_total: {},
+      circuit_breaker_success_total: {},
+      circuit_breaker_failure_total: {},
+      // Model Fallback metrics
+      model_fallback_total: {},
+      model_fallback_attempt_total: {},
+      model_fallback_success_total: {},
+      model_fallback_exhausted_total: 0,
     };
   }
 
@@ -119,6 +135,111 @@ class MetricsCollector {
   }
 
   /**
+   * Bottleneck: Set running gauge
+   */
+  setBottleneckRunning(count) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.metrics.bottleneck_running = count;
+  }
+
+  /**
+   * Bottleneck: Set queue depth gauge
+   */
+  setBottleneckQueueDepth(count) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.metrics.bottleneck_queue_depth = count;
+  }
+
+  /**
+   * Bottleneck: Increment rejected counter
+   */
+  incrementBottleneckRejected(operation) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.metrics.bottleneck_rejected_total[operation] = (this.metrics.bottleneck_rejected_total[operation] || 0) + 1;
+  }
+
+  /**
+   * Bottleneck: Increment completed counter
+   */
+  incrementBottleneckCompleted(operation) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.metrics.bottleneck_completed_total[operation] = (this.metrics.bottleneck_completed_total[operation] || 0) + 1;
+  }
+
+  /**
+   * Bottleneck: Increment failed counter
+   */
+  incrementBottleneckFailed(operation) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.metrics.bottleneck_failed_total[operation] = (this.metrics.bottleneck_failed_total[operation] || 0) + 1;
+  }
+
+  /**
+   * Circuit Breaker: Set current state
+   */
+  setCircuitBreakerState(state) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.metrics.circuit_breaker_state = state;
+  }
+
+  /**
+   * Circuit Breaker: Increment rejected counter
+   */
+  incrementCircuitBreakerRejected(operation) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.metrics.circuit_breaker_rejected_total[operation] = (this.metrics.circuit_breaker_rejected_total[operation] || 0) + 1;
+  }
+
+  /**
+   * Circuit Breaker: Increment success counter
+   */
+  incrementCircuitBreakerSuccess(operation) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.metrics.circuit_breaker_success_total[operation] = (this.metrics.circuit_breaker_success_total[operation] || 0) + 1;
+  }
+
+  /**
+   * Circuit Breaker: Increment failure counter
+   */
+  incrementCircuitBreakerFailure(operation) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.metrics.circuit_breaker_failure_total[operation] = (this.metrics.circuit_breaker_failure_total[operation] || 0) + 1;
+  }
+
+  /**
+   * Model Fallback: Increment fallback transition counter
+   */
+  incrementModelFallback(fromModel, toModel) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    const key = `${fromModel}:${toModel}`;
+    this.metrics.model_fallback_total[key] = (this.metrics.model_fallback_total[key] || 0) + 1;
+  }
+
+  /**
+   * Model Fallback: Increment attempt counter
+   */
+  incrementModelFallbackAttempt(modelId) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.metrics.model_fallback_attempt_total[modelId] = (this.metrics.model_fallback_attempt_total[modelId] || 0) + 1;
+  }
+
+  /**
+   * Model Fallback: Increment success counter
+   */
+  incrementModelFallbackSuccess(modelId) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.metrics.model_fallback_success_total[modelId] = (this.metrics.model_fallback_success_total[modelId] || 0) + 1;
+  }
+
+  /**
+   * Model Fallback: Increment exhausted counter
+   */
+  incrementModelFallbackExhausted() {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.metrics.model_fallback_exhausted_total++;
+  }
+
+  /**
    * Export metrics in Prometheus text format
    */
   exportPrometheus() {
@@ -184,6 +305,92 @@ class MetricsCollector {
     output += '# TYPE rom_active_requests gauge\n';
     output += `rom_active_requests ${this.metrics.active_requests}\n`;
 
+    // Bottleneck running (gauge)
+    output += '# HELP bottleneck_running Currently running requests\n';
+    output += '# TYPE bottleneck_running gauge\n';
+    output += `bottleneck_running ${this.metrics.bottleneck_running}\n`;
+
+    // Bottleneck queue depth (gauge)
+    output += '# HELP bottleneck_queue_depth Current queue depth\n';
+    output += '# TYPE bottleneck_queue_depth gauge\n';
+    output += `bottleneck_queue_depth ${this.metrics.bottleneck_queue_depth}\n`;
+
+    // Bottleneck rejected (counter)
+    output += '# HELP bottleneck_rejected_total Total requests rejected due to full queue\n';
+    output += '# TYPE bottleneck_rejected_total counter\n';
+    for (const [operation, count] of Object.entries(this.metrics.bottleneck_rejected_total)) {
+      output += `bottleneck_rejected_total{operation="${operation}"} ${count}\n`;
+    }
+
+    // Bottleneck completed (counter)
+    output += '# HELP bottleneck_completed_total Total requests completed successfully\n';
+    output += '# TYPE bottleneck_completed_total counter\n';
+    for (const [operation, count] of Object.entries(this.metrics.bottleneck_completed_total)) {
+      output += `bottleneck_completed_total{operation="${operation}"} ${count}\n`;
+    }
+
+    // Bottleneck failed (counter)
+    output += '# HELP bottleneck_failed_total Total requests failed during execution\n';
+    output += '# TYPE bottleneck_failed_total counter\n';
+    for (const [operation, count] of Object.entries(this.metrics.bottleneck_failed_total)) {
+      output += `bottleneck_failed_total{operation="${operation}"} ${count}\n`;
+    }
+
+    // Circuit Breaker state (gauge)
+    output += '# HELP circuit_breaker_state Current circuit breaker state (CLOSED=0, HALF_OPEN=1, OPEN=2)\n';
+    output += '# TYPE circuit_breaker_state gauge\n';
+    const stateValue = this.metrics.circuit_breaker_state === 'CLOSED' ? 0 :
+                       this.metrics.circuit_breaker_state === 'HALF_OPEN' ? 1 : 2;
+    output += `circuit_breaker_state{state="${this.metrics.circuit_breaker_state}"} ${stateValue}\n`;
+
+    // Circuit Breaker rejected (counter)
+    output += '# HELP circuit_breaker_rejected_total Total requests rejected due to open circuit\n';
+    output += '# TYPE circuit_breaker_rejected_total counter\n';
+    for (const [operation, count] of Object.entries(this.metrics.circuit_breaker_rejected_total)) {
+      output += `circuit_breaker_rejected_total{operation="${operation}"} ${count}\n`;
+    }
+
+    // Circuit Breaker success (counter)
+    output += '# HELP circuit_breaker_success_total Total successful requests through circuit breaker\n';
+    output += '# TYPE circuit_breaker_success_total counter\n';
+    for (const [operation, count] of Object.entries(this.metrics.circuit_breaker_success_total)) {
+      output += `circuit_breaker_success_total{operation="${operation}"} ${count}\n`;
+    }
+
+    // Circuit Breaker failure (counter)
+    output += '# HELP circuit_breaker_failure_total Total failed requests through circuit breaker\n';
+    output += '# TYPE circuit_breaker_failure_total counter\n';
+    for (const [operation, count] of Object.entries(this.metrics.circuit_breaker_failure_total)) {
+      output += `circuit_breaker_failure_total{operation="${operation}"} ${count}\n`;
+    }
+
+    // Model Fallback transitions (counter)
+    output += '# HELP model_fallback_total Total model fallback transitions\n';
+    output += '# TYPE model_fallback_total counter\n';
+    for (const [key, count] of Object.entries(this.metrics.model_fallback_total)) {
+      const [fromModel, toModel] = key.split(':');
+      output += `model_fallback_total{from_model="${fromModel}",to_model="${toModel}"} ${count}\n`;
+    }
+
+    // Model Fallback attempts (counter)
+    output += '# HELP model_fallback_attempt_total Total fallback attempts per model\n';
+    output += '# TYPE model_fallback_attempt_total counter\n';
+    for (const [modelId, count] of Object.entries(this.metrics.model_fallback_attempt_total)) {
+      output += `model_fallback_attempt_total{model_id="${modelId}"} ${count}\n`;
+    }
+
+    // Model Fallback success (counter)
+    output += '# HELP model_fallback_success_total Total successful fallbacks per model\n';
+    output += '# TYPE model_fallback_success_total counter\n';
+    for (const [modelId, count] of Object.entries(this.metrics.model_fallback_success_total)) {
+      output += `model_fallback_success_total{model_id="${modelId}"} ${count}\n`;
+    }
+
+    // Model Fallback exhausted (counter)
+    output += '# HELP model_fallback_exhausted_total Total times all models in chain failed\n';
+    output += '# TYPE model_fallback_exhausted_total counter\n';
+    output += `model_fallback_exhausted_total ${this.metrics.model_fallback_exhausted_total}\n`;
+
     // Node.js process metrics
     const memUsage = process.memoryUsage();
     output += '# HELP nodejs_heap_size_used_bytes Node.js heap used\n';
@@ -210,6 +417,22 @@ class MetricsCollector {
       bedrock_errors_total: {},
       guardrails_triggered_total: {},
       active_requests: 0,
+      // Bottleneck metrics
+      bottleneck_running: 0,
+      bottleneck_queue_depth: 0,
+      bottleneck_rejected_total: {},
+      bottleneck_completed_total: {},
+      bottleneck_failed_total: {},
+      // Circuit Breaker metrics
+      circuit_breaker_state: 'CLOSED',
+      circuit_breaker_rejected_total: {},
+      circuit_breaker_success_total: {},
+      circuit_breaker_failure_total: {},
+      // Model Fallback metrics
+      model_fallback_total: {},
+      model_fallback_attempt_total: {},
+      model_fallback_success_total: {},
+      model_fallback_exhausted_total: 0,
     };
   }
 }
