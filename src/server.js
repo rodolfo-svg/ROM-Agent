@@ -24,6 +24,8 @@ import romProjectRouter from './routes/rom-project.js';
 import romProjectService from './services/rom-project-service.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
 import featureFlags from './utils/feature-flags.js';
+import { requestLogger } from './middleware/request-logger.js';
+import metricsCollector from './utils/metrics-collector.js';
 
 dotenv.config();
 
@@ -34,6 +36,9 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname, '../public')));
+
+// Observability middleware (traceId, requestId)
+app.use(requestLogger);
 
 // Rotas de Projects e Code Execution
 app.use('/api', projectsRouter);
@@ -130,6 +135,21 @@ app.get('/api/download/:file', (req, res) => {
     res.download(path.join(__dirname, file.path), file.name);
   } else {
     res.status(404).json({ error: 'Arquivo não encontrado' });
+  }
+});
+
+// ============================================================================
+// API - Metrics (Prometheus format)
+// ============================================================================
+
+app.get('/metrics', (req, res) => {
+  try {
+    const metrics = metricsCollector.exportPrometheus();
+    res.set('Content-Type', 'text/plain; version=0.0.4');
+    res.send(metrics);
+  } catch (error) {
+    logger.error('Error exporting metrics:', error);
+    res.status(500).send('# Error exporting metrics\n');
   }
 });
 
