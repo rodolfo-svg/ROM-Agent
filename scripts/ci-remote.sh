@@ -3,6 +3,7 @@
 set -e
 
 BASE_URL="${BASE_URL:-https://staging.iarom.com.br}"
+ADMIN_TOKEN="${ADMIN_TOKEN:-}"
 
 echo "🌐 CI Remote - ROM Agent"
 echo "URL: $BASE_URL"
@@ -26,6 +27,40 @@ curl -f -s "$BASE_URL/metrics" -o /dev/null || {
 }
 echo "✅ Metrics endpoint passed"
 echo ""
+
+# Admin endpoints (if ADMIN_TOKEN provided)
+if [[ -n "$ADMIN_TOKEN" ]]; then
+  echo "🔍 Testing /admin/flags endpoint..."
+  flags_response=$(curl -s -w "\n%{http_code}" \
+    -H "X-Admin-Token: $ADMIN_TOKEN" \
+    "$BASE_URL/admin/flags" || echo "000")
+
+  flags_code=$(echo "$flags_response" | tail -n1)
+  if [[ "$flags_code" == "200" ]]; then
+    echo "✅ Admin flags endpoint passed"
+  else
+    echo "❌ Admin flags endpoint failed (HTTP $flags_code)"
+    exit 1
+  fi
+  echo ""
+
+  echo "🔍 Testing /admin/reload-flags endpoint..."
+  reload_response=$(curl -s -w "\n%{http_code}" -X POST \
+    -H "X-Admin-Token: $ADMIN_TOKEN" \
+    "$BASE_URL/admin/reload-flags" || echo "000")
+
+  reload_code=$(echo "$reload_response" | tail -n1)
+  if [[ "$reload_code" == "200" ]]; then
+    echo "✅ Admin reload-flags endpoint passed"
+  else
+    echo "❌ Admin reload-flags endpoint failed (HTTP $reload_code)"
+    exit 1
+  fi
+  echo ""
+else
+  echo "⚠️  ADMIN_TOKEN not provided, skipping admin endpoints"
+  echo ""
+fi
 
 # API basic test (if available)
 echo "🔍 Testing /api/chat endpoint (basic)..."

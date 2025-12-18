@@ -9,7 +9,7 @@ import { existsSync, createReadStream } from 'fs';
 import path from 'path';
 import { exec, spawn } from 'child_process';
 import { promisify } from 'util';
-import { glob } from 'fs/promises';
+import { glob } from 'glob';
 
 const execAsync = promisify(exec);
 
@@ -222,10 +222,8 @@ export const globTool = {
 
   async execute({ pattern, path: searchPath = process.cwd() }) {
     try {
-      const { glob: globSync } = await import('glob');
-
       const fullPattern = path.join(searchPath, pattern);
-      const files = await globSync(fullPattern, { nodir: true });
+      const files = await glob(fullPattern, { nodir: true });
 
       // Obter stats e ordenar por modificação
       const filesWithStats = await Promise.all(

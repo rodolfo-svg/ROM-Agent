@@ -6,10 +6,14 @@
 # ═══════════════════════════════════════════════════════════════
 
 services:
+  # ═══════════════════════════════════════════════════════════════
+  # PRODUÇÃO - Branch main
+  # ═══════════════════════════════════════════════════════════════
   - type: web
     name: rom-agent
     runtime: node
     plan: free
+    branch: main
 
     # ═══ BUILD ═══
     buildCommand: |
@@ -82,3 +86,79 @@ services:
     domains:
       - iarom.com.br
       - www.iarom.com.br
+
+  # ═══════════════════════════════════════════════════════════════
+  # STAGING - Branch feature/go-live-observability
+  # ═══════════════════════════════════════════════════════════════
+  - type: web
+    name: rom-agent-staging
+    runtime: node
+    plan: free
+    branch: feature/go-live-observability
+
+    # ═══ BUILD ═══
+    buildCommand: |
+      echo "🔧 [STAGING] Instalando dependências..."
+      npm ci --only=production
+      echo "✅ [STAGING] Build concluído"
+
+    # ═══ START ═══
+    startCommand: npm run web:enhanced
+
+    # ═══ VARIÁVEIS DE AMBIENTE ═══
+    envVars:
+      # Node.js
+      - key: NODE_ENV
+        value: staging
+
+      # Porta (Render usa 10000)
+      - key: PORT
+        value: 10000
+
+      # ✅ FORÇAR USO DO DISCO PERSISTENTE /var/data
+      - key: RENDER
+        value: "true"
+      - key: UPLOAD_FOLDER
+        value: /var/data/upload
+      - key: EXTRACTED_FOLDER
+        value: /var/data/extracted
+      - key: PROCESSED_FOLDER
+        value: /var/data/processed
+
+      # AWS Bedrock (obrigatório)
+      - key: AWS_ACCESS_KEY_ID
+        sync: false
+      - key: AWS_SECRET_ACCESS_KEY
+        sync: false
+      - key: AWS_REGION
+        value: us-east-1
+
+      # Anthropic (alternativo)
+      - key: ANTHROPIC_API_KEY
+        sync: false
+
+      # DataJud (consulta jurisprudência)
+      - key: DATAJUD_API_KEY
+        sync: false
+
+      # Session Secret (auto-gerado)
+      - key: SESSION_SECRET
+        generateValue: true
+
+      # Rate Limiter (mais permissivo para testes)
+      - key: RATE_LIMIT_PER_MINUTE
+        value: 20
+      - key: RATE_LIMIT_PER_HOUR
+        value: 200
+
+    # ═══ HEALTH CHECK ═══
+    healthCheckPath: /api/info
+
+    # ═══ RECURSOS ═══
+    # Disco persistente separado para staging
+    disk:
+      mountPath: /var/data
+      sizeGB: 1
+
+    # ═══ AUTO-DEPLOY ═══
+    autoDeploy: true
