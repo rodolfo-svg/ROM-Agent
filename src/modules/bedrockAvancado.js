@@ -14,6 +14,9 @@ import {
 import * as fs from 'fs';
 import * as path from 'path';
 
+// Retry logic with exponential backoff
+import { retryAwsCommand } from '../utils/retry-with-backoff.js';
+
 // ============================================================
 // CONFIGURAÇÃO
 // ============================================================
@@ -106,7 +109,10 @@ export async function gerarEmbeddings(textos, options = {}) {
         body
       });
 
-      const response = await client.send(command);
+      const response = await retryAwsCommand(client, command, {
+        modelId: modelo,
+        operation: 'embedding'
+      });
       const result = JSON.parse(new TextDecoder().decode(response.body));
 
       return {
@@ -134,7 +140,10 @@ export async function gerarEmbeddings(textos, options = {}) {
           body
         });
 
-        const response = await client.send(command);
+        const response = await retryAwsCommand(client, command, {
+          modelId: modelo,
+          operation: 'embedding_batch'
+        });
         const result = JSON.parse(new TextDecoder().decode(response.body));
         embeddings.push(result.embedding);
       }
@@ -255,7 +264,7 @@ export async function reordenarResultados(query, documentos, options = {}) {
       body
     });
 
-    const response = await client.send(command);
+    const response = await retryAwsCommand(client, command, { modelId: modelo, operation: 'rerank' });
     const result = JSON.parse(new TextDecoder().decode(response.body));
 
     return {
@@ -328,7 +337,7 @@ export async function analisarImagem(imagemPath, prompt, options = {}) {
       inferenceConfig: { maxTokens }
     });
 
-    const response = await client.send(command);
+    const response = await retryAwsCommand(client, command, { modelId: modelo, operation: 'vision_image' });
 
     return {
       sucesso: true,
@@ -407,7 +416,7 @@ export async function melhorarImagem(imagemPath, options = {}) {
       body
     });
 
-    const response = await client.send(command);
+    const response = await retryAwsCommand(client, command, { modelId: modelo, operation: 'generate_image' });
     const result = JSON.parse(new TextDecoder().decode(response.body));
 
     if (result.image) {
@@ -449,7 +458,7 @@ export async function removerFundo(imagemPath, outputPath = null) {
       body
     });
 
-    const response = await client.send(command);
+    const response = await retryAwsCommand(client, command, { modelId: 'stability.stable-image-remove-background-v1:0', operation: 'remove_background' });
     const result = JSON.parse(new TextDecoder().decode(response.body));
 
     if (result.image) {
@@ -502,7 +511,7 @@ export async function gerarImagem(prompt, options = {}) {
       body
     });
 
-    const response = await client.send(command);
+    const response = await retryAwsCommand(client, command, { modelId: modelo, operation: 'edit_image' });
     const result = JSON.parse(new TextDecoder().decode(response.body));
 
     if (result.images && result.images[0]) {
@@ -565,7 +574,7 @@ export async function transcreverAudio(audioPath, options = {}) {
       body
     });
 
-    const response = await client.send(command);
+    const response = await retryAwsCommand(client, command, { modelId: modelo, operation: 'generate_audio' });
     const result = JSON.parse(new TextDecoder().decode(response.body));
 
     return {
@@ -639,7 +648,7 @@ export async function analisarVideo(videoPath, prompt, options = {}) {
       inferenceConfig: { maxTokens }
     });
 
-    const response = await client.send(command);
+    const response = await retryAwsCommand(client, command, { modelId: modelo, operation: 'analyze_video' });
 
     return {
       sucesso: true,
