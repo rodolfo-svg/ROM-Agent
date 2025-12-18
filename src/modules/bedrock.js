@@ -33,6 +33,9 @@ import { retryAwsCommand } from '../utils/retry-with-backoff.js';
 // Bottleneck para controle de concorrência e fila
 import bottleneck from '../utils/bottleneck.js';
 
+// Resilient Invoke: Circuit Breaker + Fallback + Retry + Bottleneck
+import { resilientInvoke } from '../utils/resilient-invoke.js';
+
 // ============================================================
 // CONFIGURAÇÃO
 // ============================================================
@@ -241,18 +244,15 @@ export async function conversar(prompt, options = {}) {
 
       const command = new ConverseCommand(commandParams);
 
-      // Envolver com retry + bottleneck para resiliência e controle de concorrência
-      const response = await bottleneck.schedule(
-        () => retryAwsCommand(client, command, {
-          modelId: commandParams.modelId,
-          operation: 'converse',
-          loopIteration: loopCount
-        }),
-        {
-          operation: 'converse',
-          requestId: options.conversationId || `conv_${Date.now()}`
-        }
-      );
+      // Envolver com resilientInvoke: Circuit Breaker + Fallback + Retry + Bottleneck
+      const response = await resilientInvoke(client, command, {
+        modelId: commandParams.modelId,
+        operation: 'converse',
+        requestId: options.conversationId || `conv_${Date.now()}`,
+        loopIteration: loopCount,
+        enableFallback: true,
+        enableCircuitBreaker: true
+      });
 
       // Acumular uso de tokens
       totalTokensUsed.input += response.usage.inputTokens;
