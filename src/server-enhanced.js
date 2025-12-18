@@ -1391,26 +1391,18 @@ Enquanto isso, pode continuar usando o sistema normalmente.
       console.log(`✅ Agente respondeu: sucesso=${resultado.sucesso}, resposta=${resultado.resposta?.length || 0} caracteres`);
 
       if (!resultado.sucesso) {
-        console.error(`❌ Erro do agente: ${resultado.erro}`);
+        const status = Number.isInteger(resultado?.statusCode) ? resultado.statusCode : 500;
 
-        // Usar statusCode do resultado se disponível (Bottleneck 503, etc)
-        const statusCode = resultado.statusCode || 500;
+        console.error(`❌ Erro do agente (${status}): ${resultado.erro}`);
 
-        const errorResponse = {
-          error: resultado.erro || 'Erro ao processar mensagem',
-          status: statusCode
-        };
-
-        // Adicionar Retry-After header para HTTP 503
-        if (statusCode === 503 && resultado.retryAfter) {
+        if (status === 503 && resultado?.retryAfter) {
           res.set('Retry-After', String(resultado.retryAfter));
         }
 
-        // Incluir campos extras de debug se existirem
-        if (resultado.errorCode) errorResponse.code = resultado.errorCode;
-        if (resultado.errorName) errorResponse.errorName = resultado.errorName;
-
-        return res.status(statusCode).json(errorResponse);
+        return res.status(status).json({
+          error: resultado.erro || 'Erro ao processar mensagem',
+          status
+        });
       }
 
       resposta = resultado.resposta;
