@@ -25,7 +25,7 @@ import romProjectService from './services/rom-project-service.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
 import featureFlags from './utils/feature-flags.js';
 import { requestLogger } from './middleware/request-logger.js';
-import metricsCollector from './utils/metrics-collector.js';
+import metricsCollector from './utils/metrics-collector-v2.js';
 
 dotenv.config();
 
@@ -142,10 +142,10 @@ app.get('/api/download/:file', (req, res) => {
 // API - Metrics (Prometheus format)
 // ============================================================================
 
-app.get('/metrics', (req, res) => {
+app.get('/metrics', async (req, res) => {
   try {
-    const metrics = metricsCollector.exportPrometheus();
-    res.set('Content-Type', 'text/plain; version=0.0.4');
+    const metrics = await metricsCollector.exportPrometheus();
+    res.set('Content-Type', 'text/plain; version=0.0.4; charset=utf-8');
     res.send(metrics);
   } catch (error) {
     logger.error('Error exporting metrics:', error);
