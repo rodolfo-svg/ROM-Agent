@@ -1422,11 +1422,33 @@ Enquanto isso, pode continuar usando o sistema normalmente.
     console.error('   Session ID:', req.session.id);
     console.error('   Message length:', req.body.message?.length || 0);
 
-    // Retornar erro mais detalhado
-    res.status(500).json({
+    // Determinar status HTTP correto (respeita error.statusCode do Bottleneck/Circuit Breaker)
+    const status = Number.isInteger(error?.statusCode)
+      ? error.statusCode
+      : (Number.isInteger(error?.status) ? error.status : 500);
+
+    // Adicionar header Retry-After para HTTP 503 (Bottleneck)
+    if (status === 503 && error?.retryAfter) {
+      res.set('Retry-After', String(error.retryAfter));
+    }
+
+    // Retornar erro com status apropriado (não vaza stack em produção)
+    const responseBody = {
       error: error.message || 'Erro desconhecido no chat',
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
+      status
+    };
+
+    // Preservar campos extras se existirem (traceId, requestId, etc)
+    if (error.traceId) responseBody.traceId = error.traceId;
+    if (error.requestId) responseBody.requestId = error.requestId;
+    if (error.code) responseBody.code = error.code;
+
+    // Stack trace apenas em desenvolvimento
+    if (process.env.NODE_ENV === 'development' && error.stack) {
+      responseBody.details = error.stack;
+    }
+
+    res.status(status).json(responseBody);
   }
 });
 
