@@ -88,13 +88,13 @@ services:
       - www.iarom.com.br
 
   # ═══════════════════════════════════════════════════════════════
-  # STAGING - Branch feature/go-live-observability
+  # STAGING - Branch feature/go-live-guardrails (PR#3)
   # ═══════════════════════════════════════════════════════════════
   - type: web
     name: rom-agent-staging
     runtime: node
     plan: free
-    branch: feature/go-live-observability
+    branch: feature/go-live-guardrails
 
     # ═══ BUILD ═══
     buildCommand: |
