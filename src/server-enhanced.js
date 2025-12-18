@@ -1422,6 +1422,17 @@ Enquanto isso, pode continuar usando o sistema normalmente.
     console.error('   Session ID:', req.session.id);
     console.error('   Message length:', req.body.message?.length || 0);
 
+    // Debug: inspecionar propriedades do erro
+    console.error('[api/chat] error meta', {
+      message: error?.message,
+      name: error?.name,
+      statusCode: error?.statusCode,
+      status: error?.status,
+      code: error?.code,
+      retryAfter: error?.retryAfter,
+      stackTop: (error?.stack || '').split('\n').slice(0, 3).join('\n'),
+    });
+
     // Determinar status HTTP correto (respeita error.statusCode do Bottleneck/Circuit Breaker)
     const status = Number.isInteger(error?.statusCode)
       ? error.statusCode
