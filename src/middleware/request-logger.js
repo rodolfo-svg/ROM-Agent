@@ -44,9 +44,8 @@ export function requestLogger(req, res, next) {
     userAgent: req.get('user-agent'),
   });
 
-  // Capture response
-  const originalSend = res.send;
-  res.send = function(data) {
+  // Capture response on finish event (works for res.send, res.json, res.end, etc.)
+  res.on('finish', () => {
     const duration = Date.now() - startTime;
 
     // Record Prometheus metrics
@@ -61,9 +60,7 @@ export function requestLogger(req, res, next) {
       status: res.statusCode,
       duration,
     });
-
-    return originalSend.call(this, data);
-  };
+  });
 
   next();
 }
