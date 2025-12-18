@@ -1,10 +1,12 @@
 /**
  * ROM Agent - Request Logger Middleware
  * Adds traceId and requestId to all requests for observability
+ * Records Prometheus metrics via metrics-collector-v2
  */
 
 import { v4 as uuidv4 } from 'uuid';
 import { logger } from '../utils/logger.js';
+import metricsCollector from '../utils/metrics-collector-v2.js';
 
 /**
  * Generate unique request identifiers
@@ -46,6 +48,10 @@ export function requestLogger(req, res, next) {
   const originalSend = res.send;
   res.send = function(data) {
     const duration = Date.now() - startTime;
+
+    // Record Prometheus metrics
+    metricsCollector.incrementHttpRequest(req.method, req.path, res.statusCode);
+    metricsCollector.recordHttpDuration(req.method, req.path, duration);
 
     logger.info('Request completed', {
       traceId: req.traceId,
