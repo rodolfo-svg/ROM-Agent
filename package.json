@@ -41,7 +41,7 @@
     "@anthropic-ai/claude-agent-sdk": "^0.1.67",
     "@anthropic-ai/sdk": "^0.32.1",
     "@aws-sdk/client-bedrock": "^3.949.0",
-    "@aws-sdk/client-bedrock-runtime": "^3.948.0",
+    "@aws-sdk/client-bedrock-runtime": "^3.954.0",
     "@types/node-cron": "^3.0.11",
     "archiver": "^7.0.1",
     "axios": "^1.13.2",

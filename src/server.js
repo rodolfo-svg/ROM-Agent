@@ -23,6 +23,7 @@ import * as documentExtractionService from './services/document-extraction-servi
 import romProjectRouter from './routes/rom-project.js';
 import romProjectService from './services/rom-project-service.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
+import featureFlags from './utils/feature-flags.js';
 
 dotenv.config();
 
@@ -129,6 +130,79 @@ app.get('/api/download/:file', (req, res) => {
     res.download(path.join(__dirname, file.path), file.name);
   } else {
     res.status(404).json({ error: 'Arquivo não encontrado' });
+  }
+});
+
+// ============================================================================
+// API - Feature Flags (Admin)
+// ============================================================================
+
+// Admin authentication middleware
+const requireAdminToken = (req, res, next) => {
+  const token = req.headers['x-admin-token'];
+  const adminToken = process.env.ADMIN_TOKEN;
+
+  if (!adminToken) {
+    logger.error('ADMIN_TOKEN not configured');
+    return res.status(500).json({
+      success: false,
+      error: 'Admin authentication not configured'
+    });
+  }
+
+  if (!token || token !== adminToken) {
+    logger.warn('Unauthorized admin access attempt', {
+      ip: req.ip,
+      path: req.path
+    });
+    return res.status(401).json({
+      success: false,
+      error: 'Unauthorized - Invalid or missing X-Admin-Token'
+    });
+  }
+
+  next();
+};
+
+// Get all feature flags
+app.get('/admin/flags', requireAdminToken, (req, res) => {
+  try {
+    const flags = featureFlags.getAll();
+    logger.info('Admin flags read', { ip: req.ip });
+    res.json({
+      success: true,
+      flags,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Error getting flags:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Reload feature flags from environment
+app.post('/admin/reload-flags', requireAdminToken, (req, res) => {
+  try {
+    const flags = featureFlags.reload();
+    logger.info('Feature flags reloaded by admin', {
+      ip: req.ip,
+      flagsCount: Object.keys(flags).length
+    });
+    res.json({
+      success: true,
+      message: 'Feature flags reloaded successfully',
+      flags,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    logger.error('Error reloading flags:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
   }
 });
 
