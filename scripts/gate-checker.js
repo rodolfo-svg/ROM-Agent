@@ -168,10 +168,10 @@ async function main() {
     if (!buckets.length) buckets = getHistogramBuckets(samples, "http_request_duration_seconds", {});
     const latencyP95 = quantileFromBuckets(buckets, 0.95) ?? Infinity;
 
-    // RAM: default metrics do prom-client
+    // RAM: calcular com base na RAM real do sistema (2GB = 2048MB)
     const heapUsed = sumMetric(samples, "nodejs_heap_size_used_bytes", {});
-    const heapTotal = sumMetric(samples, "nodejs_heap_size_total_bytes", {});
-    const ramPercent = heapTotal > 0 ? heapUsed / heapTotal : 0;
+    const systemRamBytes = 2 * 1024 * 1024 * 1024; // 2GB em bytes
+    const ramPercent = systemRamBytes > 0 ? heapUsed / systemRamBytes : 0;
 
     // Bedrock cost/req
     const bedrockReq = sumMetric(samples, "bedrock_requests_total", {});
