@@ -11,9 +11,9 @@
  * - Métricas Prometheus
  */
 
-import { structuredLogger } from './structured-logger.js';
-import { metricsCollector } from './metrics-collector.js';
-import { featureFlags } from './feature-flags.js';
+import structuredLogger from './structured-logger.js';
+import metricsCollector from './metrics-collector.js';
+import featureFlags from './feature-flags.js';
 
 /**
  * Estado do guardrail para cada conversação
@@ -80,9 +80,6 @@ export class LoopGuardrails {
       loopNumber: state.loopCount
     });
 
-    // Registrar métrica
-    metricsCollector.recordToolLoop(state.loopCount);
-
     // Verificar hard limit
     if (state.loopCount >= this.config.hardLimit) {
       state.stopped = true;
@@ -95,10 +92,7 @@ export class LoopGuardrails {
       });
 
       // Métrica de violação
-      metricsCollector.incrementCounter('guardrails_triggered_total', {
-        type: 'hard_limit',
-        limit: this.config.hardLimit
-      });
+      metricsCollector.incrementGuardrailsTriggered('hard_limit');
 
       return {
         allowed: false,
@@ -120,10 +114,7 @@ export class LoopGuardrails {
       });
 
       // Métrica de warning
-      metricsCollector.incrementCounter('guardrails_warnings_total', {
-        type: 'soft_limit',
-        limit: this.config.softLimit
-      });
+      metricsCollector.incrementGuardrailsTriggered('soft_limit_warning');
     }
 
     // Verificar repetição de tools
@@ -140,11 +131,7 @@ export class LoopGuardrails {
       });
 
       // Métrica de repetição
-      metricsCollector.incrementCounter('guardrails_triggered_total', {
-        type: 'repetition',
-        tool: toolName,
-        count: repetition.count
-      });
+      metricsCollector.incrementGuardrailsTriggered('repetition');
 
       return {
         allowed: false,
