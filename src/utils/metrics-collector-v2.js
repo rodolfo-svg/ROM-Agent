@@ -6,10 +6,22 @@
 import { Registry, Counter, Histogram, Gauge } from 'prom-client';
 import featureFlags from './feature-flags.js';
 
+// Helper functions to avoid duplicate metric registration
+function getOrCreateCounter({ name, help, labelNames = [], registry }) {
+  return registry.getSingleMetric(name) ||
+    new Counter({ name, help, labelNames, registers: [registry] });
+}
+
+function getOrCreateGauge({ name, help, labelNames = [], registry }) {
+  return registry.getSingleMetric(name) ||
+    new Gauge({ name, help, labelNames, registers: [registry] });
+}
+
 class MetricsCollectorV2 {
   constructor() {
     this.registry = new Registry();
     this.initMetrics();
+    this.initResilienceMetrics();
   }
 
   initMetrics() {
@@ -85,6 +97,78 @@ class MetricsCollectorV2 {
       name: 'nodejs_heap_size_total_bytes',
       help: 'Node.js heap total in bytes',
       registers: [this.registry],
+    });
+  }
+
+  /**
+   * Initialize resilience metrics (Circuit Breaker, Bottleneck, Retry, Fallback)
+   */
+  initResilienceMetrics() {
+    // Circuit Breaker metrics
+    this.cbState = getOrCreateGauge({
+      name: 'circuit_breaker_state',
+      help: 'Circuit breaker state (0=CLOSED, 1=HALF_OPEN, 2=OPEN)',
+      labelNames: ['name'],
+      registry: this.registry,
+    });
+
+    this.cbEvents = getOrCreateCounter({
+      name: 'circuit_breaker_events_total',
+      help: 'Circuit breaker events',
+      labelNames: ['name', 'event'],
+      registry: this.registry,
+    });
+
+    // Bottleneck metrics
+    this.blInFlight = getOrCreateGauge({
+      name: 'bottleneck_inflight',
+      help: 'Current in-flight requests',
+      labelNames: ['name'],
+      registry: this.registry,
+    });
+
+    this.blQueueSize = getOrCreateGauge({
+      name: 'bottleneck_queue_size',
+      help: 'Current queue size',
+      labelNames: ['name'],
+      registry: this.registry,
+    });
+
+    this.blRejected = getOrCreateCounter({
+      name: 'bottleneck_rejected_total',
+      help: 'Rejected requests due to full queue',
+      labelNames: ['name'],
+      registry: this.registry,
+    });
+
+    // Retry metrics
+    this.retryAttempts = getOrCreateCounter({
+      name: 'retry_attempts_total',
+      help: 'Total retry attempts',
+      labelNames: ['operation', 'reason'],
+      registry: this.registry,
+    });
+
+    this.retryExhausted = getOrCreateCounter({
+      name: 'retry_exhausted_total',
+      help: 'Requests that exhausted retries',
+      labelNames: ['operation', 'reason'],
+      registry: this.registry,
+    });
+
+    // Model fallback metrics
+    this.mfAttempts = getOrCreateCounter({
+      name: 'model_fallback_attempts_total',
+      help: 'Model fallback attempts',
+      labelNames: ['operation', 'from', 'to', 'reason'],
+      registry: this.registry,
+    });
+
+    this.mfExhausted = getOrCreateCounter({
+      name: 'model_fallback_exhausted_total',
+      help: 'Fallback chain exhausted',
+      labelNames: ['operation'],
+      registry: this.registry,
     });
   }
 
@@ -175,6 +259,120 @@ class MetricsCollectorV2 {
     this.updateHeapMetrics();
 
     return await this.registry.metrics();
+  }
+
+  /**
+   * Circuit Breaker - Set state
+   */
+  setCircuitBreakerState(name, stateStr) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    const map = { CLOSED: 0, HALF_OPEN: 1, OPEN: 2 };
+    this.cbState.labels(name).set(map[stateStr] ?? -1);
+    this.cbEvents.labels(name, 'state').inc();
+  }
+
+  /**
+   * Circuit Breaker - Increment success
+   */
+  incrementCircuitBreakerSuccess(name) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.cbEvents.labels(name, 'success').inc();
+  }
+
+  /**
+   * Circuit Breaker - Increment failure
+   */
+  incrementCircuitBreakerFailure(name) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.cbEvents.labels(name, 'failure').inc();
+  }
+
+  /**
+   * Circuit Breaker - Increment rejection
+   */
+  incrementCircuitBreakerRejection(name) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.cbEvents.labels(name, 'reject').inc();
+  }
+
+  /**
+   * Circuit Breaker - Increment open event
+   */
+  incrementCircuitBreakerOpen(name) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.cbEvents.labels(name, 'open').inc();
+  }
+
+  /**
+   * Circuit Breaker - Increment half-open event
+   */
+  incrementCircuitBreakerHalfOpen(name) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.cbEvents.labels(name, 'half_open').inc();
+  }
+
+  /**
+   * Circuit Breaker - Increment close event
+   */
+  incrementCircuitBreakerClose(name) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.cbEvents.labels(name, 'close').inc();
+  }
+
+  /**
+   * Bottleneck - Set in-flight count
+   */
+  setBottleneckInFlight(name, value) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.blInFlight.labels(name).set(value);
+  }
+
+  /**
+   * Bottleneck - Set queue size
+   */
+  setBottleneckQueueSize(name, value) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.blQueueSize.labels(name).set(value);
+  }
+
+  /**
+   * Bottleneck - Increment rejected
+   */
+  incrementBottleneckRejected(name) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.blRejected.labels(name).inc();
+  }
+
+  /**
+   * Retry - Increment attempt
+   */
+  incrementRetryAttempt(operation, reason) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.retryAttempts.labels(operation, reason).inc();
+  }
+
+  /**
+   * Retry - Increment exhausted
+   */
+  incrementRetryExhausted(operation, reason) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.retryExhausted.labels(operation, reason).inc();
+  }
+
+  /**
+   * Model Fallback - Increment attempt
+   */
+  incrementModelFallbackAttempt(operation, from, to, reason) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.mfAttempts.labels(operation, from, to, reason).inc();
+  }
+
+  /**
+   * Model Fallback - Increment exhausted
+   */
+  incrementModelFallbackExhausted(operation) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    this.mfExhausted.labels(operation).inc();
   }
 
   /**
