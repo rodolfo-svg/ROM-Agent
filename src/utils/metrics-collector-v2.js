@@ -170,6 +170,32 @@ class MetricsCollectorV2 {
       labelNames: ['operation'],
       registry: this.registry,
     });
+
+    // Seed metrics with initial values (ensures they appear in /metrics immediately)
+    this.seedResilienceMetrics();
+  }
+
+  /**
+   * Seed resilience metrics with initial zero values
+   * This ensures metrics appear in Prometheus even before any traffic
+   */
+  seedResilienceMetrics() {
+    // run only once
+    if (this._seededResilienceMetrics) return;
+    this._seededResilienceMetrics = true;
+
+    // if metrics are disabled, do nothing
+    if (!featureFlags?.isEnabled?.('ENABLE_METRICS')) return;
+
+    // Use a single stable label to avoid creating phantom series
+    const op = 'default';
+
+    // Circuit Breaker: CLOSED = 0
+    this.cbState.labels(op).set(0);
+
+    // Bottleneck: start at zero
+    this.blInFlight.labels(op).set(0);
+    this.blQueueSize.labels(op).set(0);
   }
 
   /**
