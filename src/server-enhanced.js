@@ -57,6 +57,8 @@ import spellChecker from '../lib/spell-checker.js';
 import paradigmasManager from '../lib/paradigmas-manager.js';
 import bedrockQueue from '../lib/bedrock-queue-manager.js';
 import exhaustiveJobManager from '../lib/exhaustive-job-manager.js';
+import metricsCollector from './utils/metrics-collector-v2.js';
+import structuredLogger from './utils/structured-logger.js';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
@@ -8451,6 +8453,98 @@ app.get('/api/pricing/estimate/:pieceType', (req, res) => {
 });
 
 logger.info('✅ Pricing API endpoints configured');
+
+// ============================================================================
+// PR#2: OBSERVABILITY ENDPOINTS
+// ============================================================================
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'healthy', timestamp: new Date().toISOString() });
+});
+
+// Metrics endpoint (Prometheus format)
+app.get('/metrics', async (req, res) => {
+  try {
+    const metrics = await metricsCollector.exportPrometheus();
+    res.set('Content-Type', 'text/plain; version=0.0.4; charset=utf-8');
+    res.send(metrics);
+  } catch (error) {
+    structuredLogger.error('Error exporting metrics', { error });
+    res.status(500).send('# Error exporting metrics\n');
+  }
+});
+
+// Admin middleware
+const requireAdminToken = (req, res, next) => {
+  const token = req.headers['x-admin-token'];
+  const adminToken = process.env.ADMIN_TOKEN;
+
+  if (!adminToken) {
+    structuredLogger.error('ADMIN_TOKEN not configured');
+    return res.status(500).json({
+      success: false,
+      error: 'Admin authentication not configured'
+    });
+  }
+
+  if (!token || token !== adminToken) {
+    structuredLogger.warn('Unauthorized admin access attempt', {
+      ip: req.ip,
+      path: req.path
+    });
+    return res.status(401).json({
+      success: false,
+      error: 'Unauthorized - Invalid or missing X-Admin-Token'
+    });
+  }
+
+  next();
+};
+
+// Get all feature flags
+app.get('/admin/flags', requireAdminToken, (req, res) => {
+  try {
+    const flags = featureFlags.getAll();
+    structuredLogger.info('Admin flags read', { ip: req.ip });
+    res.json({
+      success: true,
+      flags,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    structuredLogger.error('Error getting flags', { error });
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+// Reload feature flags from environment
+app.post('/admin/reload-flags', requireAdminToken, (req, res) => {
+  try {
+    const flags = featureFlags.reload();
+    structuredLogger.info('Feature flags reloaded by admin', {
+      ip: req.ip,
+      flagsCount: Object.keys(flags).length
+    });
+    res.json({
+      success: true,
+      message: 'Feature flags reloaded successfully',
+      flags,
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    structuredLogger.error('Error reloading flags', { error });
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+logger.info('✅ PR#2 Observability endpoints configured');
 
 // ============================================================================
 
