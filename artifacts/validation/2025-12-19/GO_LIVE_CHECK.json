@@ -1,10 +1,10 @@
 {
-  "baseUrl": "https://rom-agent-ia-onrender-com.onrender.com",
-  "timestamp": "2025-12-19T03:18:49Z",
+  "baseUrl": "https://iarom.com.br",
+  "timestamp": "2025-12-19T04:35:37Z",
   "gate": "PASS",
   "http": {
     "chatMissingMessage": 400,
-    "chatValidMessage": 500
+    "chatValidMessage": 200
   },
   "metrics": {
     "hasConverseInflightSeries": 1,
