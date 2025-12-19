@@ -372,6 +372,24 @@ class MetricsCollectorV2 {
   }
 
   /**
+   * Bottleneck - Increment completed
+   */
+  incrementBottleneckCompleted(name) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    // Currently no Counter metric for completed - could be added if needed
+    // For now this is a no-op to prevent errors
+  }
+
+  /**
+   * Bottleneck - Increment failed
+   */
+  incrementBottleneckFailed(name) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+    // Currently no Counter metric for failed - could be added if needed
+    // For now this is a no-op to prevent errors
+  }
+
+  /**
    * Retry - Increment attempt
    */
   incrementRetryAttempt(operation, reason) {
