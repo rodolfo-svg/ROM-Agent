@@ -120,14 +120,10 @@ export async function resilientInvoke(client, command, options = {}) {
           }
         );
       } else {
-        // No fallback - use single model
-        const commandWithModel = {
-          ...command,
-          input: {
-            ...command.input,
-            modelId: initialModelId
-          }
-        };
+        // No fallback - use single model with proper Command cloning
+        const commandWithModel = cloneCommandWithOverrides(command, {
+          modelId: initialModelId
+        });
 
         if (enableCircuitBreaker) {
           return await bedrockCircuitBreaker.execute(
