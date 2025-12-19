@@ -22,6 +22,26 @@ import bottleneck from './bottleneck.js';
  */
 
 /**
+ * Clona o Command preservando a classe do AWS SDK v3
+ * @param {Object} command - Instância de Command (ConverseCommand, InvokeModelCommand, etc)
+ * @param {Object} overrides - Propriedades para sobrescrever no input
+ * @returns {Object} Nova instância do mesmo tipo de Command
+ */
+function cloneCommandWithOverrides(command, overrides = {}) {
+  const Ctor = command?.constructor;
+
+  // Se não é um Command válido, melhor falhar cedo (fica MUITO mais diagnosticável)
+  if (!command || typeof command.resolveMiddleware !== "function" || typeof Ctor !== "function") {
+    throw new Error(
+      `INVALID_COMMAND_TO_SEND: ${command?.constructor?.name || typeof command}`
+    );
+  }
+
+  const input = command.input || {};
+  return new Ctor({ ...input, ...overrides });
+}
+
+/**
  * Invokes Bedrock with full resilience stack
  *
  * @param {Object} client - BedrockRuntimeClient instance
@@ -64,14 +84,10 @@ export async function resilientInvoke(client, command, options = {}) {
       if (enableFallback) {
         return await executeWithFallback(
           async (currentModelId) => {
-            // Update command with current model
-            const commandWithModel = {
-              ...command,
-              input: {
-                ...command.input,
-                modelId: currentModelId
-              }
-            };
+            // Update command with current model using proper cloning
+            const commandWithModel = cloneCommandWithOverrides(command, {
+              modelId: currentModelId
+            });
 
             // Layer 3: Circuit Breaker (if enabled)
             if (enableCircuitBreaker) {
