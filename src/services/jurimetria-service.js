@@ -422,7 +422,7 @@ ANÁLISE SOLICITADA:
 Forneça uma análise estruturada e objetiva.`;
 
     const analise = await conversar(promptAnalise, {
-      modelo: 'anthropic.claude-sonnet-4-5-20250929-v1:0',
+      modelo: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
       maxTokens: 16384,
       systemPrompt: 'Você é um especialista em jurimetria e análise de decisões judiciais.'
     });
