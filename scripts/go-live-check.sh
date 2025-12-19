@@ -100,13 +100,49 @@ else
   kv "burst" "skipped (RUN_BURST=0)"
 fi
 
-section "6) P0-7 artifacts"
+section "6) Admin endpoints (opcional)"
+RUN_ADMIN="${RUN_ADMIN:-1}"
+X_ADMIN_TOKEN="${X_ADMIN_TOKEN:-}"
+ADMIN_FLAGS_JSON="$OUT_DIR/admin_flags.json"
+ADMIN_RELOAD_HDR="$OUT_DIR/admin_reload_headers.txt"
+ADMIN_RELOAD_BODY="$OUT_DIR/admin_reload_body.txt"
+
+if [[ "$RUN_ADMIN" == "1" && -n "$X_ADMIN_TOKEN" ]]; then
+  # Test GET /api/admin/feature-flags
+  HTTP_FLAGS="$(curl -sS -o "$ADMIN_FLAGS_JSON" -w "%{http_code}" -H "X-Admin-Token: $X_ADMIN_TOKEN" "$BASE_URL/api/admin/feature-flags" || true)"
+  kv "GET /api/admin/feature-flags HTTP" "$HTTP_FLAGS"
+
+  if [[ "$HTTP_FLAGS" == "200" ]]; then
+    echo '```json' >> "$REPORT"
+    cat "$ADMIN_FLAGS_JSON" | head -c 1000 >> "$REPORT"
+    echo -e '\n```' >> "$REPORT"
+  else
+    echo '```' >> "$REPORT"
+    cat "$ADMIN_FLAGS_JSON" >> "$REPORT"
+    echo '```' >> "$REPORT"
+  fi
+
+  # Test POST /api/admin/reload-feature-flags
+  HTTP_RELOAD="$(curl -sS -D "$ADMIN_RELOAD_HDR" -o "$ADMIN_RELOAD_BODY" -w "%{http_code}" -X POST -H "X-Admin-Token: $X_ADMIN_TOKEN" "$BASE_URL/api/admin/reload-feature-flags" || true)"
+  kv "POST /api/admin/reload-feature-flags HTTP" "$HTTP_RELOAD"
+  echo '```' >> "$REPORT"
+  cat "$ADMIN_RELOAD_BODY" >> "$REPORT"
+  echo '```' >> "$REPORT"
+else
+  if [[ "$RUN_ADMIN" == "0" ]]; then
+    kv "admin" "skipped (RUN_ADMIN=0)"
+  else
+    kv "admin" "skipped (X_ADMIN_TOKEN not set)"
+  fi
+fi
+
+section "7) P0-7 artifacts"
 kv "docs/ROLLBACK.md" "$(test -f docs/ROLLBACK.md && echo OK || echo MISSING)"
 kv "docs/RELEASE_TAGS.md" "$(test -f docs/RELEASE_TAGS.md && echo OK || echo MISSING)"
 kv "scripts/backup.sh" "$(test -f scripts/backup.sh && echo OK || echo MISSING)"
 kv "latest backup" "$(ls -1t backups/rom-agent_*.tar.gz 2>/dev/null | head -n1 || echo NONE)"
 
-section "7) Resultado (gate)"
+section "8) Resultado (gate)"
 PASS=1
 [[ "$HAS_CONVERSE_INFLIGHT" -ge 1 ]] || PASS=0
 [[ "$HAS_CONVERSE_QUEUE" -ge 1 ]] || PASS=0
