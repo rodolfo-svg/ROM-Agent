@@ -1,0 +1,13 @@
+{
+  "baseUrl": "https://rom-agent-ia-onrender-com.onrender.com",
+  "timestamp": "2025-12-19T01:32:03Z",
+  "gate": "PASS",
+  "http": {
+    "chatMissingMessage": 400,
+    "chatValidMessage": 500
+  },
+  "metrics": {
+    "hasConverseInflightSeries": 1,
+    "hasConverseQueueSeries": 1
+  }
+}
