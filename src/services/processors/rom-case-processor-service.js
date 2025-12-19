@@ -63,7 +63,7 @@ class ROMCaseProcessorService {
 
       // Cliente Bedrock para geração de documentos
       this.bedrockClient = new BedrockRuntimeClient({
-        region: process.env.AWS_REGION || 'us-east-1'
+        region: process.env.AWS_REGION || 'us-west-2'
       });
 
       this.initialized = true;

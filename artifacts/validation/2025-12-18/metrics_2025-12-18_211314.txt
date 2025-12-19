@@ -1,0 +1,89 @@
+# HELP http_requests_total Total HTTP requests
+# TYPE http_requests_total counter
+http_requests_total{method="POST",path="/api/chat",status="500"} 22
+http_requests_total{method="POST",path="/api/chat",status="503"} 53
+http_requests_total{method="GET",path="/api/info",status="200"} 1
+
+# HELP http_request_duration_seconds HTTP request duration in seconds
+# TYPE http_request_duration_seconds histogram
+http_request_duration_seconds_bucket{le="0.1",method="POST",path="/api/chat"} 64
+http_request_duration_seconds_bucket{le="0.5",method="POST",path="/api/chat"} 75
+http_request_duration_seconds_bucket{le="1",method="POST",path="/api/chat"} 75
+http_request_duration_seconds_bucket{le="5",method="POST",path="/api/chat"} 75
+http_request_duration_seconds_bucket{le="10",method="POST",path="/api/chat"} 75
+http_request_duration_seconds_bucket{le="30",method="POST",path="/api/chat"} 75
+http_request_duration_seconds_bucket{le="60",method="POST",path="/api/chat"} 75
+http_request_duration_seconds_bucket{le="+Inf",method="POST",path="/api/chat"} 75
+http_request_duration_seconds_sum{method="POST",path="/api/chat"} 3.5449999999999973
+http_request_duration_seconds_count{method="POST",path="/api/chat"} 75
+http_request_duration_seconds_bucket{le="0.1",method="GET",path="/api/info"} 1
+http_request_duration_seconds_bucket{le="0.5",method="GET",path="/api/info"} 1
+http_request_duration_seconds_bucket{le="1",method="GET",path="/api/info"} 1
+http_request_duration_seconds_bucket{le="5",method="GET",path="/api/info"} 1
+http_request_duration_seconds_bucket{le="10",method="GET",path="/api/info"} 1
+http_request_duration_seconds_bucket{le="30",method="GET",path="/api/info"} 1
+http_request_duration_seconds_bucket{le="60",method="GET",path="/api/info"} 1
+http_request_duration_seconds_bucket{le="+Inf",method="GET",path="/api/info"} 1
+http_request_duration_seconds_sum{method="GET",path="/api/info"} 0.005
+http_request_duration_seconds_count{method="GET",path="/api/info"} 1
+
+# HELP bedrock_requests_total Total Bedrock API requests
+# TYPE bedrock_requests_total counter
+bedrock_requests_total 0
+
+# HELP bedrock_tokens_total Total Bedrock tokens (input + output)
+# TYPE bedrock_tokens_total counter
+bedrock_tokens_total 0
+
+# HELP bedrock_cost_usd_total Total Bedrock cost in USD
+# TYPE bedrock_cost_usd_total counter
+bedrock_cost_usd_total 0
+
+# HELP bedrock_errors_total Total Bedrock errors by type
+# TYPE bedrock_errors_total counter
+
+# HELP guardrails_triggered_total Total guardrails triggered
+# TYPE guardrails_triggered_total counter
+
+# HELP rom_active_requests Currently active requests
+# TYPE rom_active_requests gauge
+rom_active_requests 0
+
+# HELP nodejs_heap_size_used_bytes Node.js heap used in bytes
+# TYPE nodejs_heap_size_used_bytes gauge
+nodejs_heap_size_used_bytes 144925984
+
+# HELP nodejs_heap_size_total_bytes Node.js heap total in bytes
+# TYPE nodejs_heap_size_total_bytes gauge
+nodejs_heap_size_total_bytes 149377024
+
+# HELP circuit_breaker_state Circuit breaker state (0=CLOSED, 1=HALF_OPEN, 2=OPEN)
+# TYPE circuit_breaker_state gauge
+circuit_breaker_state{name="default"} 0
+
+# HELP circuit_breaker_events_total Circuit breaker events
+# TYPE circuit_breaker_events_total counter
+
+# HELP bottleneck_inflight Current in-flight requests
+# TYPE bottleneck_inflight gauge
+bottleneck_inflight{name="default"} 0
+
+# HELP bottleneck_queue_size Current queue size
+# TYPE bottleneck_queue_size gauge
+bottleneck_queue_size{name="default"} 0
+
+# HELP bottleneck_rejected_total Rejected requests due to full queue
+# TYPE bottleneck_rejected_total counter
+bottleneck_rejected_total{name="converse"} 56
+
+# HELP retry_attempts_total Total retry attempts
+# TYPE retry_attempts_total counter
+
+# HELP retry_exhausted_total Requests that exhausted retries
+# TYPE retry_exhausted_total counter
+
+# HELP model_fallback_attempts_total Model fallback attempts
+# TYPE model_fallback_attempts_total counter
+
+# HELP model_fallback_exhausted_total Fallback chain exhausted
+# TYPE model_fallback_exhausted_total counter

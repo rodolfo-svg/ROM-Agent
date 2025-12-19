@@ -22,7 +22,7 @@ import { retryAwsCommand } from '../utils/retry-with-backoff.js';
 // ============================================================
 
 const CONFIG = {
-  region: process.env.AWS_REGION || 'us-east-1'
+  region: process.env.AWS_REGION || 'us-west-2'
 };
 
 let client = null;

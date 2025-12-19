@@ -50,7 +50,7 @@ services:
       - key: AWS_SECRET_ACCESS_KEY
         sync: false
       - key: AWS_REGION
-        value: us-east-1
+        value: us-west-2
 
       # Anthropic (alternativo)
       - key: ANTHROPIC_API_KEY
@@ -131,7 +131,7 @@ services:
       - key: AWS_SECRET_ACCESS_KEY
         sync: false
       - key: AWS_REGION
-        value: us-east-1
+        value: us-west-2
 
       # Anthropic (alternativo)
       - key: ANTHROPIC_API_KEY
