@@ -24,10 +24,10 @@ import metricsCollector from './metrics-collector.js';
  */
 export const FALLBACK_CHAIN = [
   {
-    modelId: 'anthropic.claude-sonnet-4-5-v2:0',
+    modelId: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
     tier: 'primary',
     quality: 'highest',
-    description: 'Claude Sonnet 4.5 - Latest model'
+    description: 'Claude Sonnet 4.5 - Latest model (Inference Profile)'
   },
   {
     modelId: 'us.anthropic.claude-sonnet-3-7-v1:0',
@@ -36,7 +36,7 @@ export const FALLBACK_CHAIN = [
     description: 'Claude Sonnet 3.7 - Stable fallback'
   },
   {
-    modelId: 'anthropic.claude-sonnet-3-5-v2:0',
+    modelId: 'us.anthropic.claude-sonnet-3-5-v2:0',
     tier: 'emergency',
     quality: 'reliable',
     description: 'Claude Sonnet 3.5 - Emergency fallback'

@@ -30,7 +30,7 @@ const STAGES = {
     id: 'analise_profunda',
     name: 'Análise Profunda',
     description: 'Análise jurídica detalhada com Claude Sonnet 4.5',
-    model: 'anthropic.claude-sonnet-4-5-20250929-v1:0',
+    model: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
     costPerPage: 0.023, // ~$0.80 por 35 páginas
     icon: '🎯'
   },
@@ -46,7 +46,7 @@ const STAGES = {
     id: 'redacao',
     name: 'Redação Final',
     description: 'Escrita jurídica premium com Claude Sonnet 4.5',
-    model: 'anthropic.claude-sonnet-4-5-20250929-v1:0',
+    model: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
     costPerPage: 0.024,
     icon: '✍️'
   },
