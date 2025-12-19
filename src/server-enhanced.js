@@ -878,7 +878,7 @@ function selectIntelligentModel(message, metadata = {}, relevantDocs = []) {
       lowerMessage.includes('fundamentação') || lowerMessage.includes('resumo executivo') ||
       lowerMessage.includes('fichamento') || lowerMessage.includes('parecer')) {
     console.log('🔥 Modelo selecionado: Claude Sonnet 4.5 (análise jurídica profunda)');
-    return 'anthropic.claude-sonnet-4-5-20250929-v1:0';
+    return 'global.anthropic.claude-sonnet-4-5-20250929-v1:0';
   }
 
   // 4. RAG / PESQUISA NO KB - Claude Sonnet 4.5 ou Llama 3.3
@@ -888,7 +888,7 @@ function selectIntelligentModel(message, metadata = {}, relevantDocs = []) {
       (relevantDocs && relevantDocs.length > 3)) {
     if (metadata.clienteVIP || relevantDocs.length > 10) {
       console.log('🔍 Modelo selecionado: Claude Sonnet 4.5 (RAG premium)');
-      return 'anthropic.claude-sonnet-4-5-20250929-v1:0';
+      return 'global.anthropic.claude-sonnet-4-5-20250929-v1:0';
     } else {
       console.log('📚 Modelo selecionado: Llama 3.3 70B (RAG custo-benefício)');
       return 'meta.llama3-3-70b-instruct-v1:0';
@@ -935,7 +935,7 @@ function selectIntelligentModel(message, metadata = {}, relevantDocs = []) {
 
   // 9. PADRÃO - Claude Sonnet 4.5 (máxima qualidade para análises jurídicas)
   console.log('✅ Modelo selecionado: Claude Sonnet 4.5 (padrão - máxima qualidade)');
-  return 'anthropic.claude-sonnet-4-5-20250929-v1:0';
+  return 'global.anthropic.claude-sonnet-4-5-20250929-v1:0';
 }
 
 // Armazenar instâncias de agente por sessão
@@ -953,7 +953,7 @@ function getAgent(sessionId, modelId = null, forceNew = false) {
     const systemPrompt = buildSystemPrompt();
 
     // Usar modelo específico ou padrão (Claude Sonnet 4.5 - máxima qualidade)
-    const modelo = modelId || 'anthropic.claude-sonnet-4-5-20250929-v1:0';
+    const modelo = modelId || 'global.anthropic.claude-sonnet-4-5-20250929-v1:0';
 
     console.log(`🤖 [DEBUG] Criando agente para sessão ${sessionId}`);
     console.log(`   - Modelo: ${modelo}`);

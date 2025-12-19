@@ -670,7 +670,7 @@ class ROMCaseProcessorService {
       texto: documentoTexto,
       generatedAt: new Date().toISOString(),
       status: 'generated',
-      model: 'anthropic.claude-sonnet-4-5-20250929-v1:0'
+      model: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0'
     };
 
     // Salvar cache
@@ -776,7 +776,7 @@ class ROMCaseProcessorService {
       const userMessage = `${fullPrompt.prompt?.descricao || ''}\n\n${contextText}`;
 
       const command = new ConverseCommand({
-        modelId: 'anthropic.claude-sonnet-4-5-20250929-v1:0',
+        modelId: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
         messages: [
           {
             role: 'user',

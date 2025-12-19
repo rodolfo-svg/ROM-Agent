@@ -42,7 +42,7 @@ import { resilientInvoke } from '../utils/resilient-invoke.js';
 
 const CONFIG = {
   region: process.env.AWS_REGION || 'us-west-2',
-  defaultModel: 'anthropic.claude-sonnet-4-5-20250929-v1:0',  // Sonnet 4.5 como padrão
+  defaultModel: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',  // Sonnet 4.5 Inference Profile
   maxTokens: 64000,  // 64K tokens output (limite do Bedrock para Sonnet 4.5)
   temperature: 0.7,
   autoModelSelection: true,  // Habilitar seleção automática de modelo
