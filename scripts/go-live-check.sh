@@ -100,40 +100,58 @@ else
   kv "burst" "skipped (RUN_BURST=0)"
 fi
 
-section "6) Admin endpoints (opcional)"
+section "6) Admin endpoints (P0-1 opcional)"
 RUN_ADMIN="${RUN_ADMIN:-1}"
 X_ADMIN_TOKEN="${X_ADMIN_TOKEN:-}"
 ADMIN_FLAGS_JSON="$OUT_DIR/admin_flags.json"
 ADMIN_RELOAD_HDR="$OUT_DIR/admin_reload_headers.txt"
 ADMIN_RELOAD_BODY="$OUT_DIR/admin_reload_body.txt"
 
-if [[ "$RUN_ADMIN" == "1" && -n "$X_ADMIN_TOKEN" ]]; then
-  # Test GET /api/admin/feature-flags
-  HTTP_FLAGS="$(curl -sS -o "$ADMIN_FLAGS_JSON" -w "%{http_code}" -H "X-Admin-Token: $X_ADMIN_TOKEN" "$BASE_URL/api/admin/feature-flags" || true)"
-  kv "GET /api/admin/feature-flags HTTP" "$HTTP_FLAGS"
-
-  if [[ "$HTTP_FLAGS" == "200" ]]; then
-    echo '```json' >> "$REPORT"
-    cat "$ADMIN_FLAGS_JSON" | head -c 1000 >> "$REPORT"
-    echo -e '\n```' >> "$REPORT"
+if [[ "$RUN_ADMIN" == "1" ]]; then
+  if [[ -z "$X_ADMIN_TOKEN" ]]; then
+    kv "admin" "SKIPPED (X_ADMIN_TOKEN not set)"
   else
+    # Test GET /admin/flags
+    kv "action" "GET /admin/flags..."
+    if curl -fsS "$BASE_URL/admin/flags" -H "X-Admin-Token: $X_ADMIN_TOKEN" -o "$ADMIN_FLAGS_JSON"; then
+      kv "GET /admin/flags" "OK -> $ADMIN_FLAGS_JSON"
+      echo '```json' >> "$REPORT"
+      cat "$ADMIN_FLAGS_JSON" | head -c 1000 >> "$REPORT"
+      echo -e '\n```' >> "$REPORT"
+
+      # Validate required feature flags
+      MISSING_FLAGS=""
+      grep -q "ENABLE_METRICS" "$ADMIN_FLAGS_JSON" || MISSING_FLAGS="${MISSING_FLAGS}ENABLE_METRICS "
+      grep -q "ENABLE_BOTTLENECK" "$ADMIN_FLAGS_JSON" || MISSING_FLAGS="${MISSING_FLAGS}ENABLE_BOTTLENECK "
+      grep -q "ENABLE_CIRCUIT_BREAKER" "$ADMIN_FLAGS_JSON" || MISSING_FLAGS="${MISSING_FLAGS}ENABLE_CIRCUIT_BREAKER "
+
+      if [[ -n "$MISSING_FLAGS" ]]; then
+        kv "admin_flags validation" "WARN: missing flags: $MISSING_FLAGS"
+      else
+        kv "admin_flags validation" "OK (all required flags present)"
+      fi
+    else
+      kv "GET /admin/flags" "FAILED (token? route? cloudflare?)"
+    fi
+
+    # Test POST /admin/reload-flags
+    kv "action" "POST /admin/reload-flags..."
+    HTTP_RELOAD="$(curl -sS -D "$ADMIN_RELOAD_HDR" -o "$ADMIN_RELOAD_BODY" -w "%{http_code}" \
+      -X POST "$BASE_URL/admin/reload-flags" -H "X-Admin-Token: $X_ADMIN_TOKEN" || true)"
+
+    if [[ "$HTTP_RELOAD" == "200" || "$HTTP_RELOAD" == "204" ]]; then
+      kv "POST /admin/reload-flags" "OK (HTTP $HTTP_RELOAD)"
+    else
+      kv "POST /admin/reload-flags" "WARN: unexpected HTTP $HTTP_RELOAD"
+    fi
+
     echo '```' >> "$REPORT"
-    cat "$ADMIN_FLAGS_JSON" >> "$REPORT"
+    echo "HTTP $HTTP_RELOAD" >> "$REPORT"
+    cat "$ADMIN_RELOAD_BODY" 2>/dev/null >> "$REPORT" || echo "(no body)" >> "$REPORT"
     echo '```' >> "$REPORT"
   fi
-
-  # Test POST /api/admin/reload-feature-flags
-  HTTP_RELOAD="$(curl -sS -D "$ADMIN_RELOAD_HDR" -o "$ADMIN_RELOAD_BODY" -w "%{http_code}" -X POST -H "X-Admin-Token: $X_ADMIN_TOKEN" "$BASE_URL/api/admin/reload-feature-flags" || true)"
-  kv "POST /api/admin/reload-feature-flags HTTP" "$HTTP_RELOAD"
-  echo '```' >> "$REPORT"
-  cat "$ADMIN_RELOAD_BODY" >> "$REPORT"
-  echo '```' >> "$REPORT"
 else
-  if [[ "$RUN_ADMIN" == "0" ]]; then
-    kv "admin" "skipped (RUN_ADMIN=0)"
-  else
-    kv "admin" "skipped (X_ADMIN_TOKEN not set)"
-  fi
+  kv "admin" "SKIPPED (RUN_ADMIN=0)"
 fi
 
 section "7) P0-7 artifacts"
