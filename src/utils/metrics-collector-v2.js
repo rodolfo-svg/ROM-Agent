@@ -187,15 +187,17 @@ class MetricsCollectorV2 {
     // if metrics are disabled, do nothing
     if (!featureFlags?.isEnabled?.('ENABLE_METRICS')) return;
 
-    // Use a single stable label to avoid creating phantom series
-    const op = 'default';
+    // Seed both 'default' and 'converse' series to match actual usage
+    const names = ['default', 'converse'];
 
-    // Circuit Breaker: CLOSED = 0
-    this.cbState.labels(op).set(0);
+    names.forEach(name => {
+      // Circuit Breaker: CLOSED = 0
+      this.cbState.labels(name).set(0);
 
-    // Bottleneck: start at zero
-    this.blInFlight.labels(op).set(0);
-    this.blQueueSize.labels(op).set(0);
+      // Bottleneck: start at zero
+      this.blInFlight.labels(name).set(0);
+      this.blQueueSize.labels(name).set(0);
+    });
   }
 
   /**

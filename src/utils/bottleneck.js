@@ -119,7 +119,7 @@ export class Bottleneck {
       });
 
       // Atualizar métrica de queue depth
-      metricsCollector.setBottleneckQueueDepth(this.queue.length);
+      metricsCollector.setBottleneckQueueSize(operation, this.queue.length);
     });
   }
 
@@ -142,7 +142,7 @@ export class Bottleneck {
     });
 
     // Atualizar métricas
-    metricsCollector.setBottleneckRunning(this.running);
+    metricsCollector.setBottleneckInFlight(operation, this.running);
 
     try {
       const result = await fn();
@@ -181,7 +181,7 @@ export class Bottleneck {
       this.running--;
 
       // Atualizar métrica de running
-      metricsCollector.setBottleneckRunning(this.running);
+      metricsCollector.setBottleneckInFlight(operation, this.running);
 
       // Processar próximo item da fila
       this._processNext();
@@ -219,7 +219,7 @@ export class Bottleneck {
     });
 
     // Atualizar métrica de queue depth
-    metricsCollector.setBottleneckQueueDepth(this.queue.length);
+    metricsCollector.setBottleneckQueueSize(entry.operation, this.queue.length);
 
     // Executar função e resolver/rejeitar promise original
     this._execute(entry.fn, {
