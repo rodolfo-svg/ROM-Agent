@@ -993,6 +993,12 @@ app.get('/', (req, res) => {
 app.post('/api/chat', async (req, res) => {
   try {
     const { message, metadata = {}, projectId = null } = req.body;
+
+    // Guard: validar mensagem
+    if (!message || typeof message !== 'string') {
+      return res.status(400).json({ error: 'Mensagem inválida ou ausente' });
+    }
+
     const history = getHistory(req.session.id);
 
     // ✅ GERENCIAMENTO DE CONVERSAÇÃO
@@ -1363,7 +1369,11 @@ Enquanto isso, pode continuar usando o sistema normalmente.
         const messageWithContext = kbContext ? message + kbContext : message;
         const resultado = await agent.enviar(messageWithContext);
         if (!resultado.sucesso) {
-          return res.status(500).json({ error: resultado.erro || 'Erro ao processar mensagem' });
+          const statusCode = resultado.statusCode || 500;
+          const errorResponse = { error: resultado.erro || 'Erro ao processar mensagem', status: statusCode };
+          if (statusCode === 503 && resultado.retryAfter) res.set('Retry-After', String(resultado.retryAfter));
+          if (resultado.errorCode) errorResponse.code = resultado.errorCode;
+          return res.status(statusCode).json(errorResponse);
         }
         resposta = resultado.resposta;
       }
@@ -1381,8 +1391,18 @@ Enquanto isso, pode continuar usando o sistema normalmente.
       console.log(`✅ Agente respondeu: sucesso=${resultado.sucesso}, resposta=${resultado.resposta?.length || 0} caracteres`);
 
       if (!resultado.sucesso) {
-        console.error(`❌ Erro do agente: ${resultado.erro}`);
-        return res.status(500).json({ error: resultado.erro || 'Erro ao processar mensagem' });
+        const status = Number.isInteger(resultado?.statusCode) ? resultado.statusCode : 500;
+
+        console.error(`❌ Erro do agente (${status}): ${resultado.erro}`);
+
+        if (status === 503 && resultado?.retryAfter) {
+          res.set('Retry-After', String(resultado.retryAfter));
+        }
+
+        return res.status(status).json({
+          error: resultado.erro || 'Erro ao processar mensagem',
+          status
+        });
       }
 
       resposta = resultado.resposta;
@@ -1416,11 +1436,44 @@ Enquanto isso, pode continuar usando o sistema normalmente.
     console.error('   Session ID:', req.session.id);
     console.error('   Message length:', req.body.message?.length || 0);
 
-    // Retornar erro mais detalhado
-    res.status(500).json({
-      error: error.message || 'Erro desconhecido no chat',
-      details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    // Debug: inspecionar propriedades do erro
+    console.error('[api/chat] error meta', {
+      message: error?.message,
+      name: error?.name,
+      statusCode: error?.statusCode,
+      status: error?.status,
+      code: error?.code,
+      retryAfter: error?.retryAfter,
+      stackTop: (error?.stack || '').split('\n').slice(0, 3).join('\n'),
     });
+
+    // Determinar status HTTP correto (respeita error.statusCode do Bottleneck/Circuit Breaker)
+    const status = Number.isInteger(error?.statusCode)
+      ? error.statusCode
+      : (Number.isInteger(error?.status) ? error.status : 500);
+
+    // Adicionar header Retry-After para HTTP 503 (Bottleneck)
+    if (status === 503 && error?.retryAfter) {
+      res.set('Retry-After', String(error.retryAfter));
+    }
+
+    // Retornar erro com status apropriado (não vaza stack em produção)
+    const responseBody = {
+      error: error.message || 'Erro desconhecido no chat',
+      status
+    };
+
+    // Preservar campos extras se existirem (traceId, requestId, etc)
+    if (error.traceId) responseBody.traceId = error.traceId;
+    if (error.requestId) responseBody.requestId = error.requestId;
+    if (error.code) responseBody.code = error.code;
+
+    // Stack trace apenas em desenvolvimento
+    if (process.env.NODE_ENV === 'development' && error.stack) {
+      responseBody.details = error.stack;
+    }
+
+    res.status(status).json(responseBody);
   }
 });
 

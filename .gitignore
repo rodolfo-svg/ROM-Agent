@@ -36,3 +36,7 @@ INSTRUCOES-RENDER-SECRET-FILE.md
 PLANO-DE-ACAO-AWS.md
 DIAGNOSTICO-AWS-CREDENTIALS.md
 test-aws-credentials.sh
+
+# Test reports and temporary cookies
+test-*.json
+.jusbrasil-cookies.json
