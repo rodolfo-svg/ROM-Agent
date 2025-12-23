@@ -29,6 +29,8 @@ services:
       # Node.js
       - key: NODE_ENV
         value: production
+      - key: NODE_VERSION
+        value: 25.2.1
 
       # Porta (Render usa 10000)
       - key: PORT
@@ -88,13 +90,13 @@ services:
       - www.iarom.com.br
 
   # ═══════════════════════════════════════════════════════════════
-  # STAGING - Branch feature/go-live-guardrails (PR#3)
+  # STAGING - Branch staging
   # ═══════════════════════════════════════════════════════════════
   - type: web
     name: rom-agent-staging
     runtime: node
     plan: free
-    branch: feature/go-live-guardrails
+    branch: staging
 
     # ═══ BUILD ═══
     buildCommand: |
@@ -110,6 +112,8 @@ services:
       # Node.js
       - key: NODE_ENV
         value: staging
+      - key: NODE_VERSION
+        value: 25.2.1
 
       # Porta (Render usa 10000)
       - key: PORT
