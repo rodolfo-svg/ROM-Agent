@@ -14,32 +14,65 @@ import metricsCollector from './metrics-collector.js';
 // ============================================================
 
 /**
- * Model fallback chain
- * Primary -> Fallback1 -> Fallback2
+ * Model fallback chain - Optimized for Quality + Cost + Speed
+ * Premium -> Primary -> Fast -> Economical -> Stable -> Emergency
  *
- * Quality tiers:
- * - Tier 1 (Primary): Claude Sonnet 4.5 - Best quality, latest model
- * - Tier 2 (Fallback): Claude Sonnet 3.7 - High quality, stable
- * - Tier 3 (Emergency): Claude Sonnet 3.5 - Reliable fallback
+ * Strategy:
+ * - Tier 0: Claude Opus 4.5 (maximum quality, most powerful)
+ * - Tier 1: Claude Sonnet 4.5 (best cost-benefit, excellent quality)
+ * - Tier 2: Claude Haiku 4.5 (fast, economical, high quality)
+ * - Tier 3: Amazon Nova Pro (70% cheaper, good quality)
+ * - Tier 4: Claude 3.7 (proven stability)
+ * - Tier 5: Amazon Nova Lite (ultra-economical emergency)
  */
 export const FALLBACK_CHAIN = [
+  {
+    modelId: 'global.anthropic.claude-opus-4-5-20251101-v1:0',
+    tier: 'premium',
+    quality: 'maximum',
+    speed: 'slow',
+    cost: 'high',
+    description: 'Claude Opus 4.5 - Most powerful, maximum quality'
+  },
   {
     modelId: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
     tier: 'primary',
     quality: 'highest',
-    description: 'Claude Sonnet 4.5 - Latest model (Inference Profile)'
+    speed: 'medium',
+    cost: 'medium',
+    description: 'Claude Sonnet 4.5 - Best cost-benefit ratio'
+  },
+  {
+    modelId: 'global.anthropic.claude-haiku-4-5-20251001-v1:0',
+    tier: 'fallback-fast',
+    quality: 'high',
+    speed: 'fastest',
+    cost: 'low',
+    description: 'Claude Haiku 4.5 - Fast & economical with high quality'
+  },
+  {
+    modelId: 'us.amazon.nova-pro-v1:0',
+    tier: 'fallback-economical',
+    quality: 'high',
+    speed: 'medium',
+    cost: 'very-low',
+    description: 'Amazon Nova Pro - 70% cheaper, comparable quality'
   },
   {
     modelId: 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
-    tier: 'fallback',
+    tier: 'fallback-stable',
     quality: 'high',
-    description: 'Claude Sonnet 3.7 - Stable fallback'
+    speed: 'medium',
+    cost: 'medium',
+    description: 'Claude Sonnet 3.7 - Proven stability'
   },
   {
-    modelId: 'us.anthropic.claude-3-5-sonnet-20241022-v2:0',
+    modelId: 'us.amazon.nova-lite-v1:0',
     tier: 'emergency',
     quality: 'reliable',
-    description: 'Claude Sonnet 3.5 - Emergency fallback'
+    speed: 'fast',
+    cost: 'minimal',
+    description: 'Amazon Nova Lite - Ultra-economical emergency fallback'
   }
 ];
 
