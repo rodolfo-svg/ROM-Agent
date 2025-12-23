@@ -30,13 +30,13 @@ export const FALLBACK_CHAIN = [
     description: 'Claude Sonnet 4.5 - Latest model (Inference Profile)'
   },
   {
-    modelId: 'us.anthropic.claude-sonnet-3-7-v1:0',
+    modelId: 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
     tier: 'fallback',
     quality: 'high',
     description: 'Claude Sonnet 3.7 - Stable fallback'
   },
   {
-    modelId: 'us.anthropic.claude-sonnet-3-5-v2:0',
+    modelId: 'us.anthropic.claude-3-5-sonnet-20241022-v2:0',
     tier: 'emergency',
     quality: 'reliable',
     description: 'Claude Sonnet 3.5 - Emergency fallback'
