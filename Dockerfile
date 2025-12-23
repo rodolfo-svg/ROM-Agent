@@ -7,7 +7,7 @@
 # ═══════════════════════════════════════════
 # STAGE 1: Build e Dependências
 # ═══════════════════════════════════════════
-FROM node:20-alpine AS builder
+FROM node:25.2.1-alpine AS builder
 
 # Instalar dependências de build
 RUN apk add --no-cache \
@@ -37,7 +37,7 @@ COPY . .
 # ═══════════════════════════════════════════
 # STAGE 2: Produção (imagem final menor)
 # ═══════════════════════════════════════════
-FROM node:20-alpine
+FROM node:25.2.1-alpine
 
 # Instalar apenas runtime dependencies
 RUN apk add --no-cache \
