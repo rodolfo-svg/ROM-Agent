@@ -1,491 +1,139 @@
 {
-  "timestamp": "2025-12-14T20:55:11.949Z",
+  "timestamp": "2025-12-19T05:00:03.421Z",
   "summary": {
-    "total": 18,
-    "passed": 17,
-    "failed": 1,
-    "successRate": 94.4
+    "total": 16,
+    "passed": 0,
+    "failed": 16,
+    "successRate": 0
   },
   "results": [
     {
       "name": "1.1 Health Check",
       "url": "http://localhost:3000/api/info",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 24,
-      "data": {
-        "nome": "ROM",
-        "versao": "2.0.0",
-        "capacidades": [
-          "Redação de peças jurídicas (cíveis, criminais, trabalhistas, etc)",
-          "Pesquisa de legislação nacional e internacional",
-          "Consulta de jurisprudência em todos os tribunais",
-          "Análise e extração de processos judiciais",
-          "Correção ortográfica e gramatical",
-          "Formatação profissional com papel timbrado",
-          "Criação de tabelas, fluxogramas e linhas do tempo",
-          "Busca de artigos científicos jurídicos"
-        ],
-        "health": {
-          "status": "healthy",
-          "uptime": "0h 0m",
-          "uptimeSeconds": 13
-        },
-        "bedrock": {
-          "status": "connected",
-          "region": "us-east-1"
-        },
-        "cache": {
-          "enabled": true,
-          "activeSessions": 0
-        },
-        "server": {
-          "nodeVersion": "v25.2.1",
-          "platform": "darwin",
-          "arch": "arm64",
-          "pid": 56853
-        },
-        "memory": {
-          "rss": "438 MB",
-          "heapTotal": "278 MB",
-          "heapUsed": "194 MB",
-          "external": "22 MB"
-        },
-        "timestamp": "2025-12-14T20:55:10.912Z"
-      }
+      "passed": false,
+      "error": ""
     },
     {
       "name": "1.2 Estatísticas",
       "url": "http://localhost:3000/api/stats",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 2,
-      "data": {
-        "success": true,
-        "conversations": {
-          "total": 6,
-          "totalMessages": 10
-        },
-        "cache": {
-          "activeSessions": 0,
-          "hitRate": 0
-        },
-        "kb": {
-          "totalDocuments": 0
-        },
-        "performance": {
-          "averageResponseTime": 3,
-          "unit": "seconds"
-        },
-        "timestamp": "2025-12-14T20:55:10.918Z"
-      }
+      "passed": false,
+      "error": ""
     },
     {
       "name": "2.1 Listar Conversas Organizadas",
       "url": "http://localhost:3000/api/conversations/organized",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 3,
-      "data": {
-        "success": true,
-        "organized": {
-          "today": [
-            {
-              "id": "conv_1765743425235_bs7q26",
-              "userId": "anonymous",
-              "sessionId": "k0nQE7sd5t0aBUOmAJ6TNg74zAZIehMP",
-              "projectId": null,
-              "title": "Teste Automático - Renomeado",
-              "titleGenerated": true,
-              "messages": [
-                {
-                  "role": "user",
-                  "content": "Teste de sistema - responda apenas com OK",
-                  "timestamp": "2025-12-14T20:17:05.235Z"
-                },
-                {
-                  "role": "assistant",
-                  "content": "OK. O teste do sistema foi concluído com sucesso. Estou à disposição para qualquer consulta ou informação que você precise.",
-                  "timestamp": "2025-12-14T20:17:06.193Z"
-                }
-              ],
-              "createdAt": "2025-12-14T20:17:05.235Z",
-              "updatedAt": "2025-12-14T20:17:06.200Z",
-              "messageCount": 2
-            },
-            {
-              "id": "conv_1765738339617_d9g61c",
-              "userId": "anonymous",
-              "sessionId": "JtlZzY2XKZBc4JtK2QODGLdVkO_RzB1j",
-              "projectId": null,
-              "title": "teste rápido",
-              "titleGenerated": true,
-              "messages": [
-                {
-                  "role": "user",
-                  "content": "teste rápido",
-                  "timestamp": "2025-12-14T18:52:19.618Z"
-                },
-                {
-                  "role": "assistant",
-                  "content": "Olá! Parece que você está interessado em testar minhas habilidades como ROM Agent, um assistente jurídico especializado em Direito brasileiro. Estou aqui para ajudar com qualquer dúvida ou questão legal que você possa ter.\n\nPara começarmos, aqui está um teste rápido que pode demonstrar minha capacidade de fornecer informações e orientação jurídica:\n\n**Questão Jurídica:**\nEm um caso de indenização por dano moral, quais são os principais critérios que o juiz considera para determinar o valor da indenização?\n\n**Resposta:**\nNo Direito brasileiro, quando o juiz determina o valor da indenização por dano moral, ele considera os seguintes critérios principais:\n\n1. **A gravidade do dano sofrido:** A intensidade da ofensa e a extensão do sofrimento causado à vítima.\n2. **A culpa do agente causador do dano:** O grau de responsabilidade ou negligência do réu.\n3. **A situação econômica do réu:** A capacidade financeira do réu para arcar com a indenização.\n4. **O comportamento da vítima após o evento:** Se a vítima demonstrou algum comportamento que pudesse ter contribuído para a situação.\n5. **Eventuais consequências do dano:** Efeitos duradouros ou permanentes sobre a vítima, como sequelas psicológicas.\n\nEsses critérios são analisados de forma equilibrada, e o valor da indenização pode variar significativamente dependendo das circunstâncias específicas do caso.\n\nSe você tiver mais perguntas ou precisar de uma análise mais detalhada de algum tópico jurídico, sinta-se à vontade para perguntar!",
-                  "timestamp": "2025-12-14T18:52:22.619Z"
-                }
-              ],
-              "createdAt": "2025-12-14T18:52:19.617Z",
-              "updatedAt": "2025-12-14T18:52:22.619Z",
-              "messageCount": 2
-            },
-            {
-              "id": "conv_1765736277531_izdejk",
-              "userId": "anonymous",
-              "sessionId": "mki5GKtHHYsoJ7CPTrmBA1__e94E3mVi",
-              "projectId": null,
-              "title": "teste rápido",
-              "titleGenerated": true,
-              "messages": [
-                {
-                  "role": "user",
-                  "content": "teste rápido",
-                  "timestamp": "2025-12-14T18:17:57.532Z"
-                },
-                {
-                  "role": "assistant",
-                  "content": "Claro! Vamos fazer um pequeno teste rápido sobre Direito brasileiro para verificar seu conhecimento. Aqui estão algumas perguntas:\n\n### Perguntas\n\n1. **Qual é a norma fundamental do Brasil?**\n   - a) Código Civil\n   - b) Constituição Federal\n   - c) Código Penal\n   - d) Código de Processo Civil\n\n2. **Qual é o órgão máximo do Poder Judiciário no Brasil?**\n   - a) Supremo Tribunal Federal (STF)\n   - b) Superior Tribunal de Justiça (STJ)\n   - c) Tribunal Superior do Trabalho (TST)\n   - d) Tribunal de Justiça do Estado\n\n3. **O que significa a expressão \"nullum crimen, nulla poena sine praevia lege scripta\"?**\n   - a) Nenhuma pena sem culpa\n   - b) Nenhuma pena sem julgamento prévio\n   - c) Nenhum crime ou pena sem lei prévia escrita\n   - d) Nenhuma pena sem crime\n\n4. **Qual é o princípio constitucional que garante a todos o direito de peticionar aos Poderes Públicos em defesa de direitos ou contra ilegalidade ou abuso de poder?**\n   - a) Princípio da Legalidade\n   - b) Princípio do Direito de Petição\n   - c) Princípio da Isonomia\n   - d) Princípio da Moralidade\n\n5. **Qual é a função do Ministério Público?**\n   - a) Defender os réus em processos criminais\n   - b) Representar o Estado em juízo\n   - c) Defender os interesses privados em juízo\n   - d) Promover o respeito aos direitos constitucionais e legais, zelar pelo efetivo respeito dos Poderes Públicos e dos serviços de relevância pública\n\n### Respostas\n\n1. **b) Constituição Federal**\n2. **a) Supremo Tribunal Federal (STF)**\n3. **c) Nenhum crime ou pena sem lei prévia escrita**\n4. **b) Princípio do Direito de Petição**\n5. **d) Promover o respeito aos direitos constitucionais e legais, zelar pelo efetivo respeito dos Poderes Públicos e dos serviços de relevância pública**\n\nEspero que tenha gostado do teste! Se tiver mais dúvidas ou quiser aprofundar em algum tópico específico, estou à disposição.",
-                  "timestamp": "2025-12-14T18:18:03.765Z"
-                }
-              ],
-              "createdAt": "2025-12-14T18:17:57.531Z",
-              "updatedAt": "2025-12-14T18:18:03.765Z",
-              "messageCount": 2
-            },
-            {
-              "id": "conv_1765735835556_4mp24a",
-              "userId": "anonymous",
-              "sessionId": "HtUQKo-RdMEXiGyjgz1Tib6dPgtrlZVw",
-              "projectId": null,
-              "title": "Olá, teste rápido do ROM Agent",
-              "titleGenerated": true,
-              "messages": [
-                {
-                  "role": "user",
-                  "content": "Olá, teste rápido do ROM Agent",
-                  "timestamp": "2025-12-14T18:10:35.556Z"
-                },
-                {
-                  "role": "assistant",
-                  "content": "Olá! Estou aqui para ajudar com questões relacionadas ao Direito brasileiro. Vamos fazer um teste rápido para ver como posso auxiliar. Sinta-se à vontade para fazer qualquer pergunta jurídica ou solicitar esclarecimentos sobre tópicos legais. Como prefere começar? Aqui estão algumas opções para iniciar:\n\n1. **Direito Constitucional**: Perguntas sobre a Constituição Federal, direitos fundamentais, etc.\n2. **Direito Civil**: Questões sobre contratos, responsabilidade civil, família, sucessões, etc.\n3. **Direito Penal**: Dúvidas sobre crimes, penas, processo penal, etc.\n4. **Direito Trabalhista**: Consultas sobre direitos trabalhistas, CLT, sindicatos, etc.\n5. **Direito Processual**: Questões sobre processo civil, processo penal, etc.\n6. **Direito Empresarial**: Dúvidas sobre sociedades empresariais, falências, recuperações judiciais, etc.\n7. **Direito Tributário**: Perguntas sobre impostos, contribuições, etc.\n8. **Direito Ambiental**: Consultas sobre legislação ambiental, crimes ambientais, etc.\n\nEscolha uma área ou faça uma pergunta específica!",
-                  "timestamp": "2025-12-14T18:10:38.736Z"
-                }
-              ],
-              "createdAt": "2025-12-14T18:10:35.556Z",
-              "updatedAt": "2025-12-14T18:10:38.736Z",
-              "messageCount": 2
-            },
-            {
-              "id": "conv_1765735531816_69rbr",
-              "userId": "anonymous",
-              "sessionId": "YTqQZdK8GhbZRoCMWozDBgpr5cv3tA9H",
-              "projectId": null,
-              "title": "Nova Conversa",
-              "titleGenerated": false,
-              "messages": [
-                {
-                  "role": "user",
-                  "content": "Olá ROM Agent, este é um teste do sistema de conversas",
-                  "timestamp": "2025-12-14T18:05:31.816Z"
-                }
-              ],
-              "createdAt": "2025-12-14T18:05:31.816Z",
-              "updatedAt": "2025-12-14T18:05:31.816Z",
-              "messageCount": 1
-            },
-            {
-              "id": "conv_1765735452215_yczf6",
-              "userId": "anonymous",
-              "sessionId": "H_CjFKujuwvPhWqKgG2Y_zKZ_xtwh6nI",
-              "projectId": null,
-              "title": "Nova Conversa",
-              "titleGenerated": false,
-              "messages": [
-                {
-                  "role": "user",
-                  "content": "Olá ROM Agent, teste rápido",
-                  "timestamp": "2025-12-14T18:04:12.216Z"
-                }
-              ],
-              "createdAt": "2025-12-14T18:04:12.215Z",
-              "updatedAt": "2025-12-14T18:04:12.216Z",
-              "messageCount": 1
-            }
-          ],
-          "yesterday": [],
-          "lastWeek": [],
-          "lastMonth": [],
-          "older": []
-        }
-      }
+      "passed": false,
+      "error": ""
     },
     {
       "name": "2.2 Enviar Mensagem ao Chat",
       "url": "http://localhost:3000/api/chat",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 886,
-      "data": {
-        "response": "OK",
-        "conversationId": "conv_1765745710930_l6w8d",
-        "metadados": {},
-        "recomendacoes": [],
-        "verificacaoRealizada": false
-      }
-    },
-    {
-      "name": "2.3 Obter Conversa Específica",
-      "url": "http://localhost:3000/api/conversations/conv_1765745710930_l6w8d",
-      "status": 200,
-      "expected": 200,
-      "passed": true,
-      "duration": 4,
-      "data": {
-        "success": true,
-        "conversation": {
-          "id": "conv_1765745710930_l6w8d",
-          "userId": "anonymous",
-          "sessionId": "lR4wADlg8hKIYX5sXhBe42bj26JuGWk0",
-          "projectId": null,
-          "title": "Teste de sistema - responda apenas com OK",
-          "titleGenerated": true,
-          "messages": [
-            {
-              "role": "user",
-              "content": "Teste de sistema - responda apenas com OK",
-              "timestamp": "2025-12-14T20:55:10.931Z"
-            },
-            {
-              "role": "assistant",
-              "content": "OK",
-              "timestamp": "2025-12-14T20:55:11.806Z"
-            }
-          ],
-          "createdAt": "2025-12-14T20:55:10.930Z",
-          "updatedAt": "2025-12-14T20:55:11.806Z",
-          "messageCount": 2
-        }
-      }
-    },
-    {
-      "name": "2.4 Renomear Conversa",
-      "url": "http://localhost:3000/api/conversations/conv_1765745710930_l6w8d/rename",
-      "status": 200,
-      "expected": 200,
-      "passed": true,
-      "duration": 2,
-      "data": {
-        "success": true
-      }
+      "passed": false,
+      "error": ""
     },
     {
       "name": "2.5 Criar Nova Conversa",
       "url": "http://localhost:3000/api/conversations",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 2,
-      "data": {
-        "success": true,
-        "conversationId": "conv_1765745711815_4xzr44",
-        "conversation": {
-          "id": "conv_1765745711815_4xzr44",
-          "userId": "anonymous",
-          "sessionId": "ZXsWs0GUZSBLpgs_EhAnqz06K4Pl7cH_",
-          "projectId": null,
-          "title": "Nova Conversa",
-          "titleGenerated": false,
-          "messages": [],
-          "createdAt": "2025-12-14T20:55:11.815Z",
-          "updatedAt": "2025-12-14T20:55:11.815Z",
-          "messageCount": 0
-        }
-      }
+      "passed": false,
+      "error": ""
     },
     {
       "name": "3.1 Listar Documentos KB",
       "url": "http://localhost:3000/api/kb/documents",
-      "status": 401,
+      "status": 0,
       "expected": 200,
       "passed": false,
-      "duration": 2,
-      "data": {
-        "error": "Token não fornecido"
-      }
+      "error": ""
     },
     {
       "name": "3.2 Status KB",
       "url": "http://localhost:3000/api/kb/status",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 1,
-      "data": {
-        "success": true,
-        "status": "active",
-        "totalDocuments": 4,
-        "totalSize": 496,
-        "totalSizeFormatted": "0.00 MB",
-        "lastUpdate": "2025-12-13T18:13:57.858Z",
-        "kbPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/KB"
-      }
+      "passed": false,
+      "error": ""
     },
     {
       "name": "4.1 Status de Autenticação",
       "url": "http://localhost:3000/api/auth/status",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 2,
-      "data": {
-        "authenticated": false,
-        "username": null,
-        "partnerId": "rom"
-      }
+      "passed": false,
+      "error": ""
     },
     {
       "name": "4.2 Login",
       "url": "http://localhost:3000/api/auth/login",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 118,
-      "data": {
-        "success": true,
-        "user": {
-          "id": "user-001",
-          "name": "Rodolfo Otávio Mota",
-          "email": "rodolfo@rom.adv.br",
-          "role": "master_admin",
-          "partnerId": "rom",
-          "createdAt": "2025-12-13T05:40:44.159Z",
-          "updatedAt": "2025-12-13T14:30:00.000Z",
-          "active": true
-        },
-        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTAwMSIsImVtYWlsIjoicm9kb2xmb0Byb20uYWR2LmJyIiwicm9sZSI6Im1hc3Rlcl9hZG1pbiIsInBhcnRuZXJJZCI6InJvbSIsImlhdCI6MTc2NTc0NTcxMSwiZXhwIjoxNzY2MzUwNTExfQ.1uI2_7o_b7q57YVjTPls5PLiB4VH1mJFZQrHitg_U0I",
-        "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLTAwMSIsInR5cGUiOiJyZWZyZXNoIiwiaWF0IjoxNzY1NzQ1NzExLCJleHAiOjE3NjgzMzc3MTF9.Tzud5jTg76odbOHRbuYRelcEm7hk0_HtNjvWaYYQv_w"
-      }
+      "passed": false,
+      "error": ""
     },
     {
       "name": "5.1 Listar Projetos",
       "url": "http://localhost:3000/api/projects/list",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 1,
-      "data": []
+      "passed": false,
+      "error": ""
     },
     {
       "name": "6.1 Busca Semântica",
       "url": "http://localhost:3000/api/semantic-search",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 1,
-      "data": []
+      "passed": false,
+      "error": ""
     },
     {
       "name": "6.2 Listar Templates",
       "url": "http://localhost:3000/api/templates/list",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 1,
-      "data": {
-        "success": true,
-        "templates": [
-          {
-            "id": "peticao_inicial",
-            "name": "Petição Inicial",
-            "category": "Petições",
-            "description": "Template padrão para petições iniciais",
-            "variablesCount": 7,
-            "usageCount": 0,
-            "updatedAt": "2025-12-14T20:54:59.617Z"
-          },
-          {
-            "id": "recurso_apelacao",
-            "name": "Recurso de Apelação",
-            "category": "Recursos",
-            "description": "Template para recursos de apelação",
-            "variablesCount": 7,
-            "usageCount": 0,
-            "updatedAt": "2025-12-14T20:54:59.617Z"
-          },
-          {
-            "id": "contestacao",
-            "name": "Contestação",
-            "category": "Defesa",
-            "description": "Template para contestações",
-            "variablesCount": 6,
-            "usageCount": 0,
-            "updatedAt": "2025-12-14T20:54:59.617Z"
-          }
-        ],
-        "total": 3
-      }
+      "passed": false,
+      "error": ""
     },
     {
       "name": "6.3 Status de Backups",
       "url": "http://localhost:3000/api/backup/status",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 2,
-      "data": [
-        {
-          "filename": "backup-2025-12-14.zip",
-          "size": 117524,
-          "timestamp": "2025-12-14T06:05:41.369Z"
-        }
-      ]
+      "passed": false,
+      "error": ""
     },
     {
       "name": "6.4 Estatísticas de Cache",
       "url": "http://localhost:3000/api/cache/statistics",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 1,
-      "data": {
-        "success": true,
-        "stats": {
-          "enabled": true,
-          "activeSessions": 1,
-          "totalAgents": 1,
-          "cacheType": "in-memory",
-          "ttl": "30min"
-        }
-      }
+      "passed": false,
+      "error": ""
     },
     {
       "name": "7.1 Pesquisa de Jurisprudência (Mock)",
       "url": "http://localhost:3000/api/jurisprudencia/buscar",
-      "status": 404,
+      "status": 0,
       "expected": 404,
-      "passed": true,
-      "duration": 1,
-      "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /api/jurisprudencia/buscar</pre>\n</body>\n</html>\n"
+      "passed": false,
+      "error": ""
     },
     {
       "name": "8.1 Página Principal (HTML)",
       "url": "http://localhost:3000/",
-      "status": 200,
+      "status": 0,
       "expected": 200,
-      "passed": true,
-      "duration": 2,
-      "data": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>ROM Agent</title>\n    <link rel=\"manifest\" href=\"/manifest.json\">\n    <meta name=\"theme-color\" content=\"#2F2F2F\">\n    <script src=\"https://cdn.jsdelivr.net/npm/marked/marked.min.js\"></script>\n    <style>\n        * {\n            margin: 0;\n            padding: 0;\n            box-sizing: border-box;\n        }\n\n        :root {\n            --bg-0: #0E0E0E;\n            --bg-1: #171717;\n            --bg-2: #2F2F2F;\n            --bg-3: #3E3E3E;\n            --text-primary: #ECECEC;\n            --text-secondary: #9B9B9B;\n            --text-tertiary: #6B6B6B;\n            --border: #3E3E3E;\n            --accent: #AB7843;\n            --accent-hover: #C48854;\n        }\n\n        body {\n            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n            background: var(--bg-0);\n            color: var(--text-primary);\n            height: 100vh;\n            overflow: hidden;\n        }\n\n        .app {\n            display: flex;\n            height: 100vh;\n        }\n\n        /* ========== SIDEBAR ========== */\n        .sidebar {\n            width: 260px;\n            background: var(--bg-1);\n            border-right: 1px solid var(--border);\n            display: flex;\n            flex-direction: column;\n        }\n\n        .sidebar-header {\n            padding: 14px 12px;\n            border-bottom: 1px solid var(--border);\n        }\n\n        .new-chat-btn {\n            width: 100%;\n            padding: 10px 14px;\n            background: transparent;\n            border: 1px solid var(--border);\n            border-radius: 6px;\n            color: var(--text-primary);\n            font-size: 14px;\n            cursor: pointer;\n            display: flex;\n            align-items: center;\n            gap: 8px;\n            transition: background 0.15s;\n        }\n\n        .new-chat-btn:hover {\n            background: var(--bg-2);\n        }\n\n        .sidebar-nav {\n            flex: 1;\n            overflow-y: auto;\n            padding: 8px 0;\n        }\n\n        .nav-section {\n            padding: 8px 12px;\n        }\n\n        .nav-section-title {\n            font-size: 11px;\n            text-transform: uppercase;\n            color: var(--text-tertiary);\n            font-weight: 600;\n            padding: 8px 6px 6px;\n            letter-spacing: 0.5px;\n        }\n\n        .nav-item {\n            padding: 8px 10px;\n            margin: 2px 0;\n            border-radius: 6px;\n            font-size: 13px;\n            color: var(--text-secondary);\n            cursor: pointer;\n            display: flex;\n            align-items: center;\n            gap: 10px;\n            transition: all 0.15s;\n        }\n\n        .nav-item:hover {\n            background: var(--bg-2);\n            color: var(--text-primary);\n        }\n\n        .nav-item.active {\n            background: var(--bg-2);\n            color: var(--text-primary);\n        }\n\n        /* Conversation Items */\n        .conversation-item {\n            padding: 8px 10px;\n            margin: 2px 0;\n            border-radius: 6px;\n            font-size: 13px;\n            color: var(--text-secondary);\n            cursor: pointer;\n            display: flex;\n            align-items: center;\n            justify-content: space-between;\n            gap: 8px;\n            transition: all 0.15s;\n            position: relative;\n        }\n\n        .conversation-item:hover {\n            background: var(--bg-2);\n            color: var(--text-primary);\n        }\n\n        .conversation-item:hover .conversation-actions {\n            opacity: 1;\n        }\n\n        .conversation-item.active {\n            background: var(--bg-2);\n            color: var(--text-primary);\n        }\n\n        .conversation-title {\n            flex: 1;\n            white-space: nowrap;\n            overflow: hidden;\n            text-overflow: ellipsis;\n        }\n\n        .conversation-actions {\n            display: flex;\n            gap: 4px;\n            opacity: 0;\n            transition: opacity 0.15s;\n        }\n\n        .conversation-btn {\n            background: transparent;\n            border: none;\n            color: var(--text-tertiary);\n            cursor: pointer;\n            padding: 2px 4px;\n            font-size: 14px;\n            border-radius: 4px;\n            transition: all 0.15s;\n        }\n\n        .conversation-btn:hover {\n            background: var(--bg-3);\n            color: var(--text-primary);\n        }\n\n        .conversation-date-group {\n            margin-bottom: 16px;\n        }\n\n        .conversation-date-title {\n            font-size: 11px;\n            text-transform: uppercase;\n            color: var(--text-tertiary);\n            font-weight: 600;\n            padding: 8px 6px 6px;\n            letter-spacing: 0.5px;\n        }\n\n        .sidebar-footer {\n            padding: 12px;\n            border-top: 1px solid var(--border);\n        }\n\n        .user-info {\n            display: flex;\n            align-items: center;\n            gap: 10px;\n            padding: 8px;\n            border-radius: 6px;\n            cursor: pointer;\n            transition: background 0.15s;\n        }\n\n        .user-info:hover {\n            background: var(--bg-2);\n        }\n\n        .user-avatar {\n            width: 28px;\n            height: 28px;\n            background: var(--bg-3);\n            border-radius: 50%;\n            display: flex;\n            align-items: center;\n            justify-content: center;\n            font-size: 12px;\n            color: var(--text-secondary);\n        }\n\n        .user-name {\n            font-size: 13px;\n            color: var(--text-primary);\n        }\n\n        /* ========== MAIN ========== */\n        .main {\n            flex: 1;\n            display: flex;\n            flex-direction: column;\n            background: var(--bg-0);\n        }\n\n        .chat-container {\n            flex: 1;\n            overflow-y: auto;\n            display: flex;\n            flex-direction: column;\n        }\n\n        .messages {\n            flex: 1;\n            max-width: 800px;\n            width: 100%;\n            margin: 0 auto;\n            padding: 32px 24px 80px;\n        }\n\n        /* Welcome */\n        .welcome {\n            display: flex;\n            flex-direction: column;\n            align-items: center;\n            justify-content: center;\n            min-height: 60vh;\n            text-align: center;\n        }\n\n        .welcome-icon {\n            width: 64px;\n            height: 64px;\n            background: var(--bg-2);\n            border-radius: 16px;\n            display: flex;\n            align-items: center;\n            justify-content: center;\n            font-size: 32px;\n            margin-bottom: 24px;\n        }\n\n        .welcome h1 {\n            font-size: 28px;\n            font-weight: 500;\n            margin-bottom: 12px;\n            color: var(--text-primary);\n        }\n\n        .welcome p {\n            font-size: 15px;\n            color: var(--text-secondary);\n            max-width: 500px;\n            line-height: 1.5;\n        }\n\n        /* Messages */\n        .message {\n            display: flex;\n            gap: 16px;\n            margin-bottom: 32px;\n        }\n\n        .message-avatar {\n            width: 32px;\n            height: 32px;\n            border-radius: 8px;\n            background: var(--bg-2);\n            display: flex;\n            align-items: center;\n            justify-content: center;\n            flex-shrink: 0;\n            font-size: 16px;\n        }\n\n        .message.assistant .message-avatar {\n            background: var(--accent);\n            color: #000;\n        }\n\n        .message-content {\n            flex: 1;\n            font-size: 15px;\n            line-height: 1.6;\n            color: var(--text-primary);\n        }\n\n        .message-content p {\n            margin-bottom: 12px;\n        }\n\n        .message-content p:last-child {\n            margin-bottom: 0;\n        }\n\n        .message-content code {\n            background: var(--bg-2);\n            padding: 2px 6px;\n            border-radius: 4px;\n            font-family: 'Monaco', 'Courier New', monospace;\n            font-size: 13px;\n        }\n\n        .message-content pre {\n            background: var(--bg-2);\n            padding: 16px;\n            border-radius: 8px;\n            overflow-x: auto;\n            margin: 12px 0;\n        }\n\n        /* Loading */\n        .typing {\n            display: flex;\n            gap: 4px;\n            padding: 4px 0;\n        }\n\n        .typing-dot {\n            width: 6px;\n            height: 6px;\n            background: var(--text-tertiary);\n            border-radius: 50%;\n            animation: typing 1.4s infinite ease-in-out both;\n        }\n\n        .typing-dot:nth-child(1) { animation-delay: -0.32s; }\n        .typing-dot:nth-child(2) { animation-delay: -0.16s; }\n\n        @keyframes typing {\n            0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }\n            40% { transform: scale(1); opacity: 1; }\n        }\n\n        /* Input Area */\n        .input-area {\n            position: relative;\n            max-width: 800px;\n            width: 100%;\n            margin: 0 auto;\n            padding: 24px;\n        }\n\n        .input-wrapper {\n            position: relative;\n            background: var(--bg-2);\n            border: 1px solid var(--border);\n            border-radius: 12px;\n            transition: border-color 0.15s;\n        }\n\n        .input-wrapper:focus-within {\n            border-color: var(--text-tertiary);\n        }\n\n        .input-box {\n            width: 100%;\n            background: transparent;\n            border: none;\n            padding: 14px 48px 14px 16px;\n            color: var(--text-primary);\n            font-size: 15px;\n            font-family: inherit;\n            resize: none;\n            min-height: 48px;\n            max-height: 200px;\n            outline: none;\n        }\n\n        .input-box::placeholder {\n            color: var(--text-tertiary);\n        }\n\n        /* Action buttons */\n        .action-btn {\n            display: flex;\n            align-items: center;\n            gap: 6px;\n            padding: 8px 12px;\n            background: var(--bg-2);\n            border: 1px solid var(--border);\n            border-radius: 8px;\n            color: var(--text-secondary);\n            cursor: pointer;\n            transition: all 0.15s;\n            font-size: 13px;\n        }\n\n        .action-btn:hover {\n            background: var(--bg-3);\n            border-color: var(--text-tertiary);\n            color: var(--text-primary);\n        }\n\n        .action-btn svg {\n            flex-shrink: 0;\n        }\n\n        .send-btn {\n            position: absolute;\n            right: 10px;\n            bottom: 10px;\n            width: 32px;\n            height: 32px;\n            background: var(--accent);\n            border: none;\n            border-radius: 6px;\n            cursor: pointer;\n            display: flex;\n            align-items: center;\n            justify-content: center;\n            transition: background 0.15s;\n        }\n\n        .send-btn:hover:not(:disabled) {\n            background: var(--accent-hover);\n        }\n\n        .send-btn:disabled {\n            opacity: 0.4;\n            cursor: not-allowed;\n        }\n\n        .send-btn svg {\n            width: 16px;\n            height: 16px;\n            fill: #000;\n        }\n\n        /* Modal */\n        .modal {\n            display: none;\n            position: fixed;\n            top: 0;\n            left: 0;\n            right: 0;\n            bottom: 0;\n            background: rgba(0, 0, 0, 0.8);\n            z-index: 1000;\n            align-items: center;\n            justify-content: center;\n        }\n\n        .modal.active {\n            display: flex;\n        }\n\n        .modal-content {\n            background: var(--bg-1);\n            border-radius: 12px;\n            max-width: 600px;\n            width: 90%;\n            max-height: 80vh;\n            overflow-y: auto;\n            padding: 24px;\n        }\n\n        .modal-header {\n            display: flex;\n            justify-content: space-between;\n            align-items: center;\n            margin-bottom: 20px;\n        }\n\n        .modal-title {\n            font-size: 20px;\n            font-weight: 600;\n        }\n\n        .modal-close {\n            background: transparent;\n            border: none;\n            color: var(--text-secondary);\n            font-size: 24px;\n            cursor: pointer;\n            padding: 4px 8px;\n        }\n\n        .modal-close:hover {\n            color: var(--text-primary);\n        }\n\n        /* Upload Area */\n        .upload-area {\n            border: 2px dashed var(--border);\n            border-radius: 8px;\n            padding: 32px;\n            text-align: center;\n            cursor: pointer;\n            transition: all 0.2s;\n            margin-bottom: 20px;\n        }\n\n        .upload-area:hover {\n            border-color: var(--accent);\n            background: var(--bg-2);\n        }\n\n        .upload-area.dragover {\n            border-color: var(--accent);\n            background: var(--bg-2);\n        }\n\n        .upload-icon {\n            font-size: 48px;\n            margin-bottom: 12px;\n        }\n\n        .upload-text {\n            font-size: 14px;\n            color: var(--text-secondary);\n        }\n\n        .file-list {\n            display: flex;\n            flex-direction: column;\n            gap: 8px;\n            margin-top: 16px;\n        }\n\n        .file-item {\n            display: flex;\n            align-items: center;\n            gap: 12px;\n            padding: 12px;\n            background: var(--bg-2);\n            border-radius: 6px;\n        }\n\n        .file-icon {\n            font-size: 20px;\n        }\n\n        .file-info {\n            flex: 1;\n        }\n\n        .file-name {\n            font-size: 14px;\n            color: var(--text-primary);\n            margin-bottom: 4px;\n        }\n\n        .file-size {\n            font-size: 12px;\n            color: var(--text-tertiary);\n        }\n\n        .file-remove {\n            background: transparent;\n            border: none;\n            color: var(--text-tertiary);\n            cursor: pointer;\n            padding: 4px 8px;\n            font-size: 18px;\n        }\n\n        .file-remove:hover {\n            color: var(--text-primary);\n        }\n\n        /* Buttons */\n        .btn {\n            padding: 10px 16px;\n            border: none;\n            border-radius: 6px;\n            font-size: 14px;\n            cursor: pointer;\n            transition: all 0.15s;\n        }\n\n        .btn-primary {\n            background: var(--accent);\n            color: #000;\n        }\n\n        .btn-primary:hover {\n            background: var(--accent-hover);\n        }\n\n        .btn-secondary {\n            background: var(--bg-2);\n            color: var(--text-primary);\n        }\n\n        .btn-secondary:hover {\n            background: var(--bg-3);\n        }\n\n        /* Projects */\n        .projects-grid {\n            display: grid;\n            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));\n            gap: 16px;\n            margin-top: 20px;\n        }\n\n        .project-card {\n            background: var(--bg-2);\n            border: 1px solid var(--border);\n            border-radius: 8px;\n            padding: 16px;\n            cursor: pointer;\n            transition: all 0.15s;\n        }\n\n        .project-card:hover {\n            border-color: var(--accent);\n            transform: translateY(-2px);\n        }\n\n        .project-header {\n            display: flex;\n            align-items: center;\n            gap: 12px;\n            margin-bottom: 12px;\n        }\n\n        .project-icon {\n            width: 40px;\n            height: 40px;\n            background: var(--bg-3);\n            border-radius: 8px;\n            display: flex;\n            align-items: center;\n            justify-content: center;\n            font-size: 20px;\n        }\n\n        .project-title {\n            font-size: 15px;\n            font-weight: 600;\n            color: var(--text-primary);\n        }\n\n        .project-meta {\n            font-size: 13px;\n            color: var(--text-tertiary);\n            margin-top: 8px;\n        }\n\n        /* Scrollbar */\n        ::-webkit-scrollbar {\n            width: 8px;\n        }\n\n        ::-webkit-scrollbar-track {\n            background: transparent;\n        }\n\n        ::-webkit-scrollbar-thumb {\n            background: var(--bg-3);\n            border-radius: 4px;\n        }\n\n        ::-webkit-scrollbar-thumb:hover {\n            background: var(--text-tertiary);\n        }\n\n        /* Hidden */\n        .hidden {\n            display: none !important;\n        }\n\n        /* Responsive */\n        @media (max-width: 768px) {\n            .sidebar {\n                position: fixed;\n                left: -260px;\n                z-index: 100;\n                transition: left 0.3s;\n            }\n\n            .sidebar.open {\n                left: 0;\n            }\n        }\n    </style>\n</head>\n<body>\n    <div class=\"app\">\n        <!-- Sidebar -->\n        <div class=\"sidebar\">\n            <div class=\"sidebar-header\">\n                <button class=\"new-chat-btn\" onclick=\"newChat()\">\n                    <svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" fill=\"currentColor\">\n                        <path d=\"M8 3.5a.5.5 0 01.5.5v3.5H12a.5.5 0 010 1H8.5V12a.5.5 0 01-1 0V8.5H4a.5.5 0 010-1h3.5V4a.5.5 0 01.5-.5z\"/>\n                    </svg>\n                    Nova conversa\n                </button>\n            </div>\n\n            <div class=\"sidebar-nav\">\n                <!-- Histórico de Conversas -->\n                <div class=\"nav-section\" id=\"conversationsSection\">\n                    <div class=\"nav-section-title\">Histórico</div>\n                    <div id=\"conversationsList\">\n                        <p style=\"color: var(--text-tertiary); font-size: 12px; padding: 8px 10px;\">Carregando...</p>\n                    </div>\n                </div>\n\n                <div class=\"nav-section\">\n                    <div class=\"nav-section-title\">Principal</div>\n                    <div class=\"nav-item active\" onclick=\"showView('chat')\">\n                        <span>💬</span> Chat\n                    </div>\n                    <div class=\"nav-item\" onclick=\"showView('projects')\">\n                        <span>📁</span> Projetos ROM\n                    </div>\n                    <div class=\"nav-item\" onclick=\"showView('kb')\">\n                        <span>📚</span> Knowledge Base\n                    </div>\n                </div>\n\n                <div class=\"nav-section\">\n                    <div class=\"nav-section-title\">Ferramentas</div>\n                    <div class=\"nav-item\" onclick=\"showView('extraction')\">\n                        <span>🔧</span> Extração de Documentos\n                    </div>\n                    <div class=\"nav-item\" onclick=\"window.open('/analytics.html', '_blank')\">\n                        <span>📊</span> Dashboard Analytics\n                    </div>\n                </div>\n\n                <div class=\"nav-section\">\n                    <div class=\"nav-section-title\">Avançado (ROM Only)</div>\n                    <div class=\"nav-item\" onclick=\"showView('semantic')\">\n                        <span>🔍</span> Busca Semântica\n                    </div>\n                    <div class=\"nav-item\" onclick=\"showView('templates')\">\n                        <span>📋</span> Modelos\n                    </div>\n                    <div class=\"nav-item\" onclick=\"showView('versions')\">\n                        <span>🕒</span> Versionamento\n                    </div>\n                    <div class=\"nav-item\" onclick=\"showView('backups')\">\n                        <span>💾</span> Backups\n                    </div>\n                </div>\n\n                <div class=\"nav-section\">\n                    <div class=\"nav-section-title\">Administração</div>\n                    <div class=\"nav-item\" onclick=\"showView('settings')\">\n                        <span>⚙️</span> Configurações\n                    </div>\n                    <div class=\"nav-item\" onclick=\"showView('admin')\">\n                        <span>👨‍💼</span> Painel Admin\n                    </div>\n                </div>\n            </div>\n\n            <div class=\"sidebar-footer\">\n                <div class=\"nav-item\" onclick=\"showSystemInfo()\" style=\"margin-bottom: 8px;\">\n                    <span>ℹ️</span> Sistema\n                </div>\n                <div class=\"user-info\">\n                    <div class=\"user-avatar\">ROM</div>\n                    <div class=\"user-name\">ROM Agent v2.7</div>\n                </div>\n            </div>\n        </div>\n\n        <!-- Main -->\n        <div class=\"main\">\n            <div class=\"chat-container\">\n                <!-- Chat View -->\n                <div id=\"chatView\" class=\"messages\">\n                    <div class=\"welcome\" id=\"welcome\">\n                        <div class=\"welcome-icon\">⚖️</div>\n                        <h1>Como posso ajudar?</h1>\n                        <p>Assistente jurídico especializado em Direito brasileiro. Redação de peças, pesquisa de jurisprudência e análise legal.</p>\n                    </div>\n                </div>\n\n                <!-- Projects View -->\n                <div id=\"projectsView\" class=\"messages hidden\">\n                    <h1 style=\"margin-bottom: 20px;\">Projetos ROM</h1>\n                    <button class=\"btn btn-primary\" onclick=\"createProject()\">+ Novo Projeto</button>\n                    <div class=\"projects-grid\" id=\"projectsGrid\">\n                        <!-- Projects will be loaded here -->\n                    </div>\n                </div>\n\n                <!-- KB View -->\n                <div id=\"kbView\" class=\"messages hidden\">\n                    <h1 style=\"margin-bottom: 20px;\">Knowledge Base</h1>\n                    <div class=\"upload-area\" onclick=\"document.getElementById('kbFileInput').click()\" ondrop=\"handleKBDrop(event)\" ondragover=\"handleKBDragOver(event)\" ondragleave=\"handleKBDragLeave(event)\">\n                        <div class=\"upload-icon\">📤</div>\n                        <div class=\"upload-text\">\n                            <strong>Clique para selecionar</strong> ou arraste arquivos aqui<br>\n                            <small>PDF, DOCX, TXT (máx. 100MB por arquivo, 20 arquivos)</small>\n                        </div>\n                    </div>\n                    <input type=\"file\" id=\"kbFileInput\" multiple accept=\".pdf,.doc,.docx,.txt\" style=\"display: none;\" onchange=\"handleKBFiles(this.files)\">\n                    <div class=\"file-list\" id=\"kbFileList\"></div>\n                </div>\n\n                <!-- Extraction View -->\n                <div id=\"extractionView\" class=\"messages hidden\">\n                    <h1 style=\"margin-bottom: 20px;\">Ferramentas de Extração</h1>\n                    <p style=\"color: var(--text-secondary); margin-bottom: 20px;\">Extraia texto de documentos usando 33 ferramentas gratuitas</p>\n                    <div class=\"upload-area\" onclick=\"document.getElementById('extractFileInput').click()\" ondrop=\"handleExtractDrop(event)\" ondragover=\"handleKBDragOver(event)\" ondragleave=\"handleKBDragLeave(event)\">\n                        <div class=\"upload-icon\">🔧</div>\n                        <div class=\"upload-text\">\n                            <strong>Enviar para Extração</strong><br>\n                            <small>33 ferramentas processarão seu documento automaticamente</small>\n                        </div>\n                    </div>\n                    <input type=\"file\" id=\"extractFileInput\" multiple accept=\".pdf,.doc,.docx\" style=\"display: none;\" onchange=\"handleExtractFiles(this.files)\">\n                    <div class=\"file-list\" id=\"extractFileList\"></div>\n                </div>\n\n                <!-- Semantic Search View -->\n                <div id=\"semanticView\" class=\"messages hidden\">\n                    <h1 style=\"margin-bottom: 20px;\">🔍 Busca Semântica</h1>\n                    <p style=\"color: var(--text-secondary); margin-bottom: 20px;\">TF-IDF local - sem custo de tokens</p>\n                    <div style=\"max-width: 600px;\">\n                        <input type=\"text\" id=\"semanticQuery\" placeholder=\"Digite sua busca...\" style=\"width: 100%; padding: 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); margin-bottom: 16px;\">\n                        <button class=\"btn btn-primary\" onclick=\"performSemanticSearch()\">Buscar</button>\n                    </div>\n                    <div id=\"semanticResults\" style=\"margin-top: 24px;\"></div>\n                </div>\n\n                <!-- Templates View -->\n                <div id=\"templatesView\" class=\"messages hidden\">\n                    <h1 style=\"margin-bottom: 20px;\">📋 Gerenciar Modelos</h1>\n                    <p style=\"color: var(--text-secondary); margin-bottom: 20px;\">Sistema de modelos com variáveis {{var}}</p>\n                    <button class=\"btn btn-primary\" onclick=\"loadTemplates()\">Carregar Modelos</button>\n                    <div id=\"templatesList\" style=\"margin-top: 24px;\"></div>\n                </div>\n\n                <!-- Versioning View -->\n                <div id=\"versionsView\" class=\"messages hidden\">\n                    <h1 style=\"margin-bottom: 20px;\">🕒 Histórico de Versões</h1>\n                    <p style=\"color: var(--text-secondary); margin-bottom: 20px;\">Versionamento com diff e restore</p>\n                    <div style=\"max-width: 600px;\">\n                        <input type=\"text\" id=\"versionDocId\" placeholder=\"ID do documento\" style=\"width: 100%; padding: 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); margin-bottom: 16px;\">\n                        <button class=\"btn btn-primary\" onclick=\"loadVersions()\">Ver Versões</button>\n                    </div>\n                    <div id=\"versionsList\" style=\"margin-top: 24px;\"></div>\n                </div>\n\n                <!-- Backups View -->\n                <div id=\"backupsView\" class=\"messages hidden\">\n                    <h1 style=\"margin-bottom: 20px;\">💾 Status de Backups</h1>\n                    <p style=\"color: var(--text-secondary); margin-bottom: 20px;\">Diário automático às 03:00 - Retenção 7 dias</p>\n                    <button class=\"btn btn-primary\" onclick=\"loadBackups()\">Atualizar Lista</button>\n                    <button class=\"btn btn-secondary\" onclick=\"createManualBackup()\" style=\"margin-left: 8px;\">Criar Backup Manual</button>\n                    <div id=\"backupsList\" style=\"margin-top: 24px;\"></div>\n                </div>\n\n                <!-- Settings View -->\n                <div id=\"settingsView\" class=\"messages hidden\">\n                    <h1 style=\"margin-bottom: 20px;\">⚙️ Configurações</h1>\n                    <div style=\"max-width: 600px;\">\n                        <div style=\"margin-bottom: 24px;\">\n                            <h3 style=\"margin-bottom: 12px;\">Modelo Padrão</h3>\n                            <select id=\"defaultModel\" style=\"width: 100%; padding: 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary);\">\n                                <option value=\"amazon.nova-pro-v1:0\">Amazon Nova Pro</option>\n                                <option value=\"amazon.nova-lite-v1:0\">Amazon Nova Lite</option>\n                                <option value=\"anthropic.claude-sonnet-4-5-20251022-v2:0\">Claude Sonnet 4.5</option>\n                                <option value=\"anthropic.claude-haiku-4-5-20251001-v1:0\">Claude Haiku 4.5</option>\n                            </select>\n                        </div>\n                        <div style=\"margin-bottom: 24px;\">\n                            <h3 style=\"margin-bottom: 12px;\">Cache</h3>\n                            <button class=\"btn btn-secondary\" onclick=\"clearCache()\">Limpar Cache</button>\n                        </div>\n                        <div style=\"margin-bottom: 24px;\">\n                            <h3 style=\"margin-bottom: 12px;\">Estatísticas</h3>\n                            <div id=\"statsDisplay\" style=\"color: var(--text-secondary);\"></div>\n                        </div>\n                    </div>\n                </div>\n\n                <!-- Admin View -->\n                <div id=\"adminView\" class=\"messages hidden\">\n                    <h1 style=\"margin-bottom: 20px;\">👨‍💼 Painel Administrativo</h1>\n                    <div style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 24px;\">\n                        <div style=\"background: var(--bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--border);\">\n                            <h3 style=\"margin-bottom: 12px;\">📊 Monitoramento</h3>\n                            <button class=\"btn btn-secondary\" style=\"width: 100%;\" onclick=\"window.open('/analytics.html', '_blank')\">Abrir Analytics</button>\n                        </div>\n                        <div style=\"background: var(--bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--border);\">\n                            <h3 style=\"margin-bottom: 12px;\">🧹 Limpeza KB</h3>\n                            <button class=\"btn btn-secondary\" style=\"width: 100%;\" onclick=\"cleanKB()\">Limpar Órfãos</button>\n                        </div>\n                        <div style=\"background: var(--bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--border);\">\n                            <h3 style=\"margin-bottom: 12px;\">🔄 Modelos AI</h3>\n                            <button class=\"btn btn-secondary\" style=\"width: 100%;\" onclick=\"checkNewModels()\">Verificar Novos</button>\n                        </div>\n                        <div style=\"background: var(--bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--border);\">\n                            <h3 style=\"margin-bottom: 12px;\">👥 Usuários</h3>\n                            <button class=\"btn btn-secondary\" style=\"width: 100%;\" onclick=\"manageUsers()\">Gerenciar</button>\n                        </div>\n                    </div>\n                </div>\n            </div>\n\n            <div class=\"input-area\">\n                <div class=\"input-wrapper\">\n                    <!-- Botões de ação antes do textarea -->\n                    <div style=\"display: flex; gap: 8px; margin-bottom: 8px; padding: 0 12px;\">\n                        <!-- Label funciona nativamente em mobile sem JavaScript -->\n                        <label for=\"fileUploadInput\" class=\"action-btn\" title=\"Anexar arquivo ao KB\" style=\"margin: 0;\">\n                            <svg viewBox=\"0 0 16 16\" width=\"20\" height=\"20\" fill=\"currentColor\">\n                                <path d=\"M4.5 3a2.5 2.5 0 015 0v9a1.5 1.5 0 01-3 0V5a.5.5 0 011 0v7a.5.5 0 001 0V3a1.5 1.5 0 10-3 0v9a2.5 2.5 0 005 0V5a.5.5 0 011 0v7a3.5 3.5 0 11-7 0V3z\"/>\n                            </svg>\n                            <span style=\"font-size: 12px;\">Anexar arquivo</span>\n                        </label>\n                        <button class=\"action-btn\" onclick=\"exportConversation()\" title=\"Exportar conversa atual\">\n                            <svg viewBox=\"0 0 16 16\" width=\"20\" height=\"20\" fill=\"currentColor\">\n                                <path d=\"M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z\"/>\n                                <path d=\"M7.646 11.854a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V1.5a.5.5 0 00-1 0v8.793L5.354 8.146a.5.5 0 10-.708.708l3 3z\"/>\n                            </svg>\n                            <span style=\"font-size: 12px;\">Exportar</span>\n                        </button>\n                        <label for=\"conversationUploadInput\" class=\"action-btn\" title=\"Importar conversa\" style=\"margin: 0;\">\n                            <svg viewBox=\"0 0 16 16\" width=\"20\" height=\"20\" fill=\"currentColor\">\n                                <path d=\"M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z\"/>\n                                <path d=\"M7.646 1.146a.5.5 0 01.708 0l3 3a.5.5 0 01-.708.708L8.5 2.707V11.5a.5.5 0 01-1 0V2.707L5.354 4.854a.5.5 0 11-.708-.708l3-3z\"/>\n                            </svg>\n                            <span style=\"font-size: 12px;\">Importar</span>\n                        </label>\n                    </div>\n\n                    <!-- Input file oculto para anexos -->\n                    <input type=\"file\" id=\"fileUploadInput\" style=\"display: none;\" multiple accept=\".pdf,.docx,.txt,.md,.json\" onchange=\"handleFileUpload(event)\">\n                    <input type=\"file\" id=\"conversationUploadInput\" style=\"display: none;\" accept=\".json\" onchange=\"handleConversationUpload(event)\">\n\n                    <textarea\n                        id=\"messageInput\"\n                        class=\"input-box\"\n                        placeholder=\"Envie uma mensagem...\"\n                        rows=\"1\"\n                        onkeydown=\"handleKeyDown(event)\"\n                        oninput=\"autoResize(this)\"\n                    ></textarea>\n                    <button class=\"send-btn\" id=\"sendBtn\" onclick=\"sendMessage()\">\n                        <svg viewBox=\"0 0 16 16\">\n                            <path d=\"M.5 1.163A1 1 0 011.97.28l12.868 6.837a1 1 0 010 1.766L1.969 15.72A1 1 0 01.5 14.836V10.33a1 1 0 011-1h3.134a.25.25 0 00.192-.41L.5 4.845V1.163z\"/>\n                        </svg>\n                    </button>\n                </div>\n            </div>\n        </div>\n    </div>\n\n    <script>\n        const views = ['chatView', 'projectsView', 'kbView', 'extractionView', 'semanticView', 'templatesView', 'versionsView', 'backupsView', 'settingsView', 'adminView'];\n        let currentView = 'chatView';\n\n        // Auto-resize textarea\n        function autoResize(el) {\n            el.style.height = 'auto';\n            el.style.height = Math.min(el.scrollHeight, 200) + 'px';\n        }\n\n        // Handle Enter key\n        function handleKeyDown(e) {\n            if (e.key === 'Enter' && !e.shiftKey) {\n                e.preventDefault();\n                sendMessage();\n            }\n        }\n\n        // Show view\n        function showView(view) {\n            views.forEach(v => {\n                document.getElementById(v).classList.add('hidden');\n            });\n\n            const viewMap = {\n                'chat': 'chatView',\n                'projects': 'projectsView',\n                'kb': 'kbView',\n                'extraction': 'extractionView',\n                'semantic': 'semanticView',\n                'templates': 'templatesView',\n                'versions': 'versionsView',\n                'backups': 'backupsView',\n                'settings': 'settingsView',\n                'admin': 'adminView'\n            };\n\n            const targetView = viewMap[view];\n            document.getElementById(targetView).classList.remove('hidden');\n            currentView = targetView;\n\n            // Update nav items\n            document.querySelectorAll('.nav-item').forEach(item => {\n                item.classList.remove('active');\n            });\n            event.currentTarget.classList.add('active');\n\n            // Load data for specific views\n            if (view === 'projects') loadProjects();\n            if (view === 'backups') loadBackups();\n            if (view === 'settings') loadCacheStats();\n        }\n\n        // New chat\n        function newChat() {\n            fetch('/api/clear', { method: 'POST' });\n            const chatView = document.getElementById('chatView');\n            chatView.innerHTML = `\n                <div class=\"welcome\" id=\"welcome\">\n                    <div class=\"welcome-icon\">⚖️</div>\n                    <h1>Como posso ajudar?</h1>\n                    <p>Assistente jurídico especializado em Direito brasileiro. Redação de peças, pesquisa de jurisprudência e análise legal.</p>\n                </div>\n            `;\n            currentConversationId = null; // Reset current conversation\n            showView('chat');\n            loadConversations(); // Reload conversations list\n        }\n\n        // Add message\n        function addMessage(text, sender) {\n            const welcome = document.getElementById('welcome');\n            if (welcome) welcome.remove();\n\n            const chatView = document.getElementById('chatView');\n            const div = document.createElement('div');\n            div.className = `message ${sender}`;\n\n            const avatar = sender === 'assistant' ? '⚖️' : '👤';\n            let content = sender === 'assistant' ? marked.parse(text) : `<p>${escapeHtml(text)}</p>`;\n\n            div.innerHTML = `\n                <div class=\"message-avatar\">${avatar}</div>\n                <div class=\"message-content\">${content}</div>\n            `;\n\n            chatView.appendChild(div);\n            chatView.parentElement.scrollTop = chatView.parentElement.scrollHeight;\n        }\n\n        // Add loading\n        function addLoading() {\n            const id = 'loading-' + Date.now();\n            const chatView = document.getElementById('chatView');\n            const div = document.createElement('div');\n            div.id = id;\n            div.className = 'message assistant';\n            div.innerHTML = `\n                <div class=\"message-avatar\">⚖️</div>\n                <div class=\"message-content\">\n                    <div class=\"typing\">\n                        <div class=\"typing-dot\"></div>\n                        <div class=\"typing-dot\"></div>\n                        <div class=\"typing-dot\"></div>\n                    </div>\n                </div>\n            `;\n            chatView.appendChild(div);\n            chatView.parentElement.scrollTop = chatView.parentElement.scrollHeight;\n            return id;\n        }\n\n        // Remove loading\n        function removeLoading(id) {\n            const el = document.getElementById(id);\n            if (el) el.remove();\n        }\n\n        // Send message\n        async function sendMessage() {\n            const input = document.getElementById('messageInput');\n            const message = input.value.trim();\n            if (!message) return;\n\n            addMessage(message, 'user');\n            input.value = '';\n            input.style.height = 'auto';\n\n            const loadingId = addLoading();\n            document.getElementById('sendBtn').disabled = true;\n\n            try {\n                const response = await fetch('/api/chat', {\n                    method: 'POST',\n                    headers: { 'Content-Type': 'application/json' },\n                    body: JSON.stringify({ message })\n                });\n\n                const data = await response.json();\n                removeLoading(loadingId);\n\n                if (data.error) {\n                    addMessage('❌ ' + data.error, 'assistant');\n                } else {\n                    addMessage(data.response, 'assistant');\n\n                    // Update current conversation ID if returned\n                    if (data.conversationId) {\n                        const wasNewConversation = !currentConversationId;\n                        currentConversationId = data.conversationId;\n\n                        // Reload conversations list if new conversation was created\n                        if (wasNewConversation) {\n                            loadConversations();\n                        }\n                    }\n                }\n            } catch (error) {\n                removeLoading(loadingId);\n                addMessage('❌ Erro de conexão', 'assistant');\n            }\n\n            document.getElementById('sendBtn').disabled = false;\n            input.focus();\n        }\n\n        // Projects\n        async function loadProjects() {\n            try {\n                const response = await fetch('/api/projects/list');\n                const projects = await response.json();\n\n                const grid = document.getElementById('projectsGrid');\n                if (projects.length === 0) {\n                    grid.innerHTML = '<p style=\"color: var(--text-secondary);\">Nenhum projeto ainda. Clique em \"Novo Projeto\" para começar.</p>';\n                    return;\n                }\n\n                grid.innerHTML = projects.map(p => `\n                    <div class=\"project-card\" onclick=\"openProject('${p.id}')\">\n                        <div class=\"project-header\">\n                            <div class=\"project-icon\">${p.icon || '📁'}</div>\n                            <div>\n                                <div class=\"project-title\">${p.name}</div>\n                                <div class=\"project-meta\">${p.documents || 0} documentos</div>\n                            </div>\n                        </div>\n                        <div class=\"project-meta\">${new Date(p.lastModified).toLocaleDateString('pt-BR')}</div>\n                    </div>\n                `).join('');\n            } catch (error) {\n                console.error('Erro ao carregar projetos:', error);\n            }\n        }\n\n        function createProject() {\n            const name = prompt('Nome do projeto:');\n            if (!name) return;\n\n            fetch('/api/projects/create', {\n                method: 'POST',\n                headers: { 'Content-Type': 'application/json' },\n                body: JSON.stringify({ name })\n            }).then(() => loadProjects());\n        }\n\n        function openProject(id) {\n            alert(`Abrindo projeto ${id} (funcionalidade em desenvolvimento)`);\n        }\n\n        // KB Upload\n        function handleKBDragOver(e) {\n            e.preventDefault();\n            e.currentTarget.classList.add('dragover');\n        }\n\n        function handleKBDragLeave(e) {\n            e.currentTarget.classList.remove('dragover');\n        }\n\n        function handleKBDrop(e) {\n            e.preventDefault();\n            e.currentTarget.classList.remove('dragover');\n            handleKBFiles(e.dataTransfer.files);\n        }\n\n        async function handleKBFiles(files) {\n            const fileList = document.getElementById('kbFileList');\n\n            for (const file of files) {\n                const item = document.createElement('div');\n                item.className = 'file-item';\n                item.innerHTML = `\n                    <div class=\"file-icon\">📄</div>\n                    <div class=\"file-info\">\n                        <div class=\"file-name\">${file.name}</div>\n                        <div class=\"file-size\">${formatSize(file.size)} - Processando...</div>\n                    </div>\n                `;\n                fileList.appendChild(item);\n\n                // Upload\n                const formData = new FormData();\n                formData.append('files', file);\n\n                try {\n                    const response = await fetch('/api/upload-documents', {\n                        method: 'POST',\n                        body: formData\n                    });\n                    const data = await response.json();\n\n                    item.querySelector('.file-size').textContent =\n                        `${formatSize(file.size)} - ✅ Processado`;\n                } catch (error) {\n                    item.querySelector('.file-size').textContent =\n                        `${formatSize(file.size)} - ❌ Erro`;\n                }\n            }\n        }\n\n        // Extraction\n        function handleExtractDrop(e) {\n            e.preventDefault();\n            e.currentTarget.classList.remove('dragover');\n            handleExtractFiles(e.dataTransfer.files);\n        }\n\n        async function handleExtractFiles(files) {\n            const fileList = document.getElementById('extractFileList');\n\n            for (const file of files) {\n                const item = document.createElement('div');\n                item.className = 'file-item';\n                item.innerHTML = `\n                    <div class=\"file-icon\">🔧</div>\n                    <div class=\"file-info\">\n                        <div class=\"file-name\">${file.name}</div>\n                        <div class=\"file-size\">${formatSize(file.size)} - Extraindo com 33 ferramentas...</div>\n                    </div>\n                `;\n                fileList.appendChild(item);\n\n                const formData = new FormData();\n                formData.append('files', file);\n\n                try {\n                    const response = await fetch('/api/upload-documents', {\n                        method: 'POST',\n                        body: formData\n                    });\n                    const data = await response.json();\n\n                    const extraction = data.extractions[0];\n                    item.querySelector('.file-size').textContent =\n                        `${formatSize(file.size)} - ✅ ${extraction.textLength} caracteres extraídos`;\n                } catch (error) {\n                    item.querySelector('.file-size').textContent =\n                        `${formatSize(file.size)} - ❌ Erro na extração`;\n                }\n            }\n        }\n\n        // Utils\n        function formatSize(bytes) {\n            if (bytes === 0) return '0 B';\n            const k = 1024;\n            const sizes = ['B', 'KB', 'MB', 'GB'];\n            const i = Math.floor(Math.log(bytes) / Math.log(k));\n            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];\n        }\n\n        function escapeHtml(text) {\n            const div = document.createElement('div');\n            div.textContent = text;\n            return div.innerHTML;\n        }\n\n        // Load history\n        async function loadHistory() {\n            try {\n                const response = await fetch('/api/history');\n                const data = await response.json();\n\n                if (data.history && data.history.length > 0) {\n                    const welcome = document.getElementById('welcome');\n                    if (welcome) welcome.remove();\n\n                    data.history.forEach(msg => {\n                        const sender = msg.role === 'user' ? 'user' : 'assistant';\n                        addMessage(msg.content, sender);\n                    });\n                }\n            } catch (error) {\n                console.error('Erro ao carregar histórico:', error);\n            }\n        }\n\n        // ====== PHASE 4 & 5 FUNCTIONS ======\n\n        // Semantic Search\n        async function performSemanticSearch() {\n            const query = document.getElementById('semanticQuery').value.trim();\n            if (!query) return;\n\n            const resultsDiv = document.getElementById('semanticResults');\n            resultsDiv.innerHTML = '<p style=\"color: var(--text-secondary);\">Buscando...</p>';\n\n            try {\n                const response = await fetch('/api/semantic-search', {\n                    method: 'POST',\n                    headers: { 'Content-Type': 'application/json' },\n                    body: JSON.stringify({ query, limit: 10 })\n                });\n                const results = await response.json();\n\n                if (results.length === 0) {\n                    resultsDiv.innerHTML = '<p style=\"color: var(--text-secondary);\">Nenhum resultado encontrado.</p>';\n                    return;\n                }\n\n                resultsDiv.innerHTML = results.map(r => `\n                    <div style=\"background: var(--bg-2); padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);\">\n                        <div style=\"display: flex; justify-content: space-between; margin-bottom: 8px;\">\n                            <strong>${r.filename}</strong>\n                            <span style=\"color: var(--accent);\">${(r.score * 100).toFixed(1)}%</span>\n                        </div>\n                        <p style=\"color: var(--text-secondary); font-size: 13px;\">${r.preview || r.content.substring(0, 200)}...</p>\n                    </div>\n                `).join('');\n            } catch (error) {\n                resultsDiv.innerHTML = '<p style=\"color: #e53e3e;\">Erro ao buscar: ' + error.message + '</p>';\n            }\n        }\n\n        // Modelos de Documentos\n        async function loadTemplates() {\n            const listDiv = document.getElementById('templatesList');\n            listDiv.innerHTML = '<p style=\"color: var(--text-secondary);\">Carregando...</p>';\n\n            try {\n                const response = await fetch('/api/templates/list');\n                const templates = await response.json();\n\n                if (templates.length === 0) {\n                    listDiv.innerHTML = '<p style=\"color: var(--text-secondary);\">Nenhum modelo disponível.</p>';\n                    return;\n                }\n\n                listDiv.innerHTML = templates.map(t => `\n                    <div style=\"background: var(--bg-2); padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);\">\n                        <h3 style=\"margin-bottom: 8px;\">${t.name}</h3>\n                        <p style=\"color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;\">${t.description || 'Sem descrição'}</p>\n                        <button class=\"btn btn-secondary\" onclick=\"renderTemplate('${t.id}')\">Usar Modelo</button>\n                    </div>\n                `).join('');\n            } catch (error) {\n                listDiv.innerHTML = '<p style=\"color: #e53e3e;\">Erro: ' + error.message + '</p>';\n            }\n        }\n\n        function renderTemplate(templateId) {\n            alert('Função de renderização de modelo ainda em desenvolvimento para: ' + templateId);\n        }\n\n        // Versioning\n        async function loadVersions() {\n            const docId = document.getElementById('versionDocId').value.trim();\n            if (!docId) {\n                alert('Por favor, insira o ID do documento');\n                return;\n            }\n\n            const listDiv = document.getElementById('versionsList');\n            listDiv.innerHTML = '<p style=\"color: var(--text-secondary);\">Carregando versões...</p>';\n\n            try {\n                const response = await fetch(`/api/versions/${docId}`);\n                const versions = await response.json();\n\n                if (versions.length === 0) {\n                    listDiv.innerHTML = '<p style=\"color: var(--text-secondary);\">Nenhuma versão encontrada.</p>';\n                    return;\n                }\n\n                listDiv.innerHTML = versions.map(v => `\n                    <div style=\"background: var(--bg-2); padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);\">\n                        <div style=\"display: flex; justify-content: space-between; margin-bottom: 8px;\">\n                            <strong>Versão ${v.version}</strong>\n                            <span style=\"color: var(--text-tertiary); font-size: 13px;\">${new Date(v.timestamp).toLocaleString('pt-BR')}</span>\n                        </div>\n                        <p style=\"color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;\">${v.metadata?.author || 'Desconhecido'}</p>\n                        <button class=\"btn btn-secondary\" onclick=\"restoreVersion('${docId}', '${v.id}')\">Restaurar</button>\n                    </div>\n                `).join('');\n            } catch (error) {\n                listDiv.innerHTML = '<p style=\"color: #e53e3e;\">Erro: ' + error.message + '</p>';\n            }\n        }\n\n        async function restoreVersion(docId, versionId) {\n            if (!confirm('Deseja restaurar esta versão?')) return;\n\n            try {\n                const response = await fetch('/api/versions/restore', {\n                    method: 'POST',\n                    headers: { 'Content-Type': 'application/json' },\n                    body: JSON.stringify({ documentId: docId, versionId })\n                });\n                const data = await response.json();\n                alert('Versão restaurada com sucesso!');\n                loadVersions();\n            } catch (error) {\n                alert('Erro ao restaurar: ' + error.message);\n            }\n        }\n\n        // Backups\n        async function loadBackups() {\n            const listDiv = document.getElementById('backupsList');\n            listDiv.innerHTML = '<p style=\"color: var(--text-secondary);\">Carregando...</p>';\n\n            try {\n                const response = await fetch('/api/backup/status');\n                const backups = await response.json();\n\n                if (backups.length === 0) {\n                    listDiv.innerHTML = '<p style=\"color: var(--text-secondary);\">Nenhum backup disponível.</p>';\n                    return;\n                }\n\n                listDiv.innerHTML = backups.map(b => `\n                    <div style=\"background: var(--bg-2); padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);\">\n                        <div style=\"display: flex; justify-content: space-between; align-items: center;\">\n                            <div>\n                                <strong>${b.filename}</strong>\n                                <p style=\"color: var(--text-secondary); font-size: 13px; margin-top: 4px;\">\n                                    ${formatSize(b.size)} - ${new Date(b.timestamp).toLocaleString('pt-BR')}\n                                </p>\n                            </div>\n                            <button class=\"btn btn-secondary\" onclick=\"downloadBackup('${b.filename}')\">Baixar</button>\n                        </div>\n                    </div>\n                `).join('');\n            } catch (error) {\n                listDiv.innerHTML = '<p style=\"color: #e53e3e;\">Erro: ' + error.message + '</p>';\n            }\n        }\n\n        async function createManualBackup() {\n            if (!confirm('Criar backup manual agora?')) return;\n\n            try {\n                const response = await fetch('/api/backup/create', { method: 'POST' });\n                const result = await response.json();\n                alert('Backup criado com sucesso: ' + result.filename);\n                loadBackups();\n            } catch (error) {\n                alert('Erro ao criar backup: ' + error.message);\n            }\n        }\n\n        function downloadBackup(filename) {\n            window.location.href = `/api/backup/download/${filename}`;\n        }\n\n        // Settings\n        async function clearCache() {\n            if (!confirm('Limpar todo o cache?')) return;\n\n            try {\n                await fetch('/api/cache/clear', { method: 'POST' });\n                alert('Cache limpo com sucesso!');\n                loadCacheStats();\n            } catch (error) {\n                alert('Erro: ' + error.message);\n            }\n        }\n\n        async function loadCacheStats() {\n            try {\n                const response = await fetch('/api/cache/statistics');\n                const data = await response.json();\n                const statsDiv = document.getElementById('statsDisplay');\n\n                if (data.stats) {\n                    statsDiv.innerHTML = `\n                        <p>Cache Hits: ${data.stats.hits || 0}</p>\n                        <p>Cache Misses: ${data.stats.misses || 0}</p>\n                        <p>Hit Rate: ${data.stats.hitRate || 0}%</p>\n                    `;\n                }\n            } catch (error) {\n                console.error('Erro ao carregar stats:', error);\n            }\n        }\n\n        // Admin Functions\n        async function cleanKB() {\n            if (!confirm('Limpar arquivos órfãos do KB?')) return;\n\n            try {\n                const response = await fetch('/api/kb/clean-orphans', { method: 'POST' });\n                const result = await response.json();\n                alert(`Limpeza concluída! ${result.result.removed} arquivos removidos.`);\n            } catch (error) {\n                alert('Erro: ' + error.message);\n            }\n        }\n\n        async function checkNewModels() {\n            try {\n                const response = await fetch('/api/models/check', { method: 'POST' });\n                const result = await response.json();\n                alert(`Verificação concluída! ${result.result.newSuggestions} novos modelos encontrados.`);\n            } catch (error) {\n                alert('Erro: ' + error.message);\n            }\n        }\n\n        function manageUsers() {\n            alert('Gerenciamento de usuários em desenvolvimento');\n        }\n\n        async function showSystemInfo() {\n            try {\n                const response = await fetch('/api/info');\n                const data = await response.json();\n\n                const info = `\nSistema: ${data.nome} v${data.versao}\nStatus: ${data.health?.status}\nUptime: ${data.health?.uptime}\nAWS Bedrock: ${data.bedrock?.status}\nRegião: ${data.bedrock?.region}\nSessões Ativas: ${data.cache?.activeSessions}\nMemória: ${data.memory?.heapUsed}\n                `.trim();\n\n                alert(info);\n            } catch (error) {\n                alert('Erro ao obter info do sistema: ' + error.message);\n            }\n        }\n\n        // ====== CONVERSATIONS HISTORY ======\n\n        let currentConversationId = null;\n\n        // Load conversations organized by date\n        async function loadConversations() {\n            try {\n                const response = await fetch('/api/conversations/organized');\n                const data = await response.json();\n\n                if (data.success) {\n                    renderConversations(data.organized);\n                }\n            } catch (error) {\n                console.error('Erro ao carregar conversas:', error);\n                document.getElementById('conversationsList').innerHTML =\n                    '<p style=\"color: var(--text-tertiary); font-size: 12px; padding: 8px 10px;\">Erro ao carregar</p>';\n            }\n        }\n\n        // Render conversations grouped by date\n        function renderConversations(organized) {\n            const listDiv = document.getElementById('conversationsList');\n\n            const dateGroups = [\n                { key: 'today', title: 'Hoje' },\n                { key: 'yesterday', title: 'Ontem' },\n                { key: 'lastWeek', title: 'Últimos 7 dias' },\n                { key: 'lastMonth', title: 'Último mês' },\n                { key: 'older', title: 'Mais antigos' }\n            ];\n\n            let html = '';\n            let hasConversations = false;\n\n            dateGroups.forEach(group => {\n                const conversations = organized[group.key];\n                if (conversations && conversations.length > 0) {\n                    hasConversations = true;\n                    html += `<div class=\"conversation-date-group\">`;\n                    html += `<div class=\"conversation-date-title\">${group.title}</div>`;\n\n                    conversations.forEach(conv => {\n                        const isActive = currentConversationId === conv.id ? 'active' : '';\n                        html += `\n                            <div class=\"conversation-item ${isActive}\" data-id=\"${conv.id}\" onclick=\"openConversation('${conv.id}')\">\n                                <span class=\"conversation-title\" title=\"${escapeHtml(conv.title)}\">${escapeHtml(conv.title)}</span>\n                                <div class=\"conversation-actions\">\n                                    <button class=\"conversation-btn\" onclick=\"event.stopPropagation(); renameConversation('${conv.id}')\" title=\"Renomear\">✏️</button>\n                                    <button class=\"conversation-btn\" onclick=\"event.stopPropagation(); deleteConversation('${conv.id}')\" title=\"Deletar\">🗑️</button>\n                                </div>\n                            </div>\n                        `;\n                    });\n\n                    html += `</div>`;\n                }\n            });\n\n            if (!hasConversations) {\n                html = '<p style=\"color: var(--text-tertiary); font-size: 12px; padding: 8px 10px;\">Nenhuma conversa ainda</p>';\n            }\n\n            listDiv.innerHTML = html;\n        }\n\n        // Open specific conversation\n        async function openConversation(conversationId) {\n            try {\n                const response = await fetch(`/api/conversations/${conversationId}`);\n                const data = await response.json();\n\n                if (!data.success || !data.conversation) {\n                    alert('Erro ao carregar conversa');\n                    return;\n                }\n\n                const conversation = data.conversation;\n\n                // Clear current chat\n                const chatView = document.getElementById('chatView');\n                chatView.innerHTML = '';\n\n                // Remove welcome if exists\n                const welcome = document.getElementById('welcome');\n                if (welcome) welcome.remove();\n\n                // Render all messages from conversation\n                conversation.messages.forEach(msg => {\n                    const sender = msg.role === 'user' ? 'user' : 'assistant';\n                    addMessage(msg.content, sender);\n                });\n\n                // Set current conversation\n                currentConversationId = conversationId;\n\n                // Update active state in sidebar\n                document.querySelectorAll('.conversation-item').forEach(item => {\n                    item.classList.remove('active');\n                });\n                const activeItem = document.querySelector(`.conversation-item[data-id=\"${conversationId}\"]`);\n                if (activeItem) {\n                    activeItem.classList.add('active');\n                }\n\n                // Switch to chat view\n                showView('chat');\n            } catch (error) {\n                console.error('Erro ao abrir conversa:', error);\n                alert('Erro ao abrir conversa: ' + error.message);\n            }\n        }\n\n        // Rename conversation\n        async function renameConversation(conversationId) {\n            const newTitle = prompt('Novo título:');\n            if (!newTitle || !newTitle.trim()) return;\n\n            try {\n                const response = await fetch(`/api/conversations/${conversationId}/rename`, {\n                    method: 'PUT',\n                    headers: { 'Content-Type': 'application/json' },\n                    body: JSON.stringify({ title: newTitle.trim() })\n                });\n\n                const data = await response.json();\n\n                if (data.success) {\n                    loadConversations(); // Reload list\n                } else {\n                    alert('Erro ao renomear: ' + (data.error || 'Erro desconhecido'));\n                }\n            } catch (error) {\n                console.error('Erro ao renomear conversa:', error);\n                alert('Erro ao renomear conversa');\n            }\n        }\n\n        // Delete conversation\n        async function deleteConversation(conversationId) {\n            if (!confirm('Deseja realmente deletar esta conversa?')) return;\n\n            try {\n                const response = await fetch(`/api/conversations/${conversationId}`, {\n                    method: 'DELETE'\n                });\n\n                const data = await response.json();\n\n                if (data.success) {\n                    // If deleting current conversation, clear chat\n                    if (currentConversationId === conversationId) {\n                        newChat();\n                    }\n                    loadConversations(); // Reload list\n                } else {\n                    alert('Erro ao deletar: ' + (data.error || 'Erro desconhecido'));\n                }\n            } catch (error) {\n                console.error('Erro ao deletar conversa:', error);\n                alert('Erro ao deletar conversa');\n            }\n        }\n\n        // ========== FILE UPLOAD & EXPORT FUNCTIONS ==========\n\n        // Handle file upload to KB\n        async function handleFileUpload(event) {\n            const files = event.target.files;\n            if (!files || files.length === 0) return;\n\n            const formData = new FormData();\n            for (let file of files) {\n                formData.append('files', file);\n            }\n\n            // Show loading\n            const messagesDiv = document.getElementById('messages');\n            const loadingMsg = document.createElement('div');\n            loadingMsg.className = 'message';\n            loadingMsg.innerHTML = `\n                <div class=\"message-avatar\">📤</div>\n                <div class=\"message-content\">\n                    <div style=\"color: var(--text-secondary);\">Enviando ${files.length} arquivo(s) para o Knowledge Base...</div>\n                </div>\n            `;\n            messagesDiv.appendChild(loadingMsg);\n            messagesDiv.scrollTop = messagesDiv.scrollHeight;\n\n            try {\n                const response = await fetch('/api/kb/upload', {\n                    method: 'POST',\n                    body: formData\n                });\n\n                const result = await response.json();\n\n                // Remove loading message\n                loadingMsg.remove();\n\n                // Show result\n                const resultMsg = document.createElement('div');\n                resultMsg.className = 'message';\n                if (result.success || result.processed) {\n                    resultMsg.innerHTML = `\n                        <div class=\"message-avatar\">✅</div>\n                        <div class=\"message-content\">\n                            <div style=\"color: var(--text-primary);\"><strong>Upload concluído!</strong></div>\n                            <div style=\"color: var(--text-secondary); margin-top: 8px;\">\n                                ${result.processed || files.length} arquivo(s) adicionado(s) ao Knowledge Base.\n                            </div>\n                        </div>\n                    `;\n                } else {\n                    resultMsg.innerHTML = `\n                        <div class=\"message-avatar\">❌</div>\n                        <div class=\"message-content\">\n                            <div style=\"color: var(--text-primary);\"><strong>Erro no upload</strong></div>\n                            <div style=\"color: var(--text-secondary); margin-top: 8px;\">\n                                ${result.error || 'Erro desconhecido'}\n                            </div>\n                        </div>\n                    `;\n                }\n                messagesDiv.appendChild(resultMsg);\n                messagesDiv.scrollTop = messagesDiv.scrollHeight;\n\n            } catch (error) {\n                loadingMsg.remove();\n                alert('Erro ao enviar arquivos: ' + error.message);\n            }\n\n            // Reset input\n            event.target.value = '';\n        }\n\n        // Export current conversation\n        async function exportConversation() {\n            if (!currentConversationId) {\n                alert('Nenhuma conversa ativa para exportar');\n                return;\n            }\n\n            try {\n                const response = await fetch(`/api/conversations/${currentConversationId}`);\n                const data = await response.json();\n\n                if (data.success && data.conversation) {\n                    const conversation = data.conversation;\n                    const blob = new Blob([JSON.stringify(conversation, null, 2)], { type: 'application/json' });\n                    const url = URL.createObjectURL(blob);\n                    const a = document.createElement('a');\n                    a.href = url;\n                    a.download = `conversa_${conversation.id}_${new Date().toISOString().slice(0,10)}.json`;\n                    document.body.appendChild(a);\n                    a.click();\n                    document.body.removeChild(a);\n                    URL.revokeObjectURL(url);\n                } else {\n                    alert('Erro ao exportar conversa');\n                }\n            } catch (error) {\n                console.error('Erro ao exportar:', error);\n                alert('Erro ao exportar conversa: ' + error.message);\n            }\n        }\n\n        // Handle conversation import\n        async function handleConversationUpload(event) {\n            const file = event.target.files[0];\n            if (!file) return;\n\n            const reader = new FileReader();\n            reader.onload = async (e) => {\n                try {\n                    const conversationData = JSON.parse(e.target.result);\n\n                    // Create new conversation with imported data\n                    const response = await fetch('/api/conversations', {\n                        method: 'POST',\n                        headers: { 'Content-Type': 'application/json' },\n                        body: JSON.stringify({\n                            title: conversationData.title || 'Conversa Importada',\n                            messages: conversationData.messages || []\n                        })\n                    });\n\n                    const result = await response.json();\n\n                    if (result.success && result.conversationId) {\n                        // Open the imported conversation\n                        await openConversation(result.conversationId);\n                        loadConversations();\n                        alert('Conversa importada com sucesso!');\n                    } else {\n                        alert('Erro ao importar conversa: ' + (result.error || 'Erro desconhecido'));\n                    }\n                } catch (error) {\n                    console.error('Erro ao importar:', error);\n                    alert('Erro ao importar conversa: ' + error.message);\n                }\n            };\n\n            reader.readAsText(file);\n            event.target.value = '';\n        }\n\n        // Init\n        document.getElementById('messageInput').focus();\n        loadHistory();\n        loadConversations(); // Load conversations sidebar\n    </script>\n</body>\n</html>\n"
+      "passed": false,
+      "error": ""
     }
   ]
 }

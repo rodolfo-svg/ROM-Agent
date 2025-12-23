@@ -1,155 +1,131 @@
 {
-  "timestamp": "2025-12-17T03:05:11.083Z",
+  "timestamp": "2025-12-19T05:00:09.795Z",
   "environment": "http://localhost:3000",
   "duration": "3.04s",
   "summary": {
-    "total": 23,
-    "passed": 19,
-    "failed": 4,
-    "warnings": 0,
-    "successRate": "82.6%"
+    "total": 20,
+    "passed": 1,
+    "failed": 19,
+    "warnings": 3,
+    "successRate": "5.0%"
   },
   "results": {
     "health": {
       "Server responde": {
-        "passed": true,
-        "duration": 17,
-        "status": 200,
-        "responseTime": 17
+        "passed": false,
+        "duration": 19,
+        "error": ""
       },
       "Health check endpoint": {
         "passed": false,
         "duration": 2,
-        "error": "Expected status 200, got 404"
+        "error": ""
       }
     },
     "apis": {
       "KB Statistics API": {
-        "passed": true,
-        "duration": 2,
-        "stats": {
-          "kb": {
-            "totalDocuments": 0,
-            "totalSize": "0 Bytes",
-            "totalSizeBytes": 0
-          },
-          "approved": {
-            "totalPieces": 0,
-            "totalSpaceSaved": "0 Bytes",
-            "lastCleaned": "2025-12-13T05:40:44.159Z"
-          },
-          "session": {
-            "filesDeleted": 0,
-            "documentsRemoved": 0,
-            "spaceSaved": "0 Bytes"
-          }
-        }
+        "passed": false,
+        "duration": 1,
+        "error": ""
       },
       "KB Reindex API": {
-        "passed": true,
-        "duration": 3,
-        "success": true
+        "passed": false,
+        "duration": 1,
+        "error": ""
       },
       "Feature Flags GET": {
-        "passed": true,
+        "passed": false,
         "duration": 1,
-        "flagCount": 41
+        "error": ""
       },
       "Feature Flags Validate": {
-        "passed": true,
+        "passed": false,
         "duration": 1,
-        "valid": true
+        "error": ""
       },
       "Feature Flags By Category": {
-        "passed": true,
+        "passed": false,
         "duration": 1,
-        "category": "tracing",
-        "flagCount": 3
+        "error": ""
       },
       "Spell Check Info": {
-        "passed": true,
-        "duration": 0,
-        "provider": "disabled"
+        "passed": false,
+        "duration": 1,
+        "error": ""
+      },
+      "Spell Check Basic": {
+        "warning": true,
+        "error": ""
       },
       "Paradigmas Categories": {
         "passed": false,
-        "duration": 1,
-        "error": "Cannot read properties of undefined (reading 'length')"
+        "duration": 0,
+        "error": ""
       },
       "Paradigmas List": {
-        "passed": true,
-        "duration": 0,
-        "total": 0
+        "passed": false,
+        "duration": 1,
+        "error": ""
       },
       "Paradigmas Stats": {
-        "passed": true,
-        "duration": 1,
-        "stats": {
-          "total": 0,
-          "byTipo": {},
-          "byArea": {},
-          "byTribunal": {},
-          "byStatus": {},
-          "mostUsed": [],
-          "recentlyAdded": [],
-          "topRated": []
-        }
+        "passed": false,
+        "duration": 0,
+        "error": ""
       },
       "Analytics Dashboard": {
-        "passed": true,
-        "duration": 1,
-        "metrics": [
-          "totalRequests",
-          "avgResponseTime",
-          "successRate",
-          "mostUsedPieceType",
-          "peakHour",
-          "topUsers"
-        ]
+        "passed": false,
+        "duration": 0,
+        "error": ""
       },
       "Analytics Usage": {
-        "passed": true,
+        "passed": false,
         "duration": 1,
-        "dataPoints": 7
+        "error": ""
       },
       "Stats General": {
-        "passed": true,
-        "duration": 1,
-        "success": true
+        "passed": false,
+        "duration": 0,
+        "error": ""
       }
     },
     "performance": {
       "Response time: /api/health": {
         "passed": false,
         "duration": 1,
-        "error": "Expected status 200, got 404"
+        "error": ""
       },
       "Response time: /api/feature-flags": {
-        "passed": true,
+        "passed": false,
         "duration": 0,
-        "endpoint": "/api/feature-flags",
-        "responseTime": 0
+        "error": ""
       },
       "Response time: /api/kb/statistics": {
-        "passed": true,
+        "passed": false,
         "duration": 1,
-        "endpoint": "/api/kb/statistics",
-        "responseTime": 1
+        "error": ""
       },
       "Response time: /api/paradigmas/categories": {
-        "passed": true,
+        "passed": false,
         "duration": 0,
-        "endpoint": "/api/paradigmas/categories",
-        "responseTime": 0
+        "error": ""
       }
     },
     "logs": {
       "Tracing system active": {
         "passed": false,
         "duration": 1,
-        "error": "Tracing should be enabled"
+        "error": ""
       }
     },
-    "features": {}
+    "features": {
+      "Scheduler jobs configured": {
+        "warning": true,
+        "error": ""
+      },
+      "Backup system configured": {
+        "warning": true,
+        "error": ""
+      }
+    }
   }
 }

@@ -1,32 +1,28 @@
 {
   "summary": {
-    "total": 43,
-    "passed": 43,
-    "failed": 0,
+    "total": 31,
+    "passed": 19,
+    "failed": 12,
     "warnings": 0,
-    "successRate": 100,
-    "duration": 0.03,
-    "timestamp": "2025-12-14T23:45:10.206Z"
+    "successRate": 61.3,
+    "duration": 0.01,
+    "timestamp": "2025-12-19T05:00:03.359Z"
   },
   "tests": [
     {
       "name": "Health Check (/api/info)",
-      "passed": {
-        "status": "healthy",
-        "uptime": "0h 30m",
-        "uptimeSeconds": 1845
-      },
-      "details": "Status: 200, Version: 2.0.0, Health: healthy, Bedrock: connected"
+      "passed": false,
+      "details": "Error: "
     },
     {
       "name": "Estatísticas do Sistema (/api/stats)",
-      "passed": true,
-      "details": "Status: 200"
+      "passed": false,
+      "details": "Error: "
     },
     {
-      "name": "Upload e Extração de TXT (/api/upload-documents)",
-      "passed": true,
-      "details": "Status: 200, Arquivos: 1, Extrações: 1, Metadados: Sim"
+      "name": "Upload e Extração de TXT",
+      "passed": false,
+      "details": "Error: "
     },
     {
       "name": "Suporte a Múltiplas Extensões",
@@ -34,34 +30,19 @@
       "details": "Extensões suportadas: PDF, DOCX, DOC, TXT, MD"
     },
     {
-      "name": "Criar Projeto com Custom Instructions (/api/projects/create)",
-      "passed": true,
-      "details": "Status: 200, ID: 2, KB: 500MB, Custom Instructions: Sim"
+      "name": "Criar Projeto com Custom Instructions",
+      "passed": false,
+      "details": "Error: "
     },
     {
-      "name": "Listar Projetos (/api/projects/list)",
-      "passed": true,
-      "details": "Status: 200, Projetos: 2"
+      "name": "Listar Projetos",
+      "passed": false,
+      "details": "Error: "
     },
     {
-      "name": "Upload para Projeto com KB Tracking (/api/projects/2/upload)",
-      "passed": {
-        "currentMB": "0.00",
-        "maxMB": 500,
-        "usagePercent": 0,
-        "remainingMB": "500.00"
-      },
-      "details": "Status: 200, KB Usage: 0.00/500MB (0%)"
-    },
-    {
-      "name": "Validação de Limite de KB",
-      "passed": true,
-      "details": "Erro esperado: Invalid string length"
-    },
-    {
-      "name": "Status do Knowledge Base (/api/kb/status)",
-      "passed": true,
-      "details": "Status: 200, Documentos: 4"
+      "name": "Status do Knowledge Base",
+      "passed": false,
+      "details": "Error: "
     },
     {
       "name": "Suporte a Export TXT",
@@ -89,64 +70,14 @@
       "details": "Formato HTML suportado no sistema"
     },
     {
-      "name": "Listar Conversas para Export (/api/conversations/organized)",
-      "passed": true,
-      "details": "Status: 200"
+      "name": "Listar Conversas para Export",
+      "passed": false,
+      "details": "Error: "
     },
     {
-      "name": "Página Principal HTML (/)",
-      "passed": true,
-      "details": "Status: 200"
-    },
-    {
-      "name": "Meta Viewport Mobile",
-      "passed": true,
-      "details": "Configurado"
-    },
-    {
-      "name": "Suporte iOS (Apple)",
-      "passed": true,
-      "details": "Configurado"
-    },
-    {
-      "name": "Suporte Android",
-      "passed": true,
-      "details": "Configurado"
-    },
-    {
-      "name": "Botão \"Novo Projeto\"",
-      "passed": true,
-      "details": "Presente"
-    },
-    {
-      "name": "Botão Upload de Arquivo",
-      "passed": true,
-      "details": "Presente"
-    },
-    {
-      "name": "Touch Optimization (44px)",
-      "passed": true,
-      "details": "Configurado"
-    },
-    {
-      "name": "Safe Area (Notch iPhone)",
-      "passed": true,
-      "details": "Configurado"
-    },
-    {
-      "name": "Modal de Novo Projeto",
-      "passed": true,
-      "details": "Presente"
-    },
-    {
-      "name": "Campo Custom Instructions",
-      "passed": true,
-      "details": "Presente"
-    },
-    {
-      "name": "Seletor de Tamanho de KB",
-      "passed": true,
-      "details": "Presente"
+      "name": "Frontend",
+      "passed": false,
+      "details": "Error: "
     },
     {
       "name": "Custom Instructions por Projeto",
@@ -214,24 +145,24 @@
       "details": "✓ Implementado (Vantagem ROM)"
     },
     {
-      "name": "Busca Semântica (/api/semantic-search)",
-      "passed": true,
-      "details": "Status: 200"
+      "name": "Busca Semântica",
+      "passed": false,
+      "details": "Error: "
     },
     {
-      "name": "Listar Templates (/api/templates/list)",
-      "passed": true,
-      "details": "Status: 200, Templates: 0"
+      "name": "Listar Templates",
+      "passed": false,
+      "details": "Error: "
     },
     {
-      "name": "Status de Backups (/api/backup/status)",
-      "passed": true,
-      "details": "Status: 200, Backups: 1"
+      "name": "Status de Backups",
+      "passed": false,
+      "details": "Error: "
     },
     {
-      "name": "Estatísticas de Cache (/api/cache/statistics)",
-      "passed": true,
-      "details": "Status: 200"
+      "name": "Estatísticas de Cache",
+      "passed": false,
+      "details": "Error: "
     }
   ]
 }
