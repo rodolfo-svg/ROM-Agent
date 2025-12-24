@@ -7,8 +7,8 @@ import { BedrockRuntimeClient, ConverseCommand } from "@aws-sdk/client-bedrock-r
 
 // __ROM_METRICS_WRAP_BEDROCK_SEND__
 
-import client from 'prom-client';
-const { Counter, register } = client;
+import promClient from 'prom-client';
+const { Counter, register } = promClient;
 
 function __romGetOrCreateCounter(name, help) {
   const existing = register.getSingleMetric && register.getSingleMetric(name);
