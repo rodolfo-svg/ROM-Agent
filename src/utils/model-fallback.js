@@ -9,6 +9,26 @@
 import { logger } from './logger.js';
 import metricsCollector from './metrics-collector.js';
 
+function classifyFallbackReason(err) {
+  const name = (err && err.name) ? String(err.name) : "Error";
+  const code = err && err.$metadata && err.$metadata.httpStatusCode ? err.$metadata.httpStatusCode : undefined;
+  const msg  = (err && err.message) ? String(err.message) : "";
+  const s = (name + " " + code + " " + msg).toLowerCase();
+  if (s.includes("thrott") || code === 429) return "throttle";
+  if (s.includes("accessdenied") || s.includes("unauthorized") || code === 403) return "access_denied";
+  if (s.includes("validation") || code === 400) return "validation";
+  if (s.includes("timeout") || s.includes("abort") || s.includes("etimedout")) return "timeout";
+  return "other";
+}
+
+function debugFallbackLog(payload) {
+  if (process.env.ROM_FALLBACK_DEBUG !== "1") return;
+  try {
+    console.error(JSON.stringify({ lvl: "warn", event: "model_fallback", ...payload }));
+  } catch (_) {}
+}
+
+
 // ============================================================
 // FALLBACK CONFIGURATION
 // ============================================================
@@ -191,7 +211,9 @@ export async function executeWithFallback(fn, initialModelId, context = {}) {
         attemptsRemaining: FALLBACK_CHAIN.length - errors.length
       });
 
-      metricsCollector.incrementModelFallbackAttempt(currentModelId);
+      const reason = classifyFallbackReason(error);
+      debugFallbackLog({ from: currentModelId, to: fallbackModel?.modelId, reason, error: error?.message });
+      metricsCollector.incrementModelFallbackAttempt('converse', currentModelId, fallbackModel?.modelId || 'none', reason);
 
       // Get next model in chain
       const fallbackModel = getFallbackModel(currentModelId);
@@ -206,7 +228,8 @@ export async function executeWithFallback(fn, initialModelId, context = {}) {
           operation: context.operation
         });
 
-        metricsCollector.incrementModelFallbackExhausted();
+        debugFallbackLog({ exhausted: true, errors: errors.map(e => ({ model: e.model, error: e.error })) });
+        metricsCollector.incrementModelFallbackExhausted('converse');
 
         // Throw error with full context
         const chainError = new Error(`All models in fallback chain failed (${errors.length} attempts)`);

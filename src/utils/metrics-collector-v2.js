@@ -409,6 +409,16 @@ class MetricsCollectorV2 {
    * Model Fallback - Increment attempt
    */
   incrementModelFallbackAttempt(operation, from, to, reason) {
+    // Backward compat (1 arg): modelId only
+    if (arguments.length === 1) {
+      const toModel = operation;
+      const op = "converse";
+      const frm = "unknown";
+      const rsn = "unknown";
+      if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+      this.mfAttempts.labels(op, frm, String(toModel), rsn).inc();
+      return;
+    }
     if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
     this.mfAttempts.labels(operation, from, to, reason).inc();
   }
@@ -417,6 +427,10 @@ class MetricsCollectorV2 {
    * Model Fallback - Increment exhausted
    */
   incrementModelFallbackExhausted(operation) {
+    // Backward compat (0 args)
+    if (arguments.length === 0) {
+      operation = "converse";
+    }
     if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
     this.mfExhausted.labels(operation).inc();
   }
