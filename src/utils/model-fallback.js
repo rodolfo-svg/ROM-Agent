@@ -211,12 +211,12 @@ export async function executeWithFallback(fn, initialModelId, context = {}) {
         attemptsRemaining: FALLBACK_CHAIN.length - errors.length
       });
 
+      // Get next model in chain (MUST be before using fallbackModel)
+      const fallbackModel = getFallbackModel(currentModelId);
+
       const reason = classifyFallbackReason(error);
       debugFallbackLog({ from: currentModelId, to: fallbackModel?.modelId, reason, error: error?.message });
       metricsCollector.incrementModelFallbackAttempt('converse', currentModelId, fallbackModel?.modelId || 'none', reason);
-
-      // Get next model in chain
-      const fallbackModel = getFallbackModel(currentModelId);
 
       if (!fallbackModel) {
         // No more fallbacks available
