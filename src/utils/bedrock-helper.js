@@ -5,9 +5,36 @@
 
 import { BedrockRuntimeClient, ConverseCommand } from "@aws-sdk/client-bedrock-runtime";
 
+// __ROM_METRICS_WRAP_BEDROCK_SEND__
+
+import client from 'prom-client';
+const { Counter, register } = client;
+
+function __romGetOrCreateCounter(name, help) {
+  const existing = register.getSingleMetric && register.getSingleMetric(name);
+  if (existing) return existing;
+  try { return new Counter({ name, help }); } catch (_) { return register.getSingleMetric(name); }
+}
+const __romBedrockReq = __romGetOrCreateCounter('bedrock_requests_total', 'Total Bedrock API requests');
+const __romBedrockErr = __romGetOrCreateCounter('bedrock_errors_total', 'Total Bedrock API errors');
+
 const client = new BedrockRuntimeClient({
   region: process.env.AWS_REGION ?? "us-west-2",
 });
+
+// __ROM_METRICS_WRAP_BEDROCK_SEND__ hook
+try {
+  const __romOrigSend = client.send.bind(client);
+  client.send = async (command, ...args) => {
+    try { __romBedrockReq.inc(); } catch (_) {}
+    try {
+      return await __romOrigSend(command, ...args);
+    } catch (err) {
+      try { __romBedrockErr.inc(); } catch (_) {}
+      throw err;
+    }
+  };
+} catch (_) {}
 
 /**
  * Realizar conversa com Bedrock (interface simplificada)

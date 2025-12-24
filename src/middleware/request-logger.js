@@ -7,6 +7,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import { logger } from '../utils/logger.js';
 import metricsCollector from '../utils/metrics-collector-v2.js';
+import { startPushgateway } from '../metrics/pushgateway.js';
+
+// __ROM_PUSHGATEWAY_INIT__
+try { startPushgateway(); } catch (_) {}
 
 /**
  * Generate unique request identifiers
