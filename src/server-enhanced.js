@@ -61,6 +61,7 @@ import bedrockQueue from '../lib/bedrock-queue-manager.js';
 import exhaustiveJobManager from '../lib/exhaustive-job-manager.js';
 import metricsCollector from './utils/metrics-collector-v2.js';
 import structuredLogger from './utils/structured-logger.js';
+import { execSync } from 'child_process';
 
 // Importar módulos CommonJS
 const require = createRequire(import.meta.url);
@@ -2515,6 +2516,24 @@ app.delete('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
   }
 });
 
+/**
+ * Obtém o hash do commit git atual
+ * @returns {string} Hash do commit ou 'unknown' se não disponível
+ */
+function getGitCommit() {
+  try {
+    const commit = execSync('git rev-parse --short HEAD', {
+      encoding: 'utf8',
+      timeout: 1000,
+      windowsHide: true
+    }).trim();
+    return commit || 'unknown';
+  } catch {
+    // Fallback: tentar ler do env var (Render seta isso)
+    return process.env.RENDER_GIT_COMMIT?.substring(0, 8) || 'unknown';
+  }
+}
+
 // API - Info do sistema com health check completo
 app.get('/api/info', async (req, res) => {
   try {
@@ -2577,7 +2596,8 @@ app.get('/api/info', async (req, res) => {
         nodeVersion: process.version,
         platform: process.platform,
         arch: process.arch,
-        pid: process.pid
+        pid: process.pid,
+        gitCommit: getGitCommit()
       },
 
       // Memória
