@@ -22,6 +22,22 @@ const client = new BedrockRuntimeClient({
   region: process.env.AWS_REGION ?? "us-west-2",
 });
 
+/**
+ * Resolve model ID to use inference profile ARN if configured
+ *
+ * @param {string} modelId - Original model ID
+ * @returns {string} Resolved model ID (inference profile ARN or original)
+ */
+export function resolveBedrockModelId(modelId) {
+  if (modelId === "amazon.nova-lite-v1:0" && process.env.NOVA_LITE_PROFILE_ARN) {
+    return process.env.NOVA_LITE_PROFILE_ARN;
+  }
+  if (modelId === "amazon.nova-pro-v1:0" && process.env.NOVA_PRO_PROFILE_ARN) {
+    return process.env.NOVA_PRO_PROFILE_ARN;
+  }
+  return modelId;
+}
+
 // __ROM_METRICS_WRAP_BEDROCK_SEND__ hook
 try {
   const __romOrigSend = client.send.bind(client);
@@ -54,8 +70,11 @@ export async function bedrockConverse({
   temperature = 0.2,
   topP = 0.9,
 }) {
+  // Resolve model ID to inference profile ARN if configured
+  const resolvedModelId = resolveBedrockModelId(modelId);
+
   const command = new ConverseCommand({
-    modelId,
+    modelId: resolvedModelId,
     messages: [
       {
         role: "user",
