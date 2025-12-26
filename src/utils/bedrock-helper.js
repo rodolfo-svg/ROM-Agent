@@ -25,16 +25,34 @@ const client = new BedrockRuntimeClient({
 /**
  * Resolve model ID to use inference profile ARN if configured
  *
+ * Supports:
+ * - amazon.nova-lite-v1:0 (standard)
+ * - us.amazon.nova-lite-v1:0 (regional, used in fallback chain)
+ * - amazon.nova-pro-v1:0 (standard)
+ * - us.amazon.nova-pro-v1:0 (regional, used in fallback chain)
+ *
+ * Environment variables (priority order):
+ * - NOVA_LITE_PROFILE_ARN (correct spelling)
+ * - NOVA_LITE_PROLIFE_ARN (typo variant, compatibility)
+ * - NOVA_PRO_PROFILE_ARN (correct spelling)
+ * - NOVA_PRO_PROLIFE_ARN (typo variant, compatibility)
+ *
  * @param {string} modelId - Original model ID
  * @returns {string} Resolved model ID (inference profile ARN or original)
  */
 export function resolveBedrockModelId(modelId) {
-  if (modelId === "amazon.nova-lite-v1:0" && process.env.NOVA_LITE_PROFILE_ARN) {
-    return process.env.NOVA_LITE_PROFILE_ARN;
+  // Nova Lite (standard and regional)
+  if (modelId === "amazon.nova-lite-v1:0" || modelId === "us.amazon.nova-lite-v1:0") {
+    const arn = process.env.NOVA_LITE_PROFILE_ARN || process.env.NOVA_LITE_PROLIFE_ARN;
+    if (arn) return arn;
   }
-  if (modelId === "amazon.nova-pro-v1:0" && process.env.NOVA_PRO_PROFILE_ARN) {
-    return process.env.NOVA_PRO_PROFILE_ARN;
+
+  // Nova Pro (standard and regional)
+  if (modelId === "amazon.nova-pro-v1:0" || modelId === "us.amazon.nova-pro-v1:0") {
+    const arn = process.env.NOVA_PRO_PROFILE_ARN || process.env.NOVA_PRO_PROLIFE_ARN;
+    if (arn) return arn;
   }
+
   return modelId;
 }
 
