@@ -41,17 +41,28 @@ const client = new BedrockRuntimeClient({
  * @returns {string} Resolved model ID (inference profile ARN or original)
  */
 export function resolveBedrockModelId(modelId) {
-  // Nova Lite (standard and regional)
-  if (modelId === "amazon.nova-lite-v1:0" || modelId === "us.amazon.nova-lite-v1:0") {
-    const arn = process.env.NOVA_LITE_PROFILE_ARN || process.env.NOVA_LITE_PROLIFE_ARN;
-    if (arn) return arn;
-  }
+  if (!modelId || typeof modelId !== "string") return modelId;
 
-  // Nova Pro (standard and regional)
-  if (modelId === "amazon.nova-pro-v1:0" || modelId === "us.amazon.nova-pro-v1:0") {
-    const arn = process.env.NOVA_PRO_PROFILE_ARN || process.env.NOVA_PRO_PROLIFE_ARN;
-    if (arn) return arn;
-  }
+  // Se já for ARN, não mexe
+  if (modelId.startsWith("arn:aws:bedrock:")) return modelId;
+
+  // Normaliza prefixo regional ("us.")
+  const normalized = modelId.replace(/^us\./, "");
+
+  const novaLiteArn =
+    process.env.NOVA_LITE_PROFILE_ARN ||
+    process.env.NOVA_LITE_PROLIFE_ARN; // compat
+
+  const novaProArn =
+    process.env.NOVA_PRO_PROFILE_ARN ||
+    process.env.NOVA_PRO_PROLIFE_ARN; // compat
+
+  if (normalized === "amazon.nova-lite-v1:0" && novaLiteArn) return novaLiteArn;
+  if (normalized === "amazon.nova-pro-v1:0" && novaProArn) return novaProArn;
+
+  // (opcional) se você usar micro/premier depois:
+  // if (normalized === "amazon.nova-micro-v1:0" && process.env.NOVA_MICRO_PROFILE_ARN) return process.env.NOVA_MICRO_PROFILE_ARN;
+  // if (normalized === "amazon.nova-premier-v1:0" && process.env.NOVA_PREMIER_PROFILE_ARN) return process.env.NOVA_PREMIER_PROFILE_ARN;
 
   return modelId;
 }
