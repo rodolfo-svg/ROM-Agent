@@ -82,12 +82,10 @@ export async function initRedis() {
       port: parseInt(process.env.REDIS_PORT) || 6379,
       password: process.env.REDIS_PASSWORD,
       db: parseInt(process.env.REDIS_DB) || 0,
-      retryStrategy: (times) => {
-        if (times > 3) return null;
-        return Math.min(times * 200, 2000);
-      },
+      retryStrategy: () => null, // Não tentar reconectar
       lazyConnect: true,
-      enableReadyCheck: true
+      enableReadyCheck: true,
+      maxRetriesPerRequest: 1
     };
 
     redisClient = new Redis(config);
