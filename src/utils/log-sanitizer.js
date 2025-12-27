@@ -107,7 +107,7 @@ function maskCPF(cpf) {
 }
 
 /**
- * Mascara CNPJ: 12.345.678/0001-01 -> 12.***.***/**01-01
+ * Mascara CNPJ: 12.345.678/0001-01 -> 12.XXX.XXX/XX01-01
  */
 function maskCNPJ(cnpj) {
   return cnpj.replace(/(\d{2})\.?\d{3}\.?\d{3}(\/?\d{4}-?\d{2})/, '$1.***.**$2');
