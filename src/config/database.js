@@ -144,7 +144,7 @@ export async function safeQuery(sql, params = []) {
   }
 }
 
-export async function closeConnections() {
+export async function closeDatabaseConnections() {
   const promises = [];
 
   if (pgPool) {
@@ -205,6 +205,6 @@ export default {
   getPostgresPool,
   getRedisClient,
   safeQuery,
-  closeConnections,
+  closeDatabaseConnections,
   checkDatabaseHealth
 };
