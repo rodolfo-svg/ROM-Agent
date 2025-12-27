@@ -13,7 +13,14 @@ const { Counter, register } = promClient;
 function __romGetOrCreateCounter(name, help) {
   const existing = register.getSingleMetric && register.getSingleMetric(name);
   if (existing) return existing;
-  try { return new Counter({ name, help }); } catch (_) { return register.getSingleMetric(name); }
+  try {
+    const counter = new Counter({ name, help });
+    console.log(`[bedrock-helper] Counter created: ${name}`);
+    return counter;
+  } catch (err) {
+    console.error(`[bedrock-helper] Failed to create counter ${name}:`, err.message);
+    return register.getSingleMetric(name);
+  }
 }
 const __romBedrockReq = __romGetOrCreateCounter('bedrock_requests_total', 'Total Bedrock API requests');
 const __romBedrockErr = __romGetOrCreateCounter('bedrock_errors_total', 'Total Bedrock API errors');
