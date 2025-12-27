@@ -81,6 +81,21 @@ const QualityValidator = require('../lib/quality-validator.cjs');
 
 dotenv.config();
 
+// ═══════════════════════════════════════════════════════════
+// DEBUG: FORÇA SAÍDA DE DATABASE_URL
+// ═══════════════════════════════════════════════════════════
+console.log('━'.repeat(70));
+console.log('🔍 [STARTUP] server-enhanced.js CARREGADO');
+console.log('🔍 [STARTUP] NODE_ENV:', process.env.NODE_ENV);
+console.log('🔍 [STARTUP] DATABASE_URL exists:', !!process.env.DATABASE_URL);
+if (process.env.DATABASE_URL) {
+  const url = process.env.DATABASE_URL;
+  const masked = url.substring(0, 20) + '...' + url.substring(url.length - 20);
+  console.log('🔍 [STARTUP] DATABASE_URL (masked):', masked);
+}
+console.log('━'.repeat(70));
+// ═══════════════════════════════════════════════════════════
+
 // Inicializar sistema de auto-atualização
 const integrador = new IntegradorSistema();
 integrador.inicializar().then(() => {
