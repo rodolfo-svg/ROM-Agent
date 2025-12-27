@@ -3407,6 +3407,18 @@ app.get('/api/dashboard/analytics', (req, res) => {
   }
 });
 
+// Dashboard - Obter dados de qualidade
+app.get('/api/dashboard/quality', (req, res) => {
+  try {
+    // TODO: Adicionar verificação de admin
+    const quality = readLogFile('quality.json');
+    res.json({ quality });
+  } catch (error) {
+    console.error('Erro ao obter dados de qualidade:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Dashboard - Obter dados de billing
 app.get('/api/dashboard/billing', (req, res) => {
   try {
