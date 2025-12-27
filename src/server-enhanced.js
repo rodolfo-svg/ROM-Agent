@@ -48,6 +48,8 @@ import caseProcessorRouter from './routes/case-processor.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
 import certidoesDJEService from './services/certidoes-dje-service.js';
 import multiAgentPipelineService from './services/multi-agent-pipeline-service.js';
+// Import bedrock-helper to initialize Prometheus counters (bedrock_requests_total, bedrock_errors_total)
+import './utils/bedrock-helper.js';
 import autoPipelineService from './services/auto-pipeline-service.js';
 import { DocumentDeduplicator } from '../lib/document-deduplicator.js';
 import { scheduler } from './jobs/scheduler.js';
