@@ -8551,8 +8551,13 @@ logger.info('✅ Pricing API endpoints configured');
 // ============================================================================
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'healthy', timestamp: new Date().toISOString() });
+app.get('/health', async (req, res) => {
+  const dbHealth = await checkDatabaseHealth();
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    database: dbHealth
+  });
 });
 
 // Metrics endpoint (Prometheus format)
