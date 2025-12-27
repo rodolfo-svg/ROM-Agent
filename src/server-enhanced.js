@@ -8646,8 +8646,8 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
   // Inicializar banco de dados (PostgreSQL + Redis)
   logger.info('Inicializando banco de dados...');
-  initPostgres();
-  initRedis();
+  await initPostgres();
+  await initRedis();
 
   const dbHealth = await checkDatabaseHealth();
   if (dbHealth.postgres.available) {
