@@ -15,7 +15,12 @@ let redisClient = null;
  * @returns {pg.Pool|null} Pool de conexões ou null se falhar
  */
 export async function initPostgres() {
+  console.log('🔍 [PG] initPostgres() INICIADO');
+  console.log('🔍 [PG] DATABASE_URL existe:', !!process.env.DATABASE_URL);
+  console.log('🔍 [PG] NODE_ENV:', process.env.NODE_ENV);
+
   if (pgPool) {
+    console.log('🔍 [PG] Pool já existe, retornando existente');
     return pgPool;
   }
 
@@ -41,23 +46,39 @@ export async function initPostgres() {
           connectionTimeoutMillis: 5000
         };
 
+    console.log('🔍 [PG] Usando DATABASE_URL:', !!process.env.DATABASE_URL);
+    console.log('🔍 [PG] SSL habilitado:', !!config.ssl);
+    console.log('🔍 [PG] Pool size:', config.max);
+    console.log('🔍 [PG] Connection timeout:', config.connectionTimeoutMillis + 'ms');
+
+    console.log('🔍 [PG] Criando pg.Pool...');
     pgPool = new pg.Pool(config);
 
+    console.log('🔍 [PG] Testando conexão com SELECT NOW()...');
     const startTime = Date.now();
     await pgPool.query('SELECT NOW()');
     const latency = Date.now() - startTime;
 
+    console.log('✅ [PG] PostgreSQL CONECTADO em ' + latency + 'ms');
     logger.info('PostgreSQL conectado', {
       latency: `${latency}ms`,
       poolSize: config.max
     });
 
     pgPool.on('error', (err) => {
+      console.error('❌ [PG] Pool error:', err.message);
       logger.error('PostgreSQL pool error', { error: err.message });
     });
 
     return pgPool;
   } catch (error) {
+    console.error('━'.repeat(70));
+    console.error('❌ [PG] ERRO AO CONECTAR POSTGRESQL');
+    console.error('❌ [PG] Error message:', error.message);
+    console.error('❌ [PG] Error code:', error.code);
+    console.error('❌ [PG] Error stack:', error.stack);
+    console.error('━'.repeat(70));
+
     logger.warn('PostgreSQL INDISPONÍVEL - dados serão perdidos em redeploy!', {
       error: error.message
     });
