@@ -104,6 +104,13 @@ async function verifyServerFile() {
 // Executar
 console.log('🔍 Verificando versão do sistema...\n');
 
+// Verificar se auto-version está desabilitado (produção/CI)
+if (process.env.DISABLE_AUTO_VERSION === 'true') {
+  console.log('⏭️  Auto-version DESABILITADO (DISABLE_AUTO_VERSION=true)');
+  console.log('✅ Mantendo versão atual do package.json');
+  process.exit(0);
+}
+
 if (await verifyServerFile()) {
   const updated = await updateVersion();
   const { endpoints, featureCount } = await getFeatureCount();
