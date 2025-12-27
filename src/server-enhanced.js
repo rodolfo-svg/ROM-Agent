@@ -8650,20 +8650,39 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
   // Inicializar banco de dados (PostgreSQL + Redis)
-  logger.info('Inicializando banco de dados...');
-  await initPostgres();
-  await initRedis();
+  console.log('🔌 [DATABASE] Inicializando banco de dados...');
+  console.log('🔌 [DATABASE] DATABASE_URL configurada:', !!process.env.DATABASE_URL);
+
+  try {
+    await initPostgres();
+    console.log('🔌 [DATABASE] initPostgres() concluído');
+  } catch (error) {
+    console.error('🔌 [DATABASE] ERRO em initPostgres():', error.message);
+  }
+
+  try {
+    await initRedis();
+    console.log('🔌 [DATABASE] initRedis() concluído');
+  } catch (error) {
+    console.error('🔌 [DATABASE] ERRO em initRedis():', error.message);
+  }
 
   const dbHealth = await checkDatabaseHealth();
+  console.log('🔌 [DATABASE] Health check:', JSON.stringify(dbHealth));
+
   if (dbHealth.postgres.available) {
+    console.log('✅ [DATABASE] PostgreSQL CONECTADO -', dbHealth.postgres.latency + 'ms');
     logger.info('✅ PostgreSQL conectado', { latency: dbHealth.postgres.latency + 'ms' });
   } else {
+    console.log('❌ [DATABASE] PostgreSQL INDISPONÍVEL');
     logger.warn('⚠️  PostgreSQL INDISPONÍVEL - dados serão perdidos em redeploy!');
   }
 
   if (dbHealth.redis.available) {
+    console.log('✅ [DATABASE] Redis CONECTADO -', dbHealth.redis.latency + 'ms');
     logger.info('✅ Redis conectado', { latency: dbHealth.redis.latency + 'ms' });
   } else {
+    console.log('❌ [DATABASE] Redis INDISPONÍVEL');
     logger.warn('⚠️  Redis INDISPONÍVEL - sessões serão efêmeras!');
   }
 
