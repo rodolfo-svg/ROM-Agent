@@ -15,8 +15,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import multer from 'multer';
-import session from 'express-session';
 import fs from 'fs';
+import { initPostgres, initRedis, checkDatabaseHealth, closeDatabaseConnections } from './config/database.js';
+import { createSessionMiddleware, sessionEnhancerMiddleware } from './config/session-store.js';
 import { ROMAgent, CONFIG } from './index.js';
 import { BedrockAgent } from './modules/bedrock.js';
 import partnersBranding from '../lib/partners-branding.js';
@@ -211,13 +212,9 @@ app.use(timeoutHandler.sloMetrics);
 // Request Logger (logs estruturados)
 app.use(requestLogger);
 
-// Sessões para histórico
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'rom-secret-key-change-in-production',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 7 dias
-}));
+// Sessões persistentes (PostgreSQL-backed com fallback para memória)
+app.use(createSessionMiddleware());
+app.use(sessionEnhancerMiddleware);
 
 // Rate Limiter Geral (100 requisições/hora por IP)
 app.use('/api/', generalLimiter);
@@ -8647,6 +8644,24 @@ logger.info('✅ PR#2 Observability endpoints configured');
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
+  // Inicializar banco de dados (PostgreSQL + Redis)
+  logger.info('Inicializando banco de dados...');
+  initPostgres();
+  initRedis();
+
+  const dbHealth = await checkDatabaseHealth();
+  if (dbHealth.postgres.available) {
+    logger.info('✅ PostgreSQL conectado', { latency: dbHealth.postgres.latency + 'ms' });
+  } else {
+    logger.warn('⚠️  PostgreSQL INDISPONÍVEL - dados serão perdidos em redeploy!');
+  }
+
+  if (dbHealth.redis.available) {
+    logger.info('✅ Redis conectado', { latency: dbHealth.redis.latency + 'ms' });
+  } else {
+    logger.warn('⚠️  Redis INDISPONÍVEL - sessões serão efêmeras!');
+  }
+
   // Configurar armazenamento persistente
   logger.info('Configurando armazenamento persistente...');
   ensureStorageStructure();
@@ -8953,5 +8968,21 @@ Acesse: https://iarom.com.br/kb-documents.html
   // Pré-carregar modelos
   await preloadModelos();
 });
+
+// ============================================================================
+// GRACEFUL SHUTDOWN - Fechar conexões de banco ao encerrar
+// ============================================================================
+async function gracefulShutdown(signal) {
+  logger.info(`${signal} recebido - encerrando gracefully...`);
+
+  // Fechar conexões de banco de dados
+  await closeDatabaseConnections();
+
+  logger.info('Shutdown completo');
+  process.exit(0);
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 export default app;
