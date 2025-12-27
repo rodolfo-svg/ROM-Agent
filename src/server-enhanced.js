@@ -28,6 +28,7 @@ import dotenv from 'dotenv';
 import compression from 'compression';
 import logger, { requestLogger as legacyRequestLogger, logAIOperation, logKBOperation } from '../lib/logger.js';
 import { requestLogger } from './middleware/request-logger.js';
+import timeoutHandler from './middleware/timeout-handler.js';
 import { generalLimiter, chatLimiter, uploadLimiter, authLimiter, searchLimiter } from '../lib/rate-limiter.js';
 import contextManager from './utils/context-manager.js';
 import semanticSearch from '../lib/semantic-search.js';
@@ -201,6 +202,11 @@ app.use(compression({
   level: 6, // Nível de compressão (0-9)
   threshold: 1024 // Comprimir apenas responses > 1KB
 }));
+
+// SLO/Timeout Middlewares (aplicar ANTES de logs para capturar timeouts)
+app.use(timeoutHandler.timeout);
+app.use(timeoutHandler.abortSignal);
+app.use(timeoutHandler.sloMetrics);
 
 // Request Logger (logs estruturados)
 app.use(requestLogger);
