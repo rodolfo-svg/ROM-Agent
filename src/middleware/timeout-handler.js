@@ -6,7 +6,7 @@
  */
 
 import { SLO_CONFIG, getTimeout } from '../config/slo.js';
-import { structuredLogger } from '../utils/logger.js';
+import logger from '../../lib/logger.js';
 
 /**
  * Classifica rota baseado no path
@@ -50,7 +50,7 @@ export function timeoutMiddleware(req, res, next) {
       const elapsed = Date.now() - req._startTime;
 
       // Log structured
-      structuredLogger.warn('Request timeout', {
+      logger.warn('Request timeout', {
         path: req.path,
         method: req.method,
         routeType,
@@ -84,7 +84,7 @@ export function timeoutMiddleware(req, res, next) {
     // Log se excedeu SLO
     const sloTarget = SLO_CONFIG.sli.latencyP95.target;
     if (latency > sloTarget) {
-      structuredLogger.warn('SLO latency exceeded', {
+      logger.warn('SLO latency exceeded', {
         path: req.path,
         method: req.method,
         routeType,
@@ -157,7 +157,7 @@ export function sloMetricsMiddleware(req, res, next) {
         // SLO compliance
         const withinSLO = latency <= SLO_CONFIG.sli.latencyP95.target;
         if (!withinSLO) {
-          structuredLogger.debug('SLO miss', {
+          logger.debug('SLO miss', {
             path: req.path,
             latency,
             target: SLO_CONFIG.sli.latencyP95.target
