@@ -246,6 +246,14 @@ class AntiRollbackTests {
     });
   }
 
+  async testAnalyticsQuality() {
+    await this.test('Analytics Quality API', async () => {
+      const res = await this.request('GET', '/api/dashboard/quality');
+      this.assertStatus(res, 200);
+      this.assertHasProperty(res.data, 'quality');
+    });
+  }
+
   /**
    * Executa todos os testes
    */
@@ -275,6 +283,7 @@ class AntiRollbackTests {
     console.log(`\n${YELLOW}[5/5] Testando Analytics APIs...${RESET}`);
     await this.testAnalyticsDashboard();
     await this.testAnalyticsUsage();
+    await this.testAnalyticsQuality();
     await this.testStatsGeneral();
 
     this.printSummary();
