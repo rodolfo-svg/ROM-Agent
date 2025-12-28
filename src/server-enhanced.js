@@ -56,6 +56,8 @@ import autoPipelineService from './services/auto-pipeline-service.js';
 import { DocumentDeduplicator } from '../lib/document-deduplicator.js';
 import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
+import authRoutes from './routes/auth.js';
+import { requireAuth } from './middleware/auth.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 import featureFlagsLegacy from '../lib/feature-flags.js';
 import featureFlags from './utils/feature-flags.js';
@@ -205,6 +207,40 @@ app.set('trust proxy', true);
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
+
+// Middleware para proteger páginas HTML (redirecionar para login)
+app.use((req, res, next) => {
+  // Lista de páginas públicas (não requerem autenticação)
+  const publicPages = [
+    '/login.html',
+    '/offline.html',
+    '/manifest.json',
+    '/service-worker.js'
+  ];
+
+  // Permitir acesso a assets (CSS, JS, imagens, fontes)
+  const isAsset = req.path.match(/\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i);
+
+  // Se é asset ou página pública, permitir
+  if (isAsset || publicPages.includes(req.path)) {
+    return next();
+  }
+
+  // Se é página HTML (ou raiz), verificar autenticação
+  const isHtmlPage = req.path === '/' || req.path.endsWith('.html');
+
+  if (isHtmlPage) {
+    // Verificar se usuário está autenticado
+    if (!req.session || !req.session.user || !req.session.user.id) {
+      // Não autenticado, redirecionar para login
+      return res.redirect('/login.html');
+    }
+  }
+
+  // Usuário autenticado ou não é página HTML, continuar
+  next();
+});
+
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Compression (Gzip/Brotli) - comprimir responses > 1KB
@@ -241,6 +277,9 @@ app.use('/api', storageRoutes);
 app.use('/api', schedulerRoutes);
 app.use('/api', partnerSettingsRoutes);
 app.use('/api/rom-project', romProjectRouter);
+
+// Rotas de Autenticação (login/logout)
+app.use('/api/auth', authRoutes);
 
 // Rotas de Processamento de Casos (Extração + 5 Layers)
 app.use('/api/case-processor', caseProcessorRouter);
