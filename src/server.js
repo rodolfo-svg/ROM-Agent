@@ -27,6 +27,10 @@ import featureFlags from './utils/feature-flags.js';
 import { requestLogger } from './middleware/request-logger.js';
 import metricsCollector from './utils/metrics-collector-v2.js';
 
+// Authentication imports
+import { createSessionMiddleware, sessionEnhancerMiddleware } from './config/session-store.js';
+import authRoutes from './routes/auth.js';
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -35,10 +39,19 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
-app.use(express.static(path.join(__dirname, '../public')));
 
 // Observability middleware (traceId, requestId)
 app.use(requestLogger);
+
+// Session middleware (MUST come before routes)
+app.use(createSessionMiddleware());
+app.use(sessionEnhancerMiddleware);
+
+// Authentication routes
+app.use('/api/auth', authRoutes);
+
+// Serve static files (login.html, index.html, etc.)
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Rotas de Projects e Code Execution
 app.use('/api', projectsRouter);
