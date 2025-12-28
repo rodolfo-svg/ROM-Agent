@@ -478,37 +478,27 @@
         const loginBtn = document.getElementById('loginBtn');
         const alert = document.getElementById('alert');
 
-        // Check if already logged in
+        // Check if already logged in (usando sessão)
         window.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('accessToken');
-            if (token) {
-                // Verify token is still valid
-                verifyToken(token);
-            }
+            checkSession();
         });
 
-        async function verifyToken(token) {
+        async function checkSession() {
             try {
-                const response = await fetch('/api/auth/status', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
+                const response = await fetch('/api/auth/check', {
+                    credentials: 'include' // Importante: envia cookies
                 });
 
                 if (response.ok) {
                     const data = await response.json();
                     if (data.authenticated) {
-                        // Token is valid, redirect to app
+                        // Usuário já está logado, redirecionar
                         window.location.href = '/index.html';
                         return;
                     }
                 }
-
-                // Token invalid, remove it
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
             } catch (error) {
-                console.error('Error verifying token:', error);
+                console.error('Error checking session:', error);
             }
         }
 
@@ -541,21 +531,15 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
+                    credentials: 'include', // Importante: envia e recebe cookies de sessão
                     body: JSON.stringify({ email, password })
                 });
 
                 const data = await response.json();
 
                 if (response.ok && data.success) {
-                    // Save tokens
-                    localStorage.setItem('accessToken', data.accessToken);
-                    localStorage.setItem('refreshToken', data.refreshToken);
-
-                    if (rememberMe) {
-                        localStorage.setItem('rememberMe', 'true');
-                    }
-
-                    // Save user info
+                    // Sessão é criada automaticamente via cookies
+                    // Apenas salvamos info do usuário para exibição
                     localStorage.setItem('user', JSON.stringify(data.user));
 
                     showAlert('Login realizado com sucesso! Redirecionando...', 'success');
