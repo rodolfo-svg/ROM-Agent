@@ -8575,6 +8575,58 @@ app.get('/health', async (req, res) => {
   });
 });
 
+// DATABASE DIAGNOSTIC ENDPOINT - exposes exact connection error
+app.get('/api/db-diagnose', async (req, res) => {
+  const diagnostic = {
+    timestamp: new Date().toISOString(),
+    environment: {
+      NODE_ENV: process.env.NODE_ENV,
+      DATABASE_URL_EXISTS: !!process.env.DATABASE_URL,
+      DATABASE_URL_LENGTH: process.env.DATABASE_URL ? process.env.DATABASE_URL.length : 0,
+      DATABASE_URL_PREFIX: process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 20) + '...' : 'NOT SET'
+    },
+    connectionTest: null,
+    error: null
+  };
+
+  // Try to connect fresh
+  try {
+    const pg = (await import('pg')).default;
+    const testClient = new pg.Client({
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
+      connectionTimeoutMillis: 10000
+    });
+
+    const startTime = Date.now();
+    await testClient.connect();
+    const latency = Date.now() - startTime;
+    await testClient.query('SELECT NOW()');
+    await testClient.end();
+
+    diagnostic.connectionTest = {
+      success: true,
+      latency: `${latency}ms`,
+      message: 'PostgreSQL conectado com sucesso!'
+    };
+  } catch (error) {
+    diagnostic.error = {
+      message: error.message,
+      code: error.code,
+      stack: error.stack,
+      errno: error.errno,
+      syscall: error.syscall,
+      hostname: error.hostname
+    };
+    diagnostic.connectionTest = {
+      success: false,
+      message: 'Falha ao conectar PostgreSQL'
+    };
+  }
+
+  res.json(diagnostic);
+});
+
 // Metrics endpoint (Prometheus format)
 app.get('/metrics', async (req, res) => {
   try {
