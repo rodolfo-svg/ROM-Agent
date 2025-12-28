@@ -7,7 +7,7 @@
  */
 
 import { logger } from './logger.js';
-import metricsCollector from './metrics-collector.js';
+import metricsCollector from './metrics-collector-v2.js';
 
 function classifyFallbackReason(err) {
   const name = (err && err.name) ? String(err.name) : "Error";
@@ -119,8 +119,6 @@ export function getFallbackModel(currentModelId) {
     quality: fallbackModel.quality
   });
 
-  metricsCollector.incrementModelFallback(currentModelId, fallbackModel.modelId);
-
   return fallbackModel;
 }
 
@@ -184,8 +182,6 @@ export async function executeWithFallback(fn, initialModelId, context = {}) {
           failedModels: errors.map(e => e.model),
           operation: context.operation
         });
-
-        metricsCollector.incrementModelFallbackSuccess(currentModelId);
       }
 
       return {
