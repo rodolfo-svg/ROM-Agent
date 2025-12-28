@@ -208,6 +208,11 @@ app.set('trust proxy', true);
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 
+// Sessões persistentes (PostgreSQL-backed com fallback para memória)
+// IMPORTANTE: Deve vir ANTES de qualquer middleware que use req.session
+app.use(createSessionMiddleware());
+app.use(sessionEnhancerMiddleware);
+
 // Middleware para proteger páginas HTML (redirecionar para login)
 app.use((req, res, next) => {
   // Lista de páginas públicas (não requerem autenticação)
@@ -262,10 +267,6 @@ app.use(timeoutHandler.sloMetrics);
 
 // Request Logger (logs estruturados)
 app.use(requestLogger);
-
-// Sessões persistentes (PostgreSQL-backed com fallback para memória)
-app.use(createSessionMiddleware());
-app.use(sessionEnhancerMiddleware);
 
 // Rate Limiter Geral (100 requisições/hora por IP)
 app.use('/api/', generalLimiter);
