@@ -1,139 +1,659 @@
 {
-  "timestamp": "2025-12-19T05:00:03.421Z",
+  "timestamp": "2025-12-29T23:02:32.885Z",
   "summary": {
-    "total": 16,
-    "passed": 0,
-    "failed": 16,
-    "successRate": 0
+    "total": 18,
+    "passed": 14,
+    "failed": 4,
+    "successRate": 77.8
   },
   "results": [
     {
       "name": "1.1 Health Check",
       "url": "http://localhost:3000/api/info",
-      "status": 0,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "error": ""
+      "passed": true,
+      "duration": 499,
+      "data": {
+        "nome": "ROM",
+        "versao": "2.4.19",
+        "version": "2.4.19",
+        "capacidades": [
+          "Redação de peças jurídicas (cíveis, criminais, trabalhistas, etc)",
+          "Pesquisa de legislação nacional e internacional",
+          "Consulta de jurisprudência em todos os tribunais",
+          "Análise e extração de processos judiciais",
+          "Correção ortográfica e gramatical",
+          "Formatação profissional com papel timbrado",
+          "Criação de tabelas, fluxogramas e linhas do tempo",
+          "Busca de artigos científicos jurídicos"
+        ],
+        "health": {
+          "status": "healthy",
+          "uptime": "0h 39m",
+          "uptimeSeconds": 2379
+        },
+        "bedrock": {
+          "status": "connected",
+          "region": "us-east-1",
+          "credentials": {
+            "hasAccessKeyId": true,
+            "hasSecretAccessKey": true,
+            "hasRegion": true
+          }
+        },
+        "cache": {
+          "enabled": true,
+          "activeSessions": 0
+        },
+        "server": {
+          "nodeVersion": "v25.2.1",
+          "platform": "darwin",
+          "arch": "arm64",
+          "pid": 28429,
+          "gitCommit": "198c1ebd"
+        },
+        "memory": {
+          "rss": "57 MB",
+          "heapTotal": "154 MB",
+          "heapUsed": "151 MB",
+          "external": "22 MB"
+        },
+        "storage": {
+          "isRender": false,
+          "hasRenderEnv": false,
+          "renderServiceName": "not set",
+          "uploadFolder": "not set",
+          "extractedFolder": "not set",
+          "processedFolder": "not set",
+          "varDataExists": false,
+          "varDataIsDir": false,
+          "varDataPermissions": null,
+          "varDataError": null,
+          "varExists": true,
+          "varContents": [
+            "OOPJit",
+            "agentx",
+            "at",
+            "audit",
+            "backups",
+            "boot",
+            "containers",
+            "db",
+            "dextcores",
+            "dirs_cleaner",
+            "empty",
+            "folders",
+            "install",
+            "jabberd",
+            "lib",
+            "log",
+            "logs",
+            "ma",
+            "mail",
+            "msgs",
+            "netboot",
+            "networkd",
+            "personalized_factory",
+            "protected",
+            "root",
+            "rpc",
+            "run",
+            "select",
+            "sntpd",
+            "spool",
+            "tmp",
+            "vm",
+            "yp"
+          ],
+          "varError": null,
+          "activePaths": {
+            "upload": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/upload",
+            "extracted": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/extracted",
+            "processed": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/processed"
+          }
+        },
+        "timestamp": "2025-12-29T23:02:29.924Z"
+      }
     },
     {
       "name": "1.2 Estatísticas",
       "url": "http://localhost:3000/api/stats",
-      "status": 0,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "error": ""
+      "passed": true,
+      "duration": 41,
+      "data": {
+        "success": true,
+        "conversations": {
+          "total": 14,
+          "totalMessages": 18
+        },
+        "cache": {
+          "activeSessions": 0,
+          "hitRate": 0
+        },
+        "kb": {
+          "totalDocuments": 0
+        },
+        "performance": {
+          "averageResponseTime": 3,
+          "unit": "seconds"
+        },
+        "timestamp": "2025-12-29T23:02:29.960Z"
+      }
     },
     {
       "name": "2.1 Listar Conversas Organizadas",
       "url": "http://localhost:3000/api/conversations/organized",
-      "status": 0,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "error": ""
+      "passed": true,
+      "duration": 59,
+      "data": {
+        "success": true,
+        "organized": {
+          "today": [
+            {
+              "id": "conv_1767046749203_zo9j7g",
+              "userId": "anonymous",
+              "sessionId": "wK3YW8SqtFLQYSM-LLtChAu5ic_82Dev",
+              "projectId": null,
+              "title": "Nova Conversa",
+              "titleGenerated": false,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "Busque 2 decisões do STJ sobre sanabilidade. Use ferramentas de busca disponíveis.",
+                  "timestamp": "2025-12-29T22:19:09.206Z"
+                }
+              ],
+              "createdAt": "2025-12-29T22:19:09.203Z",
+              "updatedAt": "2025-12-29T22:19:09.206Z",
+              "messageCount": 1
+            }
+          ],
+          "yesterday": [],
+          "lastWeek": [],
+          "lastMonth": [
+            {
+              "id": "conv_1765876057674_1p1vbg",
+              "userId": "anonymous",
+              "sessionId": "a_GOwLlczw59w8DDgUQHj288fxF2HEl0",
+              "projectId": "teste",
+              "title": "Nova Conversa",
+              "titleGenerated": false,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "teste",
+                  "timestamp": "2025-12-16T09:07:37.675Z"
+                }
+              ],
+              "createdAt": "2025-12-16T09:07:37.674Z",
+              "updatedAt": "2025-12-16T09:07:37.675Z",
+              "messageCount": 1
+            },
+            {
+              "id": "conv_1765745711815_4xzr44",
+              "userId": "anonymous",
+              "sessionId": "ZXsWs0GUZSBLpgs_EhAnqz06K4Pl7cH_",
+              "projectId": null,
+              "title": "Teste Renomeado - Automatizado",
+              "titleGenerated": false,
+              "messages": [],
+              "createdAt": "2025-12-14T20:55:11.815Z",
+              "updatedAt": "2025-12-14T21:37:47.024Z",
+              "messageCount": 0
+            },
+            {
+              "id": "conv_1765748267019_flqywa",
+              "userId": "anonymous",
+              "sessionId": "5HFznQYj5Q19UKwsfvTNHrLVtrKxFzyC",
+              "projectId": null,
+              "title": "Nova Conversa",
+              "titleGenerated": false,
+              "messages": [],
+              "createdAt": "2025-12-14T21:37:47.019Z",
+              "updatedAt": "2025-12-14T21:37:47.019Z",
+              "messageCount": 0
+            },
+            {
+              "id": "conv_1765748260554_cdavnh",
+              "userId": "anonymous",
+              "sessionId": "fYttdgNnf0WnRGcJbUeujUyHPhNGXnQ4",
+              "projectId": null,
+              "title": "Teste automatizado - Sistema funcional",
+              "titleGenerated": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "Teste automatizado - Sistema funcional",
+                  "timestamp": "2025-12-14T21:37:40.555Z"
+                },
+                {
+                  "role": "assistant",
+                  "content": "**Teste Automatizado - Sistema Funcional**\n\n**Direito brasileiro**\n\n**1. Introdução**\n\nO presente documento visa abordar os aspectos legais relacionados ao sistema funcional e sua relação com a legislação trabalhista no Brasil. Vamos explorar os direitos e deveres dos funcionários, a regulamentação da jornada de trabalho, as condições de trabalho, a segurança no trabalho, e outros aspectos pertinentes.\n\n**2. Direitos e Deveres dos Funcionários**\n\nSegundo a Constituição Federal do Brasil (CF), o trabalho é um direito fundamental e deve ser regido por leis específicas. O artigo 7º da CF estabelece os direitos dos trabalhadores, incluindo:\n\n- **Salário mínimo**: O salário deve ser fixado de forma a assegurar uma remuneração justa e suficiente para atender às necessidades do trabalhador e sua família.\n- **Sindicalização**: O direito de os trabalhadores se sindicalizarem e participarem de sindicatos.\n- **Segurança no trabalho**: O empregador deve garantir condições seguras e saudáveis de trabalho.\n\n**3. Jornada de Trabalho**\n\nA jornada de trabalho é regulada pela Consolidação das Leis do Trabalho (CLT), Lei nº 3.288/1943. A jornada padrão de trabalho é de 44 horas semanais, distribuídas em 8 horas diárias, com 1 hora de intervalo para repouso e alimentação. No entanto, existem exceções e possibilidades de modulação da jornada, conforme previsto na CLT.\n\n**4. Condições de Trabalho**\n\nA CLT estabelece diversas normas sobre as condições de trabalho, incluindo:\n\n- **Repouso semanal remunerado**: O trabalhador tem direito a um dia de descanso remunerado por semana.\n- **Horas extras**: O pagamento de horas extras é obrigatório para horas trabalhadas além das 8 horas diárias ou 44 horas semanais.\n- **Banco de horas**: O trabalhador pode compensar horas extras trabalhadas com horas de folga, desde que haja acordo coletivo ou individual.\n\n**5. Segurança e Medicina do Trabalho**\n\nO empregador deve cumprir diversas obrigações para garantir a segurança e saúde dos trabalhadores, conforme previsto na Norma Regulamentadora (NR) 1, que trata da segurança e saúde no trabalho, e na NR 7, que trata do Programa de Prevenção de Riscos Ambientais (PPRA).\n\n**6. Demissão e Férias**\n\nAs regras para demissão e férias também são estabelecidas na CLT. A demissão pode ser justa ou injusta, e em ambos os casos, o empregador deve cumprir determinadas obrigações. As férias devem ser concedidas anualmente e devem ser remuneradas, com um terço a mais do que o salário normal.\n\n**7. Conclusão**\n\nO sistema funcional brasileiro é regido por uma série de leis e normas que visam proteger os direitos dos trabalhadores e garantir condições de trabalho seguras e dignas. É fundamental que tanto empregadores quanto empregados estejam cientes e em conformidade com essas leis para garantir um ambiente de trabalho justo e saudável.\n\n---\n\n**Referências Legislativas:**\n\n- **Constituição Federal do Brasil (CF)**\n- **Consolidação das Leis do Trabalho (CLT) - Lei nº 3.288/1943**\n- **Norma Regulamentadora (NR) 1 e NR 7**\n\n---\n\nEste documento é apenas uma visão geral e não substitui a consulta a um advogado especializado em Direito Trabalhista para casos específicos.",
+                  "timestamp": "2025-12-14T21:37:47.014Z"
+                }
+              ],
+              "createdAt": "2025-12-14T21:37:40.554Z",
+              "updatedAt": "2025-12-14T21:37:47.014Z",
+              "messageCount": 2
+            },
+            {
+              "id": "conv_1765747898723_ynohnne",
+              "userId": "anonymous",
+              "sessionId": "C8lwzWCqJKZFLClo0zpMw0Q730Gq0Fj5",
+              "projectId": null,
+              "title": "Nova Conversa",
+              "titleGenerated": false,
+              "messages": [],
+              "createdAt": "2025-12-14T21:31:38.723Z",
+              "updatedAt": "2025-12-14T21:31:38.723Z",
+              "messageCount": 0
+            },
+            {
+              "id": "conv_1765747892251_s4sow",
+              "userId": "anonymous",
+              "sessionId": "hU-1KRwb1eGl7yOW2WXvgNwQT0AetPi8",
+              "projectId": null,
+              "title": "Teste automatizado - Sistema funcional",
+              "titleGenerated": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "Teste automatizado - Sistema funcional",
+                  "timestamp": "2025-12-14T21:31:32.251Z"
+                },
+                {
+                  "role": "assistant",
+                  "content": "Claro, vamos abordar o tema do \"Sistema funcional\" sob a perspectiva do Direito brasileiro. O Sistema funcional pode se referir a diferentes contextos, como o funcionalismo público, sistemas de gestão de recursos humanos, ou até mesmo sistemas técnicos administrativos. \n\n### 1. Funcionismo Público\n\nNo contexto do Direito Administrativo Brasileiro, o \"Sistema funcional\" frequentemente se refere ao **funcionamento do serviço público** e da **administração pública**, incluindo:\n\n#### **Estrutura Organizacional**\n\n- **Poder Executivo**: Inclui órgãos e entidades que executam políticas públicas. Ex: Ministérios, Secretarias, Agências.\n- **Poder Legislativo**: Inclui órgãos que elaboram leis. Ex: Câmara dos Deputados, Senado Federal.\n- **Poder Judiciário**: Inclui órgãos que aplicam a lei. Ex: Tribunais, Juízes.\n\n#### **Princípios Fundamentais**\n\n- **Legalidade**: As ações da Administração devem estar fundamentadas em lei.\n- **Impessoalidade**: A Administração deve tratar os cidadãos de maneira igualitária.\n- **Moralidade**: A Administração deve agir conforme os princípios éticos e morais.\n- **Publicidade**: As ações administrativas devem ser transparentes.\n- **Eficiência**: A Administração deve buscar a eficácia e a eficiência em suas atividades.\n\n#### **Regime Jurídico**\n\n- **Estatutários**: Os servidores públicos estão regidos por Estatutos específicos (Ex: Estatuto dos Servidores Públicos Civis do Poder Executivo Federal).\n- **Provimento e Remoção**: O acesso ao serviço público e a remoção dos cargos são regidos por processos administrativos.\n- **Direitos e Deveres**: Os servidores têm direitos (ex: estabilidade, aposentadoria) e deveres (ex: fidelidade, probidade).\n\n#### **Carreiras Públicas**\n\n- **Carreiras Técnicas e Especializadas**: Exigem cursos de formação específicos.\n- **Carreiras de Estado**: Exigem concurso público para ingresso e promoção.\n\n### 2. Sistemas de Gestão de Recursos Humanos\n\nNo contexto empresarial, o \"Sistema funcional\" pode se referir a sistemas de **gestão de recursos humanos (GRH)** ou **sistemas de gestão de pessoal**.\n\n#### **Componentes Principais**\n\n- **Registro de Tempo e Ponto**: Controle de jornada de trabalho.\n- **Folha de Pagamento**: Cálculo e pagamento de salários.\n- **Gerenciamento de Benefícios**: Administração de benefícios como seguro saúde, planos de previdência, etc.\n- **Gestão de Desempenho**: Avaliação de desempenho dos funcionários.\n- **Recursos Humanos**: Recrutamento, seleção, treinamento, desenvolvimento.\n\n### 3. Sistemas Técnicos Administrativos\n\nNo âmbito técnico, pode se referir a sistemas de TI que gerenciam processos administrativos.\n\n#### **Componentes Principais**\n\n- **Sistemas de Gestão de Documentos (SGD)**: Gerenciamento de documentos físicos e digitais.\n- **Sistemas de Gestão de Processos (SGP)**: Automação de processos administrativos.\n- **Sistemas de Gestão de RH (HRIS)**: Recursos Humanos integrados a sistemas de TI.\n\n### **Legislação Relevante**\n\n- **Constituição Federal (CF/88)**: Art. 37 e seguintes.\n- **Lei de Responsabilidade Fiscal (LRF)**: Lei Complementar nº 101/2000.\n- **Lei de Improbidade Administrativa**: Lei nº 8.429/1992.\n- **Estatuto dos Funcionários Públicos Civis do Estado**: Varia conforme a unidade federativa.\n\n### **Conclusão**\n\nO \"Sistema funcional\" é uma área vasta e multifacetada no Direito brasileiro, abrangendo desde o funcionamento da administração pública até sistemas de gestão empresarial. Cada uma dessas áreas tem suas especificidades e é regida por legislação específica. \n\nSe você precisa de informações mais detalhadas ou específicas sobre um dos tópicos mencionados, sinta-se à vontade para perguntar!",
+                  "timestamp": "2025-12-14T21:31:38.719Z"
+                }
+              ],
+              "createdAt": "2025-12-14T21:31:32.251Z",
+              "updatedAt": "2025-12-14T21:31:38.719Z",
+              "messageCount": 2
+            },
+            {
+              "id": "conv_1765745710930_l6w8d",
+              "userId": "anonymous",
+              "sessionId": "lR4wADlg8hKIYX5sXhBe42bj26JuGWk0",
+              "projectId": null,
+              "title": "Teste Automático - Renomeado",
+              "titleGenerated": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "Teste de sistema - responda apenas com OK",
+                  "timestamp": "2025-12-14T20:55:10.931Z"
+                },
+                {
+                  "role": "assistant",
+                  "content": "OK",
+                  "timestamp": "2025-12-14T20:55:11.806Z"
+                }
+              ],
+              "createdAt": "2025-12-14T20:55:10.930Z",
+              "updatedAt": "2025-12-14T20:55:11.813Z",
+              "messageCount": 2
+            },
+            {
+              "id": "conv_1765743425235_bs7q26",
+              "userId": "anonymous",
+              "sessionId": "k0nQE7sd5t0aBUOmAJ6TNg74zAZIehMP",
+              "projectId": null,
+              "title": "Teste Automático - Renomeado",
+              "titleGenerated": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "Teste de sistema - responda apenas com OK",
+                  "timestamp": "2025-12-14T20:17:05.235Z"
+                },
+                {
+                  "role": "assistant",
+                  "content": "OK. O teste do sistema foi concluído com sucesso. Estou à disposição para qualquer consulta ou informação que você precise.",
+                  "timestamp": "2025-12-14T20:17:06.193Z"
+                }
+              ],
+              "createdAt": "2025-12-14T20:17:05.235Z",
+              "updatedAt": "2025-12-14T20:17:06.200Z",
+              "messageCount": 2
+            },
+            {
+              "id": "conv_1765738339617_d9g61c",
+              "userId": "anonymous",
+              "sessionId": "JtlZzY2XKZBc4JtK2QODGLdVkO_RzB1j",
+              "projectId": null,
+              "title": "teste rápido",
+              "titleGenerated": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "teste rápido",
+                  "timestamp": "2025-12-14T18:52:19.618Z"
+                },
+                {
+                  "role": "assistant",
+                  "content": "Olá! Parece que você está interessado em testar minhas habilidades como ROM Agent, um assistente jurídico especializado em Direito brasileiro. Estou aqui para ajudar com qualquer dúvida ou questão legal que você possa ter.\n\nPara começarmos, aqui está um teste rápido que pode demonstrar minha capacidade de fornecer informações e orientação jurídica:\n\n**Questão Jurídica:**\nEm um caso de indenização por dano moral, quais são os principais critérios que o juiz considera para determinar o valor da indenização?\n\n**Resposta:**\nNo Direito brasileiro, quando o juiz determina o valor da indenização por dano moral, ele considera os seguintes critérios principais:\n\n1. **A gravidade do dano sofrido:** A intensidade da ofensa e a extensão do sofrimento causado à vítima.\n2. **A culpa do agente causador do dano:** O grau de responsabilidade ou negligência do réu.\n3. **A situação econômica do réu:** A capacidade financeira do réu para arcar com a indenização.\n4. **O comportamento da vítima após o evento:** Se a vítima demonstrou algum comportamento que pudesse ter contribuído para a situação.\n5. **Eventuais consequências do dano:** Efeitos duradouros ou permanentes sobre a vítima, como sequelas psicológicas.\n\nEsses critérios são analisados de forma equilibrada, e o valor da indenização pode variar significativamente dependendo das circunstâncias específicas do caso.\n\nSe você tiver mais perguntas ou precisar de uma análise mais detalhada de algum tópico jurídico, sinta-se à vontade para perguntar!",
+                  "timestamp": "2025-12-14T18:52:22.619Z"
+                }
+              ],
+              "createdAt": "2025-12-14T18:52:19.617Z",
+              "updatedAt": "2025-12-14T18:52:22.619Z",
+              "messageCount": 2
+            },
+            {
+              "id": "conv_1765736277531_izdejk",
+              "userId": "anonymous",
+              "sessionId": "mki5GKtHHYsoJ7CPTrmBA1__e94E3mVi",
+              "projectId": null,
+              "title": "teste rápido",
+              "titleGenerated": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "teste rápido",
+                  "timestamp": "2025-12-14T18:17:57.532Z"
+                },
+                {
+                  "role": "assistant",
+                  "content": "Claro! Vamos fazer um pequeno teste rápido sobre Direito brasileiro para verificar seu conhecimento. Aqui estão algumas perguntas:\n\n### Perguntas\n\n1. **Qual é a norma fundamental do Brasil?**\n   - a) Código Civil\n   - b) Constituição Federal\n   - c) Código Penal\n   - d) Código de Processo Civil\n\n2. **Qual é o órgão máximo do Poder Judiciário no Brasil?**\n   - a) Supremo Tribunal Federal (STF)\n   - b) Superior Tribunal de Justiça (STJ)\n   - c) Tribunal Superior do Trabalho (TST)\n   - d) Tribunal de Justiça do Estado\n\n3. **O que significa a expressão \"nullum crimen, nulla poena sine praevia lege scripta\"?**\n   - a) Nenhuma pena sem culpa\n   - b) Nenhuma pena sem julgamento prévio\n   - c) Nenhum crime ou pena sem lei prévia escrita\n   - d) Nenhuma pena sem crime\n\n4. **Qual é o princípio constitucional que garante a todos o direito de peticionar aos Poderes Públicos em defesa de direitos ou contra ilegalidade ou abuso de poder?**\n   - a) Princípio da Legalidade\n   - b) Princípio do Direito de Petição\n   - c) Princípio da Isonomia\n   - d) Princípio da Moralidade\n\n5. **Qual é a função do Ministério Público?**\n   - a) Defender os réus em processos criminais\n   - b) Representar o Estado em juízo\n   - c) Defender os interesses privados em juízo\n   - d) Promover o respeito aos direitos constitucionais e legais, zelar pelo efetivo respeito dos Poderes Públicos e dos serviços de relevância pública\n\n### Respostas\n\n1. **b) Constituição Federal**\n2. **a) Supremo Tribunal Federal (STF)**\n3. **c) Nenhum crime ou pena sem lei prévia escrita**\n4. **b) Princípio do Direito de Petição**\n5. **d) Promover o respeito aos direitos constitucionais e legais, zelar pelo efetivo respeito dos Poderes Públicos e dos serviços de relevância pública**\n\nEspero que tenha gostado do teste! Se tiver mais dúvidas ou quiser aprofundar em algum tópico específico, estou à disposição.",
+                  "timestamp": "2025-12-14T18:18:03.765Z"
+                }
+              ],
+              "createdAt": "2025-12-14T18:17:57.531Z",
+              "updatedAt": "2025-12-14T18:18:03.765Z",
+              "messageCount": 2
+            },
+            {
+              "id": "conv_1765735835556_4mp24a",
+              "userId": "anonymous",
+              "sessionId": "HtUQKo-RdMEXiGyjgz1Tib6dPgtrlZVw",
+              "projectId": null,
+              "title": "Olá, teste rápido do ROM Agent",
+              "titleGenerated": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "Olá, teste rápido do ROM Agent",
+                  "timestamp": "2025-12-14T18:10:35.556Z"
+                },
+                {
+                  "role": "assistant",
+                  "content": "Olá! Estou aqui para ajudar com questões relacionadas ao Direito brasileiro. Vamos fazer um teste rápido para ver como posso auxiliar. Sinta-se à vontade para fazer qualquer pergunta jurídica ou solicitar esclarecimentos sobre tópicos legais. Como prefere começar? Aqui estão algumas opções para iniciar:\n\n1. **Direito Constitucional**: Perguntas sobre a Constituição Federal, direitos fundamentais, etc.\n2. **Direito Civil**: Questões sobre contratos, responsabilidade civil, família, sucessões, etc.\n3. **Direito Penal**: Dúvidas sobre crimes, penas, processo penal, etc.\n4. **Direito Trabalhista**: Consultas sobre direitos trabalhistas, CLT, sindicatos, etc.\n5. **Direito Processual**: Questões sobre processo civil, processo penal, etc.\n6. **Direito Empresarial**: Dúvidas sobre sociedades empresariais, falências, recuperações judiciais, etc.\n7. **Direito Tributário**: Perguntas sobre impostos, contribuições, etc.\n8. **Direito Ambiental**: Consultas sobre legislação ambiental, crimes ambientais, etc.\n\nEscolha uma área ou faça uma pergunta específica!",
+                  "timestamp": "2025-12-14T18:10:38.736Z"
+                }
+              ],
+              "createdAt": "2025-12-14T18:10:35.556Z",
+              "updatedAt": "2025-12-14T18:10:38.736Z",
+              "messageCount": 2
+            },
+            {
+              "id": "conv_1765735531816_69rbr",
+              "userId": "anonymous",
+              "sessionId": "YTqQZdK8GhbZRoCMWozDBgpr5cv3tA9H",
+              "projectId": null,
+              "title": "Nova Conversa",
+              "titleGenerated": false,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "Olá ROM Agent, este é um teste do sistema de conversas",
+                  "timestamp": "2025-12-14T18:05:31.816Z"
+                }
+              ],
+              "createdAt": "2025-12-14T18:05:31.816Z",
+              "updatedAt": "2025-12-14T18:05:31.816Z",
+              "messageCount": 1
+            },
+            {
+              "id": "conv_1765735452215_yczf6",
+              "userId": "anonymous",
+              "sessionId": "H_CjFKujuwvPhWqKgG2Y_zKZ_xtwh6nI",
+              "projectId": null,
+              "title": "Nova Conversa",
+              "titleGenerated": false,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "Olá ROM Agent, teste rápido",
+                  "timestamp": "2025-12-14T18:04:12.216Z"
+                }
+              ],
+              "createdAt": "2025-12-14T18:04:12.215Z",
+              "updatedAt": "2025-12-14T18:04:12.216Z",
+              "messageCount": 1
+            }
+          ],
+          "older": []
+        }
+      }
     },
     {
       "name": "2.2 Enviar Mensagem ao Chat",
       "url": "http://localhost:3000/api/chat",
-      "status": 0,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "error": ""
+      "passed": true,
+      "duration": 2702,
+      "data": {
+        "response": "OK",
+        "conversationId": "conv_1767049350099_9n7mil",
+        "metadados": {},
+        "recomendacoes": [],
+        "verificacaoRealizada": false
+      }
+    },
+    {
+      "name": "2.3 Obter Conversa Específica",
+      "url": "http://localhost:3000/api/conversations/conv_1767049350099_9n7mil",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 12,
+      "data": {
+        "success": true,
+        "conversation": {
+          "id": "conv_1767049350099_9n7mil",
+          "userId": "anonymous",
+          "sessionId": "WoBf-NBDCf8LjApRJ3Y1Agsl_a9IhGpG",
+          "projectId": null,
+          "title": "Teste de sistema - responda apenas com OK",
+          "titleGenerated": true,
+          "messages": [
+            {
+              "role": "user",
+              "content": "Teste de sistema - responda apenas com OK",
+              "timestamp": "2025-12-29T23:02:30.104Z"
+            },
+            {
+              "role": "assistant",
+              "content": "OK",
+              "timestamp": "2025-12-29T23:02:32.731Z"
+            }
+          ],
+          "createdAt": "2025-12-29T23:02:30.099Z",
+          "updatedAt": "2025-12-29T23:02:32.731Z",
+          "messageCount": 2
+        }
+      }
+    },
+    {
+      "name": "2.4 Renomear Conversa",
+      "url": "http://localhost:3000/api/conversations/conv_1767049350099_9n7mil/rename",
+      "status": 200,
+      "expected": 200,
+      "passed": true,
+      "duration": 7,
+      "data": {
+        "success": true
+      }
     },
     {
       "name": "2.5 Criar Nova Conversa",
       "url": "http://localhost:3000/api/conversations",
-      "status": 0,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "error": ""
+      "passed": true,
+      "duration": 5,
+      "data": {
+        "success": true,
+        "conversationId": "conv_1767049352760_gmdz5q",
+        "conversation": {
+          "id": "conv_1767049352760_gmdz5q",
+          "userId": "anonymous",
+          "sessionId": "jrWioYGJX9cu_rCHy-ptEwIjp5wPUBYT",
+          "projectId": null,
+          "title": "Nova Conversa",
+          "titleGenerated": false,
+          "messages": [],
+          "createdAt": "2025-12-29T23:02:32.760Z",
+          "updatedAt": "2025-12-29T23:02:32.760Z",
+          "messageCount": 0
+        }
+      }
     },
     {
       "name": "3.1 Listar Documentos KB",
       "url": "http://localhost:3000/api/kb/documents",
-      "status": 0,
+      "status": 401,
       "expected": 200,
       "passed": false,
-      "error": ""
+      "duration": 4,
+      "data": {
+        "error": "Token não fornecido"
+      }
     },
     {
       "name": "3.2 Status KB",
       "url": "http://localhost:3000/api/kb/status",
-      "status": 0,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "error": ""
+      "passed": true,
+      "duration": 4,
+      "data": {
+        "success": true,
+        "status": "active",
+        "totalDocuments": 4,
+        "totalSize": 368,
+        "totalSizeFormatted": "0.00 MB",
+        "lastUpdate": "2025-12-29T21:26:36.604Z",
+        "kbPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/KB"
+      }
     },
     {
       "name": "4.1 Status de Autenticação",
       "url": "http://localhost:3000/api/auth/status",
-      "status": 0,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "error": ""
+      "passed": true,
+      "duration": 14,
+      "data": {
+        "authenticated": false,
+        "username": null,
+        "partnerId": "rom"
+      }
     },
     {
       "name": "4.2 Login",
       "url": "http://localhost:3000/api/auth/login",
-      "status": 0,
+      "status": 503,
       "expected": 200,
       "passed": false,
-      "error": ""
+      "duration": 4,
+      "data": {
+        "success": false,
+        "error": "Banco de dados temporariamente indisponível"
+      }
     },
     {
       "name": "5.1 Listar Projetos",
       "url": "http://localhost:3000/api/projects/list",
-      "status": 0,
+      "status": 404,
       "expected": 200,
       "passed": false,
-      "error": ""
+      "duration": 3,
+      "data": {
+        "error": "Projeto não encontrado",
+        "message": "Projeto não encontrado"
+      }
     },
     {
       "name": "6.1 Busca Semântica",
       "url": "http://localhost:3000/api/semantic-search",
-      "status": 0,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "error": ""
+      "passed": true,
+      "duration": 6,
+      "data": []
     },
     {
       "name": "6.2 Listar Templates",
       "url": "http://localhost:3000/api/templates/list",
-      "status": 0,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "error": ""
+      "passed": true,
+      "duration": 32,
+      "data": []
     },
     {
       "name": "6.3 Status de Backups",
       "url": "http://localhost:3000/api/backup/status",
-      "status": 0,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "error": ""
+      "passed": true,
+      "duration": 15,
+      "data": [
+        {
+          "filename": "backup-2025-12-18.zip",
+          "size": 214421,
+          "timestamp": "2025-12-23T18:37:20.979Z"
+        },
+        {
+          "filename": "backup-2025-12-14.zip",
+          "size": 117524,
+          "timestamp": "2025-12-14T06:05:41.369Z"
+        }
+      ]
     },
     {
       "name": "6.4 Estatísticas de Cache",
       "url": "http://localhost:3000/api/cache/statistics",
-      "status": 0,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "error": ""
+      "passed": true,
+      "duration": 11,
+      "data": {
+        "success": true,
+        "stats": {
+          "enabled": true,
+          "activeSessions": 1,
+          "totalAgents": 1,
+          "cacheType": "in-memory",
+          "ttl": "30min"
+        }
+      }
     },
     {
       "name": "7.1 Pesquisa de Jurisprudência (Mock)",
       "url": "http://localhost:3000/api/jurisprudencia/buscar",
-      "status": 0,
+      "status": 404,
       "expected": 404,
-      "passed": false,
-      "error": ""
+      "passed": true,
+      "duration": 19,
+      "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /api/jurisprudencia/buscar</pre>\n</body>\n</html>\n"
     },
     {
       "name": "8.1 Página Principal (HTML)",
       "url": "http://localhost:3000/",
-      "status": 0,
+      "status": 302,
       "expected": 200,
       "passed": false,
-      "error": ""
+      "duration": 8,
+      "data": "Found. Redirecting to /login.html"
     }
   ]
 }

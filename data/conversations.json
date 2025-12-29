@@ -249,5 +249,46 @@
     "createdAt": "2025-12-16T09:07:37.674Z",
     "updatedAt": "2025-12-16T09:07:37.675Z",
     "messageCount": 1
+  },
+  "conv_1767046749203_zo9j7g": {
+    "id": "conv_1767046749203_zo9j7g",
+    "userId": "anonymous",
+    "sessionId": "wK3YW8SqtFLQYSM-LLtChAu5ic_82Dev",
+    "projectId": null,
+    "title": "Nova Conversa",
+    "titleGenerated": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Busque 2 decisões do STJ sobre sanabilidade. Use ferramentas de busca disponíveis.",
+        "timestamp": "2025-12-29T22:19:09.206Z"
+      }
+    ],
+    "createdAt": "2025-12-29T22:19:09.203Z",
+    "updatedAt": "2025-12-29T22:19:09.206Z",
+    "messageCount": 1
+  },
+  "conv_1767049376125_cw0txr5": {
+    "id": "conv_1767049376125_cw0txr5",
+    "userId": "anonymous",
+    "sessionId": "XraXJNUs3wYPUsbserIkvEuslR9IChVD",
+    "projectId": "rom-agent",
+    "title": "Teste de conexão",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de conexão",
+        "timestamp": "2025-12-29T23:02:56.182Z"
+      },
+      {
+        "role": "assistant",
+        "content": "# ✅ Conexão Estabelecida com Sucesso\n\n**Sistema Operacional:** Assistente Jurídico Especializado em Redação de Peças Processuais e Documentos Extrajudiciais\n\n---\n\n## 🔧 Status do Sistema:\n\n**✓ Online e Pronto para Atendimento**\n\n---\n\n## 📋 Funcionalidades Disponíveis:\n\n### 1️⃣ **Redação de Peças Judiciais**\n- Petições iniciais (cível, trabalhista, criminal)\n- Contestações e reconvenções\n- Recursos (apelação, agravo, embargos de declaração, recurso especial/extraordinário)\n- Memoriais e alegações finais\n- Impugnações ao cumprimento de sentença\n\n### 2️⃣ **Redação de Peças Extrajudiciais**\n- Contratos (compra e venda, prestação de serviços, locação)\n- Alterações contratuais conforme normas DNRC\n- Substabelecimentos e procurações\n- Notificações extrajudiciais\n- Pareceres jurídicos\n\n### 3️⃣ **Análise de Prazos Processuais**\n- Cálculo de prazos conforme Lei 11.419/2006 (DJe/DJEN)\n- Verificação de preclusão, prescrição e decadência\n- Identificação de prazos em dobro (Fazenda, Defensoria)\n\n### 4️⃣ **Pesquisa Jurídica Integrada**\n- Jurisprudência (STF, STJ, TST, TSE, Jusbrasil)\n- Súmulas dos tribunais superiores\n- Consulta CNJ DataJud\n- Análise de documentos já enviados (Knowledge Base)\n\n---\n\n## 🎯 Estou Pronto Para:\n\n✅ Redigir qualquer peça processual ou extrajudicial  \n✅ Analisar prazos e certidões do DJe  \n✅ Fundamentar com legislação e jurisprudência  \n✅ Adaptar documentos ao seu caso concreto  \n✅ Aplicar normas DNRC em atos societários  \n\n---\n\n**Como posso auxiliá-lo hoje?** \n\nPode me enviar:\n- 📄 Documentos para análise\n- ⚖️ Casos para elaboração de peças\n- 📅 Certidões para cálculo de prazos\n- 🔍 Temas para pesquisa jurisprudencial",
+        "timestamp": "2025-12-29T23:03:06.992Z"
+      }
+    ],
+    "createdAt": "2025-12-29T23:02:56.125Z",
+    "updatedAt": "2025-12-29T23:03:06.992Z",
+    "messageCount": 2
   }
 }
