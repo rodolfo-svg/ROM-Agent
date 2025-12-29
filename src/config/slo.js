@@ -28,8 +28,8 @@ export const SLO_CONFIG = {
 
     // Rotas assíncronas (chat, geração de peças)
     async: {
-      timeout: 120_000,      // 2min
-      description: 'AI chat, document generation'
+      timeout: 300_000,      // 5min (aumentado para buscas DataJud/STJ complexas)
+      description: 'AI chat, document generation, jurisprudence search'
     },
 
     // Rotas longas (processamento batch, uploads)

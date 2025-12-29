@@ -48,6 +48,7 @@ import romProjectRouter from './routes/rom-project.js';
 import romCaseProcessorService from './services/processors/rom-case-processor-service.js';
 import caseProcessorRouter from './routes/case-processor.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
+import chatStreamRoutes from './routes/chat-stream.js';
 import certidoesDJEService from './services/certidoes-dje-service.js';
 import multiAgentPipelineService from './services/multi-agent-pipeline-service.js';
 // Import bedrock-helper to initialize Prometheus counters (bedrock_requests_total, bedrock_errors_total)
@@ -285,6 +286,9 @@ app.use('/api/auth', authRoutes);
 // Rotas de Processamento de Casos (Extração + 5 Layers)
 app.use('/api/case-processor', caseProcessorRouter);
 app.use('/api/case-processor', caseProcessorSSE);
+
+// Rotas de Streaming SSE para Chat em Tempo Real (v2.7.0)
+app.use('/api/chat-stream', chatStreamRoutes);
 
 // ====================================================================
 // 📄 API DE CERTIDÕES DJe/DJEN (CNJ)

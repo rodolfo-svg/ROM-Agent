@@ -23,6 +23,7 @@ import * as documentExtractionService from './services/document-extraction-servi
 import romProjectRouter from './routes/rom-project.js';
 import romProjectService from './services/rom-project-service.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
+import chatStreamRoutes from './routes/chat-stream.js';
 import featureFlags from './utils/feature-flags.js';
 import { requestLogger } from './middleware/request-logger.js';
 import metricsCollector from './utils/metrics-collector-v2.js';
@@ -64,6 +65,9 @@ app.use('/api/rom-project', romProjectRouter);
 
 // Rotas de Server-Sent Events para Progresso em Tempo Real
 app.use('/api/case-processor', caseProcessorSSE);
+
+// Rotas de Streaming SSE para Chat em Tempo Real (v2.7.0)
+app.use('/api/chat-stream', chatStreamRoutes);
 
 // Instância do agente
 let agent = null;

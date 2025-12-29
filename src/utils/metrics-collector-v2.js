@@ -436,6 +436,73 @@ class MetricsCollectorV2 {
   }
 
   /**
+   * Streaming Metrics - Time To First Token (TTFT)
+   */
+  recordTTFT(ttftMs, modelo = 'default') {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+
+    // Create histogram if it doesn't exist
+    if (!this.ttftHistogram) {
+      this.ttftHistogram = new Histogram({
+        name: 'chat_stream_ttft_milliseconds',
+        help: 'Time to first token in streaming responses (milliseconds)',
+        labelNames: ['modelo'],
+        buckets: [100, 250, 500, 1000, 2000, 5000, 10000],
+        registers: [this.registry],
+      });
+    }
+
+    this.ttftHistogram.labels(modelo).observe(ttftMs);
+  }
+
+  /**
+   * Generic counter increment
+   */
+  incrementCounter(name, labels = {}) {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+
+    // Get or create counter dynamically
+    const metricName = `rom_${name}`;
+    let counter = this.registry.getSingleMetric(metricName);
+
+    if (!counter) {
+      const labelNames = Object.keys(labels);
+      counter = new Counter({
+        name: metricName,
+        help: `Auto-generated counter for ${name}`,
+        labelNames,
+        registers: [this.registry],
+      });
+    }
+
+    // Increment with labels
+    counter.labels(...Object.values(labels)).inc();
+  }
+
+  /**
+   * Generic latency recording
+   */
+  recordLatency(operation, latencyMs, modelo = 'default') {
+    if (!featureFlags.isEnabled('ENABLE_METRICS')) return;
+
+    // Get or create histogram dynamically
+    const metricName = `rom_${operation}_duration_milliseconds`;
+    let histogram = this.registry.getSingleMetric(metricName);
+
+    if (!histogram) {
+      histogram = new Histogram({
+        name: metricName,
+        help: `Duration of ${operation} operations (milliseconds)`,
+        labelNames: ['modelo'],
+        buckets: [100, 500, 1000, 2000, 5000, 10000, 30000, 60000],
+        registers: [this.registry],
+      });
+    }
+
+    histogram.labels(modelo).observe(latencyMs);
+  }
+
+  /**
    * Reset all metrics (useful for testing)
    */
   reset() {
