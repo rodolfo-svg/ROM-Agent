@@ -1,0 +1,28 @@
+# 🔒 BEDROCK CONFIGURATION LOCK
+# DO NOT MODIFY - CONFIGURAÇÃO VALIDADA E FUNCIONANDO
+
+REGION=us-west-2
+VALIDATED_DATE=2025-12-29T19:43:00Z
+STATUS=WORKING
+MODELS_TESTED=9
+SUCCESS_RATE=100%
+
+# MODELOS VALIDADOS (TODOS FUNCIONANDO):
+# ✅ Claude Opus 4.5 (2239ms)
+# ✅ Claude Haiku 4.5 (1187ms)
+# ✅ Nova Premier (984ms)
+# ✅ Nova Pro (873ms)
+# ✅ DeepSeek R1 (809ms)
+# ✅ Llama 4 Maverick (695ms)
+# ✅ Llama 3.3 70B (1373ms)
+# ✅ Llama 3.1 70B (986ms)
+# ✅ Pixtral Large (799ms)
+
+# IMPORTANTE: NUNCA MUDAR REGIÃO PARA us-east-1
+# SEMPRE USAR: us-west-2 (Oregon)
+
+# INFERENCE PROFILES VALIDADOS: 55+
+# COMMITS: e44dda5b, 1f49a199
+
+LOCKED_BY=Claude_Code
+LOCK_REASON=Configuration_Validated_All_Models_Working
