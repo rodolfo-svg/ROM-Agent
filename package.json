@@ -23,7 +23,10 @@
     "setup": "node scripts/setup.js",
     "agents": "node src/cli-advanced.js agents",
     "workflows": "node src/cli-advanced.js workflows",
-    "chat": "node src/cli-advanced.js chat"
+    "chat": "node src/cli-advanced.js chat",
+    "db:diagnose": "node scripts/diagnose-database.js",
+    "db:migrate": "node scripts/run-migrations.js",
+    "db:check": "node scripts/diagnose-database.js"
   },
   "keywords": [
     "juridico",

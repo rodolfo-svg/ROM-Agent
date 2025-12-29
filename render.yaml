@@ -66,6 +66,10 @@ services:
       - key: SESSION_SECRET
         generateValue: true
 
+      # PostgreSQL Database (Internal Database URL)
+      - key: DATABASE_URL
+        value: postgresql://rom_agent_user:faPSk0YSNlhyPfBYpri2RcK9XdRbaE8L@dpg-d5819bhr0fns73dmfsv0-a/rom_agent
+
       # Rate Limiter
       - key: RATE_LIMIT_PER_MINUTE
         value: 10
@@ -148,6 +152,10 @@ services:
       # Session Secret (auto-gerado)
       - key: SESSION_SECRET
         generateValue: true
+
+      # PostgreSQL Database (Internal Database URL)
+      - key: DATABASE_URL
+        value: postgresql://rom_agent_user:faPSk0YSNlhyPfBYpri2RcK9XdRbaE8L@dpg-d5819bhr0fns73dmfsv0-a/rom_agent
 
       # Rate Limiter (mais permissivo para testes)
       - key: RATE_LIMIT_PER_MINUTE
