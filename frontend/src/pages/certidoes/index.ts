@@ -1,0 +1,1 @@
+export { CertidoesPage } from './CertidoesPage'

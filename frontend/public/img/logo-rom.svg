@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" fill="none">
+  <!-- Assinatura manuscrita ROM - recriação mais fiel ao estilo orgânico -->
+  <g>
+    <!-- R manuscrito com fluidez natural -->
+    <path d="M 15 35 Q 12 45, 15 58 Q 16 62, 18 62 Q 20 62, 21 58 Q 24 48, 24 38 Q 24 30, 28 26 Q 32 22, 40 22 Q 48 22, 52 26 Q 56 30, 56 36 Q 56 42, 52 46 Q 50 48, 46 48 L 38 48 Q 36 48, 36 50 Q 36 51, 37 52 L 58 72 Q 60 74, 62 72"
+          stroke="#C4A572"
+          stroke-width="2.8"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          opacity="0.95"/>
+
+    <!-- Conexão fluida R→O -->
+    <path d="M 62 38 Q 70 32, 78 32"
+          stroke="#C4A572"
+          stroke-width="2.2"
+          fill="none"
+          stroke-linecap="round"
+          opacity="0.85"/>
+
+    <!-- O manuscrito orgânico -->
+    <path d="M 78 32 Q 72 28, 72 36 Q 72 38, 73 42 Q 75 50, 82 54 Q 89 58, 98 56 Q 106 54, 110 48 Q 114 42, 114 36 Q 114 30, 110 26 Q 106 22, 98 22 Q 90 22, 84 26 Q 78 30, 78 36"
+          stroke="#C4A572"
+          stroke-width="2.8"
+          fill="none"
+          stroke-linecap="round"
+          opacity="0.95"/>
+
+    <!-- Loop decorativo superior (característica da assinatura) -->
+    <path d="M 110 26 Q 118 18, 126 22 Q 132 26, 132 34 Q 132 42, 126 48 Q 122 52, 116 50"
+          stroke="#D4A574"
+          stroke-width="2"
+          fill="none"
+          stroke-linecap="round"
+          opacity="0.90"/>
+
+    <!-- M manuscrito triplo com fluidez -->
+    <path d="M 145 40 Q 143 50, 143 60 Q 143 64, 145 64 Q 147 64, 148 60 Q 150 50, 150 40 Q 150 32, 155 28 Q 160 24, 168 28 Q 172 30, 174 36 Q 176 46, 176 56 Q 176 62, 178 64 Q 180 64, 181 60 Q 183 50, 183 40 Q 183 32, 188 28 Q 193 24, 201 28 Q 205 30, 207 36 Q 209 46, 209 56 Q 209 62, 211 64"
+          stroke="#C4A572"
+          stroke-width="2.8"
+          fill="none"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          opacity="0.95"/>
+
+    <!-- Floreio final (característico de assinaturas elegantes) -->
+    <path d="M 211 64 Q 220 68, 230 64 Q 238 60, 245 58 Q 252 56, 258 58 Q 262 60, 264 64"
+          stroke="#D4A574"
+          stroke-width="2"
+          fill="none"
+          stroke-linecap="round"
+          opacity="0.90"/>
+
+    <!-- Underline elegante com variação de espessura -->
+    <path d="M 10 70 Q 80 73, 150 70 Q 220 68, 270 70"
+          stroke="#C4A572"
+          stroke-width="1.5"
+          fill="none"
+          stroke-linecap="round"
+          opacity="0.80"/>
+
+    <!-- Detalhe ornamental de finalização -->
+    <path d="M 270 70 Q 275 67, 278 70 Q 280 73, 278 75"
+          stroke="#D4A574"
+          stroke-width="1.2"
+          fill="none"
+          stroke-linecap="round"
+          opacity="0.85"/>
+  </g>
+</svg>
