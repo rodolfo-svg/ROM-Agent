@@ -321,7 +321,7 @@ app.use('/api/case-processor', caseProcessorRouter);
 app.use('/api/case-processor', caseProcessorSSE);
 
 // Rotas de Streaming SSE para Chat em Tempo Real (v2.7.0)
-app.use('/api/chat-stream', chatStreamRoutes);
+app.use('/api/chat', chatStreamRoutes);
 
 // Rota de Diagnóstico Bedrock (para debug)
 app.use('/api/diagnostic/bedrock', diagnosticBedrockRoutes);
