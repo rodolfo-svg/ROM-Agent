@@ -81,6 +81,18 @@ export function sessionEnhancerMiddleware(req, res, next) {
     return this.user ? this.user.id : null;
   };
 
+  // COMPATIBILIDADE: Se req.session.user existe mas userId não, adicionar automaticamente
+  if (req.session.user && req.session.user.id && !req.session.userId) {
+    req.session.userId = req.session.user.id;
+    req.session.authenticated = true;
+    req.session.username = req.session.user.name;
+    req.session.userRole = req.session.user.role;
+    logger.info('Session compatibility fix applied', {
+      userId: req.session.userId,
+      sessionId: req.sessionID
+    });
+  }
+
   if (process.env.NODE_ENV === 'development' && process.env.LOG_LEVEL === 'debug') {
     logger.debug('Session accessed', {
       sessionId: req.sessionID,
