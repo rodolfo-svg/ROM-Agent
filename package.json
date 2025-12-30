@@ -26,7 +26,8 @@
     "chat": "node src/cli-advanced.js chat",
     "db:diagnose": "node scripts/diagnose-database.js",
     "db:migrate": "node scripts/run-migrations.js",
-    "db:check": "node scripts/diagnose-database.js"
+    "db:check": "node scripts/diagnose-database.js",
+    "test:persistence": "node scripts/test-database-persistence.js"
   },
   "keywords": [
     "juridico",
