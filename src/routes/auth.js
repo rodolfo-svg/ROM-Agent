@@ -72,7 +72,7 @@ router.post('/login', async (req, res) => {
       [user.id]
     );
 
-    // Criar sessão
+    // Criar sessão (formato completo para compatibilidade)
     req.session.user = {
       id: user.id,
       email: user.email,
@@ -80,6 +80,12 @@ router.post('/login', async (req, res) => {
       role: user.role,
       oab: user.oab
     };
+
+    // Compatibilidade com rotas que usam req.session.userId diretamente
+    req.session.userId = user.id;
+    req.session.authenticated = true;
+    req.session.username = user.name;
+    req.session.userRole = user.role;
 
     logger.info('Usuário autenticado com sucesso', {
       userId: user.id,
