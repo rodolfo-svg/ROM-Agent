@@ -201,6 +201,31 @@ function extractValue(text) {
   return match ? match[0] : 'Não identificado';
 }
 
+// ═══════════════════════════════════════════════════════════
+// INICIALIZAÇÃO DO BANCO DE DADOS (CRÍTICO - ANTES DE TUDO!)
+// ═══════════════════════════════════════════════════════════
+console.log('🔌 [STARTUP] Inicializando banco de dados ANTES de criar Express app...');
+console.log('🔌 [STARTUP] DATABASE_URL configurada:', !!process.env.DATABASE_URL);
+
+try {
+  await initPostgres();
+  console.log('✅ [STARTUP] PostgreSQL inicializado com sucesso');
+} catch (error) {
+  console.error('❌ [STARTUP] Erro ao inicializar PostgreSQL:', error.message);
+  console.error('⚠️  [STARTUP] Sessões usarão MemoryStore (dados perdidos em restart)');
+}
+
+try {
+  await initRedis();
+  console.log('✅ [STARTUP] Redis inicializado com sucesso');
+} catch (error) {
+  console.error('❌ [STARTUP] Erro ao inicializar Redis:', error.message);
+}
+
+const dbHealth = await checkDatabaseHealth();
+console.log('🔌 [STARTUP] Database Health:', JSON.stringify(dbHealth));
+console.log('━'.repeat(70));
+
 const app = express();
 
 // Trust proxy para Render (necessário para rate limiting e X-Forwarded-For)
@@ -211,6 +236,7 @@ app.use(express.json({ limit: '50mb' }));
 
 // Sessões persistentes (PostgreSQL-backed com fallback para memória)
 // IMPORTANTE: Deve vir ANTES de qualquer middleware que use req.session
+// CRÍTICO: Database deve ser inicializado ANTES desta linha (ver acima)
 app.use(createSessionMiddleware());
 app.use(sessionEnhancerMiddleware);
 
@@ -8760,42 +8786,9 @@ logger.info('✅ PR#2 Observability endpoints configured');
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, async () => {
-  // Inicializar banco de dados (PostgreSQL + Redis)
-  console.log('🔌 [DATABASE] Inicializando banco de dados...');
-  console.log('🔌 [DATABASE] DATABASE_URL configurada:', !!process.env.DATABASE_URL);
-
-  try {
-    await initPostgres();
-    console.log('🔌 [DATABASE] initPostgres() concluído');
-  } catch (error) {
-    console.error('🔌 [DATABASE] ERRO em initPostgres():', error.message);
-  }
-
-  try {
-    await initRedis();
-    console.log('🔌 [DATABASE] initRedis() concluído');
-  } catch (error) {
-    console.error('🔌 [DATABASE] ERRO em initRedis():', error.message);
-  }
-
-  const dbHealth = await checkDatabaseHealth();
-  console.log('🔌 [DATABASE] Health check:', JSON.stringify(dbHealth));
-
-  if (dbHealth.postgres.available) {
-    console.log('✅ [DATABASE] PostgreSQL CONECTADO -', dbHealth.postgres.latency + 'ms');
-    logger.info('✅ PostgreSQL conectado', { latency: dbHealth.postgres.latency + 'ms' });
-  } else {
-    console.log('❌ [DATABASE] PostgreSQL INDISPONÍVEL');
-    logger.warn('⚠️  PostgreSQL INDISPONÍVEL - dados serão perdidos em redeploy!');
-  }
-
-  if (dbHealth.redis.available) {
-    console.log('✅ [DATABASE] Redis CONECTADO -', dbHealth.redis.latency + 'ms');
-    logger.info('✅ Redis conectado', { latency: dbHealth.redis.latency + 'ms' });
-  } else {
-    console.log('❌ [DATABASE] Redis INDISPONÍVEL');
-    logger.warn('⚠️  Redis INDISPONÍVEL - sessões serão efêmeras!');
-  }
+  // Database já foi inicializado no início do arquivo (antes de criar session middleware)
+  console.log('🚀 [SERVER] Servidor iniciado na porta', PORT);
+  console.log('🚀 [SERVER] Database já inicializado - session store configurado');
 
   // Configurar armazenamento persistente
   logger.info('Configurando armazenamento persistente...');
