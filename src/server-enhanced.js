@@ -274,7 +274,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static(path.join(__dirname, '../public')));
+// Serve React Frontend V4 (frontend/dist) ou fallback para HTML antigo (public)
+const frontendPath = path.join(__dirname, '../frontend/dist');
+const publicPath = path.join(__dirname, '../public');
+const staticPath = fs.existsSync(frontendPath) ? frontendPath : publicPath;
+console.log(`📁 Servindo frontend de: ${staticPath}`);
+app.use(express.static(staticPath));
 
 // Compression (Gzip/Brotli) - comprimir responses > 1KB
 app.use(compression({
