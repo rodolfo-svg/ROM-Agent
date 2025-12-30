@@ -49,6 +49,7 @@ import romCaseProcessorService from './services/processors/rom-case-processor-se
 import caseProcessorRouter from './routes/case-processor.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
 import chatStreamRoutes from './routes/chat-stream.js';
+import diagnosticBedrockRoutes from './routes/diagnostic-bedrock.js';
 import certidoesDJEService from './services/certidoes-dje-service.js';
 import multiAgentPipelineService from './services/multi-agent-pipeline-service.js';
 // Import bedrock-helper to initialize Prometheus counters (bedrock_requests_total, bedrock_errors_total)
@@ -315,6 +316,9 @@ app.use('/api/case-processor', caseProcessorSSE);
 
 // Rotas de Streaming SSE para Chat em Tempo Real (v2.7.0)
 app.use('/api/chat-stream', chatStreamRoutes);
+
+// Rota de Diagnóstico Bedrock (para debug)
+app.use('/api/diagnostic/bedrock', diagnosticBedrockRoutes);
 
 // ====================================================================
 // 📄 API DE CERTIDÕES DJe/DJEN (CNJ)
