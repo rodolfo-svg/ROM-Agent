@@ -174,3 +174,58 @@ services:
 
     # ═══ AUTO-DEPLOY ═══
     autoDeploy: true
+
+  # ═══════════════════════════════════════════════════════════════
+  # FRONTEND V4 (STAGING) - React Static Site
+  # ═══════════════════════════════════════════════════════════════
+  - type: web
+    name: rom-frontend-v4-staging
+    env: static
+    branch: staging
+
+    # ═══ BUILD ═══
+    buildCommand: |
+      echo "🔧 [FRONTEND] Instalando dependências..."
+      cd frontend
+      npm ci
+      echo "🏗️ [FRONTEND] Building React app..."
+      npm run build
+      echo "✅ [FRONTEND] Build concluído"
+
+    # ═══ STATIC FILES ═══
+    staticPublishPath: ./frontend/dist
+
+    # ═══ VARIÁVEIS DE AMBIENTE ═══
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+
+      # URL do backend staging (será atualizada após deploy)
+      - key: VITE_API_URL
+        value: https://rom-agent-staging.onrender.com
+
+    # ═══ HEADERS (Segurança) ═══
+    headers:
+      - path: /*
+        name: X-Frame-Options
+        value: SAMEORIGIN
+
+      - path: /*
+        name: X-Content-Type-Options
+        value: nosniff
+
+      - path: /*
+        name: Referrer-Policy
+        value: strict-origin-when-cross-origin
+
+    # ═══ ROTAS (SPA) ═══
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+    # ═══ AUTO-DEPLOY ═══
+    autoDeploy: true
+
+    # ═══ PREVIEW DE PULL REQUESTS ═══
+    pullRequestPreviewsEnabled: true
