@@ -181,7 +181,5 @@ CREATE INDEX IF NOT EXISTS audit_log_created_at_idx ON audit_log(created_at DESC
 -- ════════════════════════════════════════════════════════════════
 -- VERIFICAÇÃO FINAL
 -- ════════════════════════════════════════════════════════════════
-\echo '✅ Schema criado com sucesso!'
-\echo ''
-\echo 'Tabelas criadas:'
-SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name;
+-- Schema criado com sucesso!
+-- Tabelas criadas: users, sessions, conversations, messages, projects, documents, uploads, ai_operations, audit_log
