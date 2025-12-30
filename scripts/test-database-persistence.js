@@ -156,7 +156,7 @@ async function testPersistence() {
       SELECT
         sid,
         expire,
-        sess->>'passport'->>'user' as user_data
+        sess->'passport'->>'user' as user_data
       FROM sessions
       WHERE expire > NOW()
       ORDER BY expire DESC
