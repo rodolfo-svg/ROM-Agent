@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROM Agent - Downloads</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      color: #fff;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    header {
+      text-align: center;
+      padding: 40px 0;
+    }
+    .logo {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+    h1 {
+      color: #c9a227;
+      font-size: 28px;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      color: #a0a0a0;
+      font-size: 14px;
+    }
+    .section {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    .section h2 {
+      color: #c9a227;
+      font-size: 18px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .download-item {
+      background: rgba(255,255,255,0.03);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .download-info h3 {
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    .download-info p {
+      color: #a0a0a0;
+      font-size: 13px;
+    }
+    .download-btn {
+      background: #c9a227;
+      color: #1a1a2e;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .download-btn:hover {
+      background: #d4af37;
+      transform: translateY(-2px);
+    }
+    .instructions {
+      background: rgba(201, 162, 39, 0.1);
+      border: 1px solid rgba(201, 162, 39, 0.3);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 20px;
+    }
+    .instructions h3 {
+      color: #c9a227;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .instructions ol {
+      padding-left: 20px;
+      font-size: 13px;
+      color: #ccc;
+    }
+    .instructions li {
+      margin-bottom: 8px;
+    }
+    code {
+      background: rgba(0,0,0,0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 12px;
+    }
+    .badge {
+      background: #27ae60;
+      color: #fff;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 8px;
+    }
+    .badge.free { background: #27ae60; }
+    .badge.easy { background: #3498db; }
+    footer {
+      text-align: center;
+      padding: 40px 0;
+      color: #666;
+      font-size: 12px;
+    }
+    @media (max-width: 600px) {
+      .download-item {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">⚖️</div>
+      <h1>ROM Agent - Downloads</h1>
+      <p class="subtitle">Acesso Mobile e Ferramentas</p>
+    </header>
+
+    <div class="section">
+      <h2>📱 Acesso Mobile</h2>
+
+      <div class="download-item">
+        <div class="download-info">
+          <h3>Servidor Local <span class="badge easy">Fácil</span></h3>
+          <p>Inicia servidor para acesso na rede Wi-Fi local</p>
+        </div>
+        <a href="/api/download/start-server" class="download-btn">Download</a>
+      </div>
+
+      <div class="download-item">
+        <div class="download-info">
+          <h3>Acesso Internet (Ngrok)</h3>
+          <p>Expõe servidor para acesso de qualquer lugar</p>
+        </div>
+        <a href="/api/download/start-ngrok" class="download-btn">Download</a>
+      </div>
+
+      <div class="download-item">
+        <div class="download-info">
+          <h3>Bot Telegram</h3>
+          <p>Use o ROM Agent pelo Telegram</p>
+        </div>
+        <a href="/api/download/telegram-bot" class="download-btn">Download</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>☁️ Deploy em Cloud</h2>
+
+      <div class="download-item">
+        <div class="download-info">
+          <h3>Render.com <span class="badge free">Grátis</span></h3>
+          <p>Configuração automática para Render.com</p>
+        </div>
+        <a href="/api/download/render-yaml" class="download-btn">Download</a>
+      </div>
+
+      <div class="download-item">
+        <div class="download-info">
+          <h3>Docker</h3>
+          <p>Container para qualquer cloud</p>
+        </div>
+        <a href="/api/download/dockerfile" class="download-btn">Download</a>
+      </div>
+
+      <div class="download-item">
+        <div class="download-info">
+          <h3>Railway.app</h3>
+          <p>Deploy rápido no Railway</p>
+        </div>
+        <a href="/api/download/railway-json" class="download-btn">Download</a>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📲 Instalar como App (PWA)</h2>
+
+      <div class="instructions">
+        <h3>No iPhone/iPad:</h3>
+        <ol>
+          <li>Acesse este site pelo Safari</li>
+          <li>Toque no ícone de compartilhar (📤)</li>
+          <li>Toque em "Adicionar à Tela de Início"</li>
+          <li>Confirme o nome e toque em "Adicionar"</li>
+        </ol>
+      </div>
+
+      <div class="instructions">
+        <h3>No Android:</h3>
+        <ol>
+          <li>Acesse este site pelo Chrome</li>
+          <li>Toque no menu (⋮)</li>
+          <li>Toque em "Adicionar à tela inicial"</li>
+          <li>Confirme e pronto!</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>📚 Documentação</h2>
+
+      <div class="download-item">
+        <div class="download-info">
+          <h3>README Completo</h3>
+          <p>Instruções detalhadas de configuração</p>
+        </div>
+        <a href="/api/download/readme" class="download-btn">Download</a>
+      </div>
+    </div>
+
+    <footer>
+      <strong>ROM Agent</strong> - Redator de Obras Magistrais<br>
+      Escritório: Rodolfo Otávio Mota - Advogados Associados<br>
+      OAB/GO: 21.841
+    </footer>
+  </div>
+</body>
+</html>

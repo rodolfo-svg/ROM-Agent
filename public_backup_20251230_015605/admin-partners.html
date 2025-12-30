@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administração de Parceiros - ROM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f7fafc;
+      color: #1a202c;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #ab68ff;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #2d3748;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #ab68ff;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #ab68ff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #9d5fee;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e0;
+    }
+
+    .btn-danger {
+      background: #e53e3e;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #c53030;
+    }
+
+    .partners-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .partner-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .partner-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .partner-logo {
+      height: 60px;
+      width: auto;
+      max-width: 100%;
+      object-fit: contain;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .partner-name {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #ab68ff;
+      margin-bottom: 0.5rem;
+    }
+
+    .partner-info {
+      font-size: 0.875rem;
+      color: #718096;
+      margin-bottom: 1rem;
+    }
+
+    .partner-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .file-upload {
+      display: none;
+    }
+
+    .upload-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      background: #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.875rem;
+      transition: background 0.2s;
+    }
+
+    .upload-label:hover {
+      background: #cbd5e0;
+    }
+
+    .color-input {
+      width: 80px;
+      height: 40px;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .color-group {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .success-message {
+      background: #38a169;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      animation: slideIn 0.3s;
+    }
+
+    .error-message {
+      background: #e53e3e;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      animation: slideIn 0.3s;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: #ab68ff;
+      text-decoration: none;
+      margin-bottom: 2rem;
+      font-weight: 500;
+    }
+
+    .back-link:hover {
+      text-decoration: underline;
+    }
+
+    .admin-nav {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding: 1rem;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .admin-nav a {
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #2d3748;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .admin-nav a:hover {
+      background: #e2e8f0;
+    }
+
+    .admin-nav a.active {
+      background: #ab68ff;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back-link">← Voltar para o Chat</a>
+
+    <div class="admin-nav">
+      <a href="admin-partners.html" class="active">🏢 Gerenciar Parceiros</a>
+      <a href="admin-formatting.html">⚙️ Configurar Formatação</a>
+    </div>
+
+    <h1>
+      🏢 Administração de Parceiros
+    </h1>
+
+    <div id="messageContainer"></div>
+
+    <!-- Formulário de Cadastro -->
+    <div class="card">
+      <h2>Cadastrar Novo Parceiro</h2>
+      <form id="partnerForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fullName">Nome Completo*</label>
+            <input type="text" id="fullName" name="fullName" required placeholder="Silva & Associados Advocacia">
+          </div>
+
+          <div class="form-group">
+            <label for="name">Nome Curto (opcional)</label>
+            <input type="text" id="name" name="name" placeholder="Silva">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="tagline">Tagline*</label>
+            <input type="text" id="tagline" name="tagline" required placeholder="Advogados Especializados">
+          </div>
+
+          <div class="form-group">
+            <label for="oab">OAB</label>
+            <input type="text" id="oab" name="oab" placeholder="OAB/SP 12345">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="subtitle">Subtítulo</label>
+          <input type="text" id="subtitle" name="subtitle" placeholder="Assistente jurídico para seu escritório">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="contato@silva.adv.br">
+          </div>
+
+          <div class="form-group">
+            <label for="website">Website</label>
+            <input type="url" id="website" name="website" placeholder="https://silva.adv.br">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Cores Personalizadas (opcional)</label>
+          <div class="color-group">
+            <div>
+              <label for="primaryColor">Primária</label>
+              <input type="color" id="primaryColor" class="color-input" value="#ab68ff">
+            </div>
+            <div>
+              <label for="primaryLightColor">Primária Clara</label>
+              <input type="color" id="primaryLightColor" class="color-input" value="#9d5fee">
+            </div>
+            <div>
+              <label for="secondaryColor">Secundária</label>
+              <input type="color" id="secondaryColor" class="color-input" value="#c9a227">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Cadastrar Parceiro</button>
+      </form>
+    </div>
+
+    <!-- Lista de Parceiros -->
+    <div class="card">
+      <h2>Parceiros Cadastrados</h2>
+      <div id="partnersGrid" class="partners-grid">
+        <!-- Parceiros serão carregados aqui -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Carregar parceiros ao iniciar
+    loadPartners();
+
+    // Formulário de cadastro
+    document.getElementById('partnerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        fullName: document.getElementById('fullName').value,
+        name: document.getElementById('name').value,
+        tagline: document.getElementById('tagline').value,
+        subtitle: document.getElementById('subtitle').value,
+        oab: document.getElementById('oab').value,
+        email: document.getElementById('email').value,
+        website: document.getElementById('website').value,
+        colors: {
+          primary: document.getElementById('primaryColor').value,
+          primaryLight: document.getElementById('primaryLightColor').value,
+          secondary: document.getElementById('secondaryColor').value
+        }
+      };
+
+      try {
+        const response = await fetch('/api/partners', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showMessage('Parceiro cadastrado com sucesso!', 'success');
+          document.getElementById('partnerForm').reset();
+          loadPartners();
+        } else {
+          showMessage('Erro ao cadastrar parceiro', 'error');
+        }
+      } catch (error) {
+        showMessage('Erro de conexão: ' + error.message, 'error');
+      }
+    });
+
+    // Carregar lista de parceiros
+    async function loadPartners() {
+      try {
+        const response = await fetch('/api/partners');
+        const data = await response.json();
+
+        const grid = document.getElementById('partnersGrid');
+        grid.innerHTML = '';
+
+        data.partners.forEach(partner => {
+          const card = createPartnerCard(partner);
+          grid.appendChild(card);
+        });
+      } catch (error) {
+        console.error('Erro ao carregar parceiros:', error);
+      }
+    }
+
+    // Criar card de parceiro
+    function createPartnerCard(partner) {
+      const card = document.createElement('div');
+      card.className = 'partner-card';
+
+      card.innerHTML = `
+        <img src="${partner.logo}" alt="${partner.name}" class="partner-logo">
+        <div class="partner-name">${partner.fullName}</div>
+        <div class="partner-info">
+          ${partner.tagline}<br>
+          ${partner.oab ? partner.oab + '<br>' : ''}
+          ${partner.email ? partner.email : ''}
+        </div>
+        <div class="partner-actions">
+          <label class="upload-label">
+            📤 Upload Logo
+            <input type="file" class="file-upload" accept=".png,.jpg,.jpeg,.svg" onchange="uploadLogo('${partner.id}', this)">
+          </label>
+          ${partner.id !== 'rom' ? '<button class="btn btn-danger" onclick="deletePartner(\''+partner.id+'\')">Excluir</button>' : ''}
+        </div>
+      `;
+
+      return card;
+    }
+
+    // Upload de logo
+    async function uploadLogo(partnerId, input) {
+      const file = input.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append('logo', file);
+      formData.append('partnerId', partnerId);
+
+      try {
+        const response = await fetch(`/api/partners/${partnerId}/logo`, {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showMessage('Logo atualizada com sucesso!', 'success');
+          loadPartners();
+        } else {
+          showMessage('Erro ao fazer upload: ' + result.error, 'error');
+        }
+      } catch (error) {
+        showMessage('Erro de conexão: ' + error.message, 'error');
+      }
+    }
+
+    // Deletar parceiro
+    async function deletePartner(partnerId) {
+      if (!confirm('Tem certeza que deseja excluir este parceiro?')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/partners/${partnerId}`, {
+          method: 'DELETE'
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showMessage('Parceiro excluído com sucesso!', 'success');
+          loadPartners();
+        } else {
+          showMessage('Erro ao excluir: ' + result.error, 'error');
+        }
+      } catch (error) {
+        showMessage('Erro de conexão: ' + error.message, 'error');
+      }
+    }
+
+    // Mostrar mensagem
+    function showMessage(message, type) {
+      const container = document.getElementById('messageContainer');
+      const div = document.createElement('div');
+      div.className = type === 'success' ? 'success-message' : 'error-message';
+      div.textContent = message;
+
+      container.appendChild(div);
+
+      setTimeout(() => {
+        div.remove();
+      }, 5000);
+    }
+  </script>
+</body>
+</html>

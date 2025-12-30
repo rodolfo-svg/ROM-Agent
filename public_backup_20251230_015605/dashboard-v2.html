@@ -1,0 +1,1547 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Master - ROM Agent</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #FFFFFF;
+      --bg-secondary: #F9FAFB;
+      --bg-tertiary: #F3F4F6;
+      --text-primary: #1F2937;
+      --text-secondary: #6B7280;
+      --text-tertiary: #9CA3AF;
+      --border: #E5E7EB;
+      --accent: #ab68ff;
+      --accent-hover: #9d5fee;
+      --danger: #EF4444;
+      --warning: #F59E0B;
+      --info: #ab68ff;
+      --purple: #8B5CF6;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #1F2937;
+      --bg-secondary: #111827;
+      --bg-tertiary: #374151;
+      --text-primary: #F9FAFB;
+      --text-secondary: #D1D5DB;
+      --text-tertiary: #9CA3AF;
+      --border: #374151;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Layout */
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-primary);
+      border-right: 1px solid var(--border);
+      padding: 1.5rem;
+      overflow-y: auto;
+      position: fixed;
+      left: 0;
+      top: 0;
+      bottom: 0;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--accent), var(--info));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+
+    .logo-text {
+      font-weight: 600;
+      font-size: 1.125rem;
+      color: var(--text-primary);
+    }
+
+    .nav-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .nav-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      margin-bottom: 0.5rem;
+      padding: 0 0.75rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.625rem 0.75rem;
+      border-radius: 8px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      cursor: pointer;
+      margin-bottom: 0.25rem;
+    }
+
+    .nav-item:hover {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .nav-item.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .nav-item .badge {
+      margin-left: auto;
+      background: var(--danger);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.125rem 0.5rem;
+      border-radius: 12px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* Main Content */
+    .main {
+      margin-left: 260px;
+      flex: 1;
+      padding: 2rem;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+    }
+
+    .header-title {
+      font-size: 1.875rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      padding: 0.625rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 500;
+      font-size: 0.875rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.15s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background: var(--border);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .stat-card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-change {
+      font-size: 0.875rem;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .stat-change.positive {
+      color: var(--accent);
+    }
+
+    .stat-change.negative {
+      color: var(--danger);
+    }
+
+    /* Cards */
+    .card {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* Notifications */
+    .notification {
+      background: var(--bg-primary);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--info);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: start;
+      gap: 1rem;
+      transition: all 0.2s ease;
+    }
+
+    .notification:hover {
+      box-shadow: var(--shadow-sm);
+    }
+
+    .notification.unread {
+      border-left-color: var(--accent);
+      background: linear-gradient(90deg, rgba(16, 185, 129, 0.05), transparent);
+    }
+
+    .notification-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .notification-content {
+      flex: 1;
+    }
+
+    .notification-title {
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .notification-text {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+      margin-bottom: 0.5rem;
+    }
+
+    .notification-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.75rem;
+      color: var(--text-tertiary);
+    }
+
+    .notification-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-sm {
+      padding: 0.375rem 0.75rem;
+      font-size: 0.75rem;
+      border-radius: 6px;
+    }
+
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      text-align: left;
+      padding: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-tertiary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody td {
+      padding: 1rem 0.75rem;
+      font-size: 0.875rem;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr:hover {
+      background: var(--bg-tertiary);
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--accent);
+    }
+
+    .badge-warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+
+    .badge-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+
+    .badge-info {
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--info);
+    }
+
+    .badge-purple {
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--purple);
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-tertiary);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Loading */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .main {
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">ROM</div>
+        <div class="logo-text">ROM Agent</div>
+      </div>
+
+      <nav>
+        <div class="nav-section">
+          <div class="nav-title">Dashboard</div>
+          <a class="nav-item active" data-view="overview">
+            <span>📊</span>
+            <span>Visão Geral</span>
+          </a>
+          <a class="nav-item" data-view="notifications">
+            <span>🔔</span>
+            <span>Notificações</span>
+            <span class="badge" id="notif-count">3</span>
+          </a>
+          <a class="nav-item" data-view="improvements">
+            <span>💡</span>
+            <span>Melhorias Sugeridas</span>
+            <span class="badge" id="improvements-count">5</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-title">Gerenciar</div>
+          <a class="nav-item" data-view="prompts">
+            <span>📝</span>
+            <span>Prompts</span>
+          </a>
+          <a class="nav-item" data-view="partners">
+            <span>🏢</span>
+            <span>Parceiros</span>
+          </a>
+          <a class="nav-item" data-view="users">
+            <span>👥</span>
+            <span>Usuários</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-title">Análise</div>
+          <a class="nav-item" data-view="learning">
+            <span>🧠</span>
+            <span>Aprendizado Agregado</span>
+          </a>
+          <a class="nav-item" data-view="quality">
+            <span>⭐</span>
+            <span>Qualidade</span>
+          </a>
+          <a class="nav-item" data-view="documents">
+            <span>📄</span>
+            <span>Documentos</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-title">Financeiro</div>
+          <a class="nav-item" data-view="billing">
+            <span>💰</span>
+            <span>Faturamento</span>
+          </a>
+          <a class="nav-item" data-view="costs">
+            <span>💳</span>
+            <span>Custos API</span>
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-title">Sistema</div>
+          <a class="nav-item" data-view="logs">
+            <span>📋</span>
+            <span>Logs & Auditoria</span>
+          </a>
+          <a class="nav-item" data-view="reports">
+            <span>📊</span>
+            <span>Relatórios</span>
+          </a>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Header -->
+      <div class="header">
+        <h1 class="header-title">Dashboard Master</h1>
+        <div class="header-actions">
+          <button class="btn btn-secondary" onclick="toggleTheme()">
+            <span id="theme-icon">🌙</span>
+            Tema
+          </button>
+          <button class="btn btn-primary" onclick="window.location.href='/prompts-editor.html'">
+            <span>📝</span>
+            Editor de Prompts
+          </button>
+        </div>
+      </div>
+
+      <!-- Overview View -->
+      <div id="view-overview">
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total de Prompts</div>
+            <div class="stat-value" id="stat-prompts">21</div>
+            <div class="stat-change positive">
+              <span>↑</span>
+              <span>+11 esta sessão</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Parceiros Ativos</div>
+            <div class="stat-value" id="stat-partners">5</div>
+            <div class="stat-change positive">
+              <span>↑</span>
+              <span>+2 este mês</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Peças Geradas (7d)</div>
+            <div class="stat-value" id="stat-pieces">342</div>
+            <div class="stat-change positive">
+              <span>↑</span>
+              <span>+23% vs semana anterior</span>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Taxa de Sucesso</div>
+            <div class="stat-value">94.2<span style="font-size:1.5rem">%</span></div>
+            <div class="stat-change positive">
+              <span>↑</span>
+              <span>+2.1% este mês</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Uso nos Últimos 7 Dias</h3>
+            </div>
+            <canvas id="usageChart" height="80"></canvas>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Prompts Mais Usados</h3>
+            </div>
+            <canvas id="promptsChart" height="80"></canvas>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Atividade Recente</h3>
+            <button class="btn btn-secondary btn-sm">Ver Todas</button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Evento</th>
+                  <th>Usuário</th>
+                  <th>Tipo</th>
+                  <th>Status</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+              <tbody id="activity-table">
+                <tr>
+                  <td>Petição Inicial gerada</td>
+                  <td>advogado@escritorio.com</td>
+                  <td><span class="badge badge-info">Civil</span></td>
+                  <td><span class="badge badge-success">Sucesso</span></td>
+                  <td>Há 5 min</td>
+                </tr>
+                <tr>
+                  <td>Prompt atualizado (auto)</td>
+                  <td>Sistema</td>
+                  <td><span class="badge badge-purple">Auto-evolução</span></td>
+                  <td><span class="badge badge-success">Aplicado</span></td>
+                  <td>Há 1 hora</td>
+                </tr>
+                <tr>
+                  <td>Novo parceiro cadastrado</td>
+                  <td>Admin</td>
+                  <td><span class="badge badge-info">Parceiro</span></td>
+                  <td><span class="badge badge-success">Ativo</span></td>
+                  <td>Há 2 horas</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notifications View -->
+      <div id="view-notifications" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Notificações de Atualizações</h3>
+            <button class="btn btn-secondary btn-sm" onclick="markAllRead()">Marcar Todas Lidas</button>
+          </div>
+          <div id="notifications-list">
+            <div class="notification unread">
+              <div class="notification-icon">🔄</div>
+              <div class="notification-content">
+                <div class="notification-title">Prompt Global Atualizado: Habeas Corpus</div>
+                <div class="notification-text">
+                  Versão 1.2.0 disponível. Adicionada jurisprudência recente do STF sobre liberdade provisória.
+                </div>
+                <div class="notification-meta">
+                  <span>Há 2 horas</span>
+                  <span>•</span>
+                  <span>3 parceiros afetados</span>
+                </div>
+                <div class="notification-actions" style="margin-top: 0.5rem;">
+                  <button class="btn btn-primary btn-sm">Ver Mudanças</button>
+                  <button class="btn btn-secondary btn-sm">Marcar Lida</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="notification unread">
+              <div class="notification-icon">⚖️</div>
+              <div class="notification-content">
+                <div class="notification-title">Atualização Legislativa Detectada</div>
+                <div class="notification-text">
+                  Lei 14.245/2024 pode afetar prompt "Ação de Execução". Revisão recomendada.
+                </div>
+                <div class="notification-meta">
+                  <span>Há 5 horas</span>
+                  <span>•</span>
+                  <span>Prioridade: Alta</span>
+                </div>
+                <div class="notification-actions" style="margin-top: 0.5rem;">
+                  <button class="btn btn-primary btn-sm">Revisar Agora</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="notification">
+              <div class="notification-icon">✅</div>
+              <div class="notification-content">
+                <div class="notification-title">Auto-Evolução Aplicada</div>
+                <div class="notification-text">
+                  Prompt "Contestação Cível" atualizado com base em feedback de 47 usuários.
+                </div>
+                <div class="notification-meta">
+                  <span>Há 1 dia</span>
+                  <span>•</span>
+                  <span>Score de qualidade: +15</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Improvements View -->
+      <div id="view-improvements" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Melhorias Sugeridas pelo Sistema</h3>
+            <span class="badge badge-warning">5 Pendentes de Aprovação</span>
+          </div>
+          <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.875rem;">
+            O sistema de aprendizado agregado analisou feedback de todos os parceiros e sugere as seguintes melhorias para aumentar a excelência dos prompts globais.
+          </p>
+
+          <div id="improvements-list">
+            <!-- Melhoria 1 -->
+            <div class="card" style="border: 2px solid var(--accent); margin-bottom: 1rem;">
+              <div style="display: flex; align-items: start; gap: 1rem;">
+                <div style="flex: 1;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <h4 style="font-weight: 600;">Petição Inicial - Adicionar Teses STJ</h4>
+                    <span class="badge badge-success">Score: +25</span>
+                    <span class="badge badge-info">Jurisprudência</span>
+                  </div>
+                  <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                    Sugerido adicionar 3 teses recentes do STJ (2024) sobre teoria da perda de uma chance em ações indenizatórias. Taxa de sucesso aumentou 12% quando advogados manualmente incluíram estas teses.
+                  </p>
+                  <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem;">
+                    <span class="badge badge-purple">+3 dispositivos STJ</span>
+                    <span class="badge badge-success">+15 refs jurisprudência</span>
+                    <span class="badge badge-success">+850 caracteres</span>
+                  </div>
+                  <div style="display: flex; gap: 0.75rem;">
+                    <button class="btn btn-primary btn-sm" onclick="approveImprovement('imp-001')">
+                      ✅ Aprovar e Aplicar
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="compareImprovement('imp-001')">
+                      📊 Comparar Versões
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="rejectImprovement('imp-001')">
+                      ❌ Rejeitar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Melhoria 2 -->
+            <div class="card" style="border: 2px solid var(--info); margin-bottom: 1rem;">
+              <div style="display: flex; align-items: start; gap: 1rem;">
+                <div style="flex: 1;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <h4 style="font-weight: 600;">Habeas Corpus - Atualizar Lei Antidrogas</h4>
+                    <span class="badge badge-success">Score: +20</span>
+                    <span class="badge badge-warning">Legislação</span>
+                  </div>
+                  <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                    Lei 13.840/2024 alterou Art. 28 da Lei de Drogas. Prompt atual cita redação antiga. Atualização crítica para evitar peças com fundamentação desatualizada.
+                  </p>
+                  <div style="display: flex; gap: 0.5rem; align-items: center; margin-bottom: 1rem;">
+                    <span class="badge badge-warning">Legislação 2024</span>
+                    <span class="badge badge-danger">Prompt desatualizado</span>
+                  </div>
+                  <div style="display: flex; gap: 0.75rem;">
+                    <button class="btn btn-primary btn-sm" onclick="approveImprovement('imp-002')">
+                      ✅ Aprovar e Aplicar
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="compareImprovement('imp-002')">
+                      📊 Comparar Versões
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Melhoria 3 -->
+            <div class="card" style="margin-bottom: 1rem;">
+              <div style="display: flex; align-items: start; gap: 1rem;">
+                <div style="flex: 1;">
+                  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                    <h4 style="font-weight: 600;">Contestação - Melhorar Estrutura de Preliminares</h4>
+                    <span class="badge badge-success">Score: +12</span>
+                    <span class="badge badge-info">Estrutura</span>
+                  </div>
+                  <p style="color: var(--text-secondary); font-size: 0.875rem; margin-bottom: 1rem;">
+                    Análise de 127 contestações mostra que ordem sugerida de preliminares (incompetência → ilegitimidade → ...) teve 18% mais acolhimento por juízes.
+                  </p>
+                  <div style="display: flex; gap: 0.75rem;">
+                    <button class="btn btn-primary btn-sm" onclick="approveImprovement('imp-003')">
+                      ✅ Aprovar e Aplicar
+                    </button>
+                    <button class="btn btn-secondary btn-sm">
+                      📊 Ver Análise Completa
+                    </button>
+                    <button class="btn btn-secondary btn-sm" onclick="rejectImprovement('imp-003')">
+                      ❌ Rejeitar
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Documents View -->
+      <div id="view-documents" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Histórico de Documentos Gerados</h3>
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm">Filtrar</button>
+              <button class="btn btn-secondary btn-sm">Exportar CSV</button>
+            </div>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Documento</th>
+                  <th>Parceiro</th>
+                  <th>Usuário</th>
+                  <th>Prompt</th>
+                  <th>Tokens</th>
+                  <th>Custo</th>
+                  <th>Qualidade</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Petição Inicial #2341</td>
+                  <td>ROM Advogados</td>
+                  <td>rodolfo@rom.adv.br</td>
+                  <td>peticao_inicial_civel</td>
+                  <td>4,523</td>
+                  <td>R$ 0,18</td>
+                  <td><span class="badge badge-success">95%</span></td>
+                  <td>13/12/2025 01:23</td>
+                </tr>
+                <tr>
+                  <td>Contestação #2340</td>
+                  <td>Escritório ABC</td>
+                  <td>adv@abc.com</td>
+                  <td>contestacao_civel</td>
+                  <td>3,891</td>
+                  <td>R$ 0,16</td>
+                  <td><span class="badge badge-success">92%</span></td>
+                  <td>13/12/2025 00:45</td>
+                </tr>
+                <tr>
+                  <td>Habeas Corpus #2339</td>
+                  <td>ROM Advogados</td>
+                  <td>criminal@rom.adv.br</td>
+                  <td>habeas_corpus</td>
+                  <td>5,102</td>
+                  <td>R$ 0,20</td>
+                  <td><span class="badge badge-success">98%</span></td>
+                  <td>12/12/2025 23:12</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div style="margin-top: 1.5rem;">
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Documentos Hoje</div>
+              <div class="stat-value">47</div>
+              <div class="stat-change positive">↑ +12 vs ontem</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Média de Qualidade</div>
+              <div class="stat-value">94.2%</div>
+              <div class="stat-change positive">↑ +2.1%</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Tokens Consumidos</div>
+              <div class="stat-value">192K</div>
+              <div class="stat-change">Hoje</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Custo Total</div>
+              <div class="stat-value">R$ 7,68</div>
+              <div class="stat-change">Hoje</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Billing View -->
+      <div id="view-billing" style="display:none;">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Faturamento Este Mês</div>
+            <div class="stat-value">R$ 12.450</div>
+            <div class="stat-change positive">↑ +18% vs mês anterior</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">MRR (Receita Recorrente)</div>
+            <div class="stat-value">R$ 9.800</div>
+            <div class="stat-change positive">↑ +5 novos parceiros</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Ticket Médio</div>
+            <div class="stat-value">R$ 1.960</div>
+            <div class="stat-change">Por parceiro</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Crescimento Anual</div>
+            <div class="stat-value">142%</div>
+            <div class="stat-change positive">YoY</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Faturamento Mensal (R$)</h3>
+            </div>
+            <canvas id="revenueChart" height="80"></canvas>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Por Tipo de Plano</h3>
+            </div>
+            <canvas id="plansChart" height="80"></canvas>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+          <div class="card-header">
+            <h3 class="card-title">Faturamento por Parceiro</h3>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Parceiro</th>
+                  <th>Plano</th>
+                  <th>Peças/Mês</th>
+                  <th>MRR</th>
+                  <th>Status</th>
+                  <th>Próximo Vencimento</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>ROM Advogados</td>
+                  <td><span class="badge badge-purple">Enterprise</span></td>
+                  <td>1,250</td>
+                  <td>R$ 4.900</td>
+                  <td><span class="badge badge-success">Ativo</span></td>
+                  <td>25/12/2025</td>
+                </tr>
+                <tr>
+                  <td>Escritório Silva & Costa</td>
+                  <td><span class="badge badge-info">Pro</span></td>
+                  <td>420</td>
+                  <td>R$ 1.960</td>
+                  <td><span class="badge badge-success">Ativo</span></td>
+                  <td>15/01/2026</td>
+                </tr>
+                <tr>
+                  <td>Advocacia Souza</td>
+                  <td><span class="badge badge-info">Pro</span></td>
+                  <td>380</td>
+                  <td>R$ 1.960</td>
+                  <td><span class="badge badge-warning">Trial</span></td>
+                  <td>20/12/2025</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Costs View -->
+      <div id="view-costs" style="display:none;">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Custo Total API (Mês)</div>
+            <div class="stat-value">R$ 287,50</div>
+            <div class="stat-change positive">2.3% do faturamento</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Custo por Peça</div>
+            <div class="stat-value">R$ 0,18</div>
+            <div class="stat-change">Média</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Tokens Consumidos</div>
+            <div class="stat-value">5.2M</div>
+            <div class="stat-change">Este mês</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Margem de Lucro</div>
+            <div class="stat-value">97.7%</div>
+            <div class="stat-change positive">Excelente!</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+          <div class="card-header">
+            <h3 class="card-title">Custos por Prompt (Top 10)</h3>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Prompt</th>
+                  <th>Usos</th>
+                  <th>Tokens Médios</th>
+                  <th>Custo Médio</th>
+                  <th>Custo Total</th>
+                  <th>% do Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>peticao_inicial_civel</td>
+                  <td>423</td>
+                  <td>4,523</td>
+                  <td>R$ 0,18</td>
+                  <td>R$ 76,14</td>
+                  <td>26.5%</td>
+                </tr>
+                <tr>
+                  <td>contestacao_civel</td>
+                  <td>312</td>
+                  <td>3,891</td>
+                  <td>R$ 0,16</td>
+                  <td>R$ 49,92</td>
+                  <td>17.4%</td>
+                </tr>
+                <tr>
+                  <td>habeas_corpus</td>
+                  <td>187</td>
+                  <td>5,102</td>
+                  <td>R$ 0,20</td>
+                  <td>R$ 37,40</td>
+                  <td>13.0%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logs View -->
+      <div id="view-logs" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Logs de Auditoria</h3>
+            <div style="display: flex; gap: 0.5rem;">
+              <select class="btn btn-secondary btn-sm" style="padding: 0.375rem 0.75rem;">
+                <option>Todos os eventos</option>
+                <option>Criação</option>
+                <option>Atualização</option>
+                <option>Exclusão</option>
+                <option>Acesso</option>
+              </select>
+              <button class="btn btn-secondary btn-sm">Exportar</button>
+            </div>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Tipo</th>
+                  <th>Usuário</th>
+                  <th>Ação</th>
+                  <th>Recurso</th>
+                  <th>IP</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>13/12 02:00:12</td>
+                  <td><span class="badge badge-info">Deploy</span></td>
+                  <td>Sistema</td>
+                  <td>Redeploy forçado</td>
+                  <td>Render</td>
+                  <td>-</td>
+                  <td><span class="badge badge-success">OK</span></td>
+                </tr>
+                <tr>
+                  <td>13/12 01:59:45</td>
+                  <td><span class="badge badge-warning">Update</span></td>
+                  <td>rodolfo@rom.adv.br</td>
+                  <td>Atualização de prompt</td>
+                  <td>habeas_corpus.md</td>
+                  <td>177.32.14.89</td>
+                  <td><span class="badge badge-success">OK</span></td>
+                </tr>
+                <tr>
+                  <td>13/12 01:45:23</td>
+                  <td><span class="badge badge-purple">Auto</span></td>
+                  <td>Sistema Auto-Evolução</td>
+                  <td>Proposta de melhoria</td>
+                  <td>peticao_inicial_civel</td>
+                  <td>-</td>
+                  <td><span class="badge badge-success">Aprovada</span></td>
+                </tr>
+                <tr>
+                  <td>13/12 01:23:15</td>
+                  <td><span class="badge badge-info">Access</span></td>
+                  <td>adv@escritorio.com</td>
+                  <td>Geração de peça</td>
+                  <td>contestacao_civel</td>
+                  <td>201.45.78.12</td>
+                  <td><span class="badge badge-success">OK</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reports View -->
+      <div id="view-reports" style="display:none;">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">Relatórios Disponíveis</h3>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; padding: 1rem 0;">
+            <!-- Relatório 1 -->
+            <div class="card" style="cursor: pointer;" onclick="generateReport('usage')">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 48px; height: 48px; background: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                  📊
+                </div>
+                <div style="flex: 1;">
+                  <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Relatório de Uso</h4>
+                  <p style="font-size: 0.875rem; color: var(--text-secondary);">Análise completa de uso por parceiro e usuário</p>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm" style="margin-top: 1rem; width: 100%;">
+                Gerar Relatório
+              </button>
+            </div>
+
+            <!-- Relatório 2 -->
+            <div class="card" style="cursor: pointer;" onclick="generateReport('financial')">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 48px; height: 48px; background: var(--info); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                  💰
+                </div>
+                <div style="flex: 1;">
+                  <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Relatório Financeiro</h4>
+                  <p style="font-size: 0.875rem; color: var(--text-secondary);">Faturamento, custos e margem de lucro</p>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm" style="margin-top: 1rem; width: 100%;">
+                Gerar Relatório
+              </button>
+            </div>
+
+            <!-- Relatório 3 -->
+            <div class="card" style="cursor: pointer;" onclick="generateReport('quality')">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 48px; height: 48px; background: var(--purple); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                  ⭐
+                </div>
+                <div style="flex: 1;">
+                  <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Relatório de Qualidade</h4>
+                  <p style="font-size: 0.875rem; color: var(--text-secondary);">Métricas de qualidade e satisfação</p>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm" style="margin-top: 1rem; width: 100%;">
+                Gerar Relatório
+              </button>
+            </div>
+
+            <!-- Relatório 4 -->
+            <div class="card" style="cursor: pointer;" onclick="generateReport('learning')">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <div style="width: 48px; height: 48px; background: var(--warning); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                  🧠
+                </div>
+                <div style="flex: 1;">
+                  <h4 style="font-weight: 600; margin-bottom: 0.25rem;">Relatório de Aprendizado</h4>
+                  <p style="font-size: 0.875rem; color: var(--text-secondary);">Evolução e melhorias aplicadas</p>
+                </div>
+              </div>
+              <button class="btn btn-primary btn-sm" style="margin-top: 1rem; width: 100%;">
+                Gerar Relatório
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Relatórios Recentes -->
+        <div class="card" style="margin-top: 1.5rem;">
+          <div class="card-header">
+            <h3 class="card-title">Relatórios Gerados Recentemente</h3>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Relatório</th>
+                  <th>Período</th>
+                  <th>Gerado Por</th>
+                  <th>Data</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Relatório de Uso - Dezembro/2025</td>
+                  <td>01/12 - 13/12</td>
+                  <td>rodolfo@rom.adv.br</td>
+                  <td>13/12/2025 00:15</td>
+                  <td>
+                    <button class="btn btn-secondary btn-sm">Download PDF</button>
+                  </td>
+                </tr>
+                <tr>
+                  <td>Relatório Financeiro - Novembro/2025</td>
+                  <td>01/11 - 30/11</td>
+                  <td>rodolfo@rom.adv.br</td>
+                  <td>01/12/2025 09:30</td>
+                  <td>
+                    <button class="btn btn-secondary btn-sm">Download PDF</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quality View -->
+      <div id="view-quality" style="display:none;">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Score Médio de Qualidade</div>
+            <div class="stat-value">94.2%</div>
+            <div class="stat-change positive">↑ +2.1% este mês</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Peças sem Edição</div>
+            <div class="stat-value">78%</div>
+            <div class="stat-change positive">↑ +5% vs mês anterior</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Tempo Médio de Geração</div>
+            <div class="stat-value">12.3s</div>
+            <div class="stat-change positive">↓ -1.2s otimização</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Satisfação NPS</div>
+            <div class="stat-value">92</div>
+            <div class="stat-change positive">Excelente</div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Qualidade por Tipo de Peça</h3>
+            </div>
+            <canvas id="qualityChart" height="80"></canvas>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title">Evolução da Qualidade</h3>
+            </div>
+            <canvas id="qualityTrendChart" height="80"></canvas>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Dados mock
+    let notifications = [];
+    let improvements = [];
+
+    // Theme Toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const currentTheme = html.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', newTheme);
+      document.getElementById('theme-icon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Navigation
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const view = item.getAttribute('data-view');
+
+        // Update active state
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+
+        // Show view
+        document.querySelectorAll('[id^="view-"]').forEach(v => v.style.display = 'none');
+        document.getElementById(`view-${view}`).style.display = 'block';
+      });
+    });
+
+    // Load data
+    async function loadData() {
+      try {
+        // Load notifications
+        const notifsResponse = await fetch('/api/v2/prompts/notifications?unread=true');
+        const notifsData = await notifsResponse.json();
+        notifications = notifsData.notifications || [];
+        document.getElementById('notif-count').textContent = notifications.length;
+
+        // Load improvements (mock)
+        document.getElementById('improvements-count').textContent = '5';
+
+        // Update charts
+        createUsageChart();
+        createPromptsChart();
+      } catch (error) {
+        console.error('Erro ao carregar dados:', error);
+      }
+    }
+
+    // Charts
+    function createUsageChart() {
+      const ctx = document.getElementById('usageChart');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+          datasets: [{
+            label: 'Peças Geradas',
+            data: [42, 58, 51, 63, 48, 31, 49],
+            borderColor: '#ab68ff',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            tension: 0.4,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true, grid: { display: false } },
+            x: { grid: { display: false } }
+          }
+        }
+      });
+    }
+
+    function createPromptsChart() {
+      const ctx = document.getElementById('promptsChart');
+      new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Petição Inicial', 'Contestação', 'Habeas Corpus', 'Outros'],
+          datasets: [{
+            data: [35, 25, 20, 20],
+            backgroundColor: ['#ab68ff', '#ab68ff', '#8B5CF6', '#F59E0B']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom' }
+          }
+        }
+      });
+    }
+
+    // Actions
+    function markAllRead() {
+      alert('Todas as notificações marcadas como lidas!');
+    }
+
+    async function approveImprovement(id) {
+      if (confirm('Aprovar esta melhoria? Ela será aplicada ao prompt global e todos os parceiros serão notificados.')) {
+        alert(`Melhoria ${id} aprovada! Aplicando aos prompts globais...`);
+        // TODO: Chamar API real
+      }
+    }
+
+    function compareImprovement(id) {
+      alert(`Abrindo comparador de versões para ${id}...`);
+      // TODO: Abrir modal com diff
+    }
+
+    function rejectImprovement(id) {
+      const motivo = prompt('Motivo da rejeição (opcional):');
+      alert(`Melhoria ${id} rejeitada. Motivo: ${motivo || 'Não especificado'}`);
+      // TODO: Chamar API real
+    }
+
+    function generateReport(type) {
+      alert(`Gerando relatório de ${type}... (em breve!)`);
+      // TODO: Chamar API real e gerar PDF
+    }
+
+    // Additional Charts
+    function createRevenueChart() {
+      const ctx = document.getElementById('revenueChart');
+      if (!ctx) return;
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+          datasets: [{
+            label: 'Faturamento',
+            data: [8200, 8900, 9200, 9800, 10200, 10800, 11200, 11800, 12100, 12450, 12800, 13200],
+            backgroundColor: '#ab68ff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+    }
+
+    function createPlansChart() {
+      const ctx = document.getElementById('plansChart');
+      if (!ctx) return;
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Enterprise', 'Pro', 'Trial'],
+          datasets: [{
+            data: [40, 45, 15],
+            backgroundColor: ['#8B5CF6', '#ab68ff', '#F59E0B']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      });
+    }
+
+    function createQualityChart() {
+      const ctx = document.getElementById('qualityChart');
+      if (!ctx) return;
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Petição Inicial', 'Contestação', 'Habeas Corpus', 'Apelação'],
+          datasets: [{
+            label: 'Score de Qualidade (%)',
+            data: [95, 92, 98, 91],
+            backgroundColor: '#ab68ff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true, max: 100 }
+          }
+        }
+      });
+    }
+
+    function createQualityTrendChart() {
+      const ctx = document.getElementById('qualityTrendChart');
+      if (!ctx) return;
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
+          datasets: [{
+            label: 'Qualidade Média (%)',
+            data: [88, 89, 90, 91, 91, 92, 92, 93, 93, 94, 94, 94.2],
+            borderColor: '#ab68ff',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: false, min: 85, max: 100 }
+          }
+        }
+      });
+    }
+
+    // Initialize
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+
+    loadData();
+
+    // Create additional charts on view change
+    document.querySelectorAll('.nav-item').forEach(item => {
+      const originalClick = item.onclick;
+      item.addEventListener('click', (e) => {
+        const view = item.getAttribute('data-view');
+        setTimeout(() => {
+          if (view === 'billing') {
+            createRevenueChart();
+            createPlansChart();
+          } else if (view === 'quality') {
+            createQualityChart();
+            createQualityTrendChart();
+          }
+        }, 100);
+      });
+    });
+  </script>
+</body>
+</html>

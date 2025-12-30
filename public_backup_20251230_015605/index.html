@@ -1,0 +1,2624 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ROM Agent</title>
+
+    <!-- PWA Support -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2F2F2F">
+
+    <!-- iOS Specific -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ROM Agent">
+
+    <!-- Android Specific -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="ROM Agent">
+
+    <!-- Prevent zoom on double tap (iOS) -->
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-0: #0E0E0E;
+            --bg-1: #171717;
+            --bg-2: #2F2F2F;
+            --bg-3: #3E3E3E;
+            --text-primary: #ECECEC;
+            --text-secondary: #9B9B9B;
+            --text-tertiary: #6B6B6B;
+            --border: #3E3E3E;
+            --accent: #AB7843;
+            --accent-hover: #C48854;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-0);
+            color: var(--text-primary);
+            height: 100vh;
+            overflow: hidden;
+            /* iOS Safari viewport fix */
+            min-height: -webkit-fill-available;
+            /* Smooth scroll */
+            -webkit-overflow-scrolling: touch;
+            /* Prevent text size adjustment on iOS */
+            -webkit-text-size-adjust: 100%;
+            /* Safe area for notch (iPhone X+) */
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }
+
+        .app {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            width: 260px;
+            background: var(--bg-1);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 14px 12px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .new-chat-btn, .new-project-btn {
+            width: 100%;
+            padding: 10px 14px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.15s;
+            /* Touch optimization */
+            min-height: 44px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .new-chat-btn:hover, .new-project-btn:hover {
+            background: var(--bg-2);
+        }
+
+        .new-project-btn {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border-color: rgba(139, 92, 246, 0.3);
+            color: #8b5cf6;
+            font-weight: 500;
+        }
+
+        .new-project-btn:hover {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+            border-color: rgba(139, 92, 246, 0.5);
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .nav-section {
+            padding: 8px 12px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            padding: 8px 6px 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-item {
+            padding: 8px 10px;
+            margin: 2px 0;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.15s;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-2);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: var(--bg-2);
+            color: var(--text-primary);
+        }
+
+        /* Conversation Items */
+        .conversation-item {
+            padding: 8px 10px;
+            margin: 2px 0;
+            border-radius: 6px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            transition: all 0.15s;
+            position: relative;
+        }
+
+        .conversation-item:hover {
+            background: var(--bg-2);
+            color: var(--text-primary);
+        }
+
+        .conversation-item:hover .conversation-actions {
+            opacity: 1;
+        }
+
+        .conversation-item.active {
+            background: var(--bg-2);
+            color: var(--text-primary);
+        }
+
+        .conversation-title {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .conversation-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.15s;
+        }
+
+        .conversation-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            padding: 2px 4px;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+
+        .conversation-btn:hover {
+            background: var(--bg-3);
+            color: var(--text-primary);
+        }
+
+        .conversation-date-group {
+            margin-bottom: 16px;
+        }
+
+        .conversation-date-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            font-weight: 600;
+            padding: 8px 6px 6px;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-footer {
+            padding: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .user-info:hover {
+            background: var(--bg-2);
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            background: var(--bg-3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .user-name {
+            font-size: 13px;
+            color: var(--text-primary);
+        }
+
+        /* ========== MAIN ========== */
+        .main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-0);
+        }
+
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .messages {
+            flex: 1;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 32px 24px 80px;
+        }
+
+        /* Welcome */
+        .welcome {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+        }
+
+        .welcome-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--bg-2);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 24px;
+        }
+
+        .welcome h1 {
+            font-size: 28px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .welcome p {
+            font-size: 15px;
+            color: var(--text-secondary);
+            max-width: 500px;
+            line-height: 1.5;
+        }
+
+        /* Messages */
+        .message {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: var(--bg-2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 16px;
+        }
+
+        .message.assistant .message-avatar {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .message-content {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .message-content p {
+            margin-bottom: 12px;
+        }
+
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .message-content code {
+            background: var(--bg-2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+        }
+
+        .message-content pre {
+            background: var(--bg-2);
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+
+        /* Loading */
+        .typing {
+            display: flex;
+            gap: 4px;
+            padding: 4px 0;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--text-tertiary);
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Input Area */
+        .input-area {
+            position: relative;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            transition: border-color 0.15s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--text-tertiary);
+        }
+
+        .input-box {
+            width: 100%;
+            background: transparent;
+            border: none;
+            padding: 14px 48px 14px 16px;
+            color: var(--text-primary);
+            font-size: 15px;
+            font-family: inherit;
+            resize: none;
+            min-height: 48px;
+            max-height: 200px;
+            outline: none;
+        }
+
+        .input-box::placeholder {
+            color: var(--text-tertiary);
+        }
+
+        /* Action buttons */
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.15s;
+            font-size: 13px;
+            /* Touch optimization */
+            min-height: 44px;
+            min-width: 44px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .action-btn:hover {
+            background: var(--bg-3);
+            border-color: var(--text-tertiary);
+            color: var(--text-primary);
+        }
+
+        .action-btn svg {
+            flex-shrink: 0;
+        }
+
+        .send-btn {
+            position: absolute;
+            right: 10px;
+            bottom: 10px;
+            width: 32px;
+            height: 32px;
+            background: var(--accent);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.15s;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: var(--accent-hover);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .send-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: #000;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-1);
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        /* Upload Area */
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent);
+            background: var(--bg-2);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--accent);
+            background: var(--bg-2);
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .upload-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--bg-2);
+            border-radius: 6px;
+        }
+
+        .file-icon {
+            font-size: 20px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        .file-remove {
+            background: transparent;
+            border: none;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            padding: 4px 8px;
+            font-size: 18px;
+        }
+
+        .file-remove:hover {
+            color: var(--text-primary);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-secondary {
+            background: var(--bg-2);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-3);
+        }
+
+        /* Projects */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .project-card {
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .project-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .project-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .project-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .project-meta {
+            font-size: 13px;
+            color: var(--text-tertiary);
+            margin-top: 8px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-tertiary);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                z-index: 100;
+                transition: left 0.3s;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+        }
+
+        /* Timbrado Watermark */
+        .letterhead {
+            position: fixed;
+            bottom: env(safe-area-inset-bottom, 20px);
+            right: env(safe-area-inset-right, 20px);
+            max-width: 200px;
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 1;
+            transition: opacity 0.3s;
+        }
+
+        .letterhead img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .letterhead {
+                max-width: 120px;
+                bottom: calc(env(safe-area-inset-bottom, 10px) + 80px);
+                right: env(safe-area-inset-right, 10px);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <button class="new-chat-btn" onclick="newChat()">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M8 3.5a.5.5 0 01.5.5v3.5H12a.5.5 0 010 1H8.5V12a.5.5 0 01-1 0V8.5H4a.5.5 0 010-1h3.5V4a.5.5 0 01.5-.5z"/>
+                    </svg>
+                    Nova conversa
+                </button>
+                <button class="new-project-btn" onclick="openNewProjectModal()" title="Criar Novo Projeto (estilo Claude.ai)">
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                        <path d="M2.5 3A1.5 1.5 0 001 4.5v7A1.5 1.5 0 002.5 13h11a1.5 1.5 0 001.5-1.5v-7A1.5 1.5 0 0013.5 3h-11zM2 4.5a.5.5 0 01.5-.5h11a.5.5 0 01.5.5V6H2V4.5zm12 7a.5.5 0 01-.5.5h-11a.5.5 0 01-.5-.5V7h12v4.5z"/>
+                        <path d="M8 3.5a.5.5 0 01.5.5v3.5H12a.5.5 0 010 1H8.5V12a.5.5 0 01-1 0V8.5H4a.5.5 0 010-1h3.5V4a.5.5 0 01.5-.5z"/>
+                    </svg>
+                    Novo Projeto
+                </button>
+            </div>
+
+            <div class="sidebar-nav">
+                <!-- Histórico de Conversas -->
+                <div class="nav-section" id="conversationsSection">
+                    <div class="nav-section-title">Histórico</div>
+                    <div id="conversationsList">
+                        <p style="color: var(--text-tertiary); font-size: 12px; padding: 8px 10px;">Carregando...</p>
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Principal</div>
+                    <div class="nav-item active" onclick="showView('chat')">
+                        <span>💬</span> Chat
+                    </div>
+                    <div class="nav-item" onclick="showView('projects')">
+                        <span>📁</span> Projetos ROM
+                    </div>
+                    <div class="nav-item" onclick="window.open('/kb-documents.html', '_blank')">
+                        <span>📚</span> Documentos Extraídos
+                    </div>
+                    <div class="nav-item" onclick="window.open('/rom-prompts.html', '_blank')">
+                        <span>⚖️</span> Prompts ROM (65)
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Ferramentas</div>
+                    <div class="nav-item" onclick="showView('extraction')">
+                        <span>🔧</span> Extração de Documentos
+                    </div>
+                    <div class="nav-item" onclick="window.open('/multi-agent-pipeline.html', '_blank')">
+                        <span>🤖</span> Multi-Agent Pipeline
+                    </div>
+                    <div class="nav-item" onclick="window.open('/analytics.html', '_blank')">
+                        <span>📊</span> Dashboard Analytics
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Avançado (ROM Only)</div>
+                    <div class="nav-item" onclick="showView('semantic')">
+                        <span>🔍</span> Busca Semântica
+                    </div>
+                    <div class="nav-item" onclick="showView('templates')">
+                        <span>📋</span> Modelos
+                    </div>
+                    <div class="nav-item" onclick="showView('versions')">
+                        <span>🕒</span> Versionamento
+                    </div>
+                    <div class="nav-item" onclick="showView('backups')">
+                        <span>💾</span> Backups
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Administração</div>
+                    <div class="nav-item" onclick="showView('settings')">
+                        <span>⚙️</span> Configurações
+                    </div>
+                    <div class="nav-item" onclick="showView('admin')">
+                        <span>👨‍💼</span> Painel Admin
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="nav-item" onclick="showSystemInfo()" style="margin-bottom: 8px;">
+                    <span>ℹ️</span> Sistema
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">ROM</div>
+                    <div class="user-name">ROM Agent v2.4.15</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main -->
+        <div class="main">
+            <div class="chat-container">
+                <!-- Chat View -->
+                <div id="chatView" class="messages">
+                    <div class="welcome" id="welcome">
+                        <div class="welcome-icon">⚖️</div>
+                        <h1>Como posso ajudar?</h1>
+                        <p>Assistente jurídico especializado em Direito brasileiro. Redação de peças, pesquisa de jurisprudência e análise legal.</p>
+                    </div>
+                </div>
+
+                <!-- Projects View -->
+                <div id="projectsView" class="messages hidden">
+                    <h1 style="margin-bottom: 20px;">Projetos ROM</h1>
+                    <button class="btn btn-primary" onclick="createProject()">+ Novo Projeto</button>
+                    <div class="projects-grid" id="projectsGrid">
+                        <!-- Projects will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- KB View -->
+                <div id="kbView" class="messages hidden">
+                    <h1 style="margin-bottom: 20px;">Knowledge Base</h1>
+                    <div class="upload-area" onclick="document.getElementById('kbFileInput').click()" ondrop="handleKBDrop(event)" ondragover="handleKBDragOver(event)" ondragleave="handleKBDragLeave(event)">
+                        <div class="upload-icon">📤</div>
+                        <div class="upload-text">
+                            <strong>Clique para selecionar</strong> ou arraste arquivos aqui<br>
+                            <small>PDF, DOCX, TXT (máx. 100MB por arquivo, 20 arquivos)</small>
+                        </div>
+                    </div>
+                    <input type="file" id="kbFileInput" multiple accept=".pdf,.doc,.docx,.txt" style="display: none;" onchange="handleKBFiles(this.files)">
+                    <div class="file-list" id="kbFileList"></div>
+                </div>
+
+                <!-- Extraction View -->
+                <div id="extractionView" class="messages hidden">
+                    <h1 style="margin-bottom: 20px;">Ferramentas de Extração</h1>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">Extraia texto de documentos usando 33 ferramentas gratuitas</p>
+                    <div class="upload-area" onclick="document.getElementById('extractFileInput').click()" ondrop="handleExtractDrop(event)" ondragover="handleKBDragOver(event)" ondragleave="handleKBDragLeave(event)">
+                        <div class="upload-icon">🔧</div>
+                        <div class="upload-text">
+                            <strong>Enviar para Extração</strong><br>
+                            <small>33 ferramentas processarão seu documento automaticamente</small>
+                        </div>
+                    </div>
+                    <input type="file" id="extractFileInput" multiple accept=".pdf,.doc,.docx" style="display: none;" onchange="handleExtractFiles(this.files)">
+                    <div class="file-list" id="extractFileList"></div>
+                </div>
+
+                <!-- Semantic Search View -->
+                <div id="semanticView" class="messages hidden">
+                    <h1 style="margin-bottom: 20px;">🔍 Busca Semântica</h1>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">TF-IDF local - sem custo de tokens</p>
+                    <div style="max-width: 600px;">
+                        <input type="text" id="semanticQuery" placeholder="Digite sua busca..." style="width: 100%; padding: 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); margin-bottom: 16px;">
+                        <button class="btn btn-primary" onclick="performSemanticSearch()">Buscar</button>
+                    </div>
+                    <div id="semanticResults" style="margin-top: 24px;"></div>
+                </div>
+
+                <!-- Templates View -->
+                <div id="templatesView" class="messages hidden">
+                    <h1 style="margin-bottom: 20px;">📋 Gerenciar Modelos</h1>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">Sistema de modelos com variáveis {{var}}</p>
+                    <button class="btn btn-primary" onclick="loadTemplates()">Carregar Modelos</button>
+                    <div id="templatesList" style="margin-top: 24px;"></div>
+                </div>
+
+                <!-- Versioning View -->
+                <div id="versionsView" class="messages hidden">
+                    <h1 style="margin-bottom: 20px;">🕒 Histórico de Versões</h1>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">Versionamento com diff e restore</p>
+                    <div style="max-width: 600px;">
+                        <input type="text" id="versionDocId" placeholder="ID do documento" style="width: 100%; padding: 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); margin-bottom: 16px;">
+                        <button class="btn btn-primary" onclick="loadVersions()">Ver Versões</button>
+                    </div>
+                    <div id="versionsList" style="margin-top: 24px;"></div>
+                </div>
+
+                <!-- Backups View -->
+                <div id="backupsView" class="messages hidden">
+                    <h1 style="margin-bottom: 20px;">💾 Status de Backups</h1>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">Diário automático às 03:00 - Retenção 7 dias</p>
+                    <button class="btn btn-primary" onclick="loadBackups()">Atualizar Lista</button>
+                    <button class="btn btn-secondary" onclick="createManualBackup()" style="margin-left: 8px;">Criar Backup Manual</button>
+                    <div id="backupsList" style="margin-top: 24px;"></div>
+                </div>
+
+                <!-- Settings View -->
+                <div id="settingsView" class="messages hidden">
+                    <h1 style="margin-bottom: 20px;">⚙️ Configurações</h1>
+                    <div style="max-width: 600px;">
+                        <div style="margin-bottom: 24px;">
+                            <h3 style="margin-bottom: 12px;">Modelo Padrão</h3>
+                            <select id="defaultModel" style="width: 100%; padding: 12px; background: var(--bg-2); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary);">
+                                <option value="amazon.nova-pro-v1:0">Amazon Nova Pro</option>
+                                <option value="amazon.nova-lite-v1:0">Amazon Nova Lite</option>
+                                <option value="anthropic.claude-sonnet-4-5-20251022-v2:0">Claude Sonnet 4.5</option>
+                                <option value="anthropic.claude-haiku-4-5-20251001-v1:0">Claude Haiku 4.5</option>
+                            </select>
+                        </div>
+                        <div style="margin-bottom: 24px;">
+                            <h3 style="margin-bottom: 12px;">Cache</h3>
+                            <button class="btn btn-secondary" onclick="clearCache()">Limpar Cache</button>
+                        </div>
+                        <div style="margin-bottom: 24px;">
+                            <h3 style="margin-bottom: 12px;">Estatísticas</h3>
+                            <div id="statsDisplay" style="color: var(--text-secondary);"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Admin View -->
+                <div id="adminView" class="messages hidden">
+                    <h1 style="margin-bottom: 20px;">👨‍💼 Painel Administrativo</h1>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 24px;">
+                        <div style="background: var(--bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+                            <h3 style="margin-bottom: 12px;">📊 Monitoramento</h3>
+                            <button class="btn btn-secondary" style="width: 100%;" onclick="window.open('/analytics.html', '_blank')">Abrir Analytics</button>
+                        </div>
+                        <div style="background: var(--bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+                            <h3 style="margin-bottom: 12px;">🧹 Limpeza KB</h3>
+                            <button class="btn btn-secondary" style="width: 100%;" onclick="cleanKB()">Limpar Órfãos</button>
+                        </div>
+                        <div style="background: var(--bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+                            <h3 style="margin-bottom: 12px;">🔄 Modelos AI</h3>
+                            <button class="btn btn-secondary" style="width: 100%;" onclick="checkNewModels()">Verificar Novos</button>
+                        </div>
+                        <div style="background: var(--bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+                            <h3 style="margin-bottom: 12px;">👥 Cadastro de Usuários ROM</h3>
+                            <p style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 12px;">Gerenciar equipe interna</p>
+
+                            <!-- Formulário de cadastro -->
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <input type="text" id="userName" placeholder="Nome completo"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+
+                                <input type="email" id="userEmail" placeholder="Email"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+
+                                <input type="password" id="userPassword" placeholder="Senha"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+
+                                <select id="userRole"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+                                    <option value="">Selecione a função</option>
+                                    <option value="admin">Admin (Acesso Total)</option>
+                                    <option value="developer">Developer (Técnico + Admin)</option>
+                                    <option value="manager">Manager (Gestão)</option>
+                                    <option value="operator">Operator (Operação)</option>
+                                    <option value="viewer">Viewer (Visualização)</option>
+                                </select>
+
+                                <input type="text" id="userDepartment" placeholder="Departamento (ex: Jurídico, TI)"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+
+                                <input type="tel" id="userPhone" placeholder="Telefone (opcional)"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+
+                                <input type="text" id="userOAB" placeholder="OAB (opcional)"
+                                    style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); font-size: 13px;">
+
+                                <button class="btn btn-primary" style="width: 100%; margin-top: 8px;" onclick="createUser()">
+                                    Criar Usuário
+                                </button>
+
+                                <button class="btn btn-secondary" style="width: 100%;" onclick="listUsers()">
+                                    Listar Usuários
+                                </button>
+                            </div>
+
+                            <!-- Lista de usuários -->
+                            <div id="usersListContainer" style="margin-top: 16px; display: none;">
+                                <h4 style="font-size: 13px; margin-bottom: 8px; color: var(--text-secondary);">Usuários Cadastrados:</h4>
+                                <div id="usersList" style="max-height: 300px; overflow-y: auto;"></div>
+                            </div>
+                        </div>
+                        <div style="background: var(--bg-2); padding: 20px; border-radius: 8px; border: 1px solid var(--border);">
+                            <h3 style="margin-bottom: 12px;">📄 Timbrado Parceiro</h3>
+                            <p style="font-size: 12px; color: var(--text-tertiary); margin-bottom: 12px;">Upload de timbrado personalizado</p>
+                            <input type="text" id="partnerIdInput" placeholder="ID do Parceiro (ex: escritorio-xyz)" style="width: 100%; padding: 8px; background: var(--bg-1); border: 1px solid var(--border); border-radius: 4px; color: var(--text-primary); margin-bottom: 8px; font-size: 13px;">
+                            <input type="file" id="letterheadUploadInput" accept=".png,.jpg,.jpeg,.svg" style="display: none;" onchange="uploadPartnerLetterhead(event)">
+                            <button class="btn btn-secondary" style="width: 100%;" onclick="document.getElementById('letterheadUploadInput').click()">Escolher Arquivo</button>
+                            <div id="letterheadPreview" style="margin-top: 12px; text-align: center; display: none;">
+                                <p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 4px;">Preview:</p>
+                                <img id="letterheadPreviewImg" style="max-width: 100%; max-height: 100px; border: 1px solid var(--border); border-radius: 4px;" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-wrapper">
+                    <!-- Botões de ação antes do textarea -->
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px; padding: 0 12px;">
+                        <!-- Label funciona nativamente em mobile sem JavaScript -->
+                        <label for="fileUploadInput" class="action-btn" title="Anexar arquivo ao KB" style="margin: 0;">
+                            <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
+                                <path d="M4.5 3a2.5 2.5 0 015 0v9a1.5 1.5 0 01-3 0V5a.5.5 0 011 0v7a.5.5 0 001 0V3a1.5 1.5 0 10-3 0v9a2.5 2.5 0 005 0V5a.5.5 0 011 0v7a3.5 3.5 0 11-7 0V3z"/>
+                            </svg>
+                            <span style="font-size: 12px;">Anexar arquivo</span>
+                        </label>
+                        <button class="action-btn" onclick="exportConversation()" title="Exportar conversa atual">
+                            <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
+                                <path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/>
+                                <path d="M7.646 11.854a.5.5 0 00.708 0l3-3a.5.5 0 00-.708-.708L8.5 10.293V1.5a.5.5 0 00-1 0v8.793L5.354 8.146a.5.5 0 10-.708.708l3 3z"/>
+                            </svg>
+                            <span style="font-size: 12px;">Exportar</span>
+                        </button>
+                        <label for="conversationUploadInput" class="action-btn" title="Importar conversa" style="margin: 0;">
+                            <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor">
+                                <path d="M.5 9.9a.5.5 0 01.5.5v2.5a1 1 0 001 1h12a1 1 0 001-1v-2.5a.5.5 0 011 0v2.5a2 2 0 01-2 2H2a2 2 0 01-2-2v-2.5a.5.5 0 01.5-.5z"/>
+                                <path d="M7.646 1.146a.5.5 0 01.708 0l3 3a.5.5 0 01-.708.708L8.5 2.707V11.5a.5.5 0 01-1 0V2.707L5.354 4.854a.5.5 0 11-.708-.708l3-3z"/>
+                            </svg>
+                            <span style="font-size: 12px;">Importar</span>
+                        </label>
+                    </div>
+
+                    <!-- Input file oculto para anexos -->
+                    <input type="file" id="fileUploadInput" style="display: none;" multiple accept=".pdf,.docx,.txt,.md,.json" onchange="handleFileUpload(event)">
+                    <input type="file" id="conversationUploadInput" style="display: none;" accept=".json" onchange="handleConversationUpload(event)">
+
+                    <textarea
+                        id="messageInput"
+                        class="input-box"
+                        placeholder="Envie uma mensagem..."
+                        rows="1"
+                        onkeydown="handleKeyDown(event)"
+                        oninput="autoResize(this)"
+                    ></textarea>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <svg viewBox="0 0 16 16">
+                            <path d="M.5 1.163A1 1 0 011.97.28l12.868 6.837a1 1 0 010 1.766L1.969 15.72A1 1 0 01.5 14.836V10.33a1 1 0 011-1h3.134a.25.25 0 00.192-.41L.5 4.845V1.163z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const views = ['chatView', 'projectsView', 'kbView', 'extractionView', 'semanticView', 'templatesView', 'versionsView', 'backupsView', 'settingsView', 'adminView'];
+        let currentView = 'chatView';
+
+        // Auto-resize textarea
+        function autoResize(el) {
+            el.style.height = 'auto';
+            el.style.height = Math.min(el.scrollHeight, 200) + 'px';
+        }
+
+        // Handle Enter key
+        function handleKeyDown(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        }
+
+        // Show view
+        function showView(view) {
+            views.forEach(v => {
+                document.getElementById(v).classList.add('hidden');
+            });
+
+            const viewMap = {
+                'chat': 'chatView',
+                'projects': 'projectsView',
+                'kb': 'kbView',
+                'extraction': 'extractionView',
+                'semantic': 'semanticView',
+                'templates': 'templatesView',
+                'versions': 'versionsView',
+                'backups': 'backupsView',
+                'settings': 'settingsView',
+                'admin': 'adminView'
+            };
+
+            const targetView = viewMap[view];
+            document.getElementById(targetView).classList.remove('hidden');
+            currentView = targetView;
+
+            // Update nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+
+            // Load data for specific views
+            if (view === 'projects') loadProjects();
+            if (view === 'backups') loadBackups();
+            if (view === 'settings') loadCacheStats();
+        }
+
+        // New chat
+        function newChat() {
+            fetch('/api/clear', { method: 'POST' });
+            const chatView = document.getElementById('chatView');
+            chatView.innerHTML = `
+                <div class="welcome" id="welcome">
+                    <div class="welcome-icon">⚖️</div>
+                    <h1>Como posso ajudar?</h1>
+                    <p>Assistente jurídico especializado em Direito brasileiro. Redação de peças, pesquisa de jurisprudência e análise legal.</p>
+                </div>
+            `;
+            currentConversationId = null; // Reset current conversation
+            showView('chat');
+            loadConversations(); // Reload conversations list
+        }
+
+        // Add message
+        function addMessage(text, sender) {
+            const welcome = document.getElementById('welcome');
+            if (welcome) welcome.remove();
+
+            const chatView = document.getElementById('chatView');
+            const div = document.createElement('div');
+            div.className = `message ${sender}`;
+
+            const avatar = sender === 'assistant' ? '⚖️' : '👤';
+            let content = sender === 'assistant' ? marked.parse(text) : `<p>${escapeHtml(text)}</p>`;
+
+            div.innerHTML = `
+                <div class="message-avatar">${avatar}</div>
+                <div class="message-content">${content}</div>
+            `;
+
+            chatView.appendChild(div);
+            chatView.parentElement.scrollTop = chatView.parentElement.scrollHeight;
+        }
+
+        // Add loading
+        function addLoading() {
+            const id = 'loading-' + Date.now();
+            const chatView = document.getElementById('chatView');
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'message assistant';
+            div.innerHTML = `
+                <div class="message-avatar">⚖️</div>
+                <div class="message-content">
+                    <div class="typing">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            chatView.appendChild(div);
+            chatView.parentElement.scrollTop = chatView.parentElement.scrollHeight;
+            return id;
+        }
+
+        // Remove loading
+        function removeLoading(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // Send message
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            addMessage(message, 'user');
+            input.value = '';
+            input.style.height = 'auto';
+
+            const loadingId = addLoading();
+            document.getElementById('sendBtn').disabled = true;
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+
+                const data = await response.json();
+                removeLoading(loadingId);
+
+                if (data.error) {
+                    addMessage('❌ ' + data.error, 'assistant');
+                } else {
+                    addMessage(data.response, 'assistant');
+
+                    // Update current conversation ID if returned
+                    if (data.conversationId) {
+                        const wasNewConversation = !currentConversationId;
+                        currentConversationId = data.conversationId;
+
+                        // Reload conversations list if new conversation was created
+                        if (wasNewConversation) {
+                            loadConversations();
+                        }
+                    }
+                }
+            } catch (error) {
+                removeLoading(loadingId);
+                addMessage('❌ Erro de conexão', 'assistant');
+            }
+
+            document.getElementById('sendBtn').disabled = false;
+            input.focus();
+        }
+
+        // Projects
+        async function loadProjects() {
+            try {
+                const response = await fetch('/api/projects/list');
+                const projects = await response.json();
+
+                const grid = document.getElementById('projectsGrid');
+                if (projects.length === 0) {
+                    grid.innerHTML = '<p style="color: var(--text-secondary);">Nenhum projeto ainda. Clique em "Novo Projeto" para começar.</p>';
+                    return;
+                }
+
+                grid.innerHTML = projects.map(p => `
+                    <div class="project-card" onclick="openProject('${p.id}')">
+                        <div class="project-header">
+                            <div class="project-icon">${p.icon || '📁'}</div>
+                            <div>
+                                <div class="project-title">${p.name}</div>
+                                <div class="project-meta">${p.documents || 0} documentos</div>
+                            </div>
+                        </div>
+                        <div class="project-meta">${new Date(p.lastModified).toLocaleDateString('pt-BR')}</div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Erro ao carregar projetos:', error);
+            }
+        }
+
+        function createProject() {
+            const name = prompt('Nome do projeto:');
+            if (!name) return;
+
+            fetch('/api/projects/create', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name })
+            }).then(() => loadProjects());
+        }
+
+        function openProject(id) {
+            alert(`Abrindo projeto ${id} (funcionalidade em desenvolvimento)`);
+        }
+
+        // KB Upload
+        function handleKBDragOver(e) {
+            e.preventDefault();
+            e.currentTarget.classList.add('dragover');
+        }
+
+        function handleKBDragLeave(e) {
+            e.currentTarget.classList.remove('dragover');
+        }
+
+        function handleKBDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            handleKBFiles(e.dataTransfer.files);
+        }
+
+        async function handleKBFiles(files) {
+            const fileList = document.getElementById('kbFileList');
+
+            for (const file of files) {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <div class="file-icon">📄</div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${formatSize(file.size)} - Processando...</div>
+                    </div>
+                `;
+                fileList.appendChild(item);
+
+                // Upload
+                const formData = new FormData();
+                formData.append('files', file);
+
+                try {
+                    const response = await fetch('/api/upload-documents', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+
+                    item.querySelector('.file-size').textContent =
+                        `${formatSize(file.size)} - ✅ Processado`;
+                } catch (error) {
+                    item.querySelector('.file-size').textContent =
+                        `${formatSize(file.size)} - ❌ Erro`;
+                }
+            }
+        }
+
+        // Extraction
+        function handleExtractDrop(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('dragover');
+            handleExtractFiles(e.dataTransfer.files);
+        }
+
+        async function handleExtractFiles(files) {
+            const fileList = document.getElementById('extractFileList');
+
+            for (const file of files) {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <div class="file-icon">🔧</div>
+                    <div class="file-info">
+                        <div class="file-name">${file.name}</div>
+                        <div class="file-size">${formatSize(file.size)} - Extraindo com 33 ferramentas...</div>
+                    </div>
+                `;
+                fileList.appendChild(item);
+
+                const formData = new FormData();
+                formData.append('files', file);
+
+                try {
+                    const response = await fetch('/api/upload-documents', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await response.json();
+
+                    const extraction = data.extractions[0];
+                    item.querySelector('.file-size').textContent =
+                        `${formatSize(file.size)} - ✅ ${extraction.textLength} caracteres extraídos`;
+                } catch (error) {
+                    item.querySelector('.file-size').textContent =
+                        `${formatSize(file.size)} - ❌ Erro na extração`;
+                }
+            }
+        }
+
+        // Utils
+        function formatSize(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Load history
+        async function loadHistory() {
+            try {
+                const response = await fetch('/api/history');
+                const data = await response.json();
+
+                if (data.history && data.history.length > 0) {
+                    const welcome = document.getElementById('welcome');
+                    if (welcome) welcome.remove();
+
+                    data.history.forEach(msg => {
+                        const sender = msg.role === 'user' ? 'user' : 'assistant';
+                        addMessage(msg.content, sender);
+                    });
+                }
+            } catch (error) {
+                console.error('Erro ao carregar histórico:', error);
+            }
+        }
+
+        // ====== PHASE 4 & 5 FUNCTIONS ======
+
+        // Semantic Search
+        async function performSemanticSearch() {
+            const query = document.getElementById('semanticQuery').value.trim();
+            if (!query) return;
+
+            const resultsDiv = document.getElementById('semanticResults');
+            resultsDiv.innerHTML = '<p style="color: var(--text-secondary);">Buscando...</p>';
+
+            try {
+                const response = await fetch('/api/semantic-search', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query, limit: 10 })
+                });
+                const results = await response.json();
+
+                if (results.length === 0) {
+                    resultsDiv.innerHTML = '<p style="color: var(--text-secondary);">Nenhum resultado encontrado.</p>';
+                    return;
+                }
+
+                resultsDiv.innerHTML = results.map(r => `
+                    <div style="background: var(--bg-2); padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <strong>${r.filename}</strong>
+                            <span style="color: var(--accent);">${(r.score * 100).toFixed(1)}%</span>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 13px;">${r.preview || r.content.substring(0, 200)}...</p>
+                    </div>
+                `).join('');
+            } catch (error) {
+                resultsDiv.innerHTML = '<p style="color: #e53e3e;">Erro ao buscar: ' + error.message + '</p>';
+            }
+        }
+
+        // Modelos de Documentos
+        async function loadTemplates() {
+            const listDiv = document.getElementById('templatesList');
+            listDiv.innerHTML = '<p style="color: var(--text-secondary);">Carregando...</p>';
+
+            try {
+                const response = await fetch('/api/templates/list');
+                const templates = await response.json();
+
+                if (templates.length === 0) {
+                    listDiv.innerHTML = '<p style="color: var(--text-secondary);">Nenhum modelo disponível.</p>';
+                    return;
+                }
+
+                listDiv.innerHTML = templates.map(t => `
+                    <div style="background: var(--bg-2); padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);">
+                        <h3 style="margin-bottom: 8px;">${t.name}</h3>
+                        <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">${t.description || 'Sem descrição'}</p>
+                        <button class="btn btn-secondary" onclick="renderTemplate('${t.id}')">Usar Modelo</button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                listDiv.innerHTML = '<p style="color: #e53e3e;">Erro: ' + error.message + '</p>';
+            }
+        }
+
+        function renderTemplate(templateId) {
+            alert('Função de renderização de modelo ainda em desenvolvimento para: ' + templateId);
+        }
+
+        // Versioning
+        async function loadVersions() {
+            const docId = document.getElementById('versionDocId').value.trim();
+            if (!docId) {
+                alert('Por favor, insira o ID do documento');
+                return;
+            }
+
+            const listDiv = document.getElementById('versionsList');
+            listDiv.innerHTML = '<p style="color: var(--text-secondary);">Carregando versões...</p>';
+
+            try {
+                const response = await fetch(`/api/versions/${docId}`);
+                const versions = await response.json();
+
+                if (versions.length === 0) {
+                    listDiv.innerHTML = '<p style="color: var(--text-secondary);">Nenhuma versão encontrada.</p>';
+                    return;
+                }
+
+                listDiv.innerHTML = versions.map(v => `
+                    <div style="background: var(--bg-2); padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                            <strong>Versão ${v.version}</strong>
+                            <span style="color: var(--text-tertiary); font-size: 13px;">${new Date(v.timestamp).toLocaleString('pt-BR')}</span>
+                        </div>
+                        <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 12px;">${v.metadata?.author || 'Desconhecido'}</p>
+                        <button class="btn btn-secondary" onclick="restoreVersion('${docId}', '${v.id}')">Restaurar</button>
+                    </div>
+                `).join('');
+            } catch (error) {
+                listDiv.innerHTML = '<p style="color: #e53e3e;">Erro: ' + error.message + '</p>';
+            }
+        }
+
+        async function restoreVersion(docId, versionId) {
+            if (!confirm('Deseja restaurar esta versão?')) return;
+
+            try {
+                const response = await fetch('/api/versions/restore', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ documentId: docId, versionId })
+                });
+                const data = await response.json();
+                alert('Versão restaurada com sucesso!');
+                loadVersions();
+            } catch (error) {
+                alert('Erro ao restaurar: ' + error.message);
+            }
+        }
+
+        // Backups
+        async function loadBackups() {
+            const listDiv = document.getElementById('backupsList');
+            listDiv.innerHTML = '<p style="color: var(--text-secondary);">Carregando...</p>';
+
+            try {
+                const response = await fetch('/api/backup/status');
+                const backups = await response.json();
+
+                if (backups.length === 0) {
+                    listDiv.innerHTML = '<p style="color: var(--text-secondary);">Nenhum backup disponível.</p>';
+                    return;
+                }
+
+                listDiv.innerHTML = backups.map(b => `
+                    <div style="background: var(--bg-2); padding: 16px; border-radius: 8px; margin-bottom: 12px; border: 1px solid var(--border);">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong>${b.filename}</strong>
+                                <p style="color: var(--text-secondary); font-size: 13px; margin-top: 4px;">
+                                    ${formatSize(b.size)} - ${new Date(b.timestamp).toLocaleString('pt-BR')}
+                                </p>
+                            </div>
+                            <button class="btn btn-secondary" onclick="downloadBackup('${b.filename}')">Baixar</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                listDiv.innerHTML = '<p style="color: #e53e3e;">Erro: ' + error.message + '</p>';
+            }
+        }
+
+        async function createManualBackup() {
+            if (!confirm('Criar backup manual agora?')) return;
+
+            try {
+                const response = await fetch('/api/backup/create', { method: 'POST' });
+                const result = await response.json();
+                alert('Backup criado com sucesso: ' + result.filename);
+                loadBackups();
+            } catch (error) {
+                alert('Erro ao criar backup: ' + error.message);
+            }
+        }
+
+        function downloadBackup(filename) {
+            window.location.href = `/api/backup/download/${filename}`;
+        }
+
+        // Settings
+        async function clearCache() {
+            if (!confirm('Limpar todo o cache?')) return;
+
+            try {
+                await fetch('/api/cache/clear', { method: 'POST' });
+                alert('Cache limpo com sucesso!');
+                loadCacheStats();
+            } catch (error) {
+                alert('Erro: ' + error.message);
+            }
+        }
+
+        async function loadCacheStats() {
+            try {
+                const response = await fetch('/api/cache/statistics');
+                const data = await response.json();
+                const statsDiv = document.getElementById('statsDisplay');
+
+                if (data.stats) {
+                    statsDiv.innerHTML = `
+                        <p>Cache Hits: ${data.stats.hits || 0}</p>
+                        <p>Cache Misses: ${data.stats.misses || 0}</p>
+                        <p>Hit Rate: ${data.stats.hitRate || 0}%</p>
+                    `;
+                }
+            } catch (error) {
+                console.error('Erro ao carregar stats:', error);
+            }
+        }
+
+        // Admin Functions
+        async function cleanKB() {
+            if (!confirm('Limpar arquivos órfãos do KB?')) return;
+
+            try {
+                const response = await fetch('/api/kb/clean-orphans', { method: 'POST' });
+                const result = await response.json();
+                alert(`Limpeza concluída! ${result.result.removed} arquivos removidos.`);
+            } catch (error) {
+                alert('Erro: ' + error.message);
+            }
+        }
+
+        async function checkNewModels() {
+            try {
+                const response = await fetch('/api/models/check', { method: 'POST' });
+                const result = await response.json();
+                alert(`Verificação concluída! ${result.result.newSuggestions} novos modelos encontrados.`);
+            } catch (error) {
+                alert('Erro: ' + error.message);
+            }
+        }
+
+        function manageUsers() {
+            alert('Gerenciamento de usuários em desenvolvimento');
+        }
+
+        // Upload de timbrado do parceiro
+        async function uploadPartnerLetterhead(event) {
+            const partnerId = document.getElementById('partnerIdInput').value.trim();
+            const file = event.target.files[0];
+
+            if (!partnerId) {
+                alert('Por favor, insira o ID do parceiro');
+                event.target.value = '';
+                return;
+            }
+
+            if (!file) return;
+
+            // Validar arquivo
+            const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml'];
+            if (!allowedTypes.includes(file.type)) {
+                alert('Formato inválido! Use PNG, JPG ou SVG');
+                event.target.value = '';
+                return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Arquivo muito grande! Máximo 5MB');
+                event.target.value = '';
+                return;
+            }
+
+            // Preview
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('letterheadPreviewImg').src = e.target.result;
+                document.getElementById('letterheadPreview').style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+
+            // Upload
+            try {
+                const formData = new FormData();
+                formData.append('letterhead', file);
+
+                const response = await fetch(`/api/partners/${partnerId}/letterhead`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`Timbrado do parceiro ${partnerId} enviado com sucesso!\nURL: ${result.letterheadUrl}`);
+                } else {
+                    alert('Erro: ' + (result.error || 'Erro desconhecido'));
+                    document.getElementById('letterheadPreview').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Erro no upload:', error);
+                alert('Erro no upload: ' + error.message);
+                document.getElementById('letterheadPreview').style.display = 'none';
+            }
+
+            event.target.value = '';
+        }
+
+        // ============================================
+        // GERENCIAMENTO DE USUÁRIOS DA EQUIPE ROM
+        // ============================================
+
+        // Criar novo usuário
+        async function createUser() {
+            try {
+                const name = document.getElementById('userName').value.trim();
+                const email = document.getElementById('userEmail').value.trim();
+                const password = document.getElementById('userPassword').value.trim();
+                const role = document.getElementById('userRole').value;
+                const department = document.getElementById('userDepartment').value.trim();
+                const phone = document.getElementById('userPhone').value.trim();
+                const oab = document.getElementById('userOAB').value.trim();
+
+                // Validações
+                if (!name || !email || !password || !role) {
+                    alert('Por favor, preencha todos os campos obrigatórios (Nome, Email, Senha e Função)');
+                    return;
+                }
+
+                if (password.length < 6) {
+                    alert('A senha deve ter pelo menos 6 caracteres');
+                    return;
+                }
+
+                // Enviar para API
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        password,
+                        role,
+                        department: department || 'Geral',
+                        phone,
+                        oab
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`✅ Usuário ${name} criado com sucesso!\n\nID: ${result.user.id}\nRole: ${result.user.role}\nDepartamento: ${result.user.department}`);
+
+                    // Limpar formulário
+                    document.getElementById('userName').value = '';
+                    document.getElementById('userEmail').value = '';
+                    document.getElementById('userPassword').value = '';
+                    document.getElementById('userRole').value = '';
+                    document.getElementById('userDepartment').value = '';
+                    document.getElementById('userPhone').value = '';
+                    document.getElementById('userOAB').value = '';
+
+                    // Atualizar lista automaticamente
+                    listUsers();
+                } else {
+                    alert('❌ Erro: ' + (result.error || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro ao criar usuário:', error);
+                alert('❌ Erro ao criar usuário: ' + error.message);
+            }
+        }
+
+        // Listar usuários
+        async function listUsers() {
+            try {
+                const response = await fetch('/api/users?includeInactive=true');
+                const result = await response.json();
+
+                if (!result.success) {
+                    alert('Erro ao listar usuários: ' + (result.error || 'Erro desconhecido'));
+                    return;
+                }
+
+                const container = document.getElementById('usersListContainer');
+                const list = document.getElementById('usersList');
+
+                if (result.users.length === 0) {
+                    list.innerHTML = '<p style="font-size: 12px; color: var(--text-tertiary); text-align: center; padding: 20px;">Nenhum usuário cadastrado</p>';
+                    container.style.display = 'block';
+                    return;
+                }
+
+                // Agrupar por role
+                const byRole = result.users.reduce((acc, user) => {
+                    if (!acc[user.role]) acc[user.role] = [];
+                    acc[user.role].push(user);
+                    return acc;
+                }, {});
+
+                // Emoji por role
+                const roleEmojis = {
+                    'admin': '👑',
+                    'developer': '💻',
+                    'manager': '📊',
+                    'operator': '⚙️',
+                    'viewer': '👁️'
+                };
+
+                // Tradução de roles
+                const roleNames = {
+                    'admin': 'Admin',
+                    'developer': 'Developer',
+                    'manager': 'Manager',
+                    'operator': 'Operator',
+                    'viewer': 'Viewer'
+                };
+
+                let html = '';
+
+                Object.keys(byRole).forEach(role => {
+                    html += `<div style="margin-bottom: 16px;">
+                        <h5 style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600;">
+                            ${roleEmojis[role]} ${roleNames[role]} (${byRole[role].length})
+                        </h5>`;
+
+                    byRole[role].forEach(user => {
+                        const activeClass = user.active ? 'background: var(--bg-1)' : 'background: #3a1f1f; opacity: 0.6';
+                        const statusIcon = user.active ? '✅' : '❌';
+
+                        html += `
+                        <div style="${activeClass}; padding: 12px; border-radius: 6px; margin-bottom: 8px; border: 1px solid var(--border);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 4px;">
+                                <div style="flex: 1;">
+                                    <p style="font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px;">
+                                        ${statusIcon} ${user.name}
+                                    </p>
+                                    <p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 2px;">
+                                        📧 ${user.email}
+                                    </p>
+                                    ${user.department ? `<p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 2px;">🏢 ${user.department}</p>` : ''}
+                                    ${user.phone ? `<p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 2px;">📱 ${user.phone}</p>` : ''}
+                                    ${user.oab ? `<p style="font-size: 11px; color: var(--text-tertiary); margin-bottom: 2px;">⚖️ ${user.oab}</p>` : ''}
+                                    <p style="font-size: 10px; color: var(--text-tertiary); margin-top: 4px;">
+                                        ID: ${user.id}
+                                    </p>
+                                </div>
+                                <button onclick="toggleUserStatus('${user.id}', ${user.active})"
+                                    style="padding: 4px 8px; font-size: 10px; background: ${user.active ? '#b91c1c' : '#16a34a'}; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                    ${user.active ? 'Desativar' : 'Reativar'}
+                                </button>
+                            </div>
+                        </div>`;
+                    });
+
+                    html += '</div>';
+                });
+
+                list.innerHTML = html;
+                container.style.display = 'block';
+
+                // Mostrar estatísticas
+                alert(`📊 Total: ${result.total} usuários\n\n${Object.keys(byRole).map(role => `${roleEmojis[role]} ${roleNames[role]}: ${byRole[role].length}`).join('\n')}`);
+
+            } catch (error) {
+                console.error('Erro ao listar usuários:', error);
+                alert('❌ Erro ao listar usuários: ' + error.message);
+            }
+        }
+
+        // Alternar status do usuário (ativar/desativar)
+        async function toggleUserStatus(userId, isActive) {
+            try {
+                const action = isActive ? 'desativar' : 'reativar';
+                const confirmMsg = isActive
+                    ? 'Tem certeza que deseja DESATIVAR este usuário?\n\nEle não poderá mais fazer login.'
+                    : 'Tem certeza que deseja REATIVAR este usuário?';
+
+                if (!confirm(confirmMsg)) {
+                    return;
+                }
+
+                const endpoint = isActive
+                    ? `/api/users/${userId}`
+                    : `/api/users/${userId}/reactivate`;
+
+                const method = isActive ? 'DELETE' : 'POST';
+
+                const response = await fetch(endpoint, { method });
+                const result = await response.json();
+
+                if (result.success) {
+                    alert(`✅ Usuário ${action}do com sucesso!`);
+                    listUsers(); // Recarregar lista
+                } else {
+                    alert('❌ Erro: ' + (result.error || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro ao alterar status:', error);
+                alert('❌ Erro: ' + error.message);
+            }
+        }
+
+        async function showSystemInfo() {
+            try {
+                const response = await fetch('/api/info');
+                const data = await response.json();
+
+                const info = `
+Sistema: ${data.nome} v${data.versao}
+Status: ${data.health?.status}
+Uptime: ${data.health?.uptime}
+AWS Bedrock: ${data.bedrock?.status}
+Região: ${data.bedrock?.region}
+Sessões Ativas: ${data.cache?.activeSessions}
+Memória: ${data.memory?.heapUsed}
+                `.trim();
+
+                alert(info);
+            } catch (error) {
+                alert('Erro ao obter info do sistema: ' + error.message);
+            }
+        }
+
+        // ====== CONVERSATIONS HISTORY ======
+
+        let currentConversationId = null;
+
+        // Load conversations organized by date
+        async function loadConversations() {
+            try {
+                const response = await fetch('/api/conversations/organized');
+                const data = await response.json();
+
+                if (data.success) {
+                    renderConversations(data.organized);
+                }
+            } catch (error) {
+                console.error('Erro ao carregar conversas:', error);
+                document.getElementById('conversationsList').innerHTML =
+                    '<p style="color: var(--text-tertiary); font-size: 12px; padding: 8px 10px;">Erro ao carregar</p>';
+            }
+        }
+
+        // Render conversations grouped by date
+        function renderConversations(organized) {
+            const listDiv = document.getElementById('conversationsList');
+
+            const dateGroups = [
+                { key: 'today', title: 'Hoje' },
+                { key: 'yesterday', title: 'Ontem' },
+                { key: 'lastWeek', title: 'Últimos 7 dias' },
+                { key: 'lastMonth', title: 'Último mês' },
+                { key: 'older', title: 'Mais antigos' }
+            ];
+
+            let html = '';
+            let hasConversations = false;
+
+            dateGroups.forEach(group => {
+                const conversations = organized[group.key];
+                if (conversations && conversations.length > 0) {
+                    hasConversations = true;
+                    html += `<div class="conversation-date-group">`;
+                    html += `<div class="conversation-date-title">${group.title}</div>`;
+
+                    conversations.forEach(conv => {
+                        const isActive = currentConversationId === conv.id ? 'active' : '';
+                        html += `
+                            <div class="conversation-item ${isActive}" data-id="${conv.id}" onclick="openConversation('${conv.id}')">
+                                <span class="conversation-title" title="${escapeHtml(conv.title)}">${escapeHtml(conv.title)}</span>
+                                <div class="conversation-actions">
+                                    <button class="conversation-btn" onclick="event.stopPropagation(); renameConversation('${conv.id}')" title="Renomear">✏️</button>
+                                    <button class="conversation-btn" onclick="event.stopPropagation(); deleteConversation('${conv.id}')" title="Deletar">🗑️</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    html += `</div>`;
+                }
+            });
+
+            if (!hasConversations) {
+                html = '<p style="color: var(--text-tertiary); font-size: 12px; padding: 8px 10px;">Nenhuma conversa ainda</p>';
+            }
+
+            listDiv.innerHTML = html;
+        }
+
+        // Open specific conversation
+        async function openConversation(conversationId) {
+            try {
+                const response = await fetch(`/api/conversations/${conversationId}`);
+                const data = await response.json();
+
+                if (!data.success || !data.conversation) {
+                    alert('Erro ao carregar conversa');
+                    return;
+                }
+
+                const conversation = data.conversation;
+
+                // Clear current chat
+                const chatView = document.getElementById('chatView');
+                chatView.innerHTML = '';
+
+                // Remove welcome if exists
+                const welcome = document.getElementById('welcome');
+                if (welcome) welcome.remove();
+
+                // Render all messages from conversation
+                conversation.messages.forEach(msg => {
+                    const sender = msg.role === 'user' ? 'user' : 'assistant';
+                    addMessage(msg.content, sender);
+                });
+
+                // Set current conversation
+                currentConversationId = conversationId;
+
+                // Update active state in sidebar
+                document.querySelectorAll('.conversation-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                const activeItem = document.querySelector(`.conversation-item[data-id="${conversationId}"]`);
+                if (activeItem) {
+                    activeItem.classList.add('active');
+                }
+
+                // Switch to chat view
+                showView('chat');
+            } catch (error) {
+                console.error('Erro ao abrir conversa:', error);
+                alert('Erro ao abrir conversa: ' + error.message);
+            }
+        }
+
+        // Rename conversation
+        async function renameConversation(conversationId) {
+            const newTitle = prompt('Novo título:');
+            if (!newTitle || !newTitle.trim()) return;
+
+            try {
+                const response = await fetch(`/api/conversations/${conversationId}/rename`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: newTitle.trim() })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    loadConversations(); // Reload list
+                } else {
+                    alert('Erro ao renomear: ' + (data.error || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro ao renomear conversa:', error);
+                alert('Erro ao renomear conversa');
+            }
+        }
+
+        // Delete conversation
+        async function deleteConversation(conversationId) {
+            if (!confirm('Deseja realmente deletar esta conversa?')) return;
+
+            try {
+                const response = await fetch(`/api/conversations/${conversationId}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // If deleting current conversation, clear chat
+                    if (currentConversationId === conversationId) {
+                        newChat();
+                    }
+                    loadConversations(); // Reload list
+                } else {
+                    alert('Erro ao deletar: ' + (data.error || 'Erro desconhecido'));
+                }
+            } catch (error) {
+                console.error('Erro ao deletar conversa:', error);
+                alert('Erro ao deletar conversa');
+            }
+        }
+
+        // ========== FILE UPLOAD & EXPORT FUNCTIONS ==========
+
+        // Handle file upload to KB
+        async function handleFileUpload(event) {
+            const files = event.target.files;
+            if (!files || files.length === 0) return;
+
+            const formData = new FormData();
+            for (let file of files) {
+                formData.append('files', file);
+            }
+
+            // Show loading (com verificação se elemento existe)
+            const messagesDiv = document.getElementById('messages');
+            let loadingMsg = null;
+
+            if (messagesDiv) {
+                loadingMsg = document.createElement('div');
+                loadingMsg.className = 'message';
+                loadingMsg.innerHTML = `
+                    <div class="message-avatar">📤</div>
+                    <div class="message-content">
+                        <div style="color: var(--text-secondary);">Enviando ${files.length} arquivo(s) para o Knowledge Base...</div>
+                    </div>
+                `;
+                messagesDiv.appendChild(loadingMsg);
+                messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            } else {
+                // Fallback: mostrar alert se não houver área de mensagens
+                console.log(`📤 Enviando ${files.length} arquivo(s)...`);
+            }
+
+            try {
+                const response = await fetch('/api/upload-documents', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                // Remove loading message
+                if (loadingMsg) loadingMsg.remove();
+
+                // Show result
+                if (messagesDiv) {
+                    const resultMsg = document.createElement('div');
+                    resultMsg.className = 'message';
+                    if (result.success && result.extractions) {
+                        // Mostrar resumo da extração
+                        let extractionSummary = '';
+                        result.extractions.forEach(ext => {
+                            if (ext.data) {
+                                extractionSummary += `\n📄 ${ext.filename}:\n`;
+                                if (ext.data['Tipo de Documento']) extractionSummary += `• Tipo: ${ext.data['Tipo de Documento']}\n`;
+                                if (ext.data['Número do Processo']) extractionSummary += `• Processo: ${ext.data['Número do Processo']}\n`;
+                                if (ext.textLength) extractionSummary += `• Texto extraído: ${ext.textLength} caracteres\n`;
+                            }
+                        });
+
+                        resultMsg.innerHTML = `
+                            <div class="message-avatar">✅</div>
+                            <div class="message-content">
+                                <div style="color: var(--text-primary);"><strong>Upload concluído!</strong></div>
+                                <div style="color: var(--text-secondary); margin-top: 8px;">
+                                    ${result.message || `${result.filesCount} arquivo(s) processado(s) com sucesso`}
+                                </div>
+                                ${extractionSummary ? `<pre style="margin-top: 8px; font-size: 12px; white-space: pre-wrap;">${extractionSummary}</pre>` : ''}
+                            </div>
+                        `;
+                    } else {
+                        resultMsg.innerHTML = `
+                            <div class="message-avatar">❌</div>
+                            <div class="message-content">
+                                <div style="color: var(--text-primary);"><strong>Erro no upload</strong></div>
+                                <div style="color: var(--text-secondary); margin-top: 8px;">
+                                    ${result.error || 'Erro desconhecido'}
+                                </div>
+                            </div>
+                        `;
+                    }
+                    messagesDiv.appendChild(resultMsg);
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+                } else {
+                    // Fallback: mostrar alert se não houver área de mensagens
+                    if (result.success) {
+                        alert(`✅ Upload concluído!\n${result.message || `${result.filesCount} arquivo(s) processado(s) com sucesso`}`);
+                    } else {
+                        alert(`❌ Erro no upload: ${result.error || 'Erro desconhecido'}`);
+                    }
+                }
+
+            } catch (error) {
+                if (loadingMsg) loadingMsg.remove();
+                alert('Erro ao enviar arquivos: ' + error.message);
+            }
+
+            // Reset input
+            event.target.value = '';
+        }
+
+        // Export current conversation
+        async function exportConversation() {
+            if (!currentConversationId) {
+                alert('Nenhuma conversa ativa para exportar');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/conversations/${currentConversationId}`);
+                const data = await response.json();
+
+                if (data.success && data.conversation) {
+                    const conversation = data.conversation;
+                    const blob = new Blob([JSON.stringify(conversation, null, 2)], { type: 'application/json' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `conversa_${conversation.id}_${new Date().toISOString().slice(0,10)}.json`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                } else {
+                    alert('Erro ao exportar conversa');
+                }
+            } catch (error) {
+                console.error('Erro ao exportar:', error);
+                alert('Erro ao exportar conversa: ' + error.message);
+            }
+        }
+
+        // Handle conversation import
+        async function handleConversationUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                try {
+                    const conversationData = JSON.parse(e.target.result);
+
+                    // Create new conversation with imported data
+                    const response = await fetch('/api/conversations', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            title: conversationData.title || 'Conversa Importada',
+                            messages: conversationData.messages || []
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success && result.conversationId) {
+                        // Open the imported conversation
+                        await openConversation(result.conversationId);
+                        loadConversations();
+                        alert('Conversa importada com sucesso!');
+                    } else {
+                        alert('Erro ao importar conversa: ' + (result.error || 'Erro desconhecido'));
+                    }
+                } catch (error) {
+                    console.error('Erro ao importar:', error);
+                    alert('Erro ao importar conversa: ' + error.message);
+                }
+            };
+
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
+        // Init
+        document.getElementById('messageInput').focus();
+        loadHistory();
+        loadConversations(); // Load conversations sidebar
+    </script>
+    <!-- ============================================ -->
+    <!-- MODAL: NOVO PROJETO (estilo Claude.ai)     -->
+    <!-- ============================================ -->
+    <div id="newProjectModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Novo Projeto</h2>
+                <button class="modal-close" onclick="closeNewProjectModal()">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 24px;">
+                <form id="newProjectForm" onsubmit="createNewProject(event)">
+                    <!-- Nome do Projeto -->
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="projectName" style="display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-primary);">
+                            Nome do Projeto <span style="color: #ef4444;">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="projectName"
+                            name="projectName"
+                            required
+                            placeholder="Ex: Ação de Indenização - Cliente XYZ"
+                            style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; background: var(--bg-1); color: var(--text-primary);"
+                        />
+                    </div>
+
+                    <!-- Descrição -->
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="projectDescription" style="display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-primary);">
+                            Descrição (opcional)
+                        </label>
+                        <textarea
+                            id="projectDescription"
+                            name="projectDescription"
+                            rows="3"
+                            placeholder="Breve descrição do projeto..."
+                            style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; resize: vertical; background: var(--bg-1); color: var(--text-primary); font-family: inherit;"
+                        ></textarea>
+                    </div>
+
+                    <!-- Custom Instructions (estilo Claude.ai) -->
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="projectInstructions" style="display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-primary);">
+                            Custom Instructions
+                            <span style="font-weight: 400; color: var(--text-secondary); font-size: 13px; margin-left: 4px;">(como Claude.ai Projects)</span>
+                        </label>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 8px 0;">
+                            Instruções específicas para este projeto. O assistente seguirá estas diretrizes ao trabalhar neste projeto.
+                        </p>
+                        <textarea
+                            id="projectInstructions"
+                            name="projectInstructions"
+                            rows="8"
+                            placeholder="Ex: Para este projeto, sempre cite jurisprudência do STJ de 2020-2024. Use tom formal. Priorize precedentes vinculantes..."
+                            style="width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; resize: vertical; background: var(--bg-1); color: var(--text-primary); font-family: 'Consolas', 'Monaco', 'Courier New', monospace; line-height: 1.6;"
+                        ></textarea>
+                    </div>
+
+                    <!-- Tamanho do Knowledge Base -->
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="projectKBSize" style="display: block; font-weight: 500; margin-bottom: 8px; color: var(--text-primary);">
+                            Tamanho do Knowledge Base
+                            <span style="font-weight: 400; color: var(--text-secondary); font-size: 13px; margin-left: 4px;">(ROM Agent: até 500MB vs Claude.ai: 100MB)</span>
+                        </label>
+                        <select
+                            id="projectKBSize"
+                            name="projectKBSize"
+                            style="width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; background: var(--bg-1); color: var(--text-primary); cursor: pointer;"
+                        >
+                            <option value="100">100 MB (padrão Claude.ai)</option>
+                            <option value="250">250 MB (2.5x Claude.ai)</option>
+                            <option value="500" selected>500 MB (5x Claude.ai - Recomendado)</option>
+                        </select>
+                    </div>
+
+                    <!-- Configurações Avançadas (colapsável) -->
+                    <details class="form-group" style="margin-bottom: 20px; border: 1px solid var(--border); border-radius: 6px; padding: 12px; background: var(--bg-2);">
+                        <summary style="cursor: pointer; font-weight: 500; color: var(--text-primary); padding: 4px 0; user-select: none;">
+                            ⚙️ Configurações Avançadas
+                        </summary>
+                        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border);">
+                            <!-- Auto-análise -->
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input
+                                        type="checkbox"
+                                        id="projectAutoAnalyze"
+                                        name="projectAutoAnalyze"
+                                        checked
+                                        style="width: 18px; height: 18px; cursor: pointer;"
+                                    />
+                                    <span style="color: var(--text-primary); font-size: 14px;">
+                                        Analisar documentos automaticamente
+                                    </span>
+                                </label>
+                                <p style="font-size: 12px; color: var(--text-tertiary); margin: 4px 0 0 26px;">
+                                    Identifica automaticamente o tipo de documento e sugere peças jurídicas apropriadas
+                                </p>
+                            </div>
+
+                            <!-- Sugestões inteligentes -->
+                            <div style="margin-bottom: 16px;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                    <input
+                                        type="checkbox"
+                                        id="projectSmartSuggestions"
+                                        name="projectSmartSuggestions"
+                                        checked
+                                        style="width: 18px; height: 18px; cursor: pointer;"
+                                    />
+                                    <span style="color: var(--text-primary); font-size: 14px;">
+                                        Habilitar sugestões inteligentes
+                                    </span>
+                                </label>
+                                <p style="font-size: 12px; color: var(--text-tertiary); margin: 4px 0 0 26px;">
+                                    Sugestões contextuais de peças, argumentos e jurisprudência relevante
+                                </p>
+                            </div>
+
+                            <!-- Modelo preferido -->
+                            <div style="margin-bottom: 16px;">
+                                <label for="projectModel" style="display: block; font-weight: 500; margin-bottom: 6px; color: var(--text-primary); font-size: 14px;">
+                                    Modelo de IA preferido
+                                </label>
+                                <select
+                                    id="projectModel"
+                                    name="projectModel"
+                                    style="width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 13px; background: var(--bg-1); color: var(--text-primary);"
+                                >
+                                    <option value="amazon.nova-lite-v1:0">Amazon Nova Lite (rápido, econômico)</option>
+                                    <option value="amazon.nova-pro-v1:0" selected>Amazon Nova Pro (equilibrado - recomendado)</option>
+                                    <option value="anthropic.claude-haiku-4-5-20251001-v1:0">Claude Haiku 4.5 (ultra-rápido)</option>
+                                    <option value="anthropic.claude-sonnet-4-5-20251001-v1:0">Claude Sonnet 4.5 (máxima qualidade)</option>
+                                </select>
+                            </div>
+
+                            <!-- Temperature -->
+                            <div>
+                                <label for="projectTemperature" style="display: block; font-weight: 500; margin-bottom: 6px; color: var(--text-primary); font-size: 14px;">
+                                    Criatividade (Temperature): <span id="tempValue">0.7</span>
+                                </label>
+                                <input
+                                    type="range"
+                                    id="projectTemperature"
+                                    name="projectTemperature"
+                                    min="0"
+                                    max="1"
+                                    step="0.1"
+                                    value="0.7"
+                                    oninput="document.getElementById('tempValue').textContent = this.value"
+                                    style="width: 100%; cursor: pointer;"
+                                />
+                                <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-tertiary); margin-top: 4px;">
+                                    <span>0.0 (Consistente)</span>
+                                    <span>1.0 (Criativo)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+
+                    <!-- Botões -->
+                    <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                        <button
+                            type="button"
+                            onclick="closeNewProjectModal()"
+                            style="padding: 10px 24px; border: 1px solid var(--border); border-radius: 6px; background: transparent; color: var(--text-primary); cursor: pointer; font-size: 14px;"
+                        >
+                            Cancelar
+                        </button>
+                        <button
+                            type="submit"
+                            id="createProjectBtn"
+                            style="padding: 10px 24px; border: none; border-radius: 6px; background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%); color: white; cursor: pointer; font-size: 14px; font-weight: 500;"
+                        >
+                            Criar Projeto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript para Novo Projeto -->
+    <script>
+        // Abrir modal de novo projeto
+        function openNewProjectModal() {
+            const modal = document.getElementById('newProjectModal');
+            modal.classList.add('active');
+            document.getElementById('projectName').focus();
+        }
+
+        // Fechar modal
+        function closeNewProjectModal() {
+            const modal = document.getElementById('newProjectModal');
+            modal.classList.remove('active');
+            document.getElementById('newProjectForm').reset();
+        }
+
+        // Criar novo projeto
+        async function createNewProject(event) {
+            event.preventDefault();
+
+            const btn = document.getElementById('createProjectBtn');
+            const originalText = btn.textContent;
+            btn.textContent = 'Criando...';
+            btn.disabled = true;
+
+            try {
+                const formData = {
+                    name: document.getElementById('projectName').value.trim(),
+                    description: document.getElementById('projectDescription').value.trim(),
+                    customInstructions: document.getElementById('projectInstructions').value.trim(),
+                    kbMaxSizeMB: parseInt(document.getElementById('projectKBSize').value),
+                    settings: {
+                        autoAnalyze: document.getElementById('projectAutoAnalyze').checked,
+                        smartSuggestions: document.getElementById('projectSmartSuggestions').checked,
+                        modelPreference: document.getElementById('projectModel').value,
+                        temperature: parseFloat(document.getElementById('projectTemperature').value)
+                    }
+                };
+
+                const response = await fetch('/api/projects/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const result = await response.json();
+
+                if (result.success && result.project) {
+                    // Sucesso!
+                    showNotification(`Projeto "${result.project.name}" criado com sucesso!`, 'success');
+                    closeNewProjectModal();
+
+                    // Recarregar lista de projetos (se estiver na view de projetos)
+                    if (typeof loadProjects === 'function') {
+                        await loadProjects();
+                    }
+
+                    // Opcional: abrir o projeto recém-criado
+                    console.log('Projeto criado:', result.project);
+                } else {
+                    throw new Error(result.error || 'Erro ao criar projeto');
+                }
+
+            } catch (error) {
+                console.error('Erro ao criar projeto:', error);
+                showNotification(error.message || 'Erro ao criar projeto. Tente novamente.', 'error');
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        // Fechar modal ao clicar fora
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('newProjectModal');
+            if (e.target === modal) {
+                closeNewProjectModal();
+            }
+        });
+
+        // Fechar modal com ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('newProjectModal');
+                if (modal && modal.classList.contains('active')) {
+                    closeNewProjectModal();
+                }
+            }
+        });
+
+        // Função auxiliar para notificações
+        function showNotification(message, type = 'info') {
+            // Criar elemento de notificação
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 16px 24px;
+                border-radius: 8px;
+                color: white;
+                font-size: 14px;
+                z-index: 10000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                animation: slideInRight 0.3s ease;
+                max-width: 400px;
+            `;
+
+            // Cores por tipo
+            const colors = {
+                success: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                error: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                info: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
+            };
+            notification.style.background = colors[type] || colors.info;
+
+            document.body.appendChild(notification);
+
+            // Remover após 5 segundos
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => notification.remove(), 300);
+            }, 5000);
+        }
+    </script>
+
+    <!-- Letterhead Watermark -->
+    <div class="letterhead">
+        <img src="/img/timbrado_rom.png" alt="ROM Timbrado">
+    </div>
+
+</body>
+</html>

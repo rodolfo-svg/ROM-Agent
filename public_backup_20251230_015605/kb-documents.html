@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Base - Documentos Extraídos | ROM Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2D3648;
+            --accent: #ab68ff;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f9fafb;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #9d5fee;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .documents-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-size: 1.25rem;
+        }
+
+        .document-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .document-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            transition: all 0.2s;
+        }
+
+        .document-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 2px 8px rgba(171, 104, 255, 0.1);
+        }
+
+        .document-info {
+            flex: 1;
+        }
+
+        .document-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .document-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .document-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .document-preview {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+            padding: 0.75rem;
+            background: var(--bg);
+            border-radius: 6px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: 80px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .badge-success {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-warning {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .document-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state h3 {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>📚 Knowledge Base - Documentos Extraídos</h1>
+            <div>
+                <a href="/" class="btn btn-secondary">← Voltar ao Chat</a>
+                <button onclick="loadDocuments()" class="btn btn-primary">🔄 Atualizar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total de Documentos</h3>
+                <div class="value" id="total-docs">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Tamanho Total</h3>
+                <div class="value" id="total-size">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Último Upload</h3>
+                <div class="value" style="font-size: 1rem;" id="last-upload">-</div>
+            </div>
+        </div>
+
+        <div class="documents-section">
+            <div class="section-header">
+                <h2>Documentos Extraídos</h2>
+            </div>
+
+            <div id="documents-container">
+                <div class="loading">
+                    <p>Carregando documentos...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Nova Seção: Documentos Estruturados -->
+        <div class="documents-section" style="margin-top: 2rem;">
+            <div class="section-header">
+                <h2>📊 Documentos Estruturados (7 Tipos)</h2>
+            </div>
+
+            <div id="structured-documents-container">
+                <div class="loading">
+                    <p>Carregando documentos estruturados...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadDocuments() {
+            const container = document.getElementById('documents-container');
+            container.innerHTML = '<div class="loading"><p>Carregando documentos...</p></div>';
+
+            try {
+                const response = await fetch('/api/kb/extracted-documents');
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Erro ao carregar documentos');
+                }
+
+                // Atualizar estatísticas
+                document.getElementById('total-docs').textContent = data.count;
+                document.getElementById('total-size').textContent = formatFileSize(data.totalSize);
+
+                if (data.documents.length > 0) {
+                    const lastDoc = data.documents[0];
+                    document.getElementById('last-upload').textContent = formatDate(lastDoc.uploadedAt);
+                } else {
+                    document.getElementById('last-upload').textContent = 'Nunca';
+                }
+
+                // Renderizar documentos
+                if (data.documents.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>Nenhum documento extraído ainda</h3>
+                            <p>Faça upload de documentos para começar</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const html = data.documents.map(doc => `
+                    <div class="document-card">
+                        <div class="document-info">
+                            <div class="document-title">📄 ${escapeHtml(doc.originalFilename)}</div>
+                            <div class="document-meta">
+                                <span>📅 ${formatDate(doc.uploadedAt)}</span>
+                                <span>📊 ${formatFileSize(doc.size)}</span>
+                                <span>📝 ${doc.textLength.toLocaleString()} caracteres</span>
+                                ${doc.processNumber ? `<span>⚖️ ${escapeHtml(doc.processNumber)}</span>` : ''}
+                            </div>
+                            ${doc.type ? `<span class="badge badge-info">${escapeHtml(doc.type)}</span>` : ''}
+                            ${doc.source === 'emergency-upload-desktop' ? '<span class="badge badge-warning">Upload Emergência Desktop</span>' : ''}
+                            ${doc.toolsUsed && doc.toolsUsed.length > 0 ? `<span class="badge badge-success">${doc.toolsUsed.length} ferramentas usadas</span>` : ''}
+                            ${doc.preview ? `<div class="document-preview">${escapeHtml(doc.preview)}</div>` : ''}
+                            ${doc.parties ? `<div style="margin-top: 0.5rem; font-size: 0.875rem;"><strong>Partes:</strong> ${escapeHtml(doc.parties)}</div>` : ''}
+                            ${doc.court ? `<div style="font-size: 0.875rem;"><strong>Tribunal:</strong> ${escapeHtml(doc.court)}</div>` : ''}
+                        </div>
+                        <div class="document-actions">
+                            <button onclick="downloadDocument('${doc.id}')" class="btn btn-primary btn-small">⬇️ Baixar</button>
+                            <button onclick="deleteDocument('${doc.id}')" class="btn btn-danger btn-small">🗑️ Deletar</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML = `<div class="document-list">${html}</div>`;
+
+            } catch (error) {
+                console.error('Erro ao carregar documentos:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>❌ Erro ao carregar documentos</h3>
+                        <p>${escapeHtml(error.message)}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function downloadDocument(id) {
+            window.location.href = `/api/kb/extracted-documents/${id}/download`;
+        }
+
+        async function deleteDocument(id) {
+            if (!confirm('Tem certeza que deseja deletar este documento?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/kb/extracted-documents/${id}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Erro ao deletar documento');
+                }
+
+                alert('Documento deletado com sucesso!');
+                loadDocuments();
+
+            } catch (error) {
+                console.error('Erro ao deletar documento:', error);
+                alert('Erro ao deletar documento: ' + error.message);
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Função para carregar documentos estruturados
+        async function loadStructuredDocuments() {
+            const container = document.getElementById('structured-documents-container');
+            container.innerHTML = '<div class="loading"><p>Carregando documentos estruturados...</p></div>';
+
+            try {
+                const response = await fetch('/api/kb/structured-documents');
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Erro ao carregar documentos estruturados');
+                }
+
+                if (data.documents.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h3>Nenhum documento estruturado encontrado</h3>
+                            <p>Faça upload de documentos para gerar fichamentos, índices e análises automaticamente.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Criar HTML para cada conjunto de documentos estruturados
+                let html = '';
+
+                data.documents.forEach(doc => {
+                    html += `
+                        <div class="document-card" style="margin-bottom: 1.5rem;">
+                            <div class="document-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem; border-radius: 8px 8px 0 0; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <h3 style="color: white; margin: 0; font-size: 1.125rem;">📁 ${escapeHtml(doc.name)}</h3>
+                                    <p style="color: rgba(255,255,255,0.9); margin: 0.25rem 0 0 0; font-size: 0.875rem;">
+                                        ${doc.filesCount} documentos estruturados • Criado em ${formatDate(doc.createdAt)}
+                                    </p>
+                                </div>
+                                <button onclick="deleteStructuredDoc('${doc.id}')" class="btn btn-danger btn-small" style="background: rgba(220, 38, 38, 0.9); border: none; color: white; padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.875rem;">
+                                    🗑️ Deletar Tudo
+                                </button>
+                            </div>
+                            <div class="document-body" style="padding: 1rem; background: white; border: 1px solid var(--border); border-top: none; border-radius: 0 0 8px 8px;">
+                                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.75rem;">
+                                    ${doc.files.map(file => {
+                                        const icon = getDocTypeIcon(file.name);
+                                        const displayName = file.name.replace(/^\d+_/, '').replace(/\.(md|json)$/, '').replace(/_/g, ' ');
+                                        return `
+                                            <a href="/api/kb/structured-documents/${encodeURIComponent(doc.id)}/${encodeURIComponent(file.name)}"
+                                               target="_blank"
+                                               class="btn"
+                                               style="background: var(--bg); color: var(--text); border: 1px solid var(--border); padding: 0.75rem; text-decoration: none; text-align: left; transition: all 0.2s;">
+                                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                                    <span style="font-size: 1.25rem;">${icon}</span>
+                                                    <span style="flex: 1; font-size: 0.875rem; font-weight: 600;">${displayName}</span>
+                                                    <span style="font-size: 0.75rem; color: var(--text-secondary);">⬇</span>
+                                                </div>
+                                            </a>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+
+            } catch (error) {
+                console.error('Erro ao carregar documentos estruturados:', error);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h3>Erro ao carregar documentos</h3>
+                        <p>${escapeHtml(error.message)}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // Função para deletar conjunto de documentos estruturados
+        async function deleteStructuredDoc(id) {
+            if (!confirm('Tem certeza que deseja deletar TODOS os documentos estruturados deste conjunto? Esta ação não pode ser desfeita.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/kb/structured-documents/${encodeURIComponent(id)}`, {
+                    method: 'DELETE'
+                });
+
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Erro ao deletar');
+                }
+
+                alert('✅ Documentos estruturados deletados com sucesso!');
+                loadStructuredDocuments(); // Recarregar lista
+            } catch (error) {
+                console.error('Erro ao deletar documentos estruturados:', error);
+                alert('❌ Erro ao deletar: ' + error.message);
+            }
+        }
+
+        // Função auxiliar para obter ícone por tipo de documento
+        function getDocTypeIcon(filename) {
+            if (filename.includes('FICHAMENTO')) return '📋';
+            if (filename.includes('CRONOLOGICO')) return '📅';
+            if (filename.includes('TIPO')) return '📂';
+            if (filename.includes('ENTIDADES')) return '👥';
+            if (filename.includes('PEDIDOS')) return '⚖️';
+            if (filename.includes('FATOS')) return '📝';
+            if (filename.includes('LEGISLACAO')) return '📜';
+            return '📄';
+        }
+
+        // Carregar documentos ao abrir a página
+        loadDocuments();
+        loadStructuredDocuments();
+
+        // Atualizar a cada 30 segundos
+        setInterval(() => {
+            loadDocuments();
+            loadStructuredDocuments();
+        }, 30000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROM Project - 65 Prompts Jurídicos | ROM Agent</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2D3648;
+            --accent: #ab68ff;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg: #f9fafb;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #e5e7eb;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #9d5fee;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .search-box {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .categories-grid {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .category-section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .category-header h2 {
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--accent);
+            color: white;
+        }
+
+        .prompts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .prompt-card {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .prompt-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(171, 104, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .prompt-title {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .prompt-meta {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 90vh;
+            overflow: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .modal-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 400px;
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            resize: vertical;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-secondary);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .close-btn:hover {
+            color: var(--text);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>⚖️ ROM Project - Biblioteca de Prompts Jurídicos</h1>
+            <div>
+                <a href="/" class="btn btn-secondary">← Voltar ao Chat</a>
+                <button onclick="loadPrompts()" class="btn btn-primary">🔄 Atualizar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total de Prompts</h3>
+                <div class="value" id="total-prompts">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Prompts Judiciais</h3>
+                <div class="value" id="judicial-prompts">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Prompts Extrajudiciais</h3>
+                <div class="value" id="extrajudicial-prompts">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>Categorias</h3>
+                <div class="value" id="total-categories">-</div>
+            </div>
+        </div>
+
+        <div class="search-box">
+            <input
+                type="text"
+                id="search-input"
+                placeholder="🔍 Buscar prompts por nome ou categoria..."
+                oninput="filterPrompts(this.value)"
+            />
+        </div>
+
+        <div id="prompts-container">
+            <div class="loading">
+                <p>Carregando prompts do ROM Project...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para visualizar/editar prompt -->
+    <div id="prompt-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Prompt</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 1rem;">
+                    <strong>Categoria:</strong> <span id="modal-category"></span><br>
+                    <strong>ID:</strong> <span id="modal-id"></span>
+                </div>
+                <textarea id="modal-content" readonly></textarea>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allPrompts = {};
+
+        async function loadPrompts() {
+            const container = document.getElementById('prompts-container');
+            container.innerHTML = '<div class="loading"><p>Carregando prompts...</p></div>';
+
+            try {
+                const response = await fetch('/api/rom-project/prompts');
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Erro ao carregar prompts');
+                }
+
+                allPrompts = data.prompts;
+
+                // Atualizar estatísticas
+                const stats = data.statistics;
+                document.getElementById('total-prompts').textContent = stats.prompts.total;
+                document.getElementById('judicial-prompts').textContent = stats.prompts.judicial;
+                document.getElementById('extrajudicial-prompts').textContent = stats.prompts.extrajudicial;
+
+                const categories = Object.keys(allPrompts);
+                document.getElementById('total-categories').textContent = categories.length;
+
+                // Renderizar prompts por categoria
+                renderPrompts();
+
+            } catch (error) {
+                console.error('Erro ao carregar prompts:', error);
+                container.innerHTML = `
+                    <div class="loading">
+                        <p style="color: var(--danger);">❌ Erro ao carregar prompts: ${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderPrompts() {
+            const container = document.getElementById('prompts-container');
+            const categories = Object.keys(allPrompts).sort();
+
+            if (categories.length === 0) {
+                container.innerHTML = '<div class="loading"><p>Nenhum prompt encontrado</p></div>';
+                return;
+            }
+
+            const html = categories.map(category => {
+                const prompts = Object.keys(allPrompts[category]);
+                const categoryName = getCategoryName(category);
+
+                return `
+                    <div class="category-section" data-category="${category}">
+                        <div class="category-header">
+                            <h2>${categoryName}</h2>
+                            <span class="category-badge">${prompts.length} prompts</span>
+                        </div>
+                        <div class="prompts-grid">
+                            ${prompts.map(promptId => `
+                                <div
+                                    class="prompt-card"
+                                    data-category="${category}"
+                                    data-prompt-id="${promptId}"
+                                    onclick="viewPrompt('${category}', '${promptId}')"
+                                >
+                                    <div class="prompt-title">${formatPromptName(promptId)}</div>
+                                    <div class="prompt-meta">${category} / ${promptId}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            container.innerHTML = `<div class="categories-grid">${html}</div>`;
+        }
+
+        async function viewPrompt(category, promptId) {
+            try {
+                const response = await fetch(`/api/rom-project/prompts/${category}/${promptId}`);
+                const data = await response.json();
+
+                if (!data.success) {
+                    throw new Error(data.error || 'Erro ao carregar prompt');
+                }
+
+                const prompt = data.prompt;
+
+                // Atualizar modal
+                document.getElementById('modal-title').textContent = prompt.nome || formatPromptName(promptId);
+                document.getElementById('modal-category').textContent = getCategoryName(category);
+                document.getElementById('modal-id').textContent = promptId;
+
+                // Montar conteúdo do prompt com metadados e estrutura
+                let content = `📋 METADADOS:\n`;
+                content += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                content += `Nome: ${prompt.nome || promptId}\n`;
+                content += `Categoria: ${prompt.categoria || 'N/A'}\n`;
+                if (prompt.subcategoria) content += `Subcategoria: ${prompt.subcategoria}\n`;
+                content += `Versão: ${prompt.version || '1.0'}\n`;
+                content += `Última Atualização: ${prompt.updated ? new Date(prompt.updated).toLocaleString('pt-BR') : 'N/A'}\n`;
+                content += `Auto-atualizável: ${prompt.autoUpdateable ? 'Sim' : 'Não'}\n`;
+                if (prompt.descricao) content += `Descrição: ${prompt.descricao}\n`;
+                if (prompt.tags && prompt.tags.length > 0) content += `Tags: ${prompt.tags.join(', ')}\n`;
+
+                content += `\n\n📝 ESTRUTURA DA PEÇA:\n`;
+                content += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                if (prompt.estrutura && Array.isArray(prompt.estrutura)) {
+                    prompt.estrutura.forEach((item, index) => {
+                        content += `${index + 1}. ${item}\n`;
+                    });
+                } else {
+                    content += `(Estrutura não definida)\n`;
+                }
+
+                // Se houver template/conteúdo, mostrar
+                if (prompt.template) {
+                    content += `\n\n📄 TEMPLATE:\n`;
+                    content += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                    content += prompt.template;
+                }
+
+                if (prompt.content) {
+                    content += `\n\n✍️ CONTEÚDO:\n`;
+                    content += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+                    content += prompt.content;
+                }
+
+                document.getElementById('modal-content').value = content;
+
+                // Mostrar modal
+                document.getElementById('prompt-modal').classList.add('show');
+
+            } catch (error) {
+                console.error('Erro ao visualizar prompt:', error);
+                alert('Erro ao visualizar prompt: ' + error.message);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('prompt-modal').classList.remove('show');
+        }
+
+        function filterPrompts(query) {
+            const lowerQuery = query.toLowerCase();
+            const cards = document.querySelectorAll('.prompt-card');
+            const sections = document.querySelectorAll('.category-section');
+
+            cards.forEach(card => {
+                const title = card.querySelector('.prompt-title').textContent.toLowerCase();
+                const meta = card.querySelector('.prompt-meta').textContent.toLowerCase();
+                const matches = title.includes(lowerQuery) || meta.includes(lowerQuery);
+                card.style.display = matches ? '' : 'none';
+            });
+
+            // Esconder categorias vazias
+            sections.forEach(section => {
+                const visibleCards = section.querySelectorAll('.prompt-card:not([style*="display: none"])');
+                section.style.display = visibleCards.length > 0 ? '' : 'none';
+            });
+        }
+
+        function getCategoryName(category) {
+            const names = {
+                'judicial': '⚖️ Prompts Judiciais',
+                'extrajudicial': '📜 Prompts Extrajudiciais',
+                'geral': '📋 Prompts Gerais'
+            };
+            return names[category] || category;
+        }
+
+        function formatPromptName(promptId) {
+            return promptId
+                .replace(/-/g, ' ')
+                .replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        // Fechar modal ao clicar fora
+        document.getElementById('prompt-modal').addEventListener('click', (e) => {
+            if (e.target.id === 'prompt-modal') {
+                closeModal();
+            }
+        });
+
+        // Fechar modal com ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Carregar prompts ao iniciar
+        loadPrompts();
+    </script>
+</body>
+</html>

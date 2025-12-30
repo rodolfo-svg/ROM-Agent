@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Code Playground - ROM Agent</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #1a202c;
+      color: #e2e8f0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: #2d3748;
+      padding: 15px 30px;
+      border-bottom: 2px solid #4a5568;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .language-selector {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .language-selector select {
+      background: #4a5568;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-success {
+      background: #48bb78;
+    }
+
+    .btn-danger {
+      background: #f56565;
+    }
+
+    .main-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .editor-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border-right: 2px solid #4a5568;
+    }
+
+    .editor-header {
+      background: #2d3748;
+      padding: 10px 20px;
+      border-bottom: 1px solid #4a5568;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .editor-header h3 {
+      font-size: 14px;
+      color: #a0aec0;
+      font-weight: 500;
+    }
+
+    .editor {
+      flex: 1;
+      padding: 20px;
+      overflow: auto;
+    }
+
+    .editor textarea {
+      width: 100%;
+      height: 100%;
+      background: #2d3748;
+      color: #e2e8f0;
+      border: none;
+      font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.6;
+      resize: none;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .editor textarea:focus {
+      outline: 2px solid #667eea;
+    }
+
+    .output-panel {
+      width: 45%;
+      display: flex;
+      flex-direction: column;
+      background: #2d3748;
+    }
+
+    .output-header {
+      padding: 10px 20px;
+      border-bottom: 1px solid #4a5568;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .output-header h3 {
+      font-size: 14px;
+      color: #a0aec0;
+      font-weight: 500;
+    }
+
+    .output-content {
+      flex: 1;
+      padding: 20px;
+      overflow: auto;
+      font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .output-empty {
+      color: #718096;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .output-success {
+      color: #48bb78;
+    }
+
+    .output-error {
+      color: #f56565;
+    }
+
+    .output-section {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #1a202c;
+      border-radius: 8px;
+      border-left: 3px solid;
+    }
+
+    .output-section.success {
+      border-left-color: #48bb78;
+    }
+
+    .output-section.error {
+      border-left-color: #f56565;
+    }
+
+    .output-section h4 {
+      font-size: 12px;
+      color: #a0aec0;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .output-section pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .execution-info {
+      display: flex;
+      gap: 20px;
+      padding: 10px 20px;
+      background: #1a202c;
+      border-top: 1px solid #4a5568;
+      font-size: 12px;
+      color: #a0aec0;
+    }
+
+    .examples {
+      padding: 10px 20px;
+      background: #2d3748;
+      border-top: 1px solid #4a5568;
+    }
+
+    .examples h4 {
+      font-size: 12px;
+      color: #a0aec0;
+      margin-bottom: 10px;
+    }
+
+    .examples-list {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .example-btn {
+      background: #4a5568;
+      color: #e2e8f0;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .example-btn:hover {
+      background: #667eea;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        flex-direction: column;
+      }
+
+      .editor-panel,
+      .output-panel {
+        width: 100%;
+        border-right: none;
+        border-bottom: 2px solid #4a5568;
+      }
+
+      .output-panel {
+        max-height: 50vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>
+      <span>💻</span>
+      Code Playground
+    </h1>
+    <div class="language-selector">
+      <select id="languageSelect" onchange="changeLanguage()">
+        <option value="python">Python</option>
+        <option value="javascript">JavaScript</option>
+      </select>
+      <button id="runBtn" class="btn btn-success" onclick="runCode()">
+        <span>▶️</span>
+        Executar
+      </button>
+      <button class="btn" onclick="clearEditor()">
+        <span>🗑️</span>
+        Limpar
+      </button>
+    </div>
+  </div>
+
+  <div class="main-container">
+    <div class="editor-panel">
+      <div class="editor-header">
+        <h3 id="editorTitle">Editor - Python</h3>
+        <div class="examples">
+          <h4>Exemplos:</h4>
+          <div class="examples-list" id="examplesList"></div>
+        </div>
+      </div>
+      <div class="editor">
+        <textarea id="codeEditor" placeholder="Escreva seu código aqui..."></textarea>
+      </div>
+    </div>
+
+    <div class="output-panel">
+      <div class="output-header">
+        <h3>Output</h3>
+        <button class="btn btn-danger" onclick="clearOutput()" style="padding: 6px 12px; font-size: 12px;">Limpar</button>
+      </div>
+      <div id="outputContent" class="output-content">
+        <div class="output-empty">
+          Execute seu código para ver o resultado aqui
+        </div>
+      </div>
+      <div id="executionInfo" class="execution-info" style="display: none;">
+        <span>⏱️ Tempo: <strong id="execTime">-</strong></span>
+        <span>📊 Status: <strong id="execStatus">-</strong></span>
+        <span>🔤 Linguagem: <strong id="execLang">-</strong></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = window.location.origin;
+    let currentLanguage = 'python';
+
+    const EXAMPLES = {
+      python: [
+        {
+          name: 'Hello World',
+          code: `print("Hello, World!")
+print("Bem-vindo ao ROM Agent Code Playground!")`
+        },
+        {
+          name: 'Fibonacci',
+          code: `def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+for i in range(10):
+    print(f"Fibonacci({i}) = {fibonacci(i)}")`
+        },
+        {
+          name: 'Lista de Números',
+          code: `# Criar lista de números pares
+pares = [i for i in range(20) if i % 2 == 0]
+print("Números pares:", pares)
+
+# Calcular soma
+soma = sum(pares)
+print(f"Soma: {soma}")
+
+# Média
+media = soma / len(pares)
+print(f"Média: {media}")`
+        }
+      ],
+      javascript: [
+        {
+          name: 'Hello World',
+          code: `console.log("Hello, World!");
+console.log("Bem-vindo ao ROM Agent Code Playground!");`
+        },
+        {
+          name: 'Fibonacci',
+          code: `function fibonacci(n) {
+  if (n <= 1) return n;
+  return fibonacci(n-1) + fibonacci(n-2);
+}
+
+for (let i = 0; i < 10; i++) {
+  console.log(\`Fibonacci(\${i}) = \${fibonacci(i)}\`);
+}`
+        },
+        {
+          name: 'Array Methods',
+          code: `// Criar array de números
+const numeros = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Filtrar pares
+const pares = numeros.filter(n => n % 2 === 0);
+console.log("Números pares:", pares);
+
+// Somar
+const soma = pares.reduce((a, b) => a + b, 0);
+console.log("Soma:", soma);
+
+// Média
+const media = soma / pares.length;
+console.log("Média:", media);`
+        }
+      ]
+    };
+
+    // Inicializar
+    function init() {
+      renderExamples();
+      loadExample(EXAMPLES[currentLanguage][0]);
+    }
+
+    // Renderizar exemplos
+    function renderExamples() {
+      const container = document.getElementById('examplesList');
+      container.innerHTML = EXAMPLES[currentLanguage].map((ex, idx) =>
+        `<button class="example-btn" onclick="loadExample(EXAMPLES['${currentLanguage}'][${idx}])">${ex.name}</button>`
+      ).join('');
+    }
+
+    // Carregar exemplo
+    function loadExample(example) {
+      document.getElementById('codeEditor').value = example.code;
+    }
+
+    // Mudar linguagem
+    function changeLanguage() {
+      currentLanguage = document.getElementById('languageSelect').value;
+      document.getElementById('editorTitle').textContent = `Editor - ${currentLanguage === 'python' ? 'Python' : 'JavaScript'}`;
+      renderExamples();
+      loadExample(EXAMPLES[currentLanguage][0]);
+    }
+
+    // Executar código
+    async function runCode() {
+      const code = document.getElementById('codeEditor').value.trim();
+
+      if (!code) {
+        alert('Por favor, escreva algum código antes de executar');
+        return;
+      }
+
+      const runBtn = document.getElementById('runBtn');
+      runBtn.disabled = true;
+      runBtn.innerHTML = '<span>⏳</span> Executando...';
+
+      try {
+        const response = await fetch(`${API_BASE}/api/execute/code`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            code,
+            language: currentLanguage
+          })
+        });
+
+        const result = await response.json();
+        displayOutput(result);
+      } catch (error) {
+        displayOutput({
+          success: false,
+          error: error.message,
+          language: currentLanguage
+        });
+      } finally {
+        runBtn.disabled = false;
+        runBtn.innerHTML = '<span>▶️</span> Executar';
+      }
+    }
+
+    // Exibir output
+    function displayOutput(result) {
+      const container = document.getElementById('outputContent');
+      const infoDiv = document.getElementById('executionInfo');
+
+      let html = '';
+
+      if (result.success) {
+        html += `
+          <div class="output-section success">
+            <h4>✅ Execução bem-sucedida</h4>
+            <pre class="output-success">${escapeHtml(result.stdout || 'Nenhuma saída')}</pre>
+          </div>
+        `;
+
+        if (result.stderr) {
+          html += `
+            <div class="output-section">
+              <h4>⚠️ Avisos</h4>
+              <pre>${escapeHtml(result.stderr)}</pre>
+            </div>
+          `;
+        }
+      } else {
+        html += `
+          <div class="output-section error">
+            <h4>❌ Erro na execução</h4>
+            <pre class="output-error">${escapeHtml(result.error || 'Erro desconhecido')}</pre>
+          </div>
+        `;
+
+        if (result.stdout) {
+          html += `
+            <div class="output-section">
+              <h4>📄 Saída antes do erro</h4>
+              <pre>${escapeHtml(result.stdout)}</pre>
+            </div>
+          `;
+        }
+      }
+
+      container.innerHTML = html;
+
+      // Atualizar info
+      document.getElementById('execTime').textContent = result.executionTime ? `${result.executionTime}ms` : '-';
+      document.getElementById('execStatus').textContent = result.success ? 'Sucesso' : 'Erro';
+      document.getElementById('execStatus').style.color = result.success ? '#48bb78' : '#f56565';
+      document.getElementById('execLang').textContent = result.language || currentLanguage;
+      infoDiv.style.display = 'flex';
+    }
+
+    // Limpar editor
+    function clearEditor() {
+      if (confirm('Limpar todo o código do editor?')) {
+        document.getElementById('codeEditor').value = '';
+      }
+    }
+
+    // Limpar output
+    function clearOutput() {
+      document.getElementById('outputContent').innerHTML = `
+        <div class="output-empty">
+          Execute seu código para ver o resultado aqui
+        </div>
+      `;
+      document.getElementById('executionInfo').style.display = 'none';
+    }
+
+    // Escape HTML
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Atalhos de teclado
+    document.getElementById('codeEditor').addEventListener('keydown', function(e) {
+      // Ctrl/Cmd + Enter para executar
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        runCode();
+      }
+
+      // Tab para indentação
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const start = this.selectionStart;
+        const end = this.selectionEnd;
+        this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+        this.selectionStart = this.selectionEnd = start + 4;
+      }
+    });
+
+    // Inicializar
+    init();
+  </script>
+</body>
+</html>

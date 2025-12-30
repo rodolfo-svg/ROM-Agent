@@ -1,0 +1,43 @@
+{
+  "version": "2.6.0",
+  "build": "2024-12-13T21:00:00Z",
+  "commit": "v2.6.0",
+  "features": [
+    "Sistema de Projetos Inteligente (NOVO)",
+    "Análise Automática de Documentos (NOVO)",
+    "Sugestão Inteligente de Instrumentos Jurídicos (NOVO)",
+    "KB por Projeto Isolado (NOVO)",
+    "Preview Panel Redimensionável (NOVO)",
+    "Logo ROM Extraído do Timbrado (NOVO)",
+    "API Completa de Projetos (8 endpoints) (NOVO)",
+    "Editor de Prompts Integrado (NOVO)",
+    "Interface Dourada Elegante (cores do escritório)",
+    "Integração Completa AWS + GitHub + Render",
+    "Interface Estilo Claude AI (3 colunas)",
+    "Render.yaml Otimizado (auto-deploy, health check)",
+    "Dockerfile Multi-Stage (segurança, menor imagem)",
+    "Rate Limiter AWS Bedrock (10 req/min, 100 req/hora)",
+    "Cache Inteligente (70% economia tokens)",
+    "Validação de Qualidade Pré-Envio",
+    "Peças Indistinguíveis de Produção Humana",
+    "Técnicas de Persuasão Jurídica (11 técnicas)",
+    "Recurso de Apelação Completo (809 linhas)",
+    "Agravo de Instrumento Completo (672 linhas)",
+    "Banco de Frases Persuasivas",
+    "Upload Sync (Desktop → KB)",
+    "KB Auto-Cleanup",
+    "Model Monitor (Anti-obsolescência)",
+    "Auth JWT Completo",
+    "DataJud CNJ/STF"
+  ],
+  "infrastructure": {
+    "aws": "Bedrock Claude Sonnet 4.5",
+    "hosting": "Render.com (auto-deploy)",
+    "repository": "GitHub (main branch)",
+    "domain": "iarom.com.br (pronto para DNS)",
+    "ci_cd": "GitHub Actions (workflow preparado)"
+  },
+  "deployed": true,
+  "render_deploy": "2024-12-13",
+  "optimization_status": "v2.6.0 - Sistema de Projetos Inteligente Implementado"
+}

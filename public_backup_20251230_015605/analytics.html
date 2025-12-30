@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - ROM Agent</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f7fafc;
+            color: #1a202c;
+            padding: 2rem;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .stat-card h3 {
+            font-size: 0.875rem;
+            color: #718096;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a365d;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .change {
+            font-size: 0.875rem;
+            color: #38a169;
+        }
+
+        .chart-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .chart-container h2 {
+            margin-bottom: 1.5rem;
+            color: #1a365d;
+        }
+
+        .back-btn {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: #1a365d;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .back-btn:hover {
+            background: #2c5282;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-btn">← Voltar ao ROM Agent</a>
+
+    <div class="header">
+        <h1>📊 Analytics Dashboard</h1>
+        <p>Monitoramento em tempo real do ROM Agent</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total de Consultas</h3>
+            <div class="value" id="totalQueries">0</div>
+            <div class="change">+0% vs ontem</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Tempo Médio de Resposta</h3>
+            <div class="value" id="avgResponseTime">0s</div>
+            <div class="change">-0% vs ontem</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Cache Hit Rate</h3>
+            <div class="value" id="cacheHitRate">0%</div>
+            <div class="change">+0% vs ontem</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Economia de Custos</h3>
+            <div class="value" id="costSavings">$0.00</div>
+            <div class="change">+0% vs ontem</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Rate Limiting - Requisições Bloqueadas</h3>
+            <div class="value" id="rateLimitBlocked">0</div>
+            <div class="change">Proteção ativa</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Compressão - Dados Economizados</h3>
+            <div class="value" id="compressionSaved">0 MB</div>
+            <div class="change">Gzip/Brotli ativo</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Buscas Semânticas</h3>
+            <div class="value" id="semanticSearches">0</div>
+            <div class="change">TF-IDF local</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Versões Salvas</h3>
+            <div class="value" id="versionsSaved">0</div>
+            <div class="change">Histórico completo</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Modelos Disponíveis</h3>
+            <div class="value" id="templatesAvailable">1</div>
+            <div class="change">Peça Inicial</div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Último Backup</h3>
+            <div class="value" id="lastBackup">Hoje</div>
+            <div class="change">03:00 automático</div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <h2>Uso de Modelos AI</h2>
+        <canvas id="modelsChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Consultas por Hora (Últimas 24h)</h2>
+        <canvas id="queriesChart"></canvas>
+    </div>
+
+    <div class="chart-container">
+        <h2>Performance das Fases 4 & 5</h2>
+        <canvas id="phase45Chart"></canvas>
+    </div>
+
+    <script>
+        // Mock data (em produção, buscar da API)
+        const analyticsData = {
+            totalQueries: 1543,
+            avgResponseTime: 4.2,
+            cacheHitRate: 67,
+            costSavings: 45.20,
+            modelsUsage: {
+                'Nova Lite': 892,
+                'Nova Pro': 421,
+                'Claude Sonnet 4': 230
+            },
+            queriesByHour: Array.from({length: 24}, (_, i) => ({
+                hour: i,
+                queries: Math.floor(Math.random() * 100)
+            }))
+        };
+
+        // Atualizar cards
+        document.getElementById('totalQueries').textContent = analyticsData.totalQueries.toLocaleString();
+        document.getElementById('avgResponseTime').textContent = analyticsData.avgResponseTime + 's';
+        document.getElementById('cacheHitRate').textContent = analyticsData.cacheHitRate + '%';
+        document.getElementById('costSavings').textContent = '$' + analyticsData.costSavings.toFixed(2);
+
+        // Gráfico de modelos
+        const modelsCtx = document.getElementById('modelsChart').getContext('2d');
+        new Chart(modelsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: Object.keys(analyticsData.modelsUsage),
+                datasets: [{
+                    data: Object.values(analyticsData.modelsUsage),
+                    backgroundColor: ['#1a365d', '#2c5282', '#4299e1']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Gráfico de consultas
+        const queriesCtx = document.getElementById('queriesChart').getContext('2d');
+        new Chart(queriesCtx, {
+            type: 'line',
+            data: {
+                labels: analyticsData.queriesByHour.map(d => d.hour + 'h'),
+                datasets: [{
+                    label: 'Consultas',
+                    data: analyticsData.queriesByHour.map(d => d.queries),
+                    borderColor: '#1a365d',
+                    backgroundColor: 'rgba(26, 54, 93, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Gráfico de Phase 4 & 5 features
+        const phase45Ctx = document.getElementById('phase45Chart').getContext('2d');
+        new Chart(phase45Ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Rate Limiting', 'Compressão', 'Busca Semântica', 'Versionamento', 'Modelos', 'Backups'],
+                datasets: [{
+                    label: 'Uso Diário',
+                    data: [15, 87, 24, 12, 5, 1],
+                    backgroundColor: 'rgba(26, 54, 93, 0.8)',
+                    borderColor: '#1a365d',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+
+        // Auto-refresh a cada 30s
+        setInterval(() => {
+            console.log('🔄 Atualizando analytics...');
+            // Fetch real data from API here
+        }, 30000);
+    </script>
+</body>
+</html>
