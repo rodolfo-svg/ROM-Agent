@@ -241,9 +241,16 @@ app.use(express.json({ limit: '50mb' }));
 app.use(createSessionMiddleware());
 app.use(sessionEnhancerMiddleware);
 
-// Middleware para proteger páginas HTML (redirecionar para login)
+// Middleware para proteger páginas HTML ANTIGAS (apenas quando frontend/dist não existe)
 app.use((req, res, next) => {
-  // Lista de páginas públicas (não requerem autenticação)
+  // Se está usando React SPA (frontend/dist existe), pular este middleware
+  // O React SPA gerencia autenticação internamente
+  const frontendPath = path.join(__dirname, '../frontend/dist');
+  if (fs.existsSync(frontendPath)) {
+    return next();
+  }
+
+  // Código legado para HTML estático (public/)
   const publicPages = [
     '/login.html',
     '/offline.html',
@@ -251,26 +258,20 @@ app.use((req, res, next) => {
     '/service-worker.js'
   ];
 
-  // Permitir acesso a assets (CSS, JS, imagens, fontes)
   const isAsset = req.path.match(/\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot)$/i);
 
-  // Se é asset ou página pública, permitir
   if (isAsset || publicPages.includes(req.path)) {
     return next();
   }
 
-  // Se é página HTML (ou raiz), verificar autenticação
   const isHtmlPage = req.path === '/' || req.path.endsWith('.html');
 
   if (isHtmlPage) {
-    // Verificar se usuário está autenticado
     if (!req.session || !req.session.user || !req.session.user.id) {
-      // Não autenticado, redirecionar para login
       return res.redirect('/login.html');
     }
   }
 
-  // Usuário autenticado ou não é página HTML, continuar
   next();
 });
 
@@ -8788,6 +8789,26 @@ app.post('/admin/reload-flags', requireAdminToken, (req, res) => {
 });
 
 logger.info('✅ PR#2 Observability endpoints configured');
+
+// ============================================================================
+// SPA FALLBACK - Serve index.html para React Router (todas as rotas não-API)
+// ============================================================================
+app.get('*', (req, res, next) => {
+  // Apenas para requisições HTML (não API, não assets)
+  if (req.path.startsWith('/api/') || req.path.match(/\.(css|js|png|jpg|jpeg|gif|svg|ico|woff|woff2|ttf|eot|json)$/i)) {
+    return next();
+  }
+
+  // Servir index.html do React SPA se existe, senão continuar para 404
+  const frontendIndexPath = path.join(__dirname, '../frontend/dist/index.html');
+
+  if (fs.existsSync(frontendIndexPath)) {
+    return res.sendFile(frontendIndexPath);
+  }
+
+  // Fallback para HTML antigo (não deveria acontecer, mas mantém compatibilidade)
+  next();
+});
 
 // ============================================================================
 
