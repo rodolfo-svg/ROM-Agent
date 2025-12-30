@@ -1751,7 +1751,7 @@ Sempre cite as fontes corretamente e formate as referências em ABNT.`,
 // API - Chat com Streaming Real-Time (SSE)
 app.post('/api/chat-stream', async (req, res) => {
   try {
-    const { message, modelo = 'amazon.nova-pro-v1:0' } = req.body;
+    const { message, modelo = 'global.anthropic.claude-sonnet-4-5-20250929-v1:0' } = req.body;
     const history = getHistory(req.session.id);
 
     // Configurar SSE
@@ -6065,7 +6065,7 @@ app.post('/api/chat/voting', async (req, res) => {
 // Estratégia Best-of-N: gera N respostas, retorna melhor
 app.post('/api/chat/best-of-n', async (req, res) => {
   try {
-    const { message, n = 3, modelo = 'amazon.nova-pro-v1:0' } = req.body;
+    const { message, n = 3, modelo = 'global.anthropic.claude-sonnet-4-5-20250929-v1:0' } = req.body;
     const history = getHistory(req.session.id);
 
     if (!message || !message.trim()) {
