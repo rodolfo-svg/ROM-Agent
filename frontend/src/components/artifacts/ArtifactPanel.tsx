@@ -105,14 +105,16 @@ export function ArtifactPanel() {
     }
   }
 
-  const panelWidth = isFullscreen ? 'w-[70%]' : 'w-[50%] max-w-[700px]'
+  // Mobile sempre fullscreen, desktop respeitando isFullscreen
+  const panelWidth = isFullscreen ? 'w-[70%] max-md:w-full' : 'w-[50%] max-w-[700px] max-md:w-full'
 
   return (
-    <div 
+    <div
       className={cn(
         panelWidth,
         'h-screen bg-white border-l border-stone-200 flex flex-col',
-        'animate-slide-in-right'
+        'animate-slide-in-right',
+        'max-md:fixed max-md:right-0 max-md:top-0 max-md:z-50'
       )}
     >
       {/* Header */}

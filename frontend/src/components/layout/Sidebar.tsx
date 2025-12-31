@@ -93,7 +93,7 @@ export function Sidebar() {
 
   if (sidebarCollapsed) {
     return (
-      <aside className="w-16 h-screen bg-white border-r border-stone-200 flex flex-col">
+      <aside className="w-16 h-screen bg-white border-r border-stone-200 flex flex-col max-md:hidden">
         <div className="p-3">
           <Button
             variant="ghost"
@@ -122,7 +122,22 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="w-[280px] h-screen bg-white border-r border-stone-200 flex flex-col">
+    <>
+      {/* Mobile backdrop */}
+      {!sidebarCollapsed && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={toggleSidebarCollapse}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside className={cn(
+        "w-[280px] h-screen bg-white border-r border-stone-200 flex flex-col",
+        "max-md:fixed max-md:left-0 max-md:top-0 max-md:z-50",
+        "max-md:transition-transform max-md:duration-300",
+        sidebarCollapsed && "max-md:-translate-x-full"
+      )}>
       {/* Header */}
       <div className="p-4 border-b border-stone-100">
         <div className="flex items-center gap-3 mb-4">
@@ -274,5 +289,6 @@ export function Sidebar() {
         </div>
       </div>
     </aside>
+    </>
   )
 }

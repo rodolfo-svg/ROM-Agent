@@ -1,17 +1,31 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { useAuthStore } from '@/stores/authStore'
-import { LoginPage } from '@/pages/auth/LoginPage'
-import { ChatPage } from '@/pages/chat/ChatPage'
-import { DashboardPage } from '@/pages/dashboard/DashboardPage'
-import { UploadPage } from '@/pages/upload/UploadPage'
-import { PromptsPage } from '@/pages/prompts/PromptsPage'
-import { MultiAgentPage } from '@/pages/multi-agent/MultiAgentPage'
-import { CaseProcessorPage } from '@/pages/case-processor/CaseProcessorPage'
-import { CertidoesPage } from '@/pages/certidoes/CertidoesPage'
-import { UsersPage } from '@/pages/users/UsersPage'
-import { PartnersPage } from '@/pages/partners/PartnersPage'
-import { ReportsPage } from '@/pages/reports/ReportsPage'
+
+// Lazy loading de páginas para melhor performance
+const LoginPage = lazy(() => import('@/pages/auth/LoginPage').then(m => ({ default: m.LoginPage })))
+const ChatPage = lazy(() => import('@/pages/chat/ChatPage').then(m => ({ default: m.ChatPage })))
+const DashboardPage = lazy(() => import('@/pages/dashboard/DashboardPage').then(m => ({ default: m.DashboardPage })))
+const UploadPage = lazy(() => import('@/pages/upload/UploadPage').then(m => ({ default: m.UploadPage })))
+const PromptsPage = lazy(() => import('@/pages/prompts/PromptsPage').then(m => ({ default: m.PromptsPage })))
+const MultiAgentPage = lazy(() => import('@/pages/multi-agent/MultiAgentPage').then(m => ({ default: m.MultiAgentPage })))
+const CaseProcessorPage = lazy(() => import('@/pages/case-processor/CaseProcessorPage').then(m => ({ default: m.CaseProcessorPage })))
+const CertidoesPage = lazy(() => import('@/pages/certidoes/CertidoesPage').then(m => ({ default: m.CertidoesPage })))
+const UsersPage = lazy(() => import('@/pages/users/UsersPage').then(m => ({ default: m.UsersPage })))
+const PartnersPage = lazy(() => import('@/pages/partners/PartnersPage').then(m => ({ default: m.PartnersPage })))
+const ReportsPage = lazy(() => import('@/pages/reports/ReportsPage').then(m => ({ default: m.ReportsPage })))
+
+// Loading component
+function PageLoader() {
+  return (
+    <div className="min-h-screen bg-stone-50 flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="w-10 h-10 border-2 border-bronze-400 border-t-transparent rounded-full animate-spin" />
+        <span className="text-stone-500 text-sm">Carregando...</span>
+      </div>
+    </div>
+  )
+}
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, checkAuth } = useAuthStore()
@@ -40,8 +54,9 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<LoginPage />} />
+    <Suspense fallback={<PageLoader />}>
+      <Routes>
+        <Route path="/login" element={<LoginPage />} />
 
       {/* Dashboard (main entry) */}
       <Route
@@ -156,5 +171,6 @@ export default function App() {
       {/* Catch-all redirect */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>
+    </Suspense>
   )
 }
