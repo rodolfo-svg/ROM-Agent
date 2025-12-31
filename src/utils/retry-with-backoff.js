@@ -147,12 +147,12 @@ function sleep(ms) {
  * @throws {Error} Last error if all retries fail
  */
 export async function retryWithBackoff(fn, options = {}) {
-  // Check if retry is enabled via feature flag
-  const retryEnabled = featureFlags.isEnabled('RETRY_ENABLED') ||
-                       featureFlags.isEnabled('ENABLE_RETRY');
+  // Check if retry is DISABLED via feature flag (enabled by default for resilience)
+  const retryDisabled = featureFlags.isEnabled('DISABLE_RETRY') ||
+                        featureFlags.isEnabled('RETRY_DISABLED');
 
-  if (!retryEnabled) {
-    // If retry is disabled, just execute once
+  if (retryDisabled) {
+    // If retry is explicitly disabled, just execute once
     return await fn();
   }
 
