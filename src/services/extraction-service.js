@@ -17,8 +17,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
 import { extractTextFromPDF } from '../modules/textract.js';
-import { performOCR } from './ocr-service.js';
-import { generateChronology, generateMatrices } from './chronology-service.js';
+// OCR and Chronology são imports dinâmicos (opcional - podem não estar disponíveis)
 import { uploadToKnowledgeBase } from '../modules/knowledgeBase.js';
 import progressEmitter from '../utils/progress-emitter.js';
 
@@ -216,20 +215,31 @@ export async function extractCompleteDocument(options = {}) {
     if (!textContent || textContent.trim().length === 0) {
       progressEmitter.addStep(sessionId, 'Executando OCR nas páginas', 'processing');
       console.log('🔍 Executando OCR...');
-      const ocrResult = await performOCR(filePath, metadata.paths.ocr);
 
-      if (ocrResult.success) {
-        textContent = ocrResult.fullText;
-        progressEmitter.addSuccess(sessionId, `OCR concluído: ${ocrResult.pagesProcessed} páginas processadas`);
-        extractionLog.steps.push({
-          step: 'ocr',
-          status: 'sucesso',
-          pages: ocrResult.pagesProcessed,
-          confidence: ocrResult.averageConfidence
-        });
-      } else {
-        progressEmitter.addError(sessionId, 'Falha no OCR', ocrResult.error);
-        extractionLog.errors.push({ step: 'ocr', error: ocrResult.error });
+      try {
+        // Import dinâmico - OCR pode não estar disponível
+        const { performOCR } = await import('./ocr-service.js');
+        const ocrResult = await performOCR(filePath, metadata.paths.ocr);
+
+        if (ocrResult.success) {
+          textContent = ocrResult.fullText;
+          progressEmitter.addSuccess(sessionId, `OCR concluído: ${ocrResult.pagesProcessed} páginas processadas`);
+          extractionLog.steps.push({
+            step: 'ocr',
+            status: 'sucesso',
+            pages: ocrResult.pagesProcessed,
+            confidence: ocrResult.averageConfidence
+          });
+        } else {
+          progressEmitter.addError(sessionId, 'Falha no OCR', ocrResult.error);
+          extractionLog.errors.push({ step: 'ocr', error: ocrResult.error });
+        }
+      } catch (importError) {
+        const errorMsg = 'OCR service não disponível (dependências AWS Textract não instaladas)';
+        console.warn(`⚠️  ${errorMsg}`);
+        progressEmitter.addWarning(sessionId, errorMsg);
+        extractionLog.warnings = extractionLog.warnings || [];
+        extractionLog.warnings.push({ step: 'ocr', message: errorMsg });
       }
     }
 
@@ -296,39 +306,53 @@ export async function extractCompleteDocument(options = {}) {
 
     // 8. Gerar cronologia
     console.log('📅 Gerando cronologia...');
-    const cronologia = await generateChronology(textContent, processNumber);
+    let cronologia = null;
+    let matrizes = null;
 
-    await fs.writeFile(
-      path.join(metadata.paths.extracted, 'cronologia.json'),
-      JSON.stringify(cronologia, null, 2),
-      'utf-8'
-    );
-    await fs.writeFile(
-      path.join(metadata.paths.extracted, 'cronologia.md'),
-      generateCronologiaMD(cronologia),
-      'utf-8'
-    );
+    try {
+      // Import dinâmico - Chronology pode não estar disponível
+      const { generateChronology, generateMatrices } = await import('./chronology-service.js');
 
-    extractionLog.outputs.cronologia = cronologia;
-    extractionLog.steps.push({ step: 'gerar-cronologia', status: 'sucesso', eventos: cronologia.eventos.length });
+      cronologia = await generateChronology(textContent, processNumber);
 
-    // 9. Gerar matrizes de prazos
-    console.log('⏰ Gerando matrizes de prazos...');
-    const matrizes = await generateMatrices(textContent, cronologia);
+      await fs.writeFile(
+        path.join(metadata.paths.extracted, 'cronologia.json'),
+        JSON.stringify(cronologia, null, 2),
+        'utf-8'
+      );
+      await fs.writeFile(
+        path.join(metadata.paths.extracted, 'cronologia.md'),
+        generateCronologiaMD(cronologia),
+        'utf-8'
+      );
 
-    await fs.writeFile(
-      path.join(metadata.paths.extracted, 'matrizes-prazos.json'),
-      JSON.stringify(matrizes, null, 2),
-      'utf-8'
-    );
-    await fs.writeFile(
-      path.join(metadata.paths.extracted, 'matrizes-prazos.md'),
-      generateMatrizesMD(matrizes),
-      'utf-8'
-    );
+      extractionLog.outputs.cronologia = cronologia;
+      extractionLog.steps.push({ step: 'gerar-cronologia', status: 'sucesso', eventos: cronologia.eventos.length });
 
-    extractionLog.outputs.matrizes = matrizes;
-    extractionLog.steps.push({ step: 'gerar-matrizes', status: 'sucesso' });
+      // 9. Gerar matrizes de prazos
+      console.log('⏰ Gerando matrizes de prazos...');
+      matrizes = await generateMatrices(textContent, cronologia);
+
+      await fs.writeFile(
+        path.join(metadata.paths.extracted, 'matrizes-prazos.json'),
+        JSON.stringify(matrizes, null, 2),
+        'utf-8'
+      );
+      await fs.writeFile(
+        path.join(metadata.paths.extracted, 'matrizes-prazos.md'),
+        generateMatrizesMD(matrizes),
+        'utf-8'
+      );
+
+      extractionLog.outputs.matrizes = matrizes;
+      extractionLog.steps.push({ step: 'gerar-matrizes', status: 'sucesso' });
+
+    } catch (importError) {
+      const errorMsg = 'Chronology service não disponível (pulando cronologia e matrizes)';
+      console.warn(`⚠️  ${errorMsg}`);
+      extractionLog.warnings = extractionLog.warnings || [];
+      extractionLog.warnings.push({ step: 'cronologia', message: errorMsg });
+    }
 
     // 10. Gerar microfichas
     console.log('📇 Gerando microfichas...');

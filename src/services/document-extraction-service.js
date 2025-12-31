@@ -22,7 +22,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
 import { extractTextFromPDF } from '../modules/textract.js';
-import { smartOCR } from './ocr-service.js';
+// OCR é import dinâmico (opcional - pode não estar disponível)
 import { uploadToKnowledgeBase } from '../modules/knowledgeBase.js';
 
 // Detectar sistema operacional
@@ -204,11 +204,16 @@ async function processPDF(filePath, outputFolder) {
         result.ocrNeeded = true;
         result.warnings.push('PDF sem texto selecionável - OCR necessário');
 
-        // Executar OCR
-        const ocrResult = await smartOCR(filePath, outputFolder);
-        result.text = ocrResult.fullText || '';
-        result.ocrApplied = true;
-        result.ocrConfidence = ocrResult.averageConfidence;
+        // Executar OCR (import dinâmico)
+        try {
+          const { smartOCR } = await import('./ocr-service.js');
+          const ocrResult = await smartOCR(filePath, outputFolder);
+          result.text = ocrResult.fullText || '';
+          result.ocrApplied = true;
+          result.ocrConfidence = ocrResult.averageConfidence;
+        } catch (importError) {
+          result.warnings.push('OCR service não disponível - dependências AWS Textract não instaladas');
+        }
       }
 
       result.success = true;
@@ -236,8 +241,9 @@ async function processImage(filePath, outputFolder) {
       errors: []
     };
 
-    // OCR na imagem
+    // OCR na imagem (import dinâmico)
     try {
+      const { smartOCR } = await import('./ocr-service.js');
       const ocrResult = await smartOCR(filePath, outputFolder);
       result.ocr = {
         text: ocrResult.fullText || '',
@@ -245,7 +251,12 @@ async function processImage(filePath, outputFolder) {
       };
       result.success = true;
     } catch (error) {
-      result.errors.push(`Erro no OCR da imagem: ${error.message}`);
+      if (error.code === 'ERR_MODULE_NOT_FOUND') {
+        result.warnings.push('OCR service não disponível - dependências AWS Textract não instaladas');
+        result.success = true; // Não é um erro crítico
+      } else {
+        result.errors.push(`Erro no OCR da imagem: ${error.message}`);
+      }
     }
 
     // Análise da imagem (placeholder para integração futura com Claude Vision ou AWS Rekognition)
