@@ -8799,6 +8799,34 @@ app.post('/admin/reload-flags', requireAdminToken, (req, res) => {
 logger.info('✅ PR#2 Observability endpoints configured');
 
 // ============================================================================
+// PWA FILES - Serve manifest.json e service-worker.js
+// ============================================================================
+app.get('/manifest.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.json({
+    name: "ROM Agent - Redator de Obras Magistrais",
+    short_name: "ROM Agent",
+    description: "Assistente de IA para redação de peças jurídicas",
+    start_url: "/",
+    display: "standalone",
+    background_color: "#ffffff",
+    theme_color: "#1a365d",
+    orientation: "portrait-primary",
+    icons: [
+      { src: "/img/logo_rom.png", sizes: "192x192", type: "image/png", purpose: "any maskable" },
+      { src: "/img/logo_rom.png", sizes: "512x512", type: "image/png", purpose: "any maskable" }
+    ],
+    categories: ["productivity", "business"]
+  });
+});
+
+app.get('/service-worker.js', (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.setHeader('Service-Worker-Allowed', '/');
+  res.send(`const CACHE_NAME='rom-agent-v1';const ASSETS_TO_CACHE=['/','/manifest.json'];self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(ASSETS_TO_CACHE).catch(()=>{})).then(()=>self.skipWaiting()))});self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(names=>Promise.all(names.filter(n=>n!==CACHE_NAME).map(n=>caches.delete(n)))).then(()=>self.clients.claim()))});self.addEventListener('fetch',e=>{if(e.request.url.includes('/api/')){e.respondWith(fetch(e.request));return}e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request).then(f=>caches.open(CACHE_NAME).then(c=>{if(e.request.method==='GET')c.put(e.request,f.clone());return f}))).catch(()=>{if(e.request.destination==='document')return caches.match('/')}))});`);
+});
+
+// ============================================================================
 // SPA FALLBACK - Serve index.html para React Router (todas as rotas não-API)
 // ============================================================================
 app.get('*', (req, res, next) => {
