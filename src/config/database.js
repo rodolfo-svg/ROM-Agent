@@ -54,8 +54,10 @@ export async function initPostgres() {
     console.log('🔍 [PG] Criando pg.Pool...');
     pgPool = new pg.Pool(config);
 
-    // Hook para configurar schema em TODAS as conexões do pool
+    // Configurar schema (para separar staging/production)
     const schema = process.env.DATABASE_SCHEMA || 'public';
+
+    // Hook para configurar schema em TODAS as conexões do pool
     if (schema !== 'public') {
       pgPool.on('connect', async (client) => {
         await client.query(`SET search_path TO ${schema}, public`);
@@ -67,8 +69,7 @@ export async function initPostgres() {
     await pgPool.query('SELECT NOW()');
     const latency = Date.now() - startTime;
 
-    // Configurar schema se especificado (para separar staging/production)
-    const schema = process.env.DATABASE_SCHEMA || 'public';
+    // Criar schema se não existir
     if (schema !== 'public') {
       console.log(`🔍 [PG] Criando e configurando schema: ${schema}`);
       await pgPool.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
