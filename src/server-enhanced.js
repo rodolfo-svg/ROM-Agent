@@ -43,6 +43,10 @@ import autoUpdateRoutes from '../lib/api-routes-auto-update.js';
 import storageRoutes from '../lib/api-routes-storage.js';
 import schedulerRoutes from '../lib/api-routes-scheduler.js';
 import partnerSettingsRoutes from '../lib/api-routes-partner-settings.js';
+import deployRoutes from '../lib/api-routes-deploy.js';
+import logsRoutes from '../lib/api-routes-logs.js';
+import jurisprudenciaRoutes from '../lib/api-routes-jurisprudencia.js';
+import documentsRoutes from '../lib/api-routes-documents.js';
 import romProjectService from './services/rom-project-service.js';
 import romProjectRouter from './routes/rom-project.js';
 import romCaseProcessorService from './services/processors/rom-case-processor-service.js';
@@ -311,6 +315,10 @@ app.use('/api', autoUpdateRoutes);
 app.use('/api', storageRoutes);
 app.use('/api', schedulerRoutes);
 app.use('/api', partnerSettingsRoutes);
+app.use('/api', deployRoutes);
+app.use('/api', logsRoutes);
+app.use('/api', jurisprudenciaRoutes);
+app.use('/api', documentsRoutes);
 app.use('/api/rom-project', romProjectRouter);
 
 // Rotas de Autenticação (login/logout)
