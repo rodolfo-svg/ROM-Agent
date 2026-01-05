@@ -47,6 +47,7 @@ import deployRoutes from '../lib/api-routes-deploy.js';
 import logsRoutes from '../lib/api-routes-logs.js';
 import jurisprudenciaRoutes from '../lib/api-routes-jurisprudencia.js';
 import documentsRoutes from '../lib/api-routes-documents.js';
+import pipelineRoutes from '../lib/api-routes-pipeline.js';
 import romProjectService from './services/rom-project-service.js';
 import romProjectRouter from './routes/rom-project.js';
 import romCaseProcessorService from './services/processors/rom-case-processor-service.js';
@@ -319,6 +320,7 @@ app.use('/api', deployRoutes);
 app.use('/api', logsRoutes);
 app.use('/api', jurisprudenciaRoutes);
 app.use('/api', documentsRoutes);
+app.use('/api', pipelineRoutes);
 app.use('/api/rom-project', romProjectRouter);
 
 // Rotas de Autenticação (login/logout)
