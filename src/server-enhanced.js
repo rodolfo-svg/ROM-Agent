@@ -1791,7 +1791,7 @@ app.post('/api/chat-stream', async (req, res) => {
       },
       {
         modelo,
-        historico: history.slice(-10),
+        historico: history.slice(-30), // Últimas 30 mensagens
         maxTokens: 4096,
         temperature: 0.7
       }
@@ -1881,7 +1881,7 @@ app.post('/api/chat/stream', async (req, res) => {
       },
       {
         modelo: model,
-        historico: history.slice(-10), // Últimas 10 mensagens
+        historico: history.slice(-30), // Últimas 30 mensagens (15 pares usuário/assistente)
         maxTokens: 4096,
         temperature: 0.7
       }
