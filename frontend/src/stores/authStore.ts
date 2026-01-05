@@ -110,9 +110,10 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'rom-auth',
-      partialize: (state) => ({ 
-        user: state.user, 
-        isAuthenticated: state.isAuthenticated 
+      partialize: (state) => ({
+        // NÃO persistir isAuthenticated - apenas user
+        // isAuthenticated será recalculado via checkAuth()
+        user: state.user
       }),
     }
   )
