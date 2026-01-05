@@ -104,9 +104,13 @@ services:
 
     # ═══ BUILD ═══
     buildCommand: |
-      echo "🔧 [STAGING] Instalando dependências..."
+      echo "🔧 [STAGING] Instalando dependências do backend..."
       npm ci --only=production
-      echo "✅ [STAGING] Build concluído"
+      echo "🔧 [STAGING] Instalando dependências do frontend..."
+      cd frontend && npm ci
+      echo "🏗️ [STAGING] Buildando React Frontend V4..."
+      npm run build
+      echo "✅ [STAGING] Build concluído (backend + frontend)"
 
     # ═══ START ═══
     startCommand: npm run web:enhanced
@@ -156,6 +160,10 @@ services:
       # PostgreSQL Database (Internal Database URL)
       - key: DATABASE_URL
         value: postgresql://rom_agent_user:faPSk0YSNlhyPfBYpri2RcK9XdRbaE8L@dpg-d5819bhr0fns73dmfsv0-a/rom_agent
+
+      # Database Schema (staging usa schema separado)
+      - key: DATABASE_SCHEMA
+        value: staging
 
       # Rate Limiter (mais permissivo para testes)
       - key: RATE_LIMIT_PER_MINUTE

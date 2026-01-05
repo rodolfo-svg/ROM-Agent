@@ -43,13 +43,40 @@ import { getCache } from '../utils/multi-level-cache.js';
 // CONFIGURAÇÃO
 // ============================================================
 
+/**
+ * Seleciona modelo padrão baseado no ambiente
+ * - STAGING: Opus 4.5 (máxima qualidade para testes e desenvolvimento)
+ * - PRODUCTION: Sonnet 4.5 (melhor custo-benefício)
+ * - DEVELOPMENT: Sonnet 4.5 (padrão)
+ */
+function getDefaultModel() {
+  const env = process.env.NODE_ENV?.toLowerCase() || 'development';
+  const forceModel = process.env.DEFAULT_AI_MODEL;
+
+  // Se houver modelo forçado via env var, usar ele
+  if (forceModel) {
+    console.log(`🎯 Usando modelo forçado via DEFAULT_AI_MODEL: ${forceModel}`);
+    return forceModel;
+  }
+
+  // STAGING: Usar Opus 4.5 (máxima qualidade)
+  if (env === 'staging' || process.env.RENDER_SERVICE_NAME?.includes('staging')) {
+    console.log('🚀 STAGING detectado: usando Claude Opus 4.5 (máxima qualidade)');
+    return 'anthropic.claude-opus-4-5-20251101-v1:0';
+  }
+
+  // PRODUCTION e DEVELOPMENT: Usar Sonnet 4.5 (custo-benefício)
+  console.log(`📊 ${env.toUpperCase()}: usando Claude Sonnet 4.5 (custo-benefício)`);
+  return 'anthropic.claude-sonnet-4-5-20250929-v1:0';
+}
+
 const CONFIG = {
   region: process.env.AWS_REGION || 'us-west-2',
-  defaultModel: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',  // Sonnet 4.5 Inference Profile
-  maxTokens: 64000,  // 64K tokens output (limite do Bedrock para Sonnet 4.5)
+  defaultModel: getDefaultModel(),
+  maxTokens: 64000,  // 64K tokens output (limite do Bedrock para Sonnet/Opus 4.5)
   temperature: 0.7,
   autoModelSelection: true,  // Habilitar seleção automática de modelo
-  maxContextTokens: 200000  // Limite de contexto de entrada (200k tokens - Sonnet 4.5)
+  maxContextTokens: 200000  // Limite de contexto de entrada (200k tokens - Sonnet/Opus 4.5)
 };
 
 // Modelos disponíveis organizados por provedor

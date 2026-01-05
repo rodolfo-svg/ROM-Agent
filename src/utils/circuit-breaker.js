@@ -19,7 +19,7 @@ const DEFAULT_CONFIG = {
   timeWindowMs: 60000, // 60 seconds
   openStateTimeoutMs: 30000, // 30 seconds
   halfOpenMaxAttempts: 1, // Test with 1 request
-  enabled: false // Default disabled (controlled by ENABLE_CIRCUIT_BREAKER flag)
+  enabled: true // Default ENABLED for production resilience (can be disabled via DISABLE_CIRCUIT_BREAKER flag)
 };
 
 // Circuit States

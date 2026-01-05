@@ -9,6 +9,7 @@
  */
 
 import fs from 'fs/promises';
+import fsSync from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import { fileURLToPath } from 'url';
@@ -38,18 +39,34 @@ class CacheService {
   }
 
   /**
-   * Gerar hash SHA256 de um arquivo
+   * Gerar hash SHA256 de um arquivo usando streams (OPTIMIZED v2.7.1)
+   * Evita carregar arquivo inteiro em memória - eficiente para arquivos grandes
    * @param {string} filePath - Caminho do arquivo
    * @returns {Promise<string>} Hash SHA256
    */
   async generateFileHash(filePath) {
-    try {
-      const content = await fs.readFile(filePath);
-      return crypto.createHash('sha256').update(content).digest('hex');
-    } catch (error) {
-      console.error(`Erro ao gerar hash de ${filePath}:`, error);
-      return null;
-    }
+    return new Promise((resolve, reject) => {
+      try {
+        const hash = crypto.createHash('sha256');
+        const stream = fsSync.createReadStream(filePath);
+
+        stream.on('data', (chunk) => {
+          hash.update(chunk);
+        });
+
+        stream.on('end', () => {
+          resolve(hash.digest('hex'));
+        });
+
+        stream.on('error', (error) => {
+          console.error(`Erro ao gerar hash de ${filePath}:`, error);
+          reject(error);
+        });
+      } catch (error) {
+        console.error(`Erro ao gerar hash de ${filePath}:`, error);
+        reject(error);
+      }
+    });
   }
 
   /**

@@ -1,0 +1,279 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-stone-200;
+  }
+
+  html {
+    @apply antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-stone-50 text-stone-800;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-stone-300 rounded-full hover:bg-stone-400;
+  }
+
+  /* Selection */
+  ::selection {
+    @apply bg-bronze-200 text-stone-900;
+  }
+
+  /* Focus */
+  :focus-visible {
+    @apply outline-none ring-2 ring-bronze-400/50 ring-offset-2 ring-offset-white;
+  }
+}
+
+@layer components {
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-medium transition-all duration-150;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply btn px-4 py-2.5 bg-stone-700 text-white rounded-lg;
+    @apply hover:bg-stone-800 active:bg-stone-900;
+  }
+
+  .btn-secondary {
+    @apply btn px-4 py-2.5 bg-white text-stone-700 border border-stone-200 rounded-lg;
+    @apply hover:bg-stone-50 hover:border-stone-300;
+  }
+
+  .btn-ghost {
+    @apply btn px-3 py-2 text-stone-600 rounded-lg;
+    @apply hover:bg-stone-100 hover:text-stone-800;
+  }
+
+  .btn-icon {
+    @apply btn p-2 text-stone-500 rounded-lg;
+    @apply hover:bg-stone-100 hover:text-stone-700;
+  }
+
+  /* Inputs */
+  .input {
+    @apply w-full px-4 py-3 bg-stone-100 border border-stone-200 rounded-xl;
+    @apply text-stone-800 placeholder:text-stone-400;
+    @apply transition-all duration-150;
+    @apply focus:bg-white focus:border-bronze-400 focus:ring-4 focus:ring-bronze-400/10;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white rounded-2xl border border-stone-200 shadow-soft;
+  }
+
+  /* Messages */
+  .message-user {
+    @apply bg-stone-700 text-white px-4 py-3 rounded-2xl rounded-br-md;
+  }
+
+  .message-assistant {
+    @apply text-stone-800;
+  }
+
+  /* Artifact cards */
+  .artifact-card {
+    @apply border border-stone-200 rounded-xl overflow-hidden;
+    @apply hover:border-bronze-400 hover:shadow-medium transition-all duration-200;
+  }
+
+  .artifact-header {
+    @apply px-4 py-3 bg-stone-50 border-b border-stone-200;
+    @apply flex items-center justify-between;
+  }
+
+  .artifact-preview {
+    @apply px-4 py-3 bg-white max-h-[150px] overflow-hidden relative;
+  }
+
+  .artifact-fade {
+    @apply absolute bottom-0 left-0 right-0 h-12;
+    background: linear-gradient(to top, white, transparent);
+  }
+}
+
+@layer utilities {
+  /* Typing animation */
+  .typing-dot {
+    @apply w-1.5 h-1.5 bg-bronze-400 rounded-full;
+    animation: typing 1.4s infinite ease-in-out both;
+  }
+
+  .typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  .typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+
+  @keyframes typing {
+    0%, 80%, 100% {
+      transform: scale(0.8);
+      opacity: 0.5;
+    }
+    40% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  /* Prose styles for markdown */
+  .prose-chat {
+    @apply text-stone-800 leading-relaxed;
+  }
+
+  .prose-chat h1 {
+    @apply text-xl font-semibold mt-6 mb-3 text-stone-900;
+  }
+
+  .prose-chat h2 {
+    @apply text-lg font-semibold mt-5 mb-2 text-stone-900;
+  }
+
+  .prose-chat h3 {
+    @apply text-base font-semibold mt-4 mb-2 text-stone-900;
+  }
+
+  .prose-chat p {
+    @apply mb-3;
+  }
+
+  .prose-chat ul, .prose-chat ol {
+    @apply mb-3 pl-6;
+  }
+
+  .prose-chat li {
+    @apply mb-1;
+  }
+
+  .prose-chat ul li {
+    @apply list-disc;
+  }
+
+  .prose-chat ol li {
+    @apply list-decimal;
+  }
+
+  .prose-chat code {
+    @apply px-1.5 py-0.5 bg-stone-100 text-stone-800 rounded text-sm font-mono;
+  }
+
+  .prose-chat pre {
+    @apply my-4 p-4 bg-stone-900 text-stone-100 rounded-xl overflow-x-auto;
+  }
+
+  .prose-chat pre code {
+    @apply bg-transparent p-0 text-inherit;
+  }
+
+  .prose-chat blockquote {
+    @apply border-l-4 border-bronze-400 pl-4 my-4 italic text-stone-600;
+  }
+
+  .prose-chat a {
+    @apply text-bronze-600 underline underline-offset-2 hover:text-bronze-700;
+  }
+
+  .prose-chat table {
+    @apply w-full my-4 border-collapse;
+  }
+
+  .prose-chat th, .prose-chat td {
+    @apply border border-stone-200 px-3 py-2 text-left;
+  }
+
+  .prose-chat th {
+    @apply bg-stone-50 font-semibold;
+  }
+
+  .prose-chat hr {
+    @apply my-6 border-stone-200;
+  }
+
+  /* Code highlighting */
+  .hljs {
+    @apply bg-transparent;
+  }
+}
+
+/* Highlight.js theme override */
+.hljs-comment,
+.hljs-quote {
+  @apply text-stone-400 italic;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-addition {
+  @apply text-purple-400;
+}
+
+.hljs-number,
+.hljs-string,
+.hljs-meta .hljs-meta-string,
+.hljs-literal,
+.hljs-doctag,
+.hljs-regexp {
+  @apply text-emerald-400;
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class {
+  @apply text-amber-400;
+}
+
+.hljs-attribute,
+.hljs-attr,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-class .hljs-title,
+.hljs-type {
+  @apply text-sky-400;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-subst,
+.hljs-meta,
+.hljs-meta .hljs-keyword,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-link {
+  @apply text-rose-400;
+}
+
+.hljs-built_in,
+.hljs-deletion {
+  @apply text-orange-400;
+}
+
+.hljs-emphasis {
+  @apply italic;
+}
+
+.hljs-strong {
+  @apply font-bold;
+}

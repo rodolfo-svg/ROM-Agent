@@ -1,9 +1,9 @@
 /**
- * Multi-Level Cache System (v2.7.0 Performance)
+ * Multi-Level Cache System (v2.7.1 Performance Optimized)
  *
  * 3-Layer cache architecture for 10-50x performance improvement:
- * - L1: Memory (LRU-cache) - 0.001s - 100MB
- * - L2: Disk (SQLite) - 0.010s - 1GB
+ * - L1: Memory (LRU-cache library) - 0.001s - 100MB - OPTIMIZED
+ * - L2: Disk (Filesystem) - 0.010s - 1GB - ENABLED
  * - L3: Redis (Distributed) - 0.050s - Remote
  *
  * TTL Strategy:
@@ -11,68 +11,53 @@
  * - Jurisprudence: 24 hours
  * - Legislation: 7 days
  * - Templates: 30 days
+ *
+ * PERFORMANCE IMPROVEMENTS (v2.7.1):
+ * - L1 now uses optimized lru-cache library (O(1) operations)
+ * - L2 enabled with filesystem backend
+ * - Removed O(n) iteration for expired entries
+ * - Added automatic cleanup with setInterval
  */
 
 import crypto from 'crypto';
+import { LRUCache as LRU } from 'lru-cache';
+import fs from 'fs/promises';
+import path from 'path';
 import { logger } from './logger.js';
 import metricsCollector from './metrics-collector-v2.js';
 
-// L1: In-Memory LRU Cache
+// L1: In-Memory LRU Cache (using optimized library)
 class LRUCache {
   constructor(maxSize = 100 * 1024 * 1024) { // 100MB default
-    this.cache = new Map();
+    // Use optimized lru-cache library with automatic TTL and size-based eviction
+    this.cache = new LRU({
+      max: 500, // Max 500 items
+      maxSize: maxSize,
+      sizeCalculation: (value) => {
+        // Calculate size of entry
+        return JSON.stringify(value).length;
+      },
+      // Automatically remove expired entries
+      ttlAutopurge: true,
+      updateAgeOnGet: true, // LRU behavior
+      updateAgeOnHas: false
+    });
+
     this.maxSize = maxSize;
-    this.currentSize = 0;
   }
 
   get(key) {
-    if (!this.cache.has(key)) {
-      return null;
-    }
-
-    // Move to end (most recently used)
-    const value = this.cache.get(key);
-    this.cache.delete(key);
-    this.cache.set(key, value);
-
-    return value;
+    const entry = this.cache.get(key);
+    return entry || null;
   }
 
   set(key, value, ttl) {
-    const entry = {
-      data: value,
-      expiry: Date.now() + ttl,
-      size: JSON.stringify(value).length
-    };
-
-    // Remove expired or make space if needed
-    this.evictIfNeeded(entry.size);
-
-    this.cache.set(key, entry);
-    this.currentSize += entry.size;
-  }
-
-  evictIfNeeded(newSize) {
-    // Remove expired entries first
-    for (const [key, entry] of this.cache) {
-      if (Date.now() > entry.expiry) {
-        this.cache.delete(key);
-        this.currentSize -= entry.size;
-      }
-    }
-
-    // Evict LRU entries if still over capacity
-    while (this.currentSize + newSize > this.maxSize && this.cache.size > 0) {
-      const firstKey = this.cache.keys().next().value;
-      const firstEntry = this.cache.get(firstKey);
-      this.cache.delete(firstKey);
-      this.currentSize -= firstEntry.size;
-    }
+    // Store with TTL - lru-cache handles expiration automatically
+    this.cache.set(key, value, { ttl });
   }
 
   clear() {
     this.cache.clear();
-    this.currentSize = 0;
   }
 
   size() {
@@ -82,42 +67,184 @@ class LRUCache {
   getStats() {
     return {
       entries: this.cache.size,
-      currentSize: this.currentSize,
+      currentSize: this.cache.calculatedSize || 0,
       maxSize: this.maxSize,
-      utilizationPercent: Math.round((this.currentSize / this.maxSize) * 100)
+      utilizationPercent: this.cache.calculatedSize
+        ? Math.round((this.cache.calculatedSize / this.maxSize) * 100)
+        : 0
     };
   }
 }
 
-// L2: Disk Cache (SQLite) - Will be implemented when needed
+// L2: Disk Cache (Filesystem-based, optimized for performance)
 class DiskCache {
-  constructor(dbPath) {
-    this.dbPath = dbPath;
-    this.enabled = false; // Will enable when SQLite is added
+  constructor(cacheDir = './data/cache') {
+    this.cacheDir = cacheDir;
+    this.enabled = true; // NOW ENABLED
+    this.maxEntries = 10000; // Limit disk entries
+    this.initialized = false;
+  }
+
+  async initialize() {
+    if (this.initialized) return;
+
+    try {
+      await fs.mkdir(this.cacheDir, { recursive: true });
+      this.initialized = true;
+      logger.info('Disk cache (L2) initialized', { path: this.cacheDir });
+    } catch (error) {
+      logger.error('Failed to initialize disk cache', error);
+      this.enabled = false;
+    }
+  }
+
+  _getCachePath(key) {
+    // Use first 2 chars for directory sharding to avoid too many files in one dir
+    const dir = key.substring(0, 2);
+    return path.join(this.cacheDir, dir, `${key}.json`);
   }
 
   async get(key) {
     if (!this.enabled) return null;
-    // TODO: Implement SQLite query
-    return null;
+
+    try {
+      await this.initialize();
+
+      const filePath = this._getCachePath(key);
+      const data = await fs.readFile(filePath, 'utf-8');
+      const entry = JSON.parse(data);
+
+      // Check if expired
+      if (Date.now() > entry.expiry) {
+        // Delete expired file asynchronously (don't await)
+        fs.unlink(filePath).catch(() => {});
+        return null;
+      }
+
+      return entry.data;
+    } catch (error) {
+      // File not found or parse error - normal cache miss
+      return null;
+    }
   }
 
   async set(key, value, ttl) {
     if (!this.enabled) return;
-    // TODO: Implement SQLite insert
+
+    try {
+      await this.initialize();
+
+      const filePath = this._getCachePath(key);
+      const dir = path.dirname(filePath);
+
+      // Create directory if needed
+      await fs.mkdir(dir, { recursive: true });
+
+      const entry = {
+        data: value,
+        expiry: Date.now() + ttl,
+        created: Date.now()
+      };
+
+      // Write atomically with temp file
+      const tempPath = `${filePath}.tmp`;
+      await fs.writeFile(tempPath, JSON.stringify(entry), 'utf-8');
+      await fs.rename(tempPath, filePath);
+
+    } catch (error) {
+      logger.warn('Disk cache write failed', { key: key.substring(0, 16), error: error.message });
+    }
   }
 
   async clear() {
     if (!this.enabled) return;
-    // TODO: Implement SQLite clear
+
+    try {
+      await fs.rm(this.cacheDir, { recursive: true, force: true });
+      this.initialized = false;
+      logger.info('Disk cache cleared');
+    } catch (error) {
+      logger.error('Disk cache clear failed', error);
+    }
   }
 
-  getStats() {
-    return {
-      enabled: this.enabled,
-      entries: 0,
-      currentSize: 0
-    };
+  async getStats() {
+    if (!this.enabled) {
+      return { enabled: false, entries: 0, currentSize: 0 };
+    }
+
+    try {
+      await this.initialize();
+
+      // Count files recursively (approximate)
+      let fileCount = 0;
+      const dirs = await fs.readdir(this.cacheDir);
+
+      for (const dir of dirs) {
+        try {
+          const dirPath = path.join(this.cacheDir, dir);
+          const stat = await fs.stat(dirPath);
+          if (stat.isDirectory()) {
+            const files = await fs.readdir(dirPath);
+            fileCount += files.length;
+          }
+        } catch {
+          // Ignore errors
+        }
+      }
+
+      return {
+        enabled: true,
+        entries: fileCount,
+        currentSize: 0 // TODO: Calculate actual size if needed
+      };
+    } catch {
+      return { enabled: true, entries: 0, currentSize: 0 };
+    }
+  }
+
+  // Cleanup old entries (run periodically)
+  async cleanup(maxAgeMs = 7 * 24 * 60 * 60 * 1000) { // 7 days default
+    if (!this.enabled) return;
+
+    try {
+      await this.initialize();
+
+      let deletedCount = 0;
+      const cutoff = Date.now() - maxAgeMs;
+      const dirs = await fs.readdir(this.cacheDir);
+
+      for (const dir of dirs) {
+        try {
+          const dirPath = path.join(this.cacheDir, dir);
+          const stat = await fs.stat(dirPath);
+          if (!stat.isDirectory()) continue;
+
+          const files = await fs.readdir(dirPath);
+
+          for (const file of files) {
+            if (!file.endsWith('.json')) continue;
+
+            const filePath = path.join(dirPath, file);
+            const fileStat = await fs.stat(filePath);
+
+            // Delete if too old
+            if (fileStat.mtime.getTime() < cutoff) {
+              await fs.unlink(filePath);
+              deletedCount++;
+            }
+          }
+        } catch {
+          // Ignore errors on individual files
+        }
+      }
+
+      if (deletedCount > 0) {
+        logger.info('Disk cache cleanup completed', { deletedFiles: deletedCount });
+      }
+    } catch (error) {
+      logger.error('Disk cache cleanup failed', error);
+    }
   }
 }
 
@@ -185,7 +312,7 @@ class RedisCache {
 class MultiLevelCache {
   constructor(redisClient = null) {
     this.l1 = new LRUCache(100 * 1024 * 1024); // 100MB
-    this.l2 = new DiskCache('./cache/disk-cache.db'); // 1GB (disabled for now)
+    this.l2 = new DiskCache('./data/cache'); // 1GB (NOW ENABLED)
     this.l3 = new RedisCache(redisClient);
 
     // TTL configurations (in milliseconds)
@@ -203,6 +330,18 @@ class MultiLevelCache {
       sets: { l1: 0, l2: 0, l3: 0 },
       latency: { l1: [], l2: [], l3: [] }
     };
+
+    // Start periodic cleanup for L2
+    this._startCleanupTimer();
+  }
+
+  _startCleanupTimer() {
+    // Cleanup disk cache every 6 hours
+    setInterval(() => {
+      this.l2.cleanup().catch(err => {
+        logger.error('Cache cleanup error:', err);
+      });
+    }, 6 * 60 * 60 * 1000);
   }
 
   /**
@@ -228,9 +367,9 @@ class MultiLevelCache {
   async get(key, type = 'simple') {
     const startTime = Date.now();
 
-    // Try L1 (Memory)
+    // Try L1 (Memory) - O(1) with optimized library
     const l1Result = this.l1.get(key);
-    if (l1Result && Date.now() < l1Result.expiry) {
+    if (l1Result !== null) {
       const latency = Date.now() - startTime;
       this.stats.hits.l1++;
       this.stats.latency.l1.push(latency);
@@ -245,7 +384,7 @@ class MultiLevelCache {
       metricsCollector.incrementCounter('cache_hit', { level: 'l1', type });
       metricsCollector.recordLatency('cache_get', latency, 'l1');
 
-      return l1Result.data;
+      return l1Result;
     }
 
     // Try L2 (Disk)
@@ -320,12 +459,16 @@ class MultiLevelCache {
     this.l1.set(key, value, ttl);
     this.stats.sets.l1++;
 
-    // Set in L2 (Disk)
-    await this.l2.set(key, value, ttl);
+    // Set in L2 (Disk) - async, don't wait
+    this.l2.set(key, value, ttl).catch(err => {
+      logger.warn('L2 cache set failed', { error: err.message });
+    });
     this.stats.sets.l2++;
 
-    // Set in L3 (Redis)
-    await this.l3.set(key, value, ttl);
+    // Set in L3 (Redis) - async, don't wait
+    this.l3.set(key, value, ttl).catch(err => {
+      logger.warn('L3 cache set failed', { error: err.message });
+    });
     this.stats.sets.l3++;
 
     logger.debug('Cache SET', {
@@ -360,6 +503,7 @@ class MultiLevelCache {
    */
   async getStats() {
     const l3Stats = await this.l3.getStats();
+    const l2Stats = await this.l2.getStats();
 
     const avgLatency = (arr) => {
       if (arr.length === 0) return 0;
@@ -384,7 +528,7 @@ class MultiLevelCache {
         hitRate: totalRequests > 0 ? `${((this.stats.hits.l1 / totalRequests) * 100).toFixed(2)}%` : '0%'
       },
       l2: {
-        ...this.l2.getStats(),
+        ...l2Stats,
         hits: this.stats.hits.l2,
         avgLatency: `${avgLatency(this.stats.latency.l2)}ms`,
         hitRate: totalRequests > 0 ? `${((this.stats.hits.l2 / totalRequests) * 100).toFixed(2)}%` : '0%'
@@ -424,9 +568,9 @@ let cacheInstance = null;
 export function initializeCache(redisClient = null) {
   if (!cacheInstance) {
     cacheInstance = new MultiLevelCache(redisClient);
-    logger.info('Multi-level cache initialized', {
-      l1: 'Memory (100MB)',
-      l2: 'Disk (disabled)',
+    logger.info('Multi-level cache initialized (OPTIMIZED v2.7.1)', {
+      l1: 'Memory (lru-cache library, 100MB)',
+      l2: 'Disk (ENABLED, filesystem)',
       l3: redisClient ? 'Redis (enabled)' : 'Redis (disabled)'
     });
   }

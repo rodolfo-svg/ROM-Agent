@@ -1,0 +1,44 @@
+{
+  "name": "ROM Agent - Redator de Obras Magistrais",
+  "short_name": "ROM Agent",
+  "description": "Assistente de IA para redação de peças jurídicas",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a365d",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/img/logo_rom.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/img/logo_rom.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/img/screenshot.png",
+      "sizes": "1280x720",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["productivity", "business"],
+  "shortcuts": [
+    {
+      "name": "Nova Conversa",
+      "url": "/?action=new",
+      "description": "Iniciar nova conversa"
+    },
+    {
+      "name": "Knowledge Base",
+      "url": "/knowledge-base.html",
+      "description": "Acessar base de conhecimento"
+    }
+  ]
+}
