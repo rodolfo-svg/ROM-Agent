@@ -4,7 +4,7 @@
  */
 
 const BASE_URL = 'https://iarom.com.br';
-const EXPECTED_COMMITS = ['e5efaca5', '7e801bb0', '7a7a2cb8', '68062c5f'];
+const EXPECTED_COMMITS = ['935638fc', '6a9862c1', 'ba5865b9', 'bdf99e32'];
 const MAX_CHECKS = 12; // 6 minutos total
 const INTERVAL = 30000; // 30 segundos
 
