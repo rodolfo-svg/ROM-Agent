@@ -244,7 +244,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
     const result = await pool.query(
       `UPDATE conversations
        SET deleted_at = NOW()
-       WHERE id = $2 AND user_id = $3 AND deleted_at IS NULL
+       WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL
        RETURNING id`,
       [id, userId]
     );

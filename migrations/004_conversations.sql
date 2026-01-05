@@ -8,12 +8,13 @@ CREATE TABLE IF NOT EXISTS conversations (
   title VARCHAR(255) NOT NULL DEFAULT 'Nova Conversa',
   created_at TIMESTAMP NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMP NOT NULL DEFAULT NOW(),
-  deleted_at TIMESTAMP NULL,
-
-  INDEX idx_conversations_user_id (user_id),
-  INDEX idx_conversations_updated_at (updated_at DESC),
-  INDEX idx_conversations_deleted_at (deleted_at)
+  deleted_at TIMESTAMP NULL
 );
+
+-- Índices para conversations
+CREATE INDEX IF NOT EXISTS idx_conversations_user_id ON conversations(user_id);
+CREATE INDEX IF NOT EXISTS idx_conversations_updated_at ON conversations(updated_at DESC);
+CREATE INDEX IF NOT EXISTS idx_conversations_deleted_at ON conversations(deleted_at);
 
 -- Tabela de mensagens da conversa
 CREATE TABLE IF NOT EXISTS conversation_messages (
@@ -22,11 +23,12 @@ CREATE TABLE IF NOT EXISTS conversation_messages (
   role VARCHAR(20) NOT NULL CHECK (role IN ('user', 'assistant', 'system')),
   content TEXT NOT NULL,
   model VARCHAR(100) NULL,
-  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
-
-  INDEX idx_messages_conversation_id (conversation_id),
-  INDEX idx_messages_created_at (created_at ASC)
+  created_at TIMESTAMP NOT NULL DEFAULT NOW()
 );
+
+-- Índices para conversation_messages
+CREATE INDEX IF NOT EXISTS idx_messages_conversation_id ON conversation_messages(conversation_id);
+CREATE INDEX IF NOT EXISTS idx_messages_created_at ON conversation_messages(created_at ASC);
 
 -- Comentários
 COMMENT ON TABLE conversations IS 'Conversas do chat (histórico)';

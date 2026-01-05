@@ -68,21 +68,21 @@ export function Sidebar() {
     [filteredConversations]
   )
 
-  const handleNewChat = () => {
-    const conv = createConversation()
-    selectConversation(conv.id)
+  const handleNewChat = async () => {
+    const conv = await createConversation()
+    await selectConversation(conv.id)
     navigate('/')
   }
 
-  const handleSelect = (id: string) => {
-    selectConversation(id)
+  const handleSelect = async (id: string) => {
+    await selectConversation(id)
     navigate(`/chat/${id}`)
   }
 
-  const handleDelete = (e: React.MouseEvent, id: string) => {
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
     e.stopPropagation()
     if (confirm('Excluir esta conversa?')) {
-      deleteConversation(id)
+      await deleteConversation(id)
     }
   }
 

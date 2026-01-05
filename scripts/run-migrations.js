@@ -51,30 +51,70 @@ async function runMigrations() {
     console.log('✅ Conectado ao PostgreSQL');
     console.log('');
 
-    // Ler arquivo de migração
-    const migrationPath = path.join(__dirname, '../database/migrations/001_initial_schema.sql');
-    console.log('📄 Lendo migração:', migrationPath);
-
-    if (!fs.existsSync(migrationPath)) {
-      console.log('❌ Arquivo de migração não encontrado:', migrationPath);
-      process.exit(1);
-    }
-
-    const sql = fs.readFileSync(migrationPath, 'utf-8');
-    console.log('✅ Migração carregada');
+    // Criar tabela de controle de migrations
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS schema_migrations (
+        version VARCHAR(50) PRIMARY KEY,
+        executed_at TIMESTAMP NOT NULL DEFAULT NOW()
+      )
+    `);
+    console.log('✅ Tabela schema_migrations criada/verificada');
     console.log('');
 
-    // Executar SQL
-    console.log('🚀 Executando SQL...');
-    console.log('─'.repeat(70));
+    // Ler arquivos de migração
+    const migrationsDir = path.join(__dirname, '../migrations');
+    const files = fs.readdirSync(migrationsDir)
+      .filter(f => f.endsWith('.sql'))
+      .sort();
 
-    const startTime = Date.now();
-    await client.query(sql);
-    const duration = Date.now() - startTime;
+    console.log(`📁 Encontrados ${files.length} arquivos de migration`);
+    console.log('');
 
-    console.log('─'.repeat(70));
-    console.log('✅ Migração executada com sucesso!');
-    console.log(`   Tempo: ${duration}ms`);
+    let executed = 0;
+    let skipped = 0;
+
+    for (const file of files) {
+      const version = file.replace('.sql', '');
+
+      // Verificar se já foi executada
+      const result = await client.query(
+        'SELECT version FROM schema_migrations WHERE version = $1',
+        [version]
+      );
+
+      if (result.rows.length > 0) {
+        console.log(`⏭️  ${file} - já executada`);
+        skipped++;
+        continue;
+      }
+
+      // Executar migration
+      console.log(`🔨 Executando ${file}...`);
+      const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
+
+      try {
+        const startTime = Date.now();
+        await client.query(sql);
+        await client.query(
+          'INSERT INTO schema_migrations (version) VALUES ($1)',
+          [version]
+        );
+        const duration = Date.now() - startTime;
+        console.log(`✅ ${file} - concluída (${duration}ms)`);
+        console.log('');
+        executed++;
+      } catch (error) {
+        console.log('');
+        console.log(`❌ Erro em ${file}:`);
+        console.log(error.message);
+        console.log('');
+        throw error;
+      }
+    }
+
+    console.log('📊 Resultado:');
+    console.log(`   ✅ Executadas: ${executed}`);
+    console.log(`   ⏭️  Puladas: ${skipped}`);
     console.log('');
 
     // Verificar tabelas criadas
@@ -85,37 +125,23 @@ async function runMigrations() {
       ORDER BY tablename
     `);
 
-    console.log('📋 Tabelas criadas:');
+    console.log('📋 Tabelas no banco:');
     result.rows.forEach(row => {
       console.log(`   ✅ ${row.tablename}`);
     });
-    console.log('');
-
-    // Verificar especificamente a tabela sessions
-    const sessionsCheck = await client.query(`
-      SELECT EXISTS (
-        SELECT FROM information_schema.tables
-        WHERE table_schema = 'public'
-        AND table_name = 'sessions'
-      ) as exists
-    `);
-
-    if (sessionsCheck.rows[0].exists) {
-      console.log('🔐 Tabela sessions criada - Autenticação funcionará!');
-    } else {
-      console.log('⚠️  Tabela sessions não encontrada - Autenticação pode falhar');
-    }
     console.log('');
 
     console.log('═'.repeat(70));
     console.log('✅ MIGRAÇÕES CONCLUÍDAS COM SUCESSO');
     console.log('═'.repeat(70));
     console.log('');
-    console.log('Próximos passos:');
-    console.log('   1. Restart do serviço: pm2 restart rom-agent');
-    console.log('   2. Testar autenticação: fazer login e verificar sessão');
-    console.log('   3. Validar: npm run db:check');
-    console.log('');
+    if (executed > 0) {
+      console.log('Próximos passos:');
+      console.log('   1. Restart do serviço: pm2 restart rom-agent (se estiver rodando)');
+      console.log('   2. Testar funcionalidades: login, conversas, etc.');
+      console.log('   3. Validar: npm run db:check');
+      console.log('');
+    }
 
   } catch (error) {
     console.log('');

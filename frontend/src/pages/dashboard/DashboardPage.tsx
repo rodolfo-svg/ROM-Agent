@@ -62,7 +62,7 @@ export function DashboardPage() {
     // Create conversation if needed
     let convId = activeConversationId
     if (!convId) {
-      const conv = createConversation()
+      const conv = await createConversation()
       convId = conv.id
     }
 
@@ -84,7 +84,7 @@ export function DashboardPage() {
       abortControllerRef.current = new AbortController()
 
       for await (const chunk of chatStream(content, {
-        conversationId: convId,
+        conversationId: convId ?? undefined,
         model: selectedModel,
         signal: abortControllerRef.current.signal,
       })) {

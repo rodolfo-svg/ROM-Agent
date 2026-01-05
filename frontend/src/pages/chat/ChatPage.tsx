@@ -15,6 +15,7 @@ export function ChatPage() {
   const {
     conversations,
     activeConversationId,
+    loadConversations,
     createConversation,
     selectConversation,
     addMessage,
@@ -38,6 +39,11 @@ export function ChatPage() {
     scrollToBottom()
   }, [activeConversation?.messages])
 
+  // Load conversations from API on mount
+  useEffect(() => {
+    loadConversations()
+  }, [])
+
   // Handle URL param for conversation
   useEffect(() => {
     if (conversationId && conversationId !== activeConversationId) {
@@ -45,12 +51,12 @@ export function ChatPage() {
     }
   }, [conversationId])
 
-  // Create initial conversation if none exists
+  // Create initial conversation if none exists (after loading)
   useEffect(() => {
     if (!activeConversation && conversations.length === 0) {
       createConversation()
     }
-  }, [])
+  }, [conversations.length])
 
   // Get artifacts for a message
   const getArtifactsForMessage = (messageId: string) => {
@@ -62,7 +68,7 @@ export function ChatPage() {
     // Create conversation if needed
     let convId = activeConversationId
     if (!convId) {
-      const conv = createConversation()
+      const conv = await createConversation()
       convId = conv.id
     }
 
