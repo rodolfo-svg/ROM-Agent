@@ -15,6 +15,7 @@ export function DashboardPage() {
   const {
     conversations,
     activeConversationId,
+    loadConversations,
     createConversation,
     selectConversation,
     addMessage,
@@ -38,6 +39,11 @@ export function DashboardPage() {
     scrollToBottom()
   }, [activeConversation?.messages])
 
+  // Load conversations from API on mount
+  useEffect(() => {
+    loadConversations()
+  }, [])
+
   // Handle URL param for conversation
   useEffect(() => {
     if (conversationId && conversationId !== activeConversationId) {
@@ -45,12 +51,12 @@ export function DashboardPage() {
     }
   }, [conversationId])
 
-  // Create initial conversation if none exists
+  // Create initial conversation if none exists (after loading)
   useEffect(() => {
     if (!activeConversation && conversations.length === 0) {
       createConversation()
     }
-  }, [])
+  }, [conversations.length])
 
   // Get artifacts for a message
   const getArtifactsForMessage = (messageId: string) => {
