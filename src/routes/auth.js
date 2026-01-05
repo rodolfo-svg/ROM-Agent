@@ -7,14 +7,16 @@ import express from 'express';
 import bcrypt from 'bcryptjs';
 import { getPostgresPool } from '../config/database.js';
 import logger from '../../lib/logger.js';
+import { authLimiter } from '../../lib/rate-limiter.js';
 
 const router = express.Router();
 
 /**
  * POST /api/auth/login
  * Autentica usuário com email e senha
+ * Rate limit: 20 tentativas por 15 minutos
  */
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, async (req, res) => {
   const { email, password } = req.body;
 
   // Validação básica
