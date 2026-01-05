@@ -17,9 +17,13 @@ services:
 
     # ═══ BUILD ═══
     buildCommand: |
-      echo "🔧 Instalando dependências..."
+      echo "🔧 [PRODUÇÃO] Instalando dependências do backend..."
       npm ci --only=production
-      echo "✅ Build concluído"
+      echo "🔧 [PRODUÇÃO] Instalando dependências do frontend..."
+      cd frontend && npm ci
+      echo "🏗️ [PRODUÇÃO] Buildando React Frontend V4..."
+      npm run build
+      echo "✅ [PRODUÇÃO] Build concluído (backend + frontend)"
 
     # ═══ START ═══
     startCommand: npm run web:enhanced
