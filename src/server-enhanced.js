@@ -7375,7 +7375,7 @@ app.post('/api/projects/create', (req, res) => {
       settings: {
         autoAnalyze: settings.autoAnalyze !== undefined ? settings.autoAnalyze : true,
         smartSuggestions: settings.smartSuggestions !== undefined ? settings.smartSuggestions : true,
-        modelPreference: settings.modelPreference || 'amazon.nova-pro-v1:0',
+        modelPreference: settings.modelPreference || 'us.amazon.nova-pro-v1:0',
         temperature: settings.temperature !== undefined ? Number(settings.temperature) : 0.7
       }
     };
@@ -7745,9 +7745,9 @@ async function preloadModelos() {
 
   const { conversar } = await import('./modules/bedrock.js');
   const modelos = [
-    'amazon.nova-lite-v1:0',
-    'amazon.nova-pro-v1:0',
-    'anthropic.claude-haiku-4-5-20251001-v1:0'
+    'us.amazon.nova-lite-v1:0',
+    'us.amazon.nova-pro-v1:0',
+    'us.anthropic.claude-haiku-4-5-20251001-v1:0'
   ];
 
   for (const modelo of modelos) {

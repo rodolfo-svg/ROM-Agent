@@ -64,8 +64,13 @@ export function resolveBedrockModelId(modelId) {
     process.env.NOVA_PRO_PROFILE_ARN ||
     process.env.NOVA_PRO_PROLIFE_ARN; // compat
 
-  if (normalized === "amazon.nova-lite-v1:0" && novaLiteArn) return novaLiteArn;
-  if (normalized === "amazon.nova-pro-v1:0" && novaProArn) return novaProArn;
+  // Auto-resolve para inference profiles (correção AWS 2025)
+  if (normalized === "amazon.nova-lite-v1:0") {
+    return novaLiteArn || "us.amazon.nova-lite-v1:0";
+  }
+  if (normalized === "amazon.nova-pro-v1:0") {
+    return novaProArn || "us.amazon.nova-pro-v1:0";
+  }
 
   // (opcional) se você usar micro/premier depois:
   // if (normalized === "amazon.nova-micro-v1:0" && process.env.NOVA_MICRO_PROFILE_ARN) return process.env.NOVA_MICRO_PROFILE_ARN;

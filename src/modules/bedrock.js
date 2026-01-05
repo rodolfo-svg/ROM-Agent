@@ -82,10 +82,10 @@ const CONFIG = {
 // Modelos disponíveis organizados por provedor
 export const MODELOS_BEDROCK = {
   amazon: {
-    'nova-premier': 'amazon.nova-premier-v1:0',
-    'nova-pro': 'amazon.nova-pro-v1:0',
-    'nova-lite': 'amazon.nova-lite-v1:0',
-    'nova-micro': 'amazon.nova-micro-v1:0',
+    'nova-premier': 'us.amazon.nova-premier-v1:0',
+    'nova-pro': 'us.amazon.nova-pro-v1:0',
+    'nova-lite': 'us.amazon.nova-lite-v1:0',
+    'nova-micro': 'us.amazon.nova-micro-v1:0',
     'titan-text': 'amazon.titan-text-express-v1'
   },
   anthropic: {

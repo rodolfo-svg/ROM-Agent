@@ -19,7 +19,7 @@
     "settings": {
       "autoAnalyze": true,
       "smartSuggestions": true,
-      "modelPreference": "amazon.nova-pro-v1:0",
+      "modelPreference": "us.amazon.nova-pro-v1:0",
       "temperature": 0.7
     }
   },
@@ -52,7 +52,7 @@
     "settings": {
       "autoAnalyze": true,
       "smartSuggestions": true,
-      "modelPreference": "amazon.nova-pro-v1:0",
+      "modelPreference": "us.amazon.nova-pro-v1:0",
       "temperature": 0.7
     }
   }

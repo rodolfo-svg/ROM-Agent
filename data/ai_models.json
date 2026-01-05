@@ -47,7 +47,7 @@
   ],
   "aws_bedrock": [
     {
-      "id": "amazon.nova-pro-v1:0",
+      "id": "us.amazon.nova-pro-v1:0",
       "name": "Amazon Nova Pro",
       "provider": "Amazon",
       "releaseDate": "2024-12-01",
