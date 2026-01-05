@@ -17,13 +17,19 @@ services:
 
     # ═══ BUILD ═══
     buildCommand: |
-      echo "🔧 [PRODUÇÃO] Limpando build anterior..."
+      echo "🔧 Instalando todas as dependências (sem --only=production)..."
+      npm ci
+      echo "🧹 Limpando build anterior do frontend..."
       rm -rf frontend/dist
-      echo "🔧 [PRODUÇÃO] Instalando dependências do frontend..."
-      cd frontend && npm ci && echo "🏗️ [PRODUÇÃO] Buildando frontend React V4..." && npm run build && echo "📦 [PRODUÇÃO] Verificando build..." && ls -lh dist/assets/*.js | head -5 && echo "✅ [PRODUÇÃO] Frontend buildado!" && cd ..
-      echo "🔧 [PRODUÇÃO] Instalando dependências do backend..."
-      npm ci --only=production
-      echo "✅ [PRODUÇÃO] Build completo!"
+      echo "🏗️ Buildando frontend React..."
+      cd frontend
+      npm ci
+      npm run build
+      cd ..
+      echo "📦 Verificando arquivos gerados..."
+      ls -lah frontend/dist/ || echo "❌ frontend/dist não existe!"
+      ls -lah frontend/dist/assets/*.js || echo "❌ Sem arquivos JS!"
+      echo "✅ Build completo!"
 
     # ═══ START ═══
     startCommand: npm run web:enhanced
@@ -108,13 +114,19 @@ services:
 
     # ═══ BUILD ═══
     buildCommand: |
-      echo "🔧 [STAGING] Limpando build anterior..."
+      echo "🔧 Instalando todas as dependências (sem --only=production)..."
+      npm ci
+      echo "🧹 Limpando build anterior do frontend..."
       rm -rf frontend/dist
-      echo "🔧 [STAGING] Instalando dependências do frontend..."
-      cd frontend && npm ci && echo "🏗️ [STAGING] Buildando frontend React V4..." && npm run build && echo "📦 [STAGING] Verificando build..." && ls -lh dist/assets/*.js | head -5 && echo "✅ [STAGING] Frontend buildado!" && cd ..
-      echo "🔧 [STAGING] Instalando dependências do backend..."
-      npm ci --only=production
-      echo "✅ [STAGING] Build completo!"
+      echo "🏗️ Buildando frontend React..."
+      cd frontend
+      npm ci
+      npm run build
+      cd ..
+      echo "📦 Verificando arquivos gerados..."
+      ls -lah frontend/dist/ || echo "❌ frontend/dist não existe!"
+      ls -lah frontend/dist/assets/*.js || echo "❌ Sem arquivos JS!"
+      echo "✅ Build completo!"
 
     # ═══ START ═══
     startCommand: npm run web:enhanced
