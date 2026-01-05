@@ -3,8 +3,11 @@
  * Permite instalação como app e funcionamento offline parcial
  */
 
-const CACHE_NAME = 'rom-agent-v1';
+const CACHE_NAME = 'rom-agent-v4-2026-01-05';
 const OFFLINE_URL = '/offline.html';
+
+// Limpar TODOS os caches antigos
+const OLD_CACHE_PATTERNS = ['rom-agent-v1', 'rom-agent-v2', 'rom-agent-v3'];
 
 const ASSETS_TO_CACHE = [
   '/',
@@ -25,16 +28,23 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Ativação
+// Ativação - FORÇAR limpeza de caches antigos
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
+      console.log('ROM Agent: Limpando caches antigos...', cacheNames);
       return Promise.all(
         cacheNames
           .filter((name) => name !== CACHE_NAME)
-          .map((name) => caches.delete(name))
+          .map((name) => {
+            console.log('ROM Agent: Deletando cache:', name);
+            return caches.delete(name);
+          })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => {
+      console.log('ROM Agent: Service Worker ativado e caches limpos!');
+      return self.clients.claim();
+    })
   );
 });
 
