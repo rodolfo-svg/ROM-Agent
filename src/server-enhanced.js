@@ -64,6 +64,7 @@ import { DocumentDeduplicator } from '../lib/document-deduplicator.js';
 import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import authRoutes from './routes/auth.js';
+import conversationsRoutes from './routes/conversations.js';
 import { requireAuth } from './middleware/auth.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 import featureFlagsLegacy from '../lib/feature-flags.js';
@@ -325,6 +326,9 @@ app.use('/api/rom-project', romProjectRouter);
 
 // Rotas de Autenticação (login/logout)
 app.use('/api/auth', authRoutes);
+
+// Rotas de Conversas (Histórico de Chat)
+app.use('/api/conversations', conversationsRoutes);
 
 // Rotas de Processamento de Casos (Extração + 5 Layers)
 app.use('/api/case-processor', caseProcessorRouter);
