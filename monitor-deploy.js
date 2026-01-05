@@ -4,7 +4,7 @@
  */
 
 const BASE_URL = 'https://iarom.com.br';
-const EXPECTED_COMMITS = ['71095689', '4df84534', '935638fc', '6a9862c1'];
+const EXPECTED_COMMITS = ['eb391983']; // Fix cd context - usar && para encadear comandos
 const MAX_CHECKS = 12; // 6 minutos total
 const INTERVAL = 30000; // 30 segundos
 

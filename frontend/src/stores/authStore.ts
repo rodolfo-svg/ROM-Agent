@@ -77,7 +77,7 @@ export const useAuthStore = create<AuthState>()(
 
       checkAuth: async () => {
         set({ isLoading: true })
-        
+
         try {
           const res = await fetch('/api/auth/me', {
             credentials: 'include',
@@ -85,11 +85,11 @@ export const useAuthStore = create<AuthState>()(
 
           if (res.ok) {
             const data = await res.json()
-            if (data.user) {
-              set({ 
-                user: data.user, 
-                isAuthenticated: true, 
-                isLoading: false 
+            if (data.authenticated && data.user) {
+              set({
+                user: data.user,
+                isAuthenticated: true,
+                isLoading: false
               })
               return
             }
@@ -98,10 +98,11 @@ export const useAuthStore = create<AuthState>()(
           console.error('Auth check error:', err)
         }
 
-        set({ 
-          user: null, 
-          isAuthenticated: false, 
-          isLoading: false 
+        // CRÍTICO: Limpar localStorage se sessão inválida
+        set({
+          user: null,
+          isAuthenticated: false,
+          isLoading: false
         })
       },
 
