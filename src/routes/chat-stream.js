@@ -77,8 +77,10 @@ router.post('/stream', async (req, res) => {
     const {
       message,
       modelo,
+      model, // Aceitar tanto 'modelo' quanto 'model'
       systemPrompt,
       historico = [],
+      messages = [], // Aceitar tanto 'historico' quanto 'messages'
       kbContext = '',
       maxTokens,
       temperature
@@ -92,6 +94,15 @@ router.post('/stream', async (req, res) => {
       });
     }
 
+    // Unificar histórico (aceitar messages ou historico)
+    const conversationHistory = messages.length > 0 ? messages : historico;
+
+    // Limitar para últimas 30 mensagens (contexto otimizado)
+    const limitedHistory = conversationHistory.slice(-30);
+
+    // Usar model ou modelo
+    const selectedModel = model || modelo;
+
     // Configurar headers SSE
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -100,10 +111,11 @@ router.post('/stream', async (req, res) => {
     res.flushHeaders(); // Enviar headers imediatamente
 
     logger.info(`[${requestId}] Chat stream iniciado`, {
-      modelo: modelo || 'default',
+      modelo: selectedModel || 'default',
       messageLength: message.length,
       kbContextLength: kbContext.length,
-      historicoSize: historico.length
+      historicoSize: limitedHistory.length,
+      historicoOriginalSize: conversationHistory.length
     });
 
     // Enviar evento de início
@@ -130,7 +142,7 @@ router.post('/stream', async (req, res) => {
         });
 
         // Métrica: Time To First Token
-        metricsCollector.recordTTFT(ttft, modelo || 'default');
+        metricsCollector.recordTTFT(ttft, selectedModel || 'default');
       }
 
       fullResponse += chunk;
@@ -146,9 +158,9 @@ router.post('/stream', async (req, res) => {
 
     // Executar streaming
     const resultado = await conversarStream(message, onChunk, {
-      modelo,
+      modelo: selectedModel,
       systemPrompt,
-      historico,
+      historico: limitedHistory, // Usar histórico limitado
       kbContext,
       maxTokens,
       temperature
