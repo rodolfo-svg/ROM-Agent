@@ -1,9 +1,1 @@
-# Force Render Deploy
-# Data: 2025-12-31 17:50 BRT
-# Motivo: Deploy correções arquitetura + OCR fix
-
-DEPLOY_TRIGGER=true
-VERSION=2.7.1
-COMMIT=6f6840c7
-TIMESTAMP=2025-12-31T17:50:00-03:00
-FIXES=architectural-routes-ocr-optional-imports
+# Force deploy - fix extractor routes dom  4 jan 2026 22:52:58 -03
