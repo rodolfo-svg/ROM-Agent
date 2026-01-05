@@ -14,6 +14,18 @@ import metricsCollector from '../utils/metrics-collector-v2.js';
 
 const router = express.Router();
 
+// Mapeamento de modelos curtos para IDs completos do Bedrock
+const MODEL_MAPPING = {
+  'claude-opus-4.5': 'anthropic.claude-opus-4-5-20251101-v1:0',
+  'claude-opus-4': 'anthropic.claude-opus-4-20250514-v1:0',
+  'claude-sonnet-4.5': 'anthropic.claude-sonnet-4-5-20250929-v1:0',
+  'claude-sonnet-4-5': 'anthropic.claude-sonnet-4-5-20250929-v1:0',
+  'claude-sonnet-4': 'anthropic.claude-sonnet-4-20250514-v1:0',
+  'claude-haiku-4.5': 'anthropic.claude-haiku-4-5-20251001-v1:0',
+  'claude-3.5-sonnet': 'anthropic.claude-3-5-sonnet-20241022-v2:0',
+  'claude-3.5-haiku': 'anthropic.claude-3-5-haiku-20241022-v1:0',
+};
+
 /**
  * POST /api/chat/stream
  *
@@ -100,8 +112,9 @@ router.post('/stream', async (req, res) => {
     // Limitar para últimas 30 mensagens (contexto otimizado)
     const limitedHistory = conversationHistory.slice(-30);
 
-    // Usar model ou modelo
-    const selectedModel = model || modelo;
+    // Usar model ou modelo e mapear para ID completo do Bedrock
+    const modelInput = model || modelo;
+    const selectedModel = MODEL_MAPPING[modelInput] || modelInput;
 
     // Configurar headers SSE
     res.setHeader('Content-Type', 'text/event-stream');
