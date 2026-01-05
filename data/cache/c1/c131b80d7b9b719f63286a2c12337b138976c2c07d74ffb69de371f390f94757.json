@@ -1,0 +1,1 @@
+{"data":{"sucesso":true,"resposta":"\n\nOK","raciocinio":null,"modelo":"meta.llama3-1-70b-instruct-v1:0","uso":{"tokensEntrada":20,"tokensSaida":3,"tokensTotal":23},"latencia":11138,"motivoParada":"end_turn","guardrailStats":{"found":false,"conversationId":"conv_1767589246206_zlsotv6sn"}},"expiry":1767592858096,"created":1767589258096}

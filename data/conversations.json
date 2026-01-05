@@ -290,5 +290,28 @@
     "createdAt": "2025-12-29T23:02:56.125Z",
     "updatedAt": "2025-12-29T23:03:06.992Z",
     "messageCount": 2
+  },
+  "conv_1767589274167_gshkdq": {
+    "id": "conv_1767589274167_gshkdq",
+    "userId": "anonymous",
+    "sessionId": "JGTYKz0rJ676LIyrorrnqOjAqUqDO_9F",
+    "projectId": "rom-agent",
+    "title": "Teste de conexão",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de conexão",
+        "timestamp": "2026-01-05T05:01:14.187Z"
+      },
+      {
+        "role": "assistant",
+        "content": "# ✅ Conexão Estabelecida com Sucesso\n\nOlá! Sou seu **assistente jurídico especializado** em redação de peças processuais e documentos extrajudiciais.\n\n## 🎯 Estou pronto para auxiliar você com:\n\n### **Peças Judiciais:**\n- Petições iniciais (ações cíveis, trabalhistas, penais)\n- Contestações e reconvenções\n- Recursos (apelação, agravo, especial, extraordinário)\n- Embargos de declaração\n- Memoriais e alegações finais\n- Impugnações e manifestações processuais\n\n### **Peças Extrajudiciais:**\n- Contratos (compra e venda, prestação de serviços, locação, etc.)\n- Alterações contratuais conforme normas DNRC\n- Substabelecimentos e procurações\n- Notificações extrajudiciais\n- Pareceres jurídicos\n\n### **Análises Especializadas:**\n- Consulta de jurisprudência (STF, STJ, TST, TSE)\n- Pesquisa de súmulas\n- Análise de prazos processuais e contagem de prazo\n- Verificação de preclusão, prescrição e decadência\n- Fundamentação legal e doutrinária\n\n### **Ferramentas Disponíveis:**\n- 🔍 Pesquisa em tribunais superiores\n- 📚 Busca no Jusbrasil (jurisprudência e doutrina)\n- 📋 Consulta CNJ DataJud\n- ⚖️ Pesquisa de súmulas\n- 📄 Análise de documentos da sua Knowledge Base\n\n---\n\n**Como posso auxiliá-lo hoje?** \n\nDescreva o caso, a peça que precisa redigir ou a dúvida jurídica que possui, e fornecerei uma resposta técnica, fundamentada e detalhada.",
+        "timestamp": "2026-01-05T05:01:23.055Z"
+      }
+    ],
+    "createdAt": "2026-01-05T05:01:14.167Z",
+    "updatedAt": "2026-01-05T05:01:23.055Z",
+    "messageCount": 2
   }
 }

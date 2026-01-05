@@ -1,0 +1,1 @@
+{"data":{"sucesso":true,"resposta":"OK","raciocinio":null,"modelo":"meta.llama4-maverick-17b-instruct-v1:0","uso":{"tokensEntrada":40,"tokensSaida":2,"tokensTotal":42},"latencia":157,"motivoParada":"end_turn","guardrailStats":{"found":false,"conversationId":"conv_1767589240607_ee5au7mci"}},"expiry":1767592841332,"created":1767589241332}

@@ -58,8 +58,8 @@ export function ChatInput({ onSend, isLoading, onStop }: ChatInputProps) {
   }
 
   return (
-    <div className="border-t border-stone-200 bg-white p-4">
-      <div className="max-w-3xl mx-auto">
+    <div className="border-t border-stone-200 bg-white p-4 max-md:p-3">
+      <div className="max-w-3xl mx-auto w-full">
         {/* Files preview */}
         {files.length > 0 && (
           <div className="flex flex-wrap gap-2 mb-3">

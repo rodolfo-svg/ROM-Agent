@@ -1,0 +1,1 @@
+{"data":{"sucesso":true,"resposta":"OK","raciocinio":null,"modelo":"anthropic.claude-opus-4-5-20251101-v1:0","uso":{"tokensEntrada":1816,"tokensSaida":4,"tokensTotal":1820},"latencia":1773,"motivoParada":"end_turn","guardrailStats":{"found":false,"conversationId":"conv_1767589254586_ttnjq6k45"}},"expiry":1767592857035,"created":1767589257035}

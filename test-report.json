@@ -1,10 +1,10 @@
 {
-  "timestamp": "2025-12-29T23:02:32.885Z",
+  "timestamp": "2026-01-05T05:00:29.036Z",
   "summary": {
     "total": 18,
-    "passed": 14,
-    "failed": 4,
-    "successRate": 77.8
+    "passed": 15,
+    "failed": 3,
+    "successRate": 83.3
   },
   "results": [
     {
@@ -13,11 +13,11 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 499,
+      "duration": 298,
       "data": {
         "nome": "ROM",
-        "versao": "2.4.19",
-        "version": "2.4.19",
+        "versao": "2.7.0",
+        "version": "2.7.0",
         "capacidades": [
           "Redação de peças jurídicas (cíveis, criminais, trabalhistas, etc)",
           "Pesquisa de legislação nacional e internacional",
@@ -30,8 +30,8 @@
         ],
         "health": {
           "status": "healthy",
-          "uptime": "0h 39m",
-          "uptimeSeconds": 2379
+          "uptime": "2h 25m",
+          "uptimeSeconds": 8729
         },
         "bedrock": {
           "status": "connected",
@@ -50,13 +50,13 @@
           "nodeVersion": "v25.2.1",
           "platform": "darwin",
           "arch": "arm64",
-          "pid": 28429,
-          "gitCommit": "198c1ebd"
+          "pid": 68085,
+          "gitCommit": "e106bdfb"
         },
         "memory": {
-          "rss": "57 MB",
-          "heapTotal": "154 MB",
-          "heapUsed": "151 MB",
+          "rss": "80 MB",
+          "heapTotal": "156 MB",
+          "heapUsed": "153 MB",
           "external": "22 MB"
         },
         "storage": {
@@ -113,7 +113,7 @@
             "processed": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/processed"
           }
         },
-        "timestamp": "2025-12-29T23:02:29.924Z"
+        "timestamp": "2026-01-05T05:00:26.555Z"
       }
     },
     {
@@ -122,12 +122,12 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 41,
+      "duration": 9,
       "data": {
         "success": true,
         "conversations": {
-          "total": 14,
-          "totalMessages": 18
+          "total": 15,
+          "totalMessages": 20
         },
         "cache": {
           "activeSessions": 0,
@@ -140,7 +140,7 @@
           "averageResponseTime": 3,
           "unit": "seconds"
         },
-        "timestamp": "2025-12-29T23:02:29.960Z"
+        "timestamp": "2026-01-05T05:00:26.589Z"
       }
     },
     {
@@ -149,11 +149,36 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 59,
+      "duration": 14,
       "data": {
         "success": true,
         "organized": {
-          "today": [
+          "today": [],
+          "yesterday": [],
+          "lastWeek": [
+            {
+              "id": "conv_1767049376125_cw0txr5",
+              "userId": "anonymous",
+              "sessionId": "XraXJNUs3wYPUsbserIkvEuslR9IChVD",
+              "projectId": "rom-agent",
+              "title": "Teste de conexão",
+              "titleGenerated": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "Teste de conexão",
+                  "timestamp": "2025-12-29T23:02:56.182Z"
+                },
+                {
+                  "role": "assistant",
+                  "content": "# ✅ Conexão Estabelecida com Sucesso\n\n**Sistema Operacional:** Assistente Jurídico Especializado em Redação de Peças Processuais e Documentos Extrajudiciais\n\n---\n\n## 🔧 Status do Sistema:\n\n**✓ Online e Pronto para Atendimento**\n\n---\n\n## 📋 Funcionalidades Disponíveis:\n\n### 1️⃣ **Redação de Peças Judiciais**\n- Petições iniciais (cível, trabalhista, criminal)\n- Contestações e reconvenções\n- Recursos (apelação, agravo, embargos de declaração, recurso especial/extraordinário)\n- Memoriais e alegações finais\n- Impugnações ao cumprimento de sentença\n\n### 2️⃣ **Redação de Peças Extrajudiciais**\n- Contratos (compra e venda, prestação de serviços, locação)\n- Alterações contratuais conforme normas DNRC\n- Substabelecimentos e procurações\n- Notificações extrajudiciais\n- Pareceres jurídicos\n\n### 3️⃣ **Análise de Prazos Processuais**\n- Cálculo de prazos conforme Lei 11.419/2006 (DJe/DJEN)\n- Verificação de preclusão, prescrição e decadência\n- Identificação de prazos em dobro (Fazenda, Defensoria)\n\n### 4️⃣ **Pesquisa Jurídica Integrada**\n- Jurisprudência (STF, STJ, TST, TSE, Jusbrasil)\n- Súmulas dos tribunais superiores\n- Consulta CNJ DataJud\n- Análise de documentos já enviados (Knowledge Base)\n\n---\n\n## 🎯 Estou Pronto Para:\n\n✅ Redigir qualquer peça processual ou extrajudicial  \n✅ Analisar prazos e certidões do DJe  \n✅ Fundamentar com legislação e jurisprudência  \n✅ Adaptar documentos ao seu caso concreto  \n✅ Aplicar normas DNRC em atos societários  \n\n---\n\n**Como posso auxiliá-lo hoje?** \n\nPode me enviar:\n- 📄 Documentos para análise\n- ⚖️ Casos para elaboração de peças\n- 📅 Certidões para cálculo de prazos\n- 🔍 Temas para pesquisa jurisprudencial",
+                  "timestamp": "2025-12-29T23:03:06.992Z"
+                }
+              ],
+              "createdAt": "2025-12-29T23:02:56.125Z",
+              "updatedAt": "2025-12-29T23:03:06.992Z",
+              "messageCount": 2
+            },
             {
               "id": "conv_1767046749203_zo9j7g",
               "userId": "anonymous",
@@ -173,8 +198,6 @@
               "messageCount": 1
             }
           ],
-          "yesterday": [],
-          "lastWeek": [],
           "lastMonth": [
             {
               "id": "conv_1765876057674_1p1vbg",
@@ -438,10 +461,10 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2702,
+      "duration": 2355,
       "data": {
         "response": "OK",
-        "conversationId": "conv_1767049350099_9n7mil",
+        "conversationId": "conv_1767589226671_pzaman",
         "metadados": {},
         "recomendacoes": [],
         "verificacaoRealizada": false
@@ -449,17 +472,17 @@
     },
     {
       "name": "2.3 Obter Conversa Específica",
-      "url": "http://localhost:3000/api/conversations/conv_1767049350099_9n7mil",
+      "url": "http://localhost:3000/api/conversations/conv_1767589226671_pzaman",
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 12,
+      "duration": 19,
       "data": {
         "success": true,
         "conversation": {
-          "id": "conv_1767049350099_9n7mil",
+          "id": "conv_1767589226671_pzaman",
           "userId": "anonymous",
-          "sessionId": "WoBf-NBDCf8LjApRJ3Y1Agsl_a9IhGpG",
+          "sessionId": "e5cDZkfvynaHiRdRU2gpD3F8JxEE4XG-",
           "projectId": null,
           "title": "Teste de sistema - responda apenas com OK",
           "titleGenerated": true,
@@ -467,27 +490,27 @@
             {
               "role": "user",
               "content": "Teste de sistema - responda apenas com OK",
-              "timestamp": "2025-12-29T23:02:30.104Z"
+              "timestamp": "2026-01-05T05:00:26.674Z"
             },
             {
               "role": "assistant",
               "content": "OK",
-              "timestamp": "2025-12-29T23:02:32.731Z"
+              "timestamp": "2026-01-05T05:00:28.954Z"
             }
           ],
-          "createdAt": "2025-12-29T23:02:30.099Z",
-          "updatedAt": "2025-12-29T23:02:32.731Z",
+          "createdAt": "2026-01-05T05:00:26.671Z",
+          "updatedAt": "2026-01-05T05:00:28.954Z",
           "messageCount": 2
         }
       }
     },
     {
       "name": "2.4 Renomear Conversa",
-      "url": "http://localhost:3000/api/conversations/conv_1767049350099_9n7mil/rename",
+      "url": "http://localhost:3000/api/conversations/conv_1767589226671_pzaman/rename",
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 7,
+      "duration": 5,
       "data": {
         "success": true
       }
@@ -498,20 +521,20 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 5,
+      "duration": 3,
       "data": {
         "success": true,
-        "conversationId": "conv_1767049352760_gmdz5q",
+        "conversationId": "conv_1767589228985_j482tb",
         "conversation": {
-          "id": "conv_1767049352760_gmdz5q",
+          "id": "conv_1767589228985_j482tb",
           "userId": "anonymous",
-          "sessionId": "jrWioYGJX9cu_rCHy-ptEwIjp5wPUBYT",
+          "sessionId": "qZJP_UCPOut_jvmFaYO7Qacwc5JwIb1g",
           "projectId": null,
           "title": "Nova Conversa",
           "titleGenerated": false,
           "messages": [],
-          "createdAt": "2025-12-29T23:02:32.760Z",
-          "updatedAt": "2025-12-29T23:02:32.760Z",
+          "createdAt": "2026-01-05T05:00:28.985Z",
+          "updatedAt": "2026-01-05T05:00:28.985Z",
           "messageCount": 0
         }
       }
@@ -522,7 +545,7 @@
       "status": 401,
       "expected": 200,
       "passed": false,
-      "duration": 4,
+      "duration": 6,
       "data": {
         "error": "Token não fornecido"
       }
@@ -533,14 +556,14 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 4,
+      "duration": 8,
       "data": {
         "success": true,
         "status": "active",
-        "totalDocuments": 4,
-        "totalSize": 368,
+        "totalDocuments": 5,
+        "totalSize": 432,
         "totalSizeFormatted": "0.00 MB",
-        "lastUpdate": "2025-12-29T21:26:36.604Z",
+        "lastUpdate": "2025-12-29T23:02:57.059Z",
         "kbPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/KB"
       }
     },
@@ -550,7 +573,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 14,
+      "duration": 3,
       "data": {
         "authenticated": false,
         "username": null,
@@ -596,7 +619,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 32,
+      "duration": 3,
       "data": []
     },
     {
@@ -605,8 +628,23 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 15,
+      "duration": 3,
       "data": [
+        {
+          "filename": "backup-2026-01-05.zip",
+          "size": 247902,
+          "timestamp": "2026-01-05T01:29:55.440Z"
+        },
+        {
+          "filename": "backup-2025-12-31.zip",
+          "size": 247903,
+          "timestamp": "2025-12-31T06:22:53.721Z"
+        },
+        {
+          "filename": "backup-2025-12-30.zip",
+          "size": 248073,
+          "timestamp": "2025-12-30T06:00:20.950Z"
+        },
         {
           "filename": "backup-2025-12-18.zip",
           "size": 214421,
@@ -625,7 +663,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 11,
+      "duration": 2,
       "data": {
         "success": true,
         "stats": {
@@ -643,17 +681,17 @@
       "status": 404,
       "expected": 404,
       "passed": true,
-      "duration": 19,
+      "duration": 4,
       "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /api/jurisprudencia/buscar</pre>\n</body>\n</html>\n"
     },
     {
       "name": "8.1 Página Principal (HTML)",
       "url": "http://localhost:3000/",
-      "status": 302,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "duration": 8,
-      "data": "Found. Redirecting to /login.html"
+      "passed": true,
+      "duration": 6,
+      "data": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" content=\"ROM Agent - Assistente Jurídico com Inteligência Artificial\" />\n    <title>ROM Agent</title>\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap\" rel=\"stylesheet\" />\n    <script type=\"module\" crossorigin src=\"/assets/index-DYzq5Hfx.js\"></script>\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/vendor-BYDMtfya.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/ui-95h3xbnI.js\">\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-5yV0_cru.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
     }
   ]
 }

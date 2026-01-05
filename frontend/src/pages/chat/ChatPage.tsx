@@ -148,18 +148,18 @@ export function ChatPage() {
   }
 
   return (
-    <div className="h-screen flex bg-stone-50">
+    <div className="h-screen flex bg-stone-50 overflow-hidden">
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        {/* Messages */}
-        <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 flex flex-col min-w-0 max-md:w-full">
+        {/* Messages - Fixed height with safe-area insets for mobile */}
+        <div className="flex-1 overflow-y-auto overscroll-contain webkit-overflow-scrolling-touch pb-safe">
           {!activeConversation || activeConversation.messages.length === 0 ? (
             <EmptyState onSuggestionClick={handleSend} />
           ) : (
-            <div className="max-w-3xl mx-auto px-4 py-6">
+            <div className="max-w-3xl mx-auto px-4 py-6 max-md:px-3 max-md:py-4">
               {activeConversation.messages.map((message, index) => (
                 <MessageItem
                   key={message.id}
@@ -177,12 +177,14 @@ export function ChatPage() {
           )}
         </div>
 
-        {/* Input */}
-        <ChatInput 
-          onSend={handleSend} 
-          isLoading={isStreaming} 
-          onStop={handleStop} 
-        />
+        {/* Input - Sticky at bottom with safe-area */}
+        <div className="flex-shrink-0 pb-safe">
+          <ChatInput
+            onSend={handleSend}
+            isLoading={isStreaming}
+            onStop={handleStop}
+          />
+        </div>
       </div>
 
       {/* Artifact Panel */}
