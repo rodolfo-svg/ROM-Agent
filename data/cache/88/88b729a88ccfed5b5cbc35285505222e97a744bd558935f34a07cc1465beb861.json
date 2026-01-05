@@ -1,0 +1,1 @@
+{"data":{"sucesso":true,"resposta":"<thinking>The User's request seems to","raciocinio":null,"modelo":"us.amazon.nova-lite-v1:0","uso":{"tokensEntrada":1227,"tokensSaida":10,"tokensTotal":1237},"latencia":361,"motivoParada":"max_tokens","guardrailStats":{"found":false,"conversationId":"conv_1767588025846_bvg2upb47"}},"expiry":1767591626675,"created":1767588026675}

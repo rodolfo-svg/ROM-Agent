@@ -1834,9 +1834,31 @@ app.post('/api/chat-stream', async (req, res) => {
 // Alias para compatibilidade com frontend React V4
 app.post('/api/chat/stream', async (req, res) => {
   try {
-    const { message, model = 'global.anthropic.claude-sonnet-4-5-20250929-v1:0', conversationId } = req.body;
+    const {
+      message,
+      model = 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
+      conversationId,
+      messages = [] // Histórico completo do frontend
+    } = req.body;
+
     const sessionId = conversationId || req.session.id;
-    const history = getHistory(sessionId);
+
+    // PRIORIDADE: Usar histórico do frontend se fornecido, senão buscar do servidor
+    let history = [];
+    if (messages && messages.length > 0) {
+      // Frontend enviou histórico - USAR ESTE (fonte da verdade)
+      history = messages
+        .filter(m => m.role && m.content) // Validar estrutura
+        .map(m => ({
+          role: m.role,
+          content: m.content
+        }));
+      console.log(`📚 [Context] Usando ${history.length} mensagens do frontend`);
+    } else {
+      // Fallback: histórico do servidor (compatibilidade)
+      history = getHistory(sessionId);
+      console.log(`📚 [Context] Usando ${history.length} mensagens do servidor (fallback)`);
+    }
 
     // Configurar SSE
     res.setHeader('Content-Type', 'text/event-stream');
@@ -1844,7 +1866,7 @@ app.post('/api/chat/stream', async (req, res) => {
     res.setHeader('Connection', 'keep-alive');
     res.setHeader('X-Accel-Buffering', 'no'); // Nginx
 
-    console.log('🌊 [Stream] Iniciando streaming (V4)...', { model });
+    console.log('🌊 [Stream] Iniciando streaming (V4)...', { model, contextSize: history.length });
 
     const { conversarStream } = await import('./modules/bedrock.js');
 
@@ -1859,7 +1881,7 @@ app.post('/api/chat/stream', async (req, res) => {
       },
       {
         modelo: model,
-        historico: history.slice(-10),
+        historico: history.slice(-10), // Últimas 10 mensagens
         maxTokens: 4096,
         temperature: 0.7
       }

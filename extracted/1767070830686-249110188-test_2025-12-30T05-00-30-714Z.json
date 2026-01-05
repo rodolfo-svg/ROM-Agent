@@ -1,0 +1,38 @@
+{
+  "originalFile": "1767070830686-249110188-test.txt",
+  "extractedFile": "1767070830686-249110188-test_2025-12-30T05-00-30-714Z.txt",
+  "extractedAt": "2025-12-30T05:00:30.754Z",
+  "method": "direct",
+  "wordCount": 52,
+  "charCount": 365,
+  "estimatedTokens": 92,
+  "costSaved": "$0.0014 (vs. enviar PDF para modelo)",
+  "processing": {
+    "ferramentasAplicadas": 33,
+    "reducao": "0.0%",
+    "tamanhoOriginal": 365,
+    "tamanhoFinal": 365,
+    "chunks": 0
+  },
+  "metadados": {
+    "numerosProcesso": [
+      "1234567-89.2024.8.13.0024"
+    ],
+    "datas": [],
+    "valores": [
+      "R$ 50.000,00"
+    ],
+    "cpfs": [
+      "123.456.789-00"
+    ],
+    "cnpjs": [],
+    "oabs": [],
+    "artigos": []
+  },
+  "toolsUsed": [
+    "direct-read",
+    "33-ferramentas-processamento",
+    "10-processadores-otimizacao"
+  ],
+  "confidence": null
+}

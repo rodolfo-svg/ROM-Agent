@@ -35,10 +35,11 @@ export async function* chatStream(
   options: {
     conversationId?: string
     model?: string
+    messages?: Array<{ role: string; content: string }> // Histórico da conversa
     signal?: AbortSignal
   } = {}
 ): AsyncGenerator<StreamChunk> {
-  const { conversationId, model, signal } = options
+  const { conversationId, model, messages = [], signal } = options
 
   try {
     const res = await fetch(`${API_BASE}/chat/stream`, {
@@ -52,6 +53,7 @@ export async function* chatStream(
         message,
         conversationId,
         model,
+        messages, // Enviar histórico completo para manter contexto
         stream: true,
       }),
       signal,
