@@ -1831,6 +1831,74 @@ app.post('/api/chat-stream', async (req, res) => {
   }
 });
 
+// Alias para compatibilidade com frontend React V4
+app.post('/api/chat/stream', async (req, res) => {
+  try {
+    const { message, model = 'global.anthropic.claude-sonnet-4-5-20250929-v1:0', conversationId } = req.body;
+    const sessionId = conversationId || req.session.id;
+    const history = getHistory(sessionId);
+
+    // Configurar SSE
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no'); // Nginx
+
+    console.log('🌊 [Stream] Iniciando streaming (V4)...', { model });
+
+    const { conversarStream } = await import('./modules/bedrock.js');
+
+    let textoCompleto = '';
+    const startTime = Date.now();
+
+    await conversarStream(
+      message,
+      (chunk) => {
+        textoCompleto += chunk;
+        res.write(`data: ${JSON.stringify({ type: 'chunk', content: chunk })}\n\n`);
+      },
+      {
+        modelo: model,
+        historico: history.slice(-10),
+        maxTokens: 4096,
+        temperature: 0.7
+      }
+    );
+
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+
+    // Enviar evento final
+    res.write(`data: ${JSON.stringify({
+      type: 'done',
+      content: textoCompleto,
+      elapsed: `${elapsed}s`,
+      model
+    })}\n\n`);
+    res.end();
+
+    // Adicionar ao histórico
+    history.push({
+      role: 'user',
+      content: message,
+      timestamp: new Date()
+    });
+
+    history.push({
+      role: 'assistant',
+      content: textoCompleto,
+      timestamp: new Date(),
+      model,
+      streaming: true
+    });
+
+    console.log(`✅ [Stream] Concluído em ${elapsed}s`);
+  } catch (error) {
+    console.error('❌ [Stream] Erro:', error);
+    res.write(`data: ${JSON.stringify({ type: 'error', error: error.message })}\n\n`);
+    res.end();
+  }
+});
+
 // API - Upload de arquivo
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   try {
