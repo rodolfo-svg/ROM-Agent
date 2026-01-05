@@ -19,8 +19,14 @@ services:
     buildCommand: |
       echo "🔧 [PRODUÇÃO] Instalando dependências do backend..."
       npm ci --only=production
-      echo "🔧 [PRODUÇÃO] Buildando frontend React V4..."
-      (cd frontend && npm ci && npm run build)
+      echo "🔧 [PRODUÇÃO] Limpando build anterior do frontend..."
+      rm -rf frontend/dist
+      echo "🔧 [PRODUÇÃO] Instalando dependências do frontend..."
+      (cd frontend && npm ci)
+      echo "🏗️ [PRODUÇÃO] Buildando frontend React V4..."
+      (cd frontend && npm run build)
+      echo "📦 [PRODUÇÃO] Verificando build..."
+      ls -lh frontend/dist/assets/*.js | head -5
       echo "✅ [PRODUÇÃO] Build concluído (backend + frontend)"
 
     # ═══ START ═══
@@ -108,10 +114,14 @@ services:
     buildCommand: |
       echo "🔧 [STAGING] Instalando dependências do backend..."
       npm ci --only=production
+      echo "🔧 [STAGING] Limpando build anterior do frontend..."
+      rm -rf frontend/dist
       echo "🔧 [STAGING] Instalando dependências do frontend..."
-      cd frontend && npm ci
+      (cd frontend && npm ci)
       echo "🏗️ [STAGING] Buildando React Frontend V4..."
-      npm run build
+      (cd frontend && npm run build)
+      echo "📦 [STAGING] Verificando build..."
+      ls -lh frontend/dist/assets/*.js | head -5
       echo "✅ [STAGING] Build concluído (backend + frontend)"
 
     # ═══ START ═══
