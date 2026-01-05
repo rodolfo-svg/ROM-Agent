@@ -49,14 +49,19 @@ export const useChatStore = create<ChatState>()(
 
       // Carregar conversas do backend
       loadConversations: async () => {
+        console.log('🔵 loadConversations: Iniciando...')
         set({ isLoading: true })
         try {
           const res = await fetch('/api/conversations', {
             credentials: 'include',
           })
 
+          console.log('🔵 loadConversations: Response status:', res.status)
+
           if (res.ok) {
             const data = await res.json()
+            console.log('🔵 loadConversations: Data received:', data)
+
             if (data.success && data.conversations) {
               // Mapear formato do backend para frontend
               const conversations = data.conversations.map((c: any) => ({
@@ -68,11 +73,15 @@ export const useChatStore = create<ChatState>()(
                 model: get().selectedModel,
               }))
 
+              console.log('🔵 loadConversations: Mapeadas', conversations.length, 'conversas')
+              console.log('🔵 loadConversations: Primeira conversa:', conversations[0])
+
               set({ conversations, isLoading: false })
+              console.log('✅ loadConversations: Estado atualizado!')
             }
           }
         } catch (error) {
-          console.error('Erro ao carregar conversas:', error)
+          console.error('❌ Erro ao carregar conversas:', error)
           set({ isLoading: false })
         }
       },
