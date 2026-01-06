@@ -3019,8 +3019,8 @@ app.get('/api/debug/index-html', (req, res) => {
       res.json({
         exists: true,
         path: indexPath,
-        jsReferences: jsMatches.map(m => m.replace(/src="|"/g, '')),
-        cssReferences: cssMatches.map(m => m.replace(/href="|"/g, '')),
+        jsReferences: jsMatches.map(m => m.replace('src="', '').replace('"', '')),
+        cssReferences: cssMatches.map(m => m.replace('href="', '').replace('"', '')),
         contentPreview: content.substring(0, 500)
       });
     } else {
