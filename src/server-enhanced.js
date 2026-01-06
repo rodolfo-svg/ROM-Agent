@@ -3004,6 +3004,36 @@ app.get('/api/debug/frontend', (req, res) => {
   res.json(debug);
 });
 
+// DEBUG - Ler index.html do servidor
+app.get('/api/debug/index-html', (req, res) => {
+  const indexPath = path.join(__dirname, '../frontend/dist/index.html');
+
+  try {
+    if (fs.existsSync(indexPath)) {
+      const content = fs.readFileSync(indexPath, 'utf8');
+
+      // Extrair referências a arquivos JS/CSS
+      const jsMatches = content.match(/src="[^"]*\.js"/g) || [];
+      const cssMatches = content.match(/href="[^"]*\.css"/g) || [];
+
+      res.json({
+        exists: true,
+        path: indexPath,
+        jsReferences: jsMatches.map(m => m.replace(/src="|"/g, '')),
+        cssReferences: cssMatches.map(m => m.replace(/href="|"/g, '')),
+        contentPreview: content.substring(0, 500)
+      });
+    } else {
+      res.json({
+        exists: false,
+        path: indexPath
+      });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // ====================================================================
 // ROTAS DE AUTENTICAÇÃO JWT
 // ====================================================================
