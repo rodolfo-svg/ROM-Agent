@@ -9,6 +9,19 @@
  * - Autenticação básica
  */
 
+// ⚠️ DEBUG - Ver como o servidor foi iniciado
+console.log('');
+console.log('═══════════════════════════════════════════════════════');
+console.log('🚨 SERVER-ENHANCED.JS INICIADO');
+console.log('═══════════════════════════════════════════════════════');
+console.log('Command:', process.argv.join(' '));
+console.log('CWD:', process.cwd());
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('npm_lifecycle_event:', process.env.npm_lifecycle_event);
+console.log('npm_lifecycle_script:', process.env.npm_lifecycle_script);
+console.log('═══════════════════════════════════════════════════════');
+console.log('');
+
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
