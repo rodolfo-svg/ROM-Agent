@@ -34,12 +34,10 @@ services:
       fi
       echo "✅ Build do frontend verificado com sucesso!"
       ls -lah frontend/dist/ | head -20
-      echo "🗄️ Executando migrations do banco de dados..."
-      npm run db:migrate || echo "⚠️ Migrations falharam (pode ser normal se já aplicadas)"
       echo "✅ Build completo!"
 
     # ═══ START ═══
-    startCommand: npm run db:migrate && node scripts/ensure-frontend-build.js && npm run web:enhanced
+    startCommand: bash scripts/migrate-with-logging.sh && node scripts/ensure-frontend-build.js && npm run web:enhanced
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
@@ -138,12 +136,10 @@ services:
       fi
       echo "✅ Build do frontend verificado com sucesso!"
       ls -lah frontend/dist/ | head -20
-      echo "🗄️ Executando migrations do banco de dados..."
-      npm run db:migrate || echo "⚠️ Migrations falharam (pode ser normal se já aplicadas)"
       echo "✅ Build completo!"
 
     # ═══ START ═══
-    startCommand: npm run db:migrate && node scripts/ensure-frontend-build.js && npm run web:enhanced
+    startCommand: bash scripts/migrate-with-logging.sh && node scripts/ensure-frontend-build.js && npm run web:enhanced
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
