@@ -305,6 +305,10 @@ app.use(express.static(staticPath));
 // Compression (Gzip/Brotli) - comprimir responses > 1KB
 app.use(compression({
   filter: (req, res) => {
+    // Nunca comprimir SSE/streaming (causa buffering!)
+    if (req.path.includes('/stream') || res.getHeader('Content-Type') === 'text/event-stream') {
+      return false;
+    }
     if (req.headers['x-no-compression']) {
       return false;
     }

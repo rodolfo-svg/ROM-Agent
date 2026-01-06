@@ -51,6 +51,13 @@ export function ChatPage() {
     }
   }, [conversationId])
 
+  // Load messages for active conversation (fix: ensure messages are loaded)
+  useEffect(() => {
+    if (activeConversationId && activeConversation && activeConversation.messages.length === 0) {
+      selectConversation(activeConversationId)
+    }
+  }, [activeConversationId, conversations.length])
+
   // Create initial conversation if none exists (after loading)
   useEffect(() => {
     if (!activeConversation && conversations.length === 0) {
