@@ -79,13 +79,22 @@ export function ChatPage() {
       convId = conv.id
     }
 
+    // 🔥 CRÍTICO: Obter histórico ANTES de adicionar novas mensagens
+    const conversation = conversations.find(c => c.id === convId)
+    const conversationMessages = conversation?.messages
+      .filter(m => m.content && m.content.trim() !== '') // Excluir mensagens vazias
+      .map(m => ({
+        role: m.role,
+        content: m.content
+      })) || []
+
     // Add user message
     addMessage({ role: 'user', content })
 
     // Add placeholder for assistant
-    const assistantMsg = addMessage({ 
-      role: 'assistant', 
-      content: '', 
+    const assistantMsg = addMessage({
+      role: 'assistant',
+      content: '',
       isStreaming: true,
       model: selectedModel,
     })
@@ -96,17 +105,10 @@ export function ChatPage() {
     try {
       abortControllerRef.current = new AbortController()
 
-      // Obter histórico completo da conversa para enviar ao backend
-      const conversation = conversations.find(c => c.id === convId)
-      const conversationMessages = conversation?.messages.map(m => ({
-        role: m.role,
-        content: m.content
-      })) || []
-
       for await (const chunk of chatStream(content, {
         conversationId: convId,
         model: selectedModel,
-        messages: conversationMessages, // CRÍTICO: Enviar histórico completo
+        messages: conversationMessages, // ✅ Histórico correto (sem mensagens atuais)
         signal: abortControllerRef.current.signal,
       })) {
         if (chunk.type === 'chunk' && chunk.content) {
