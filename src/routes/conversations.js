@@ -45,7 +45,7 @@ router.get('/', requireAuth, async (req, res) => {
         COUNT(m.id) as message_count,
         MAX(m.created_at) as last_message_at
        FROM conversations c
-       LEFT JOIN conversation_messages m ON c.id = m.conversation_id
+       LEFT JOIN messages m ON c.id = m.conversation_id
        WHERE c.user_id = $1 AND c.deleted_at IS NULL
        GROUP BY c.id
        ORDER BY c.updated_at DESC
@@ -145,7 +145,7 @@ router.get('/:id', requireAuth, async (req, res) => {
     // Buscar mensagens
     const messagesResult = await pool.query(
       `SELECT id, role, content, model, created_at
-       FROM conversation_messages
+       FROM messages
        WHERE conversation_id = $1
        ORDER BY created_at ASC`,
       [id]
@@ -312,7 +312,7 @@ router.post('/:id/messages', requireAuth, async (req, res) => {
 
     // Inserir mensagem
     const result = await pool.query(
-      `INSERT INTO conversation_messages (conversation_id, role, content, model, created_at)
+      `INSERT INTO messages (conversation_id, role, content, model, created_at)
        VALUES ($1, $2, $3, $4, NOW())
        RETURNING id, role, content, model, created_at`,
       [id, role, content, model || null]
