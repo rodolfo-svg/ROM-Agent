@@ -503,6 +503,12 @@ export async function conversarStream(prompt, onChunk, options = {}) {
     prompt
   );
 
+  // ⚠️ DEBUG: Ver truncamento
+  console.log('🔧 BEDROCK DEBUG:');
+  console.log(`   Histórico recebido: ${historico.length} msgs`);
+  console.log(`   Após truncamento: ${truncatedHistory.length} msgs`);
+  console.log(`   Safe limit: ${safeLimit} tokens`);
+
   // 🔥 CONCATENAR KB CONTEXT DEPOIS DO TRUNCAMENTO
   const finalPrompt = kbContext ? prompt + '\n\n' + kbContext : prompt;
 
@@ -516,6 +522,9 @@ export async function conversarStream(prompt, onChunk, options = {}) {
       content: [{ text: finalPrompt }]  // 🔥 Usar prompt final com KB
     }
   ];
+
+  console.log(`   Total msgs enviadas para Claude: ${messages.length}`);
+  console.log('');
 
   const commandParams = {
     modelId: INFERENCE_PROFILES[modelo] || modelo,

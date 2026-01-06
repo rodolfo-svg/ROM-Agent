@@ -116,6 +116,17 @@ router.post('/stream', async (req, res) => {
     const modelInput = model || modelo;
     const selectedModel = MODEL_MAPPING[modelInput] || modelInput;
 
+    // ⚠️ DEBUG: Ver histórico recebido
+    console.log('');
+    console.log('🔍 DEBUG HISTÓRICO:');
+    console.log(`   Total mensagens recebidas: ${conversationHistory.length}`);
+    console.log(`   Mensagens após slice(-30): ${limitedHistory.length}`);
+    console.log(`   Últimas 3 mensagens:`);
+    limitedHistory.slice(-3).forEach((msg, i) => {
+      console.log(`   ${i + 1}. [${msg.role}]: ${msg.content.substring(0, 60)}...`);
+    });
+    console.log('');
+
     // Configurar headers SSE
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
