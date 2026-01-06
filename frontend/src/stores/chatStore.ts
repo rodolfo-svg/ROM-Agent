@@ -59,15 +59,25 @@ export const useChatStore = create<ChatState>()(
             const data = await res.json()
 
             if (data.success && data.conversations) {
-              // Mapear formato do backend para frontend
+              // Obter conversas atuais para preservar mensagens já carregadas
+              const existingConversations = get().conversations
+              const existingMessagesMap = new Map(
+                existingConversations.map(c => [c.id, c.messages])
+              )
+
+              // Mapear formato do backend para frontend, preservando mensagens existentes
               const conversations = data.conversations.map((c: any) => ({
                 id: c.id,
                 title: c.title,
-                messages: [], // Mensagens carregadas sob demanda
+                // 🔥 CRÍTICO: Preservar mensagens já carregadas em vez de resetar para []
+                messages: existingMessagesMap.get(c.id) || [],
                 createdAt: c.created_at,
                 updatedAt: c.updated_at,
                 model: get().selectedModel,
               }))
+
+              console.log('📥 loadConversations: Carregadas', conversations.length, 'conversas')
+              console.log('   Mensagens preservadas:', conversations.filter((c: Conversation) => c.messages.length > 0).length)
 
               set({ conversations, isLoading: false })
             }
@@ -130,18 +140,25 @@ export const useChatStore = create<ChatState>()(
       },
 
       selectConversation: async (id: string) => {
+        console.log('🔄 selectConversation chamado:', id)
         set({ activeConversationId: id, isLoading: true })
 
         try {
           // Buscar mensagens da conversa se ainda não foram carregadas
           const conversation = get().conversations.find(c => c.id === id)
+          console.log('   conversation found:', !!conversation)
+          console.log('   current messages count:', conversation?.messages?.length || 0)
+
           if (conversation && conversation.messages.length === 0) {
+            console.log('   Fetching messages from API...')
             const res = await fetch(`/api/conversations/${id}`, {
               credentials: 'include',
             })
 
             if (res.ok) {
               const data = await res.json()
+              console.log('   API response:', data.success, 'messages count:', data.conversation?.messages?.length)
+
               if (data.success && data.conversation) {
                 const messages = data.conversation.messages.map((m: any) => ({
                   id: m.id,
@@ -152,6 +169,8 @@ export const useChatStore = create<ChatState>()(
                   isStreaming: false,
                 }))
 
+                console.log('   ✅ Loaded messages:', messages.length)
+
                 set(state => ({
                   conversations: state.conversations.map(c =>
                     c.id === id ? { ...c, messages } : c
@@ -160,7 +179,13 @@ export const useChatStore = create<ChatState>()(
                 }))
                 return
               }
+            } else {
+              console.log('   ⚠️ API request failed:', res.status)
             }
+          } else if (conversation) {
+            console.log('   Skipping fetch - messages already loaded:', conversation.messages.length)
+          } else {
+            console.log('   ⚠️ Conversation not found in store')
           }
         } catch (error) {
           console.error('Erro ao carregar mensagens:', error)
@@ -222,9 +247,14 @@ export const useChatStore = create<ChatState>()(
           createdAt: new Date().toISOString(),
         }
 
+        console.log('📝 addMessage:', message.role, '- content length:', message.content?.length || 0)
+
         set(state => {
           const activeId = state.activeConversationId
-          if (!activeId) return state
+          if (!activeId) {
+            console.log('   ⚠️ No activeConversationId!')
+            return state
+          }
 
           // Update conversation title from first user message
           const conversation = state.conversations.find(c => c.id === activeId)
@@ -238,18 +268,22 @@ export const useChatStore = create<ChatState>()(
             get().renameConversation(activeId, newTitle)
           }
 
-          return {
-            conversations: state.conversations.map(c =>
-              c.id === activeId
-                ? {
-                    ...c,
-                    messages: [...c.messages, newMessage],
-                    title: newTitle || c.title,
-                    updatedAt: new Date().toISOString(),
-                  }
-                : c
-            ),
-          }
+          const updatedConversations = state.conversations.map(c =>
+            c.id === activeId
+              ? {
+                  ...c,
+                  messages: [...c.messages, newMessage],
+                  title: newTitle || c.title,
+                  updatedAt: new Date().toISOString(),
+                }
+              : c
+          )
+
+          // Log para debug
+          const updatedConv = updatedConversations.find(c => c.id === activeId)
+          console.log('   ✅ Message added. Total messages now:', updatedConv?.messages?.length || 0)
+
+          return { conversations: updatedConversations }
         })
 
         // Salvar no backend de forma assíncrona

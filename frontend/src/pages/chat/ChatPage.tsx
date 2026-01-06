@@ -53,7 +53,12 @@ export function ChatPage() {
 
   // Load messages for active conversation (fix: ensure messages are loaded)
   useEffect(() => {
-    if (activeConversationId && activeConversation && activeConversation.messages.length === 0) {
+    // Usar estado direto do Zustand para evitar stale closures
+    const state = useChatStore.getState()
+    const conv = state.conversations.find(c => c.id === activeConversationId)
+
+    if (activeConversationId && conv && conv.messages.length === 0) {
+      console.log('📌 useEffect: Carregando mensagens para conversa ativa:', activeConversationId)
       selectConversation(activeConversationId)
     }
   }, [activeConversationId, conversations.length])
@@ -79,8 +84,20 @@ export function ChatPage() {
       convId = conv.id
     }
 
-    // 🔥 CRÍTICO: Obter histórico ANTES de adicionar novas mensagens
-    const conversation = conversations.find(c => c.id === convId)
+    // 🔥 CRÍTICO: Garantir que as mensagens estejam carregadas antes de enviar
+    // Pegar estado inicial para verificar se precisa carregar
+    let currentState = useChatStore.getState()
+    let conversation = currentState.conversations.find(c => c.id === convId)
+
+    // Se a conversa existe mas não tem mensagens carregadas, carregar agora
+    if (conversation && conversation.messages.length === 0) {
+      console.log('⏳ Mensagens não carregadas, carregando do backend...')
+      await selectConversation(convId)
+      // Atualizar referência após carregar
+      currentState = useChatStore.getState()
+      conversation = currentState.conversations.find(c => c.id === convId)
+      console.log('✅ Mensagens carregadas:', conversation?.messages?.length || 0)
+    }
 
     // ⚠️ DEBUG: Ver estado do histórico
     console.log('🔍 FRONTEND DEBUG:')
@@ -88,7 +105,8 @@ export function ChatPage() {
     console.log('   conversation found:', !!conversation)
     console.log('   conversation.messages length:', conversation?.messages?.length || 0)
     console.log('   conversation.messages:', conversation?.messages)
-    console.log('   conversations array length:', conversations.length)
+    console.log('   conversations array length:', currentState.conversations.length)
+    console.log('   activeConversationId from state:', currentState.activeConversationId)
 
     const conversationMessages = conversation?.messages
       .filter(m => m.content && m.content.trim() !== '') // Excluir mensagens vazias
