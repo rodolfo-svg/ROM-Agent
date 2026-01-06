@@ -14,7 +14,7 @@
     "cli:advanced": "node src/cli-advanced.js",
     "rom": "node src/cli-advanced.js",
     "web": "node src/server.js",
-    "web:enhanced": "cd frontend && npm ci && npm run build && cd .. && node src/server-enhanced.js",
+    "web:enhanced": "node scripts/ensure-frontend-build.js && node src/server-enhanced.js",
     "web:cluster": "node src/server-cluster.js",
     "web:turbo": "node --max-old-space-size=8192 src/server-cluster.js",
     "web:single": "node src/server-enhanced.js",
