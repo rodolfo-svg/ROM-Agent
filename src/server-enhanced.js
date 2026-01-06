@@ -2960,33 +2960,46 @@ app.get('/api/stats', (req, res) => {
 
 // DEBUG - Listar arquivos frontend/dist (temporário para diagnóstico)
 app.get('/api/debug/frontend', (req, res) => {
-  const frontendPath = path.join(__dirname, '../frontend/dist');
-  const assetsPath = path.join(frontendPath, 'assets');
+  const path1 = path.join(__dirname, '../frontend/dist');
+  const path2 = path.join(__dirname, 'frontend/dist');
+  const path3 = '/opt/render/project/frontend/dist';
+  const path4 = '/opt/render/project/src/frontend/dist';
 
   const debug = {
-    frontendPath,
-    frontendExists: fs.existsSync(frontendPath),
-    assetsPath,
-    assetsExists: fs.existsSync(assetsPath),
-    frontendFiles: [],
-    assetsFiles: []
+    __dirname,
+    cwd: process.cwd(),
+
+    // Path usado no código
+    calculatedPath: path1,
+
+    // Testar todos os caminhos possíveis
+    possiblePaths: {
+      '../frontend/dist': {
+        path: path1,
+        exists: fs.existsSync(path1),
+        files: fs.existsSync(path1) ? fs.readdirSync(path1) : [],
+        assetsFiles: fs.existsSync(path.join(path1, 'assets')) ? fs.readdirSync(path.join(path1, 'assets')) : []
+      },
+      'frontend/dist': {
+        path: path2,
+        exists: fs.existsSync(path2),
+        files: fs.existsSync(path2) ? fs.readdirSync(path2) : [],
+        assetsFiles: fs.existsSync(path.join(path2, 'assets')) ? fs.readdirSync(path.join(path2, 'assets')) : []
+      },
+      '/opt/render/project/frontend/dist': {
+        path: path3,
+        exists: fs.existsSync(path3),
+        files: fs.existsSync(path3) ? fs.readdirSync(path3) : [],
+        assetsFiles: fs.existsSync(path.join(path3, 'assets')) ? fs.readdirSync(path.join(path3, 'assets')) : []
+      },
+      '/opt/render/project/src/frontend/dist': {
+        path: path4,
+        exists: fs.existsSync(path4),
+        files: fs.existsSync(path4) ? fs.readdirSync(path4) : [],
+        assetsFiles: fs.existsSync(path.join(path4, 'assets')) ? fs.readdirSync(path.join(path4, 'assets')) : []
+      }
+    }
   };
-
-  if (debug.frontendExists) {
-    try {
-      debug.frontendFiles = fs.readdirSync(frontendPath);
-    } catch (e) {
-      debug.frontendFilesError = e.message;
-    }
-  }
-
-  if (debug.assetsExists) {
-    try {
-      debug.assetsFiles = fs.readdirSync(assetsPath);
-    } catch (e) {
-      debug.assetsFilesError = e.message;
-    }
-  }
 
   res.json(debug);
 });
