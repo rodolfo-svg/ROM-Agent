@@ -1,111 +1,60 @@
 /**
- * ROM Agent - Service Worker para PWA
- * Permite instalação como app e funcionamento offline parcial
+ * ROM Agent - Service Worker KILL SWITCH
+ *
+ * Este SW se auto-desregistra e limpa todos os caches
+ * Resolve o problema de cache infinito do browser
+ *
+ * Após este deploy, o SW será removido do browser do usuário
  */
 
-const CACHE_NAME = 'rom-agent-v4-2026-01-05';
-const OFFLINE_URL = '/offline.html';
+console.log('🔴 ROM Agent: Service Worker KILL SWITCH ativado');
 
-// Limpar TODOS os caches antigos
-const OLD_CACHE_PATTERNS = ['rom-agent-v1', 'rom-agent-v2', 'rom-agent-v3'];
-
-const ASSETS_TO_CACHE = [
-  '/',
-  '/manifest.json',
-  '/offline.html',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap'
-];
-
-// Instalação
+// Instalação: pular espera e ativar imediatamente
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => {
-        console.log('ROM Agent: Cache aberto');
-        return cache.addAll(ASSETS_TO_CACHE);
-      })
-      .then(() => self.skipWaiting())
-  );
+  console.log('🔴 SW Kill Switch: Instalando...');
+  self.skipWaiting();
 });
 
-// Ativação - FORÇAR limpeza de caches antigos
+// Ativação: DELETAR TODOS OS CACHES e desregistrar
 self.addEventListener('activate', (event) => {
+  console.log('🔴 SW Kill Switch: Ativando e limpando TUDO...');
+
   event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      console.log('ROM Agent: Limpando caches antigos...', cacheNames);
-      return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_NAME)
-          .map((name) => {
-            console.log('ROM Agent: Deletando cache:', name);
-            return caches.delete(name);
+    Promise.all([
+      // Deletar TODOS os caches
+      caches.keys().then((cacheNames) => {
+        console.log('🔴 SW Kill Switch: Deletando caches:', cacheNames);
+        return Promise.all(
+          cacheNames.map((cacheName) => {
+            console.log('🔴 SW Kill Switch: Deletando:', cacheName);
+            return caches.delete(cacheName);
           })
-      );
-    }).then(() => {
-      console.log('ROM Agent: Service Worker ativado e caches limpos!');
-      return self.clients.claim();
+        );
+      }),
+
+      // Tomar controle de todos os clientes
+      self.clients.claim(),
+
+      // Desregistrar este Service Worker
+      self.registration.unregister().then(() => {
+        console.log('🔴 SW Kill Switch: Service Worker desregistrado com sucesso!');
+
+        // Recarregar todos os clientes para limpar completamente
+        return self.clients.matchAll().then((clients) => {
+          clients.forEach((client) => {
+            console.log('🔴 SW Kill Switch: Recarregando cliente:', client.url);
+            client.navigate(client.url);
+          });
+        });
+      })
+    ]).then(() => {
+      console.log('✅ SW Kill Switch: Limpeza completa! Browser vai recarregar sem Service Worker.');
     })
   );
 });
 
-// Interceptar requisições
+// Fetch: NÃO CACHEAR NADA - passar direto para a rede
 self.addEventListener('fetch', (event) => {
-  // Não cachear chamadas de API
-  if (event.request.url.includes('/api/')) {
-    event.respondWith(
-      fetch(event.request)
-        .catch(() => {
-          return new Response(JSON.stringify({
-            error: 'Sem conexão. Verifique sua internet.'
-          }), {
-            headers: { 'Content-Type': 'application/json' }
-          });
-        })
-    );
-    return;
-  }
-
-  // Para outros recursos, tentar cache primeiro
-  event.respondWith(
-    caches.match(event.request)
-      .then((response) => {
-        if (response) {
-          return response;
-        }
-        return fetch(event.request)
-          .then((response) => {
-            // Cachear novos recursos
-            if (response.status === 200) {
-              const responseClone = response.clone();
-              caches.open(CACHE_NAME)
-                .then((cache) => cache.put(event.request, responseClone));
-            }
-            return response;
-          });
-      })
-      .catch(() => {
-        // Offline - mostrar página offline
-        if (event.request.mode === 'navigate') {
-          return caches.match(OFFLINE_URL);
-        }
-      })
-  );
-});
-
-// Push notifications (para futuro)
-self.addEventListener('push', (event) => {
-  const options = {
-    body: event.data ? event.data.text() : 'Nova notificação do ROM Agent',
-    icon: '/icons/icon-192.png',
-    badge: '/icons/icon-72.png',
-    vibrate: [100, 50, 100],
-    data: {
-      dateOfArrival: Date.now(),
-      primaryKey: 1
-    }
-  };
-
-  event.waitUntil(
-    self.registration.showNotification('ROM Agent', options)
-  );
+  console.log('🔴 SW Kill Switch: Fetch direto (sem cache):', event.request.url);
+  event.respondWith(fetch(event.request));
 });

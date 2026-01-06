@@ -1,0 +1,26 @@
+// COLE ISSO NO CONSOLE DO NAVEGADOR (F12 → Console):
+
+// 1. Limpar todos os storages
+localStorage.clear()
+sessionStorage.clear()
+
+// 2. Limpar cache do Service Worker
+caches.keys().then(keys => {
+  keys.forEach(key => {
+    caches.delete(key)
+    console.log('Cache deletado:', key)
+  })
+})
+
+// 3. Desregistrar Service Worker
+navigator.serviceWorker.getRegistrations().then(registrations => {
+  registrations.forEach(registration => {
+    registration.unregister()
+    console.log('Service Worker desregistrado')
+  })
+})
+
+// 4. Recarregar após 2 segundos
+setTimeout(() => location.reload(), 2000)
+
+// Aguarde 2 segundos e a página recarregará limpa!
