@@ -81,12 +81,24 @@ export function ChatPage() {
 
     // 🔥 CRÍTICO: Obter histórico ANTES de adicionar novas mensagens
     const conversation = conversations.find(c => c.id === convId)
+
+    // ⚠️ DEBUG: Ver estado do histórico
+    console.log('🔍 FRONTEND DEBUG:')
+    console.log('   convId:', convId)
+    console.log('   conversation found:', !!conversation)
+    console.log('   conversation.messages length:', conversation?.messages?.length || 0)
+    console.log('   conversation.messages:', conversation?.messages)
+    console.log('   conversations array length:', conversations.length)
+
     const conversationMessages = conversation?.messages
       .filter(m => m.content && m.content.trim() !== '') // Excluir mensagens vazias
       .map(m => ({
         role: m.role,
         content: m.content
       })) || []
+
+    console.log('   conversationMessages to send:', conversationMessages.length)
+    console.log('')
 
     // Add user message
     addMessage({ role: 'user', content })
