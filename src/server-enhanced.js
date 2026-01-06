@@ -2926,6 +2926,39 @@ app.get('/api/stats', (req, res) => {
   }
 });
 
+// DEBUG - Listar arquivos frontend/dist (temporário para diagnóstico)
+app.get('/api/debug/frontend', (req, res) => {
+  const frontendPath = path.join(__dirname, '../frontend/dist');
+  const assetsPath = path.join(frontendPath, 'assets');
+
+  const debug = {
+    frontendPath,
+    frontendExists: fs.existsSync(frontendPath),
+    assetsPath,
+    assetsExists: fs.existsSync(assetsPath),
+    frontendFiles: [],
+    assetsFiles: []
+  };
+
+  if (debug.frontendExists) {
+    try {
+      debug.frontendFiles = fs.readdirSync(frontendPath);
+    } catch (e) {
+      debug.frontendFilesError = e.message;
+    }
+  }
+
+  if (debug.assetsExists) {
+    try {
+      debug.assetsFiles = fs.readdirSync(assetsPath);
+    } catch (e) {
+      debug.assetsFilesError = e.message;
+    }
+  }
+
+  res.json(debug);
+});
+
 // ====================================================================
 // ROTAS DE AUTENTICAÇÃO JWT
 // ====================================================================
