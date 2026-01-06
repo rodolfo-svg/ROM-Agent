@@ -33,32 +33,21 @@ const FONT_URLS = [
   'https://fonts.gstatic.com',
 ];
 
-console.log(`🟢 ROM Agent SW ${VERSION}: Iniciando...`);
-
 // ===== INSTALAÇÃO =====
 self.addEventListener('install', (event) => {
-  console.log(`🟢 ROM Agent SW ${VERSION}: Instalando...`);
-
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => {
-        console.log(`🟢 ROM Agent SW ${VERSION}: Caching assets estáticos`);
-        return cache.addAll(STATIC_ASSETS).catch((err) => {
-          console.warn('⚠️ Alguns assets não foram cached:', err);
+        return cache.addAll(STATIC_ASSETS).catch(() => {
           // Não falhar se alguns assets não existirem
         });
       })
-      .then(() => {
-        console.log(`🟢 ROM Agent SW ${VERSION}: Instalação completa, ativando...`);
-        return self.skipWaiting();
-      })
+      .then(() => self.skipWaiting())
   );
 });
 
 // ===== ATIVAÇÃO =====
 self.addEventListener('activate', (event) => {
-  console.log(`🟢 ROM Agent SW ${VERSION}: Ativando...`);
-
   event.waitUntil(
     Promise.all([
       // Limpar caches antigos
@@ -71,18 +60,13 @@ self.addEventListener('activate', (event) => {
                      name !== STATIC_CACHE &&
                      name !== RUNTIME_CACHE;
             })
-            .map((name) => {
-              console.log(`🟢 ROM Agent SW ${VERSION}: Deletando cache antigo:`, name);
-              return caches.delete(name);
-            })
+            .map((name) => caches.delete(name))
         );
       }),
 
       // Tomar controle imediato
       self.clients.claim(),
-    ]).then(() => {
-      console.log(`✅ ROM Agent SW ${VERSION}: Ativado e pronto!`);
-    })
+    ])
   );
 });
 
@@ -156,8 +140,7 @@ self.addEventListener('fetch', (event) => {
           // Não cachear código - sempre buscar da rede
           return response;
         })
-        .catch((error) => {
-          console.error('❌ Erro ao buscar da rede:', error);
+        .catch(() => {
           // Sem fallback - força conexão para código
           return new Response(
             `<!DOCTYPE html>
