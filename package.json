@@ -8,7 +8,7 @@
   },
   "type": "module",
   "scripts": {
-    "start": "node --max-old-space-size=8192 src/server-cluster.js",
+    "start": "node scripts/ensure-frontend-build.js && node --max-old-space-size=8192 src/server-cluster.js",
     "dev": "node --watch src/index.js",
     "cli": "node src/cli.js",
     "cli:advanced": "node src/cli-advanced.js",
