@@ -22,17 +22,22 @@ services:
       echo "🧹 Limpando build anterior do frontend..."
       rm -rf frontend/dist
       echo "🏗️ Buildando frontend React..."
-      cd frontend
-      npm ci
-      npm run build
-      cd ..
+      cd frontend && npm ci && npm run build && cd ..
       echo "📦 Verificando arquivos gerados..."
-      ls -lah frontend/dist/ || echo "❌ frontend/dist não existe!"
-      ls -lah frontend/dist/assets/*.js || echo "❌ Sem arquivos JS!"
+      if [ ! -d "frontend/dist" ]; then
+        echo "❌ ERRO CRÍTICO: frontend/dist não foi criado!"
+        exit 1
+      fi
+      if [ ! -f "frontend/dist/index.html" ]; then
+        echo "❌ ERRO CRÍTICO: frontend/dist/index.html não existe!"
+        exit 1
+      fi
+      echo "✅ Build do frontend verificado com sucesso!"
+      ls -lah frontend/dist/ | head -20
       echo "✅ Build completo!"
 
     # ═══ START ═══
-    startCommand: npm run web:enhanced
+    startCommand: node scripts/ensure-frontend-build.js && npm run web:enhanced
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
@@ -119,17 +124,22 @@ services:
       echo "🧹 Limpando build anterior do frontend..."
       rm -rf frontend/dist
       echo "🏗️ Buildando frontend React..."
-      cd frontend
-      npm ci
-      npm run build
-      cd ..
+      cd frontend && npm ci && npm run build && cd ..
       echo "📦 Verificando arquivos gerados..."
-      ls -lah frontend/dist/ || echo "❌ frontend/dist não existe!"
-      ls -lah frontend/dist/assets/*.js || echo "❌ Sem arquivos JS!"
+      if [ ! -d "frontend/dist" ]; then
+        echo "❌ ERRO CRÍTICO: frontend/dist não foi criado!"
+        exit 1
+      fi
+      if [ ! -f "frontend/dist/index.html" ]; then
+        echo "❌ ERRO CRÍTICO: frontend/dist/index.html não existe!"
+        exit 1
+      fi
+      echo "✅ Build do frontend verificado com sucesso!"
+      ls -lah frontend/dist/ | head -20
       echo "✅ Build completo!"
 
     # ═══ START ═══
-    startCommand: npm run web:enhanced
+    startCommand: node scripts/ensure-frontend-build.js && npm run web:enhanced
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
