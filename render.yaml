@@ -39,7 +39,7 @@ services:
       echo "✅ Build completo!"
 
     # ═══ START ═══
-    startCommand: node scripts/ensure-frontend-build.js && npm run web:enhanced
+    startCommand: npm run db:migrate && node scripts/ensure-frontend-build.js && npm run web:enhanced
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
@@ -143,7 +143,7 @@ services:
       echo "✅ Build completo!"
 
     # ═══ START ═══
-    startCommand: node scripts/ensure-frontend-build.js && npm run web:enhanced
+    startCommand: npm run db:migrate && node scripts/ensure-frontend-build.js && npm run web:enhanced
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
