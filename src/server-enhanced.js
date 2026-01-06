@@ -2866,6 +2866,38 @@ app.get('/api/info', async (req, res) => {
         };
       })(),
 
+      // Frontend build status
+      frontend: (() => {
+        const frontendPath = path.join(__dirname, '../frontend/dist');
+        const assetsPath = path.join(frontendPath, 'assets');
+        const indexPath = path.join(frontendPath, 'index.html');
+
+        const frontendExists = fs.existsSync(frontendPath);
+        const assetsExists = fs.existsSync(assetsPath);
+        const indexExists = fs.existsSync(indexPath);
+
+        let assetsFiles = [];
+        let assetsJsFiles = [];
+        if (assetsExists) {
+          try {
+            assetsFiles = fs.readdirSync(assetsPath);
+            assetsJsFiles = assetsFiles.filter(f => f.endsWith('.js'));
+          } catch (e) {
+            assetsFiles = [`Error: ${e.message}`];
+          }
+        }
+
+        return {
+          distPath: frontendPath,
+          distExists: frontendExists,
+          indexExists,
+          assetsExists,
+          assetsCount: assetsFiles.length,
+          jsFilesCount: assetsJsFiles.length,
+          sampleJsFiles: assetsJsFiles.slice(0, 5) // Primeiros 5 arquivos JS
+        };
+      })(),
+
       // Timestamp
       timestamp: new Date().toISOString()
     };
