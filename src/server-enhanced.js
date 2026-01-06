@@ -285,12 +285,11 @@ app.use((req, res, next) => {
 
   const isHtmlPage = req.path === '/' || req.path.endsWith('.html');
 
-  // ⚠️ TEMPORÁRIO - Autenticação desabilitada para testes
-  // if (isHtmlPage) {
-  //   if (!req.session || !req.session.user || !req.session.user.id) {
-  //     return res.redirect('/login.html');
-  //   }
-  // }
+  if (isHtmlPage) {
+    if (!req.session || !req.session.user || !req.session.user.id) {
+      return res.redirect('/login.html');
+    }
+  }
 
   next();
 });

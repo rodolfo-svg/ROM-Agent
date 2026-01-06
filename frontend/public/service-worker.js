@@ -10,7 +10,7 @@
  * @version 5.0.0 - Network First
  */
 
-const VERSION = 'v5.0.0';
+const VERSION = 'v6.0.0';
 const STATIC_CACHE = `rom-agent-static-${VERSION}`;
 const RUNTIME_CACHE = `rom-agent-runtime-${VERSION}`;
 
