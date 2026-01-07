@@ -8,8 +8,11 @@
 // ════════════════════════════════════════════════════════════════
 
 import bcrypt from 'bcryptjs';
-import { getPostgresPool } from '../src/config/database.js';
+import pg from 'pg';
 import readline from 'readline';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -58,10 +61,19 @@ async function createUser() {
     console.log('\n🔄 Processando...\n');
 
     // Conectar ao banco
-    const pool = await getPostgresPool();
+    const config = {
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production'
+        ? { rejectUnauthorized: false }
+        : false
+    };
+
+    const client = new pg.Client(config);
+    await client.connect();
+    console.log('✅ Conectado ao PostgreSQL\n');
 
     // Verificar se email já existe
-    const existingUser = await pool.query(
+    const existingUser = await client.query(
       'SELECT id FROM users WHERE email = $1',
       [email]
     );
@@ -81,7 +93,7 @@ async function createUser() {
     passwordExpiresAt.setDate(passwordExpiresAt.getDate() + 90);
 
     // Inserir usuário
-    const result = await pool.query(
+    const result = await client.query(
       `INSERT INTO users (
         id,
         email,
@@ -123,14 +135,14 @@ async function createUser() {
     const user = result.rows[0];
 
     // Adicionar ao histórico de senhas
-    await pool.query(
+    await client.query(
       `INSERT INTO password_history (user_id, password_hash, created_at)
        VALUES ($1, $2, NOW())`,
       [user.id, passwordHash]
     );
 
     // Log de auditoria
-    await pool.query(
+    await client.query(
       `INSERT INTO audit_log (
         user_id,
         action,
@@ -161,7 +173,7 @@ async function createUser() {
     console.log(`⏰ Senha expira em: ${passwordExpiresAt.toISOString()}`);
     console.log('\n════════════════════════════════════════════════════════════════\n');
 
-    await pool.end();
+    await client.end();
     rl.close();
     process.exit(0);
 

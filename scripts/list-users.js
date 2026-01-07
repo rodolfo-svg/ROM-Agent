@@ -7,7 +7,10 @@
 // Uso: node scripts/list-users.js
 // ════════════════════════════════════════════════════════════════
 
-import { getPostgresPool } from '../src/config/database.js';
+import pg from 'pg';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 async function listUsers() {
   console.log('\n════════════════════════════════════════════════════════════════');
@@ -15,9 +18,17 @@ async function listUsers() {
   console.log('════════════════════════════════════════════════════════════════\n');
 
   try {
-    const pool = await getPostgresPool();
+    const config = {
+      connectionString: process.env.DATABASE_URL,
+      ssl: process.env.NODE_ENV === 'production'
+        ? { rejectUnauthorized: false }
+        : false
+    };
 
-    const result = await pool.query(`
+    const client = new pg.Client(config);
+    await client.connect();
+
+    const result = await client.query(`
       SELECT
         id,
         email,
@@ -39,7 +50,7 @@ async function listUsers() {
 
     if (result.rows.length === 0) {
       console.log('⚠️  Nenhum usuário cadastrado\n');
-      await pool.end();
+      await client.end();
       process.exit(0);
     }
 
@@ -100,7 +111,7 @@ async function listUsers() {
 
     console.log('════════════════════════════════════════════════════════════════\n');
 
-    await pool.end();
+    await client.end();
     process.exit(0);
 
   } catch (error) {
