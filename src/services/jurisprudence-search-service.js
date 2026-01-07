@@ -72,6 +72,9 @@ class JurisprudenceSearchService {
       enableCache = true
     } = options;
 
+    const searchStartTime = Date.now();
+    console.log(`🔍 [BUSCA] Iniciando busca de jurisprudência: "${tese.substring(0, 50)}..."${tribunal ? ` (${tribunal})` : ''}`);
+
     try {
       // Verificar cache
       if (enableCache) {
@@ -90,20 +93,41 @@ class JurisprudenceSearchService {
       const searchPromises = [];
       const sources = [];
 
-      // Busca paralela em todas as fontes
+      // Busca paralela em todas as fontes com timeout individual
+      const SEARCH_TIMEOUT = 15000; // 15 segundos por fonte (reduzido de 30s)
+
       if (this.config.datajud.enabled && this.config.datajud.apiKey) {
         sources.push('datajud');
-        searchPromises.push(this.searchDataJud(tese, { limit, tribunal, dataInicio, dataFim }));
-      }
-
-      if (this.config.jusbrasil.enabled) {
-        sources.push('jusbrasil');
-        searchPromises.push(this.searchJusBrasil(tese, { limit, tribunal }));
+        searchPromises.push(
+          this.withTimeout(
+            this.searchDataJud(tese, { limit, tribunal, dataInicio, dataFim }),
+            SEARCH_TIMEOUT,
+            'DataJud'
+          )
+        );
       }
 
       if (this.config.websearch.enabled) {
         sources.push('websearch');
-        searchPromises.push(this.searchWeb(tese, { limit }));
+        searchPromises.push(
+          this.withTimeout(
+            this.searchWeb(tese, { limit, tribunal }),
+            SEARCH_TIMEOUT,
+            'Google Search'
+          )
+        );
+      }
+
+      // JusBrasil com timeout menor (está travando)
+      if (this.config.jusbrasil.enabled) {
+        sources.push('jusbrasil');
+        searchPromises.push(
+          this.withTimeout(
+            this.searchJusBrasil(tese, { limit, tribunal }),
+            8000, // Apenas 8s para JusBrasil (frequentemente trava)
+            'JusBrasil'
+          )
+        );
       }
 
       // Executar todas as buscas em paralelo
@@ -128,14 +152,23 @@ class JurisprudenceSearchService {
         const sourceName = sources[index];
 
         if (result.status === 'fulfilled' && result.value) {
+          const isSuccess = result.value.success !== false;
+          const resultCount = result.value.results?.length || 0;
+
+          console.log(`✅ [${sourceName}] ${isSuccess ? 'Sucesso' : 'Falhou'} - ${resultCount} resultado(s)`);
+
           consolidated.sources[sourceName] = {
-            success: true,
-            count: result.value.results?.length || 0,
-            results: result.value.results || []
+            success: isSuccess,
+            count: resultCount,
+            results: result.value.results || [],
+            ...(result.value.error && { error: result.value.error }),
+            ...(result.value.suggestion && { suggestion: result.value.suggestion }),
+            ...(result.value.isTimeout && { isTimeout: true }),
+            ...(result.value.isBlocked && { isBlocked: true })
           };
 
-          // Adicionar ao consolidado
-          if (result.value.results) {
+          // Adicionar ao consolidado apenas se sucesso
+          if (isSuccess && result.value.results) {
             consolidated.allResults.push(...result.value.results.map(r => ({
               ...r,
               source: sourceName
@@ -148,9 +181,15 @@ class JurisprudenceSearchService {
             });
           }
         } else {
+          const errorMsg = result.reason?.message || 'Erro desconhecido';
+          const isTimeout = errorMsg.includes('Timeout') || errorMsg.includes('timeout');
+
+          console.error(`❌ [${sourceName}] ${isTimeout ? 'TIMEOUT' : 'ERRO'}: ${errorMsg}`);
+
           consolidated.sources[sourceName] = {
             success: false,
-            error: result.reason?.message || 'Erro desconhecido'
+            error: errorMsg,
+            isTimeout
           };
         }
       });
@@ -169,6 +208,19 @@ class JurisprudenceSearchService {
       // Limitar resultados
       consolidated.allResults = consolidated.allResults.slice(0, limit);
       consolidated.totalResults = consolidated.allResults.length;
+
+      // Calcular tempo de busca
+      const searchDuration = Date.now() - searchStartTime;
+      consolidated.performance = {
+        duration: searchDuration,
+        sourcesUsed: sources.length,
+        successfulSources: sources.filter((_, i) => results[i].status === 'fulfilled').length
+      };
+
+      // Resumo de performance
+      console.log(`✅ [BUSCA CONCLUÍDA] ${consolidated.totalResults} resultado(s) em ${searchDuration}ms`);
+      console.log(`   Fontes: ${sources.join(', ')}`);
+      console.log(`   Sucessos: ${consolidated.performance.successfulSources}/${sources.length}`);
 
       // Salvar em cache
       if (enableCache) {
@@ -195,6 +247,22 @@ class JurisprudenceSearchService {
         totalResults: 0
       };
     }
+  }
+
+  /**
+   * Wrapper para adicionar timeout em promises
+   * Previne travamento de fontes lentas
+   */
+  async withTimeout(promise, timeoutMs, sourceName) {
+    return Promise.race([
+      promise,
+      new Promise((_, reject) =>
+        setTimeout(() => {
+          console.warn(`⚠️ [TIMEOUT] ${sourceName} excedeu ${timeoutMs}ms`);
+          reject(new Error(`Timeout: ${sourceName} não respondeu em ${timeoutMs}ms`));
+        }, timeoutMs)
+      )
+    ]);
   }
 
   /**
