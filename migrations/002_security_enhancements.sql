@@ -65,6 +65,7 @@ COMMENT ON COLUMN password_history.password_hash IS 'Hash bcrypt da senha (nunca
 -- Log de auditoria de todas ações de segurança críticas
 -- ════════════════════════════════════════════════════════════════
 
+-- Criar tabela se não existe
 CREATE TABLE IF NOT EXISTS audit_log (
   id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
   user_id UUID REFERENCES users(id) ON DELETE SET NULL,
@@ -72,10 +73,14 @@ CREATE TABLE IF NOT EXISTS audit_log (
   resource VARCHAR(255),
   ip_address INET,
   user_agent TEXT,
-  status VARCHAR(20) NOT NULL,
-  details JSONB DEFAULT '{}'::jsonb,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Adicionar coluna status se não existir
+ALTER TABLE audit_log ADD COLUMN IF NOT EXISTS status VARCHAR(20) NOT NULL DEFAULT 'success';
+
+-- Adicionar coluna details se não existir
+ALTER TABLE audit_log ADD COLUMN IF NOT EXISTS details JSONB DEFAULT '{}'::jsonb;
 
 -- Índices para queries comuns de auditoria
 CREATE INDEX IF NOT EXISTS audit_log_user_id_idx ON audit_log(user_id);
