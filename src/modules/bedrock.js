@@ -147,6 +147,13 @@ export const INFERENCE_PROFILES = {
   'anthropic.claude-opus-4-5-20251101-v1:0': 'us.anthropic.claude-opus-4-5-20251101-v1:0',
   'anthropic.claude-haiku-4-5-20251001-v1:0': 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
 
+  // Mapeamentos simplificados para compatibilidade com frontend (usando hífens)
+  'claude-opus-4-5': 'us.anthropic.claude-opus-4-5-20251101-v1:0',
+  'claude-opus-4': 'us.anthropic.claude-opus-4-20250514-v1:0',
+  'claude-sonnet-4-5': 'us.anthropic.claude-sonnet-4-5-20250929-v1:0',
+  'claude-sonnet-4': 'us.anthropic.claude-sonnet-4-20250514-v1:0',
+  'claude-haiku-4-5': 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
+
   // Amazon Nova
   'amazon.nova-premier-v1:0': 'us.amazon.nova-premier-v1:0',
 
