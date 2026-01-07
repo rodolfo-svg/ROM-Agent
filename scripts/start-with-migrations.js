@@ -22,67 +22,72 @@ if (!process.env.DATABASE_URL) {
   console.log('⚠️  SERVIDOR CONTINUARÁ SEM BANCO DE DADOS');
   console.log('');
   startServer();
-  return;
+} else {
+  // DATABASE_URL existe, prosseguir com migrations
+  runMigrations();
 }
 
-console.log('✅ DATABASE_URL encontrado');
+function runMigrations() {
 
-// Extrair host do DATABASE_URL para exibição
-try {
-  const url = new URL(process.env.DATABASE_URL);
-  console.log(`   Host: ${url.hostname}`);
-} catch (e) {
-  console.log('   (não foi possível parsear URL)');
-}
-console.log('');
+  console.log('✅ DATABASE_URL encontrado');
 
-// Executar migrations
-console.log('🔨 Executando: node scripts/run-migrations.js');
-console.log('');
-
-const migration = spawn('node', ['scripts/run-migrations.js'], {
-  stdio: 'inherit',
-  env: process.env
-});
-
-migration.on('close', (code) => {
-  console.log('');
-
-  if (code === 0) {
-    console.log('═'.repeat(70));
-    console.log('✅ MIGRATIONS CONCLUÍDAS COM SUCESSO');
-    console.log('═'.repeat(70));
-  } else {
-    console.log('═'.repeat(70));
-    console.log(`❌ ERRO AO EXECUTAR MIGRATIONS (Exit code: ${code})`);
-    console.log('═'.repeat(70));
-    console.log('');
-    console.log('Possíveis causas:');
-    console.log('  1. DATABASE_URL inválido');
-    console.log('  2. PostgreSQL não acessível');
-    console.log('  3. Erro de sintaxe SQL');
-    console.log('  4. Falta de permissões');
-    console.log('');
-    console.log('⚠️  SERVIDOR CONTINUARÁ (modo degradado)');
+  // Extrair host do DATABASE_URL para exibição
+  try {
+    const url = new URL(process.env.DATABASE_URL);
+    console.log(`   Host: ${url.hostname}`);
+  } catch (e) {
+    console.log('   (não foi possível parsear URL)');
   }
-
   console.log('');
 
-  // Iniciar servidor independente do resultado
-  startServer();
-});
-
-migration.on('error', (err) => {
-  console.log('');
-  console.log('❌ ERRO AO EXECUTAR SCRIPT DE MIGRATIONS:');
-  console.log(err.message);
-  console.log('');
-  console.log('⚠️  SERVIDOR CONTINUARÁ SEM MIGRATIONS');
+  // Executar migrations
+  console.log('🔨 Executando: node scripts/run-migrations.js');
   console.log('');
 
-  // Iniciar servidor mesmo com erro
-  startServer();
-});
+  const migration = spawn('node', ['scripts/run-migrations.js'], {
+    stdio: 'inherit',
+    env: process.env
+  });
+
+  migration.on('close', (code) => {
+    console.log('');
+
+    if (code === 0) {
+      console.log('═'.repeat(70));
+      console.log('✅ MIGRATIONS CONCLUÍDAS COM SUCESSO');
+      console.log('═'.repeat(70));
+    } else {
+      console.log('═'.repeat(70));
+      console.log(`❌ ERRO AO EXECUTAR MIGRATIONS (Exit code: ${code})`);
+      console.log('═'.repeat(70));
+      console.log('');
+      console.log('Possíveis causas:');
+      console.log('  1. DATABASE_URL inválido');
+      console.log('  2. PostgreSQL não acessível');
+      console.log('  3. Erro de sintaxe SQL');
+      console.log('  4. Falta de permissões');
+      console.log('');
+      console.log('⚠️  SERVIDOR CONTINUARÁ (modo degradado)');
+    }
+
+    console.log('');
+
+    // Iniciar servidor independente do resultado
+    startServer();
+  });
+
+  migration.on('error', (err) => {
+    console.log('');
+    console.log('❌ ERRO AO EXECUTAR SCRIPT DE MIGRATIONS:');
+    console.log(err.message);
+    console.log('');
+    console.log('⚠️  SERVIDOR CONTINUARÁ SEM MIGRATIONS');
+    console.log('');
+
+    // Iniciar servidor mesmo com erro
+    startServer();
+  });
+}
 
 function startServer() {
   console.log('🚀 Iniciando servidor...');
