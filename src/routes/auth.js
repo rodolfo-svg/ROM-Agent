@@ -30,6 +30,35 @@ import { regenerateCsrfToken } from '../middleware/csrf-protection.js';
 const router = express.Router();
 
 /**
+ * GET /api/csrf-token
+ * Retorna CSRF token para o frontend
+ * Público - não requer autenticação
+ */
+router.get('/csrf-token', (req, res) => {
+  if (!req.session) {
+    return res.status(500).json({
+      success: false,
+      error: 'Sessão não inicializada'
+    });
+  }
+
+  // Token já foi gerado pelo middleware csrfTokenGenerator
+  const csrfToken = req.session.csrfToken || res.locals.csrfToken;
+
+  if (!csrfToken) {
+    return res.status(500).json({
+      success: false,
+      error: 'CSRF token não disponível'
+    });
+  }
+
+  res.json({
+    success: true,
+    csrfToken
+  });
+});
+
+/**
  * POST /api/auth/register
  * Registra novo usuário no sistema
  * Rate limit: 5 tentativas por hora
