@@ -899,7 +899,7 @@ function loadCustomInstructions() {
 /**
  * Constrói system prompt completo com custom instructions
  */
-function buildSystemPrompt() {
+export function buildSystemPrompt() {
   console.log(`🏗️ [DEBUG] Construindo system prompt...`);
 
   const customInstructions = loadCustomInstructions();

@@ -11,6 +11,7 @@ import express from 'express';
 import { conversarStream } from '../modules/bedrock.js';
 import { logger } from '../utils/logger.js';
 import metricsCollector from '../utils/metrics-collector-v2.js';
+import { buildSystemPrompt } from '../server-enhanced.js';
 
 const router = express.Router();
 
@@ -180,10 +181,13 @@ router.post('/stream', async (req, res) => {
       })}\n\n`);
     };
 
+    // ✅ CRÍTICO: Usar systemPrompt com instruções de ferramentas se não vier do frontend
+    const finalSystemPrompt = systemPrompt || buildSystemPrompt();
+
     // Executar streaming
     const resultado = await conversarStream(message, onChunk, {
       modelo: selectedModel,
-      systemPrompt,
+      systemPrompt: finalSystemPrompt,  // ✅ Sempre usar systemPrompt (com instruções de ferramentas)
       historico: limitedHistory, // Usar histórico limitado
       kbContext,
       maxTokens,
