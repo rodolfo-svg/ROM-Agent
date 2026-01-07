@@ -281,10 +281,18 @@ router.post('/:id/messages', requireAuth, async (req, res) => {
   const { id } = req.params;
   const { role, content, model } = req.body;
 
-  if (!role || !content) {
+  // Validar role e content
+  if (!role || typeof role !== 'string' || role.trim() === '') {
     return res.status(400).json({
       success: false,
-      error: 'Role e content são obrigatórios'
+      error: 'Role é obrigatório e deve ser uma string não vazia'
+    });
+  }
+
+  if (!content || typeof content !== 'string' || content.trim() === '') {
+    return res.status(400).json({
+      success: false,
+      error: 'Content é obrigatório e deve ser uma string não vazia'
     });
   }
 

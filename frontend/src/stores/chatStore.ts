@@ -296,6 +296,12 @@ export const useChatStore = create<ChatState>()(
         const activeId = get().activeConversationId
         if (!activeId) return
 
+        // Não salvar mensagens vazias (streaming em progresso)
+        if (!message.content || message.content.trim() === '') {
+          console.log('⏭️  Mensagem vazia, pulando salvamento (streaming em progresso)')
+          return
+        }
+
         try {
           await fetch(`/api/conversations/${activeId}/messages`, {
             method: 'POST',
@@ -327,9 +333,9 @@ export const useChatStore = create<ChatState>()(
           ),
         }))
 
-        // Atualizar no backend também
+        // Atualizar no backend também (apenas quando não for mais streaming)
         const message = get().activeConversation?.messages.find(m => m.id === id)
-        if (message) {
+        if (message && content && content.trim() !== '') {
           get().saveMessageToAPI({ ...message, content })
         }
       },
