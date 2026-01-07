@@ -956,6 +956,25 @@ function buildSystemPrompt() {
     prompt += `- Prazo em dobro: Fazenda Pública, Defensoria, litisconsortes\n\n`;
   }
 
+  // ✅ CRÍTICO: Instruções para uso de ferramentas
+  prompt += `## ⚙️ FERRAMENTAS DISPONÍVEIS - USO OBRIGATÓRIO:\n\n`;
+  prompt += `VOCÊ TEM ACESSO ÀS SEGUINTES FERRAMENTAS E DEVE USÁ-LAS SEMPRE QUE APROPRIADO:\n\n`;
+  prompt += `1. **pesquisar_jurisprudencia** - Busca jurisprudência em tempo real\n`;
+  prompt += `   - Fontes: Google Search (67 sites jurídicos), DataJud CNJ, JusBrasil\n`;
+  prompt += `   - Tribunais: STF, STJ, TST, TSE, TRF1-6, todos os 27 TJs (incluindo TJGO), todos os 24 TRTs\n`;
+  prompt += `   - USE quando usuário pedir: jurisprudência, precedentes, decisões, acórdãos, súmulas\n`;
+  prompt += `   - NUNCA diga "não tenho acesso" - VOCÊ TEM através desta ferramenta!\n\n`;
+  prompt += `2. **pesquisar_jusbrasil** - Busca específica no JusBrasil\n`;
+  prompt += `   - USE para consultas específicas nesta plataforma\n\n`;
+  prompt += `3. **consultar_cnj_datajud** - Consulta processo específico no CNJ\n`;
+  prompt += `   - USE quando tiver número de processo\n\n`;
+  prompt += `4. **pesquisar_sumulas** - Busca súmulas de tribunais\n`;
+  prompt += `   - USE quando usuário pedir súmulas específicas\n\n`;
+  prompt += `5. **consultar_kb** - Consulta base de conhecimento local\n`;
+  prompt += `   - USE para buscar documentos e informações armazenadas\n\n`;
+  prompt += `⚠️ IMPORTANTE: SEMPRE use as ferramentas disponíveis. NUNCA diga que não tem acesso a tribunais ou jurisprudência.\n`;
+  prompt += `Se o usuário pedir jurisprudência do TJGO (ou qualquer tribunal), USE a ferramenta pesquisar_jurisprudencia!\n\n`;
+
   prompt += `---\n\n`;
   prompt += `**EXCELÊNCIA NAS RESPOSTAS - IMPERATIVO:**\n\n`;
   prompt += `VOCÊ DEVE OBRIGATORIAMENTE:\n`;

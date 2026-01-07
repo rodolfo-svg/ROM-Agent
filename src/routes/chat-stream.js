@@ -187,7 +187,8 @@ router.post('/stream', async (req, res) => {
       historico: limitedHistory, // Usar histórico limitado
       kbContext,
       maxTokens,
-      temperature
+      temperature,
+      enableTools: true  // ✅ CRÍTICO: Habilitar ferramentas (jurisprudência, KB, CNJ, súmulas)
     });
 
     const totalTime = Date.now() - startTime;
