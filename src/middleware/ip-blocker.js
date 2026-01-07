@@ -186,7 +186,17 @@ export const authIpBlocker = ipBlockerMiddleware({
  */
 export const publicIpBlocker = ipBlockerMiddleware({
   logBlocked: true,
-  exemptPaths: ['/health', '/api/health', '/favicon.ico', '/robots.txt']
+  exemptPaths: [
+    '/health',
+    '/api/health',
+    '/favicon.ico',
+    '/robots.txt',
+    '/api/info',
+    '/api/chat',
+    '/api/chat/stream',
+    '/api/stream',
+    '/api/messages'
+  ]
 });
 
 /**
