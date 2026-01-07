@@ -45,10 +45,22 @@ class JurisprudenceSearchService {
     try {
       await cacheService.init();
       this.initialized = true;
+
+      // Verificar configuração do Google Search (CRÍTICO para performance)
+      const googleConfigured = !!(process.env.GOOGLE_SEARCH_API_KEY && process.env.GOOGLE_SEARCH_CX);
+
       console.log('✅ Jurisprudence Search Service inicializado');
       console.log(`   - DataJud: ${this.config.datajud.enabled ? 'Habilitado' : 'Desabilitado'}`);
       console.log(`   - JusBrasil: ${this.config.jusbrasil.enabled ? 'Habilitado' : 'Desabilitado'}`);
       console.log(`   - WebSearch: ${this.config.websearch.enabled ? 'Habilitado' : 'Desabilitado'}`);
+      console.log(`   - Google Search API: ${googleConfigured ? '✅ CONFIGURADO' : '❌ NÃO CONFIGURADO (CRÍTICO!)'}`);
+
+      if (!googleConfigured) {
+        console.warn('⚠️ AVISO CRÍTICO: Google Search API não configurada!');
+        console.warn('   Sem GOOGLE_SEARCH_API_KEY e GOOGLE_SEARCH_CX, buscas podem travar por 30+ segundos.');
+        console.warn('   Configure no Render.com > Environment Variables');
+      }
+
       return true;
     } catch (error) {
       console.error('❌ Erro ao inicializar Jurisprudence Search:', error);
@@ -93,38 +105,49 @@ class JurisprudenceSearchService {
       const searchPromises = [];
       const sources = [];
 
-      // Busca paralela em todas as fontes com timeout individual
-      const SEARCH_TIMEOUT = 15000; // 15 segundos por fonte (reduzido de 30s)
+      // ═══════════════════════════════════════════════════════════════
+      // ESTRATÉGIA DE TIMEOUT AGRESSIVA PARA PRODUÇÃO
+      // ═══════════════════════════════════════════════════════════════
+      // Google Search: 8s (rápido e confiável - PRIORIDADE MÁXIMA)
+      // DataJud: 10s (API oficial mas pode ser lenta)
+      // JusBrasil: 5s (frequentemente bloqueado/lento - menor prioridade)
+      // ═══════════════════════════════════════════════════════════════
 
-      if (this.config.datajud.enabled && this.config.datajud.apiKey) {
-        sources.push('datajud');
-        searchPromises.push(
-          this.withTimeout(
-            this.searchDataJud(tese, { limit, tribunal, dataInicio, dataFim }),
-            SEARCH_TIMEOUT,
-            'DataJud'
-          )
-        );
-      }
+      const GOOGLE_TIMEOUT = 8000;   // 8s - fonte principal
+      const DATAJUD_TIMEOUT = 10000; // 10s - fonte oficial
+      const JUSBRASIL_TIMEOUT = 5000; // 5s - frequentemente falha
 
+      // PRIORIDADE 1: Google Search (mais rápido e confiável)
       if (this.config.websearch.enabled) {
         sources.push('websearch');
         searchPromises.push(
           this.withTimeout(
             this.searchWeb(tese, { limit, tribunal }),
-            SEARCH_TIMEOUT,
+            GOOGLE_TIMEOUT,
             'Google Search'
           )
         );
       }
 
-      // JusBrasil com timeout menor (está travando)
+      // PRIORIDADE 2: DataJud (oficial mas pode ser lenta)
+      if (this.config.datajud.enabled && this.config.datajud.apiKey) {
+        sources.push('datajud');
+        searchPromises.push(
+          this.withTimeout(
+            this.searchDataJud(tese, { limit, tribunal, dataInicio, dataFim }),
+            DATAJUD_TIMEOUT,
+            'DataJud'
+          )
+        );
+      }
+
+      // PRIORIDADE 3: JusBrasil (timeout agressivo - frequentemente falha)
       if (this.config.jusbrasil.enabled) {
         sources.push('jusbrasil');
         searchPromises.push(
           this.withTimeout(
             this.searchJusBrasil(tese, { limit, tribunal }),
-            8000, // Apenas 8s para JusBrasil (frequentemente trava)
+            JUSBRASIL_TIMEOUT,
             'JusBrasil'
           )
         );

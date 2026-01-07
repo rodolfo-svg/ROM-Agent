@@ -77,6 +77,17 @@ services:
       - key: DATAJUD_API_KEY
         sync: false
 
+      # ═══════════════════════════════════════════════════════════════
+      # GOOGLE CUSTOM SEARCH API - CRÍTICO PARA JURISPRUDÊNCIA
+      # ═══════════════════════════════════════════════════════════════
+      # SEM ISSO: Busca trava 30+ segundos e falha
+      # COM ISSO: Busca retorna em 300ms-2s com resultados reais
+      # ═══════════════════════════════════════════════════════════════
+      - key: GOOGLE_SEARCH_API_KEY
+        sync: false
+      - key: GOOGLE_SEARCH_CX
+        sync: false
+
       # Session Secret (auto-gerado)
       - key: SESSION_SECRET
         generateValue: true
@@ -177,6 +188,17 @@ services:
 
       # DataJud (consulta jurisprudência)
       - key: DATAJUD_API_KEY
+        sync: false
+
+      # ═══════════════════════════════════════════════════════════════
+      # GOOGLE CUSTOM SEARCH API - CRÍTICO PARA JURISPRUDÊNCIA
+      # ═══════════════════════════════════════════════════════════════
+      # SEM ISSO: Busca trava 30+ segundos e falha
+      # COM ISSO: Busca retorna em 300ms-2s com resultados reais
+      # ═══════════════════════════════════════════════════════════════
+      - key: GOOGLE_SEARCH_API_KEY
+        sync: false
+      - key: GOOGLE_SEARCH_CX
         sync: false
 
       # Session Secret (auto-gerado)
