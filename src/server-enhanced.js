@@ -351,14 +351,14 @@ app.use('/api/', generalLimiter);
 // - Rotas GET (não modificam dados)
 app.use('/api', csrfProtection.protection({
   exemptPaths: [
-    '/api/auth/login',
-    '/api/auth/register',
-    '/api/auth/forgot-password',
-    '/api/csrf-token', // Endpoint para obter token
-    '/api/chat',        // Chat principal
-    '/api/chat/stream', // Chat com streaming SSE
-    '/api/stream',      // Streaming genérico
-    '/api/messages'     // Mensagens
+    '/auth/login',        // Sem /api prefix (req.path é relativo)
+    '/auth/register',     // Sem /api prefix
+    '/auth/forgot-password', // Sem /api prefix
+    '/auth/csrf-token',   // Endpoint para obter token
+    '/chat',            // Chat principal (sem /api prefix)
+    '/chat/stream',     // Chat com streaming SSE (sem /api prefix)
+    '/stream',          // Streaming genérico (sem /api prefix)
+    '/messages'         // Mensagens (sem /api prefix)
   ]
 }));
 console.log('🔐 [SECURITY] CSRF validation aplicada em rotas de mutação');
