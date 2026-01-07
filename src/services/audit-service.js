@@ -5,7 +5,7 @@
 // Implementa compliance com LGPD/GDPR (retenção de 1 ano)
 // ════════════════════════════════════════════════════════════════
 
-import { getPostgresPool } from '../lib/database.js';
+import { getPostgresPool } from '../config/database.js';
 
 class AuditService {
   constructor() {

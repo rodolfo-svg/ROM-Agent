@@ -6,7 +6,7 @@
 // ════════════════════════════════════════════════════════════════
 
 import bcrypt from 'bcryptjs';
-import { getPostgresPool } from '../lib/database.js';
+import { getPostgresPool } from '../config/database.js';
 
 class PasswordPolicyService {
   constructor() {

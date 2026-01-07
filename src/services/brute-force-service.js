@@ -5,7 +5,7 @@
 // Implementa proteção em camadas (conta + IP)
 // ════════════════════════════════════════════════════════════════
 
-import { getPostgresPool } from '../lib/database.js';
+import { getPostgresPool } from '../config/database.js';
 import auditService from './audit-service.js';
 
 class BruteForceService {
