@@ -18,7 +18,7 @@ import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import multer from 'multer';
 import fs from 'fs';
-import { initPostgres, initRedis, checkDatabaseHealth, closeDatabaseConnections } from './config/database.js';
+import { initPostgres, initRedis, checkDatabaseHealth, closeDatabaseConnections, getPostgresPool } from './config/database.js';
 import { createSessionMiddleware, sessionEnhancerMiddleware } from './config/session-store.js';
 import { ROMAgent, CONFIG } from './index.js';
 import { BedrockAgent } from './modules/bedrock.js';
@@ -1336,7 +1336,45 @@ Enquanto isso, pode continuar usando o sistema normalmente.
       timestamp: new Date()
     });
 
-    // ✅ SALVAR MENSAGEM DO USUÁRIO NA CONVERSA PERSISTENTE
+    // ✅ SALVAR MENSAGEM DO USUÁRIO NA CONVERSA PERSISTENTE (PostgreSQL)
+    try {
+      const pgPool = await getPostgresPool();
+      if (pgPool) {
+        // Verificar se conversação existe no PostgreSQL, se não criar
+        const convCheck = await pgPool.query(
+          'SELECT id FROM conversations WHERE id = $1',
+          [conversationId]
+        );
+
+        if (convCheck.rows.length === 0) {
+          // Criar conversação no PostgreSQL
+          const userId = req.session.userId || (req.session.user && req.session.user.id) || null;
+          await pgPool.query(
+            `INSERT INTO conversations (id, user_id, title, created_at, updated_at)
+             VALUES ($1, $2, $3, NOW(), NOW())
+             ON CONFLICT (id) DO NOTHING`,
+            [conversationId, userId, 'Nova Conversa']
+          );
+        }
+
+        // Salvar mensagem do usuário no PostgreSQL
+        await pgPool.query(
+          `INSERT INTO messages (conversation_id, role, content, created_at)
+           VALUES ($1, $2, $3, NOW())`,
+          [conversationId, 'user', message]
+        );
+
+        // Atualizar timestamp da conversa
+        await pgPool.query(
+          'UPDATE conversations SET updated_at = NOW() WHERE id = $1',
+          [conversationId]
+        );
+      }
+    } catch (dbError) {
+      console.warn('⚠️ Erro ao salvar mensagem do usuário no PostgreSQL:', dbError.message);
+    }
+
+    // Manter compatibilidade com sistema antigo (JSON)
     conversationsManager.addMessage(conversationId, {
       role: 'user',
       content: message
@@ -1622,7 +1660,53 @@ Enquanto isso, pode continuar usando o sistema normalmente.
     // Adicionar resposta ao histórico em memória
     history.push({ role: 'assistant', content: resposta, timestamp: new Date() });
 
-    // ✅ SALVAR RESPOSTA DO ASSISTANT NA CONVERSA PERSISTENTE
+    // ✅ SALVAR RESPOSTA DO ASSISTANT NA CONVERSA PERSISTENTE (PostgreSQL)
+    try {
+      const pgPool = await getPostgresPool();
+      if (pgPool) {
+        // Salvar resposta do assistant no PostgreSQL
+        await pgPool.query(
+          `INSERT INTO messages (conversation_id, role, content, model, created_at)
+           VALUES ($1, $2, $3, $4, NOW())`,
+          [conversationId, 'assistant', resposta, selectedModel || null]
+        );
+
+        // Atualizar timestamp da conversa
+        await pgPool.query(
+          'UPDATE conversations SET updated_at = NOW() WHERE id = $1',
+          [conversationId]
+        );
+
+        // Gerar título automaticamente após primeira resposta se ainda não tiver
+        const convCheck = await pgPool.query(
+          `SELECT title FROM conversations WHERE id = $1`,
+          [conversationId]
+        );
+
+        if (convCheck.rows.length > 0 && convCheck.rows[0].title === 'Nova Conversa') {
+          const firstUserMessage = history.find(m => m.role === 'user');
+          if (firstUserMessage) {
+            let title = firstUserMessage.content.substring(0, 50).trim();
+            title = title.replace(/\n/g, ' ');
+            if (firstUserMessage.content.length > 50) {
+              const lastSpace = title.lastIndexOf(' ');
+              if (lastSpace > 20) {
+                title = title.substring(0, lastSpace);
+              }
+              title += '...';
+            }
+            await pgPool.query(
+              'UPDATE conversations SET title = $1 WHERE id = $2',
+              [title, conversationId]
+            );
+          }
+        }
+      }
+    } catch (dbError) {
+      console.warn('⚠️ Erro ao salvar resposta do assistant no PostgreSQL:', dbError.message);
+    }
+
+    // Manter compatibilidade com sistema antigo (JSON)
     conversationsManager.addMessage(conversationId, {
       role: 'assistant',
       content: resposta
