@@ -10,16 +10,14 @@
  */
 
 // ✅ ATUALIZADO: Usar serviço NOVO com Google Search + DataJud + JusBrasil
-import JurisprudenceSearchService from '../services/jurisprudence-search-service.js';
+// Importa instância singleton (já instanciada)
+import jurisprudenceService from '../services/jurisprudence-search-service.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
-// Instanciar serviço de jurisprudência
-const jurisprudenceService = new JurisprudenceSearchService();
 
 // ============================================================
 // DEFINIÇÃO DAS TOOLS
