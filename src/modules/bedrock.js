@@ -511,11 +511,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
     prompt
   );
 
-  // ⚠️ DEBUG: Ver truncamento
-  console.log('🔧 BEDROCK DEBUG:');
-  console.log(`   Histórico recebido: ${historico.length} msgs`);
-  console.log(`   Após truncamento: ${truncatedHistory.length} msgs`);
-  console.log(`   Safe limit: ${safeLimit} tokens`);
+  // Log apenas em desenvolvimento (removido debug verboso para producao)
 
   // 🔥 CONCATENAR KB CONTEXT DEPOIS DO TRUNCAMENTO
   const finalPrompt = kbContext ? prompt + '\n\n' + kbContext : prompt;
@@ -531,8 +527,6 @@ export async function conversarStream(prompt, onChunk, options = {}) {
     }
   ];
 
-  console.log(`   Total msgs enviadas para Claude: ${messages.length}`);
-  console.log('');
 
   const commandParams = {
     modelId: INFERENCE_PROFILES[modelo] || modelo,
@@ -881,16 +875,7 @@ export class BedrockAgent {
     this.systemPrompt = options.systemPrompt || null;
     this.historico = [];
 
-    console.log(`🏗️ [DEBUG] BedrockAgent Constructor`);
-    console.log(`   - Modelo: ${this.modelo}`);
-    console.log(`   - Region: ${this.region}`);
-    console.log(`   - SystemPrompt recebido: ${this.systemPrompt ? 'SIM' : 'NÃO'}`);
-    if (this.systemPrompt) {
-      console.log(`   - SystemPrompt Tamanho: ${this.systemPrompt.length} chars`);
-      console.log(`   - SystemPrompt Preview: ${this.systemPrompt.substring(0, 100)}...`);
-    } else {
-      console.log(`   ⚠️ ATENÇÃO: SystemPrompt está NULL ou undefined!`);
-    }
+// Debug logging removido para producao - agente inicializado silenciosamente
   }
 
   async enviar(mensagem, options = {}) {

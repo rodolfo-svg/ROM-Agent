@@ -9,18 +9,7 @@
  * - Autenticação básica
  */
 
-// ⚠️ DEBUG - Ver como o servidor foi iniciado
-console.log('');
-console.log('═══════════════════════════════════════════════════════');
-console.log('🚨 SERVER-ENHANCED.JS INICIADO');
-console.log('═══════════════════════════════════════════════════════');
-console.log('Command:', process.argv.join(' '));
-console.log('CWD:', process.cwd());
-console.log('NODE_ENV:', process.env.NODE_ENV);
-console.log('npm_lifecycle_event:', process.env.npm_lifecycle_event);
-console.log('npm_lifecycle_script:', process.env.npm_lifecycle_script);
-console.log('═══════════════════════════════════════════════════════');
-console.log('');
+// Inicializacao silenciosa em producao (debug logging removido)
 
 import express from 'express';
 import cors from 'cors';
@@ -104,20 +93,7 @@ const QualityValidator = require('../lib/quality-validator.cjs');
 
 dotenv.config();
 
-// ═══════════════════════════════════════════════════════════
-// DEBUG: FORÇA SAÍDA DE DATABASE_URL
-// ═══════════════════════════════════════════════════════════
-console.log('━'.repeat(70));
-console.log('🔍 [STARTUP] server-enhanced.js CARREGADO');
-console.log('🔍 [STARTUP] NODE_ENV:', process.env.NODE_ENV);
-console.log('🔍 [STARTUP] DATABASE_URL exists:', !!process.env.DATABASE_URL);
-if (process.env.DATABASE_URL) {
-  const url = process.env.DATABASE_URL;
-  const masked = url.substring(0, 20) + '...' + url.substring(url.length - 20);
-  console.log('🔍 [STARTUP] DATABASE_URL (masked):', masked);
-}
-console.log('━'.repeat(70));
-// ═══════════════════════════════════════════════════════════
+// Debug logging de database removido para producao
 
 // Inicializar sistema de auto-atualização
 const integrador = new IntegradorSistema();
