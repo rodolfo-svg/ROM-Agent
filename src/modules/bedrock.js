@@ -628,11 +628,15 @@ export async function conversarStream(prompt, onChunk, options = {}) {
           currentToolUse = null;
         }
 
-        // Metadata com stopReason
+        // ✅ CORREÇÃO: stopReason está em messageStop, não em metadata
+        if (event.messageStop) {
+          stopReason = event.messageStop.stopReason;
+          console.log(`🔧 [Stream Debug] messageStop - stopReason: ${stopReason}`);
+        }
+
+        // Metadata apenas com usage
         if (event.metadata) {
           console.log(`🔧 [Stream Debug] Metadata completo:`, JSON.stringify(event.metadata, null, 2));
-          stopReason = event.metadata.stopReason;
-          console.log(`🔧 [Stream Debug] Metadata recebida - stopReason: ${stopReason}`);
         }
       }
 
