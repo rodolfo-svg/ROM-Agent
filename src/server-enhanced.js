@@ -355,10 +355,11 @@ app.use('/api', csrfProtection.protection({
     '/auth/register',     // Sem /api prefix
     '/auth/forgot-password', // Sem /api prefix
     '/auth/csrf-token',   // Endpoint para obter token
-    '/chat',            // Chat principal (sem /api prefix)
-    '/chat/stream',     // Chat com streaming SSE (sem /api prefix)
-    '/stream',          // Streaming genérico (sem /api prefix)
-    '/messages'         // Mensagens (sem /api prefix)
+    '/chat',              // Chat principal (sem /api prefix)
+    '/chat/stream',       // Chat com streaming SSE (sem /api prefix)
+    '/stream',            // Streaming genérico (sem /api prefix)
+    '/messages',          // Mensagens (sem /api prefix)
+    '/conversations*'     // Conversações e sub-rotas (sem /api prefix)
   ]
 }));
 console.log('🔐 [SECURITY] CSRF validation aplicada em rotas de mutação');
