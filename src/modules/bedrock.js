@@ -668,8 +668,23 @@ export async function conversarStream(prompt, onChunk, options = {}) {
       const toolResults = [];
       for (const tool of toolUseData) {
         console.log(`🔧 Executando ferramenta: ${tool.name}`);
+
+        // ⚡ FEEDBACK: Informar ao usuário que a ferramenta está sendo executada
+        const toolStartMsg = tool.name === 'pesquisar_jurisprudencia' ? '⏳ Consultando tribunais...' :
+                            tool.name === 'pesquisar_jusbrasil' ? '⏳ Acessando JusBrasil...' :
+                            tool.name === 'consultar_cnj_datajud' ? '⏳ Acessando DataJud...' :
+                            tool.name === 'pesquisar_sumulas' ? '⏳ Buscando súmulas...' :
+                            tool.name === 'consultar_kb' ? '⏳ Consultando documentos...' :
+                            `⏳ Executando ${tool.name}...`;
+        onChunk(toolStartMsg);
+
         try {
           const result = await executeTool(tool.name, tool.input);
+
+          // ⚡ FEEDBACK: Informar resultado da ferramenta
+          const successMsg = result.success ? ' ✓\n' : ' ✗\n';
+          onChunk(successMsg);
+
           toolResults.push({
             toolResult: {
               toolUseId: tool.toolUseId,
@@ -681,6 +696,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
           console.log(`✅ Ferramenta ${tool.name} executada com sucesso`);
         } catch (error) {
           console.error(`❌ Erro ao executar ${tool.name}:`, error);
+          onChunk(' ✗ (erro)\n');
           toolResults.push({
             toolResult: {
               toolUseId: tool.toolUseId,
