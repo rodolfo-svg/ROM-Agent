@@ -494,7 +494,8 @@ export async function conversarStream(prompt, onChunk, options = {}) {
     historico = [],
     maxTokens = CONFIG.maxTokens,
     temperature = CONFIG.temperature,
-    kbContext = ''  // ← NOVO: contexto do KB para cálculo de tokens
+    kbContext = '',  // ← NOVO: contexto do KB para cálculo de tokens
+    enableTools = true  // ✅ NOVO: Habilitar ferramentas por padrão (jurisprudência, KB, CNJ)
   } = options;
 
   const client = getBedrockRuntimeClient();
@@ -567,23 +568,137 @@ export async function conversarStream(prompt, onChunk, options = {}) {
     console.log(`💰 [Stream] KB Cache ENABLED (${kbContext.length} chars)`);
   }
 
+  // ✅ NOVO v2.7.2: Adicionar ferramentas (jurisprudência, KB, CNJ, súmulas)
+  if (enableTools) {
+    commandParams.toolConfig = { tools: BEDROCK_TOOLS };
+    console.log(`🔧 [Stream] Tools ENABLED (${BEDROCK_TOOLS.length} ferramentas disponíveis)`);
+  }
+
   try {
-    const command = new ConverseStreamCommand(commandParams);
-    const response = await retryAwsCommand(client, command, { modelId: commandParams.modelId, operation: 'converse_stream' });
+    let currentMessages = messages;
+    let loopCount = 0;
+    const MAX_TOOL_LOOPS = 3; // Máximo de iterações de tool use em streaming
 
-    let textoCompleto = '';
+    while (loopCount < MAX_TOOL_LOOPS) {
+      const command = new ConverseStreamCommand({ ...commandParams, messages: currentMessages });
+      const response = await retryAwsCommand(client, command, { modelId: commandParams.modelId, operation: 'converse_stream' });
 
-    for await (const event of response.stream) {
-      if (event.contentBlockDelta?.delta?.text) {
-        const chunk = event.contentBlockDelta.delta.text;
-        textoCompleto += chunk;
-        onChunk(chunk);
+      let textoCompleto = '';
+      let stopReason = null;
+      let toolUseData = [];
+      let currentToolUse = null;
+
+      // Processar stream de eventos
+      for await (const event of response.stream) {
+        // Texto sendo gerado
+        if (event.contentBlockDelta?.delta?.text) {
+          const chunk = event.contentBlockDelta.delta.text;
+          textoCompleto += chunk;
+          onChunk(chunk);
+        }
+
+        // Início de tool use
+        if (event.contentBlockStart?.start?.toolUse) {
+          currentToolUse = {
+            toolUseId: event.contentBlockStart.start.toolUse.toolUseId,
+            name: event.contentBlockStart.start.toolUse.name,
+            input: ''
+          };
+        }
+
+        // Input da tool sendo streamed
+        if (event.contentBlockDelta?.delta?.toolUse) {
+          if (currentToolUse) {
+            currentToolUse.input += event.contentBlockDelta.delta.toolUse.input || '';
+          }
+        }
+
+        // Fim do tool use block
+        if (event.contentBlockStop && currentToolUse) {
+          try {
+            currentToolUse.input = JSON.parse(currentToolUse.input);
+          } catch (e) {
+            // Input já está parseado ou não é JSON
+          }
+          toolUseData.push(currentToolUse);
+          currentToolUse = null;
+        }
+
+        // Metadata com stopReason
+        if (event.metadata) {
+          stopReason = event.metadata.stopReason;
+        }
       }
+
+      // Se não foi tool_use, retornar resposta final
+      if (stopReason !== 'tool_use' || toolUseData.length === 0) {
+        return {
+          sucesso: true,
+          resposta: textoCompleto,
+          modelo
+        };
+      }
+
+      // ✅ Executar ferramentas solicitadas
+      console.log(`🔧 [Stream] Tool use detected: ${toolUseData.map(t => t.name).join(', ')}`);
+
+      // Adicionar mensagem do assistente com tool_use
+      const assistantMessage = {
+        role: 'assistant',
+        content: toolUseData.map(t => ({
+          toolUse: {
+            toolUseId: t.toolUseId,
+            name: t.name,
+            input: t.input
+          }
+        }))
+      };
+      currentMessages.push(assistantMessage);
+
+      // Executar cada ferramenta e adicionar resultados
+      const toolResults = [];
+      for (const tool of toolUseData) {
+        console.log(`🔧 Executando ferramenta: ${tool.name}`);
+        try {
+          const result = await executeTool(tool.name, tool.input);
+          toolResults.push({
+            toolResult: {
+              toolUseId: tool.toolUseId,
+              content: [{
+                text: result.success ? result.content : `Erro: ${result.error || result.content}`
+              }]
+            }
+          });
+          console.log(`✅ Ferramenta ${tool.name} executada com sucesso`);
+        } catch (error) {
+          console.error(`❌ Erro ao executar ${tool.name}:`, error);
+          toolResults.push({
+            toolResult: {
+              toolUseId: tool.toolUseId,
+              content: [{
+                text: `Erro ao executar ferramenta: ${error.message}`
+              }]
+            }
+          });
+        }
+      }
+
+      // Adicionar resultados das ferramentas às mensagens
+      currentMessages.push({
+        role: 'user',
+        content: toolResults
+      });
+
+      // Enviar indicador de que ferramentas foram executadas
+      onChunk(`\n\n[🔍 ${toolUseData.length} ferramenta(s) executada(s)]\n\n`);
+
+      loopCount++;
+      // Loop continua para próxima iteração
     }
 
     return {
       sucesso: true,
-      resposta: textoCompleto,
+      resposta: '',
       modelo
     };
   } catch (error) {
