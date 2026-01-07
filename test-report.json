@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-05T05:00:29.036Z",
+  "timestamp": "2026-01-06T05:00:25.237Z",
   "summary": {
     "total": 18,
     "passed": 15,
@@ -13,7 +13,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 298,
+      "duration": 788,
       "data": {
         "nome": "ROM",
         "versao": "2.7.0",
@@ -30,8 +30,8 @@
         ],
         "health": {
           "status": "healthy",
-          "uptime": "2h 25m",
-          "uptimeSeconds": 8729
+          "uptime": "26h 25m",
+          "uptimeSeconds": 95124
         },
         "bedrock": {
           "status": "connected",
@@ -44,20 +44,20 @@
         },
         "cache": {
           "enabled": true,
-          "activeSessions": 0
+          "activeSessions": 1
         },
         "server": {
           "nodeVersion": "v25.2.1",
           "platform": "darwin",
           "arch": "arm64",
           "pid": 68085,
-          "gitCommit": "e106bdfb"
+          "gitCommit": "44c32328"
         },
         "memory": {
-          "rss": "80 MB",
-          "heapTotal": "156 MB",
-          "heapUsed": "153 MB",
-          "external": "22 MB"
+          "rss": "58 MB",
+          "heapTotal": "165 MB",
+          "heapUsed": "157 MB",
+          "external": "24 MB"
         },
         "storage": {
           "isRender": false,
@@ -113,7 +113,7 @@
             "processed": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/processed"
           }
         },
-        "timestamp": "2026-01-05T05:00:26.555Z"
+        "timestamp": "2026-01-06T05:00:22.739Z"
       }
     },
     {
@@ -122,15 +122,15 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 9,
+      "duration": 28,
       "data": {
         "success": true,
         "conversations": {
-          "total": 15,
-          "totalMessages": 20
+          "total": 16,
+          "totalMessages": 22
         },
         "cache": {
-          "activeSessions": 0,
+          "activeSessions": 1,
           "hitRate": 0
         },
         "kb": {
@@ -140,7 +140,7 @@
           "averageResponseTime": 3,
           "unit": "seconds"
         },
-        "timestamp": "2026-01-05T05:00:26.589Z"
+        "timestamp": "2026-01-06T05:00:22.803Z"
       }
     },
     {
@@ -149,13 +149,50 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 14,
+      "duration": 48,
       "data": {
         "success": true,
         "organized": {
           "today": [],
-          "yesterday": [],
-          "lastWeek": [
+          "yesterday": [
+            {
+              "id": "conv_1767589228985_j482tb",
+              "userId": "anonymous",
+              "sessionId": "qZJP_UCPOut_jvmFaYO7Qacwc5JwIb1g",
+              "projectId": null,
+              "title": "Nova Conversa",
+              "titleGenerated": false,
+              "messages": [],
+              "createdAt": "2026-01-05T05:00:28.985Z",
+              "updatedAt": "2026-01-05T05:00:28.985Z",
+              "messageCount": 0
+            },
+            {
+              "id": "conv_1767589226671_pzaman",
+              "userId": "anonymous",
+              "sessionId": "e5cDZkfvynaHiRdRU2gpD3F8JxEE4XG-",
+              "projectId": null,
+              "title": "Teste Automático - Renomeado",
+              "titleGenerated": true,
+              "messages": [
+                {
+                  "role": "user",
+                  "content": "Teste de sistema - responda apenas com OK",
+                  "timestamp": "2026-01-05T05:00:26.674Z"
+                },
+                {
+                  "role": "assistant",
+                  "content": "OK",
+                  "timestamp": "2026-01-05T05:00:28.954Z"
+                }
+              ],
+              "createdAt": "2026-01-05T05:00:26.671Z",
+              "updatedAt": "2026-01-05T05:00:28.982Z",
+              "messageCount": 2
+            }
+          ],
+          "lastWeek": [],
+          "lastMonth": [
             {
               "id": "conv_1767049376125_cw0txr5",
               "userId": "anonymous",
@@ -196,9 +233,7 @@
               "createdAt": "2025-12-29T22:19:09.203Z",
               "updatedAt": "2025-12-29T22:19:09.206Z",
               "messageCount": 1
-            }
-          ],
-          "lastMonth": [
+            },
             {
               "id": "conv_1765876057674_1p1vbg",
               "userId": "anonymous",
@@ -461,10 +496,10 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2355,
+      "duration": 2264,
       "data": {
         "response": "OK",
-        "conversationId": "conv_1767589226671_pzaman",
+        "conversationId": "conv_1767675622862_2bc6a",
         "metadados": {},
         "recomendacoes": [],
         "verificacaoRealizada": false
@@ -472,17 +507,17 @@
     },
     {
       "name": "2.3 Obter Conversa Específica",
-      "url": "http://localhost:3000/api/conversations/conv_1767589226671_pzaman",
+      "url": "http://localhost:3000/api/conversations/conv_1767675622862_2bc6a",
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 19,
+      "duration": 30,
       "data": {
         "success": true,
         "conversation": {
-          "id": "conv_1767589226671_pzaman",
+          "id": "conv_1767675622862_2bc6a",
           "userId": "anonymous",
-          "sessionId": "e5cDZkfvynaHiRdRU2gpD3F8JxEE4XG-",
+          "sessionId": "RP0Xq4vG_2uXuowqoedx6dzybjsj94fB",
           "projectId": null,
           "title": "Teste de sistema - responda apenas com OK",
           "titleGenerated": true,
@@ -490,27 +525,27 @@
             {
               "role": "user",
               "content": "Teste de sistema - responda apenas com OK",
-              "timestamp": "2026-01-05T05:00:26.674Z"
+              "timestamp": "2026-01-06T05:00:22.865Z"
             },
             {
               "role": "assistant",
               "content": "OK",
-              "timestamp": "2026-01-05T05:00:28.954Z"
+              "timestamp": "2026-01-06T05:00:25.104Z"
             }
           ],
-          "createdAt": "2026-01-05T05:00:26.671Z",
-          "updatedAt": "2026-01-05T05:00:28.954Z",
+          "createdAt": "2026-01-06T05:00:22.862Z",
+          "updatedAt": "2026-01-06T05:00:25.104Z",
           "messageCount": 2
         }
       }
     },
     {
       "name": "2.4 Renomear Conversa",
-      "url": "http://localhost:3000/api/conversations/conv_1767589226671_pzaman/rename",
+      "url": "http://localhost:3000/api/conversations/conv_1767675622862_2bc6a/rename",
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 5,
+      "duration": 6,
       "data": {
         "success": true
       }
@@ -521,20 +556,20 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
+      "duration": 5,
       "data": {
         "success": true,
-        "conversationId": "conv_1767589228985_j482tb",
+        "conversationId": "conv_1767675625154_ee6u4p",
         "conversation": {
-          "id": "conv_1767589228985_j482tb",
+          "id": "conv_1767675625154_ee6u4p",
           "userId": "anonymous",
-          "sessionId": "qZJP_UCPOut_jvmFaYO7Qacwc5JwIb1g",
+          "sessionId": "vQiukhu20ZUh4pi7qdZRHXymDJMJ0NVP",
           "projectId": null,
           "title": "Nova Conversa",
           "titleGenerated": false,
           "messages": [],
-          "createdAt": "2026-01-05T05:00:28.985Z",
-          "updatedAt": "2026-01-05T05:00:28.985Z",
+          "createdAt": "2026-01-06T05:00:25.154Z",
+          "updatedAt": "2026-01-06T05:00:25.154Z",
           "messageCount": 0
         }
       }
@@ -545,7 +580,7 @@
       "status": 401,
       "expected": 200,
       "passed": false,
-      "duration": 6,
+      "duration": 2,
       "data": {
         "error": "Token não fornecido"
       }
@@ -556,7 +591,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 8,
+      "duration": 20,
       "data": {
         "success": true,
         "status": "active",
@@ -573,7 +608,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
+      "duration": 8,
       "data": {
         "authenticated": false,
         "username": null,
@@ -598,7 +633,7 @@
       "status": 404,
       "expected": 200,
       "passed": false,
-      "duration": 3,
+      "duration": 2,
       "data": {
         "error": "Projeto não encontrado",
         "message": "Projeto não encontrado"
@@ -610,7 +645,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 6,
+      "duration": 10,
       "data": []
     },
     {
@@ -619,7 +654,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
+      "duration": 4,
       "data": []
     },
     {
@@ -628,22 +663,22 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
+      "duration": 5,
       "data": [
         {
           "filename": "backup-2026-01-05.zip",
-          "size": 247902,
-          "timestamp": "2026-01-05T01:29:55.440Z"
+          "size": 268060,
+          "timestamp": "2026-01-05T19:34:47.333Z"
         },
         {
           "filename": "backup-2025-12-31.zip",
           "size": 247903,
-          "timestamp": "2025-12-31T06:22:53.721Z"
+          "timestamp": "2026-01-05T19:34:47.328Z"
         },
         {
           "filename": "backup-2025-12-30.zip",
           "size": 248073,
-          "timestamp": "2025-12-30T06:00:20.950Z"
+          "timestamp": "2026-01-05T19:34:47.316Z"
         },
         {
           "filename": "backup-2025-12-18.zip",
@@ -663,13 +698,13 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 3,
       "data": {
         "success": true,
         "stats": {
           "enabled": true,
-          "activeSessions": 1,
-          "totalAgents": 1,
+          "activeSessions": 2,
+          "totalAgents": 2,
           "cacheType": "in-memory",
           "ttl": "30min"
         }
@@ -681,7 +716,7 @@
       "status": 404,
       "expected": 404,
       "passed": true,
-      "duration": 4,
+      "duration": 5,
       "data": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /api/jurisprudencia/buscar</pre>\n</body>\n</html>\n"
     },
     {
@@ -690,8 +725,8 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 6,
-      "data": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <meta name=\"description\" content=\"ROM Agent - Assistente Jurídico com Inteligência Artificial\" />\n    <title>ROM Agent</title>\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap\" rel=\"stylesheet\" />\n    <script type=\"module\" crossorigin src=\"/assets/index-DYzq5Hfx.js\"></script>\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/vendor-BYDMtfya.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/ui-95h3xbnI.js\">\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-5yV0_cru.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
+      "duration": 14,
+      "data": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes\" />\n    <meta name=\"description\" content=\"ROM Agent - Assistente Jurídico com Inteligência Artificial\" />\n\n    <!-- PWA Meta Tags -->\n    <link rel=\"manifest\" href=\"/manifest.json\" />\n    <meta name=\"theme-color\" content=\"#1a365d\" />\n    <meta name=\"mobile-web-app-capable\" content=\"yes\" />\n    <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n    <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\" />\n    <meta name=\"apple-mobile-web-app-title\" content=\"ROM Agent\" />\n    <link rel=\"apple-touch-icon\" href=\"/img/logo_rom.png\" />\n\n    <!-- Performance -->\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap\" rel=\"stylesheet\" />\n\n    <title>ROM Agent</title>\n    <script type=\"module\" crossorigin src=\"/assets/index-DrS4hEe-.js\"></script>\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/vendor-Dc3V-jfM.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/ui-DIb4OZiY.js\">\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-DHI3xEEN.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
     }
   ]
 }

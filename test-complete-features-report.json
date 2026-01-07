@@ -1,20 +1,20 @@
 {
   "summary": {
     "total": 43,
-    "passed": 33,
-    "failed": 10,
+    "passed": 35,
+    "failed": 8,
     "warnings": 0,
-    "successRate": 76.7,
-    "duration": 1.21,
-    "timestamp": "2026-01-05T05:00:26.633Z"
+    "successRate": 81.4,
+    "duration": 1.04,
+    "timestamp": "2026-01-06T05:00:22.918Z"
   },
   "tests": [
     {
       "name": "Health Check (/api/info)",
       "passed": {
         "status": "healthy",
-        "uptime": "2h 25m",
-        "uptimeSeconds": 8732
+        "uptime": "26h 25m",
+        "uptimeSeconds": 95127
       },
       "details": "Status: 200, Version: 2.7.0, Health: healthy, Bedrock: connected"
     },
@@ -26,7 +26,7 @@
     {
       "name": "Upload e Extração de TXT (/api/upload-documents)",
       "passed": true,
-      "details": "Status: 200, Arquivos: 1, Extrações: 1, Metadados: Sim"
+      "details": "Status: 200, Arquivos: 1, Extrações: 1, Metadados: Não"
     },
     {
       "name": "Suporte a Múltiplas Extensões",
@@ -36,7 +36,7 @@
     {
       "name": "Criar Projeto com Custom Instructions (/api/projects/create)",
       "passed": true,
-      "details": "Status: 200, ID: 3, KB: 500MB, Custom Instructions: Sim"
+      "details": "Status: 200, ID: 4, KB: 500MB, Custom Instructions: Sim"
     },
     {
       "name": "Listar Projetos (/api/projects/list)",
@@ -44,7 +44,7 @@
       "details": "Status: 404, Projetos: 0"
     },
     {
-      "name": "Upload para Projeto com KB Tracking (/api/projects/3/upload)",
+      "name": "Upload para Projeto com KB Tracking (/api/projects/4/upload)",
       "passed": {
         "currentMB": "0.00",
         "maxMB": 500,
@@ -105,13 +105,13 @@
     },
     {
       "name": "Suporte iOS (Apple)",
-      "passed": false,
-      "details": "Ausente"
+      "passed": true,
+      "details": "Configurado"
     },
     {
       "name": "Suporte Android",
-      "passed": false,
-      "details": "Ausente"
+      "passed": true,
+      "details": "Configurado"
     },
     {
       "name": "Botão \"Novo Projeto\"",

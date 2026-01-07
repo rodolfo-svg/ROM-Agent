@@ -313,5 +313,28 @@
     "createdAt": "2026-01-05T05:01:14.167Z",
     "updatedAt": "2026-01-05T05:01:23.055Z",
     "messageCount": 2
+  },
+  "conv_1767675669354_f6rqn1": {
+    "id": "conv_1767675669354_f6rqn1",
+    "userId": "anonymous",
+    "sessionId": "8ew9O16Ox3RAV2Cb8brVpbXIRDZ1qN8I",
+    "projectId": "rom-agent",
+    "title": "Teste de conexão",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de conexão",
+        "timestamp": "2026-01-06T05:01:09.375Z"
+      },
+      {
+        "role": "assistant",
+        "content": "# ✅ Conexão Estabelecida com Sucesso\n\nOlá! Sou seu **assistente jurídico especializado** em redação de peças processuais e documentos extrajudiciais. Estou plenamente operacional e pronto para auxiliá-lo.\n\n## 🎯 Capacidades Principais Disponíveis:\n\n### 📝 **Redação de Peças Judiciais:**\n- Petições iniciais (todas as áreas do Direito)\n- Contestações e respostas\n- Recursos (apelação, agravo, especial, extraordinário)\n- Embargos (declaração, execução)\n- Mandados de segurança\n- Habeas corpus\n\n### 📄 **Documentos Extrajudiciais:**\n- Contratos (todos os tipos)\n- Alterações contratuais (padrão DNRC)\n- Substabelecimentos e procurações\n- Notificações extrajudiciais\n- Pareceres jurídicos\n\n### 🔍 **Ferramentas de Pesquisa Ativas:**\n- ⚖️ Jurisprudência (STF, STJ, TST, TSE)\n- 📚 Base Jusbrasil (doutrina e jurisprudência)\n- 📋 Súmulas dos Tribunais Superiores\n- 🔎 Consulta CNJ DataJud\n- 📁 Análise de documentos enviados (Knowledge Base)\n\n### ⏱️ **Análise de Prazos Processuais:**\n- Cálculo preciso conforme Lei 11.419/2006\n- Consideração de prazos em dobro\n- Identificação de preclusão e prescrição\n\n---\n\n## 💬 Como posso auxiliá-lo hoje?\n\nPode me solicitar:\n- Redigir uma peça processual específica\n- Analisar prazos de certidão do DJe\n- Pesquisar jurisprudência sobre algum tema\n- Revisar ou adaptar documentos\n- Consultar súmulas\n- Elaborar contratos ou alterações contratuais\n\n**Aguardo suas instruções!** 🚀",
+        "timestamp": "2026-01-06T05:01:19.004Z"
+      }
+    ],
+    "createdAt": "2026-01-06T05:01:09.354Z",
+    "updatedAt": "2026-01-06T05:01:19.004Z",
+    "messageCount": 2
   }
 }
