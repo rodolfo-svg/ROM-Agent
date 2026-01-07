@@ -21,7 +21,8 @@ export const securityHeaders = helmet({
         "'unsafe-inline'", // Necessário para React inline scripts
         "'unsafe-eval'", // Necessário para desenvolvimento (remover em produção se possível)
         "https://cse.google.com", // Google Custom Search
-        "https://www.google.com"
+        "https://www.google.com",
+        "https://static.cloudflareinsights.com" // Cloudflare Analytics
       ],
       styleSrc: [
         "'self'",
@@ -42,6 +43,7 @@ export const securityHeaders = helmet({
       connectSrc: [
         "'self'",
         "https://api.anthropic.com", // Claude API
+        "https://cloudflareinsights.com", // Cloudflare Analytics
         "wss://*", // WebSocket para Socket.IO
         "ws://*" // WebSocket local
       ],

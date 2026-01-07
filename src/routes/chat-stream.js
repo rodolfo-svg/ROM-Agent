@@ -142,10 +142,12 @@ router.post('/stream', async (req, res) => {
       timestamp: new Date().toISOString()
     })}\n\n`);
 
-    // Heartbeat para manter conexão viva (evita timeout Cloudflare 100s)
+    // Heartbeat para manter conexão viva
+    // IMPORTANTE: Cloudflare tem timeout HTTP/2 de ~2min (120s)
+    // Enviar heartbeat frequente para evitar ERR_HTTP2_PROTOCOL_ERROR
     heartbeatInterval = setInterval(() => {
       res.write(`: heartbeat ${Date.now()}\n\n`);
-    }, 15000); // A cada 15s
+    }, 10000); // A cada 10s (antes era 15s)
 
     // Cleanup heartbeat ao finalizar
     const cleanupHeartbeat = () => {
