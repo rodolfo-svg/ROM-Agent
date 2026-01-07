@@ -642,6 +642,18 @@ export async function conversarStream(prompt, onChunk, options = {}) {
       // ✅ Executar ferramentas solicitadas
       console.log(`🔧 [Stream] Tool use detected: ${toolUseData.map(t => t.name).join(', ')}`);
 
+      // ⚡ CRÍTICO: Enviar feedback IMEDIATO para o usuário não ficar esperando
+      const toolNames = toolUseData.map(t => {
+        if (t.name === 'pesquisar_jurisprudencia') return '🔍 Buscando jurisprudência';
+        if (t.name === 'pesquisar_jusbrasil') return '📚 Consultando JusBrasil';
+        if (t.name === 'consultar_cnj_datajud') return '🏛️ Consultando CNJ DataJud';
+        if (t.name === 'pesquisar_sumulas') return '📋 Buscando súmulas';
+        if (t.name === 'consultar_kb') return '💾 Consultando base de conhecimento';
+        return `⚙️ ${t.name}`;
+      }).join(', ');
+
+      onChunk(`\n\n${toolNames}...\n\n`);
+
       // Adicionar mensagem do assistente com tool_use
       const assistantMessage = {
         role: 'assistant',
@@ -689,8 +701,8 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         content: toolResults
       });
 
-      // Enviar indicador de que ferramentas foram executadas
-      onChunk(`\n\n[🔍 ${toolUseData.length} ferramenta(s) executada(s)]\n\n`);
+      // Enviar indicador de conclusão
+      onChunk(`✅ Pesquisa concluída. Analisando resultados...\n\n`);
 
       loopCount++;
       // Loop continua para próxima iteração
