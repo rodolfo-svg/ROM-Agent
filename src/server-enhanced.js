@@ -69,6 +69,15 @@ import authRoutes from './routes/auth.js';
 import conversationsRoutes from './routes/conversations.js';
 import { requireAuth } from './middleware/auth.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
+
+// ═══════════════════════════════════════════════════════════════════════
+// SECURITY v2.8.0 - Importar middleware e serviços de segurança
+// ═══════════════════════════════════════════════════════════════════════
+import securityHeadersMiddleware from './middleware/security-headers.js';
+import ipBlocker from './middleware/ip-blocker.js';
+import csrfProtection from './middleware/csrf-protection.js';
+import permissions from './middleware/permissions.js';
+import auditService from './services/audit-service.js';
 import featureFlagsLegacy from '../lib/feature-flags.js';
 import featureFlags from './utils/feature-flags.js';
 import spellChecker from '../lib/spell-checker.js';
@@ -236,6 +245,36 @@ app.use(express.json({ limit: '50mb' }));
 app.use(createSessionMiddleware());
 app.use(sessionEnhancerMiddleware);
 
+// ═══════════════════════════════════════════════════════════════════════
+// SECURITY MIDDLEWARE v2.8.0 - Aplicar após sessões, antes de rotas
+// ═══════════════════════════════════════════════════════════════════════
+
+// 1. Security Headers (Helmet + custom headers)
+// Protege contra XSS, clickjacking, MIME sniffing, etc.
+app.use(securityHeadersMiddleware);
+console.log('🔒 [SECURITY] Headers de segurança (Helmet) aplicados');
+
+// 2. IP Blocker (verifica blacklist antes de processar requests)
+// Bloqueia IPs detectados por força bruta
+app.use(ipBlocker.public);
+console.log('🚫 [SECURITY] IP Blocker ativo');
+
+// 3. CSRF Token Generator (cria tokens para todas as sessões)
+// Proteção contra Cross-Site Request Forgery
+app.use(csrfProtection.generator);
+console.log('🔐 [SECURITY] CSRF Protection ativo');
+
+// 4. Attach Permissions (adiciona req.userPermissions, req.isAdmin, etc.)
+// Útil para lógica condicional nas rotas
+app.use(permissions.attachPermissions);
+console.log('👥 [SECURITY] RBAC (Role-Based Access Control) ativo');
+
+// 5. Compression (após security, antes de rotas)
+app.use(compression());
+console.log('📦 [PERFORMANCE] Compression ativo');
+
+// ═══════════════════════════════════════════════════════════════════════
+
 // Middleware para proteger páginas HTML ANTIGAS (apenas quando frontend/dist não existe)
 app.use((req, res, next) => {
   // Se está usando React SPA (frontend/dist existe), pular este middleware
@@ -303,6 +342,24 @@ app.use(requestLogger);
 
 // Rate Limiter Geral (100 requisições/hora por IP)
 app.use('/api/', generalLimiter);
+
+// ═══════════════════════════════════════════════════════════════════════
+// CSRF PROTECTION v2.8.0 - Proteger rotas de mutação
+// ═══════════════════════════════════════════════════════════════════════
+// Aplicar CSRF protection em todas as rotas de API exceto:
+// - /api/auth/login, /api/auth/register, /api/auth/forgot-password (configurado no middleware)
+// - Rotas GET (não modificam dados)
+app.use('/api', csrfProtection.protection({
+  exemptPaths: [
+    '/api/auth/login',
+    '/api/auth/register',
+    '/api/auth/forgot-password',
+    '/api/csrf-token' // Endpoint para obter token
+  ]
+}));
+console.log('🔐 [SECURITY] CSRF validation aplicada em rotas de mutação');
+
+// ═══════════════════════════════════════════════════════════════════════
 
 // Rotas de Projects, Auto-Atualização, Storage, Scheduler e Partner Settings
 app.use('/api', projectsRouter);
@@ -9400,6 +9457,14 @@ Acesse: https://iarom.com.br/kb-documents.html
   // Pré-carregar modelos
   await preloadModelos();
 });
+
+// ═══════════════════════════════════════════════════════════════════════
+// ERROR HANDLERS v2.8.0 - Devem vir APÓS todas as rotas
+// ═══════════════════════════════════════════════════════════════════════
+
+// CSRF Error Handler (captura erros de CSRF e retorna resposta formatada)
+app.use(csrfProtection.errorHandler);
+console.log('⚠️ [SECURITY] CSRF Error Handler configurado');
 
 // ============================================================================
 // GRACEFUL SHUTDOWN - Fechar conexões de banco ao encerrar
