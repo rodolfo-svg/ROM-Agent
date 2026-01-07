@@ -76,7 +76,7 @@ class JurisprudenceSearchService {
       // Verificar cache
       if (enableCache) {
         const cacheKey = `jurisprudence-${this.hashTese(tese)}`;
-        const cached = await cacheService.checkCache('global', cacheKey, Buffer.from(tese));
+        const cached = await cacheService.checkCache('global', cacheKey, null);
 
         if (cached.valid) {
           console.log(`✅ Jurisprudência em cache: ${tese.substring(0, 50)}...`);
@@ -173,7 +173,7 @@ class JurisprudenceSearchService {
       // Salvar em cache
       if (enableCache) {
         const cacheKey = `jurisprudence-${this.hashTese(tese)}`;
-        await cacheService.saveCache('global', cacheKey, consolidated, Buffer.from(tese), {
+        await cacheService.saveCache('global', cacheKey, consolidated, null, {
           searchedAt: new Date().toISOString(),
           tese: tese.substring(0, 100)
         });

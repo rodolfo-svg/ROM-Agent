@@ -103,10 +103,10 @@ class CacheService {
    * Verificar se cache existe e é válido
    * @param {string} casoId - ID do caso
    * @param {string} cacheKey - Chave do cache
-   * @param {string|string[]} sourceFiles - Arquivo(s) fonte para validação
+   * @param {string|string[]|null} sourceFiles - Arquivo(s) fonte para validação (null = sem validação)
    * @returns {Promise<{valid: boolean, data: any}>}
    */
-  async checkCache(casoId, cacheKey, sourceFiles) {
+  async checkCache(casoId, cacheKey, sourceFiles = null) {
     try {
       const cachePath = this.getCachePath(casoId, cacheKey);
 
@@ -120,6 +120,16 @@ class CacheService {
       // Ler cache
       const cacheContent = await fs.readFile(cachePath, 'utf-8');
       const cache = JSON.parse(cacheContent);
+
+      // Se sourceFiles é null, não validar por hash (cache sempre válido se existir)
+      if (sourceFiles === null) {
+        return {
+          valid: true,
+          data: cache.data,
+          cachedAt: cache.cachedAt,
+          sourceHash: cache.sourceHash || null
+        };
+      }
 
       // Gerar hash atual dos arquivos fonte
       const currentHash = Array.isArray(sourceFiles)
@@ -148,21 +158,24 @@ class CacheService {
    * @param {string} casoId - ID do caso
    * @param {string} cacheKey - Chave do cache
    * @param {any} data - Dados a cachear
-   * @param {string|string[]} sourceFiles - Arquivo(s) fonte
+   * @param {string|string[]|null} sourceFiles - Arquivo(s) fonte (null = sem validação)
    * @param {object} metadata - Metadados adicionais (opcional)
    * @returns {Promise<boolean>}
    */
-  async saveCache(casoId, cacheKey, data, sourceFiles, metadata = {}) {
+  async saveCache(casoId, cacheKey, data, sourceFiles = null, metadata = {}) {
     try {
       const cachePath = this.getCachePath(casoId, cacheKey);
 
       // Criar diretório se não existir
       await fs.mkdir(path.dirname(cachePath), { recursive: true });
 
-      // Gerar hash dos arquivos fonte
-      const sourceHash = Array.isArray(sourceFiles)
-        ? await this.generateMultiFileHash(sourceFiles)
-        : await this.generateFileHash(sourceFiles);
+      // Gerar hash dos arquivos fonte (se fornecido)
+      let sourceHash = null;
+      if (sourceFiles !== null) {
+        sourceHash = Array.isArray(sourceFiles)
+          ? await this.generateMultiFileHash(sourceFiles)
+          : await this.generateFileHash(sourceFiles);
+      }
 
       // Estrutura do cache
       const cacheData = {
