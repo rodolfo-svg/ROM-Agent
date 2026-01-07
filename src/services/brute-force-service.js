@@ -165,10 +165,10 @@ class BruteForceService {
 
         // Audit log
         await auditService.log(
-          auditService.ACTIONS.ACCOUNT_LOCKED,
+          'account_locked',
           userId,
           {
-            status: auditService.STATUS.SUCCESS,
+            status: 'success',
             details: {
               reason: 'Múltiplas tentativas de login falhadas',
               attempts: failedAttempts,
@@ -210,10 +210,10 @@ class BruteForceService {
 
       // Audit log
       await auditService.log(
-        auditService.ACTIONS.IP_BLOCKED,
+        'ip_blocked',
         null,
         {
-          status: auditService.STATUS.SUCCESS,
+          status: 'success',
           details: {
             reason,
             attempts: ipFailures,
@@ -297,10 +297,10 @@ class BruteForceService {
       console.log(`🔓 [BRUTE-FORCE] Conta desbloqueada manualmente: ${userId.substring(0, 8)}`);
 
       await auditService.log(
-        auditService.ACTIONS.ACCOUNT_UNLOCKED,
+        'account_unlocked',
         userId,
         {
-          status: auditService.STATUS.SUCCESS,
+          status: 'success',
           details: { method: 'manual' },
           ipAddress: null,
           userAgent: null
@@ -329,10 +329,10 @@ class BruteForceService {
       console.log(`🔓 [BRUTE-FORCE] IP desbloqueado manualmente: ${ipAddress}`);
 
       await auditService.log(
-        auditService.ACTIONS.IP_UNBLOCKED,
+        'ip_unblocked',
         null,
         {
-          status: auditService.STATUS.SUCCESS,
+          status: 'success',
           details: { method: 'manual' },
           ipAddress,
           userAgent: null

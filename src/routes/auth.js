@@ -112,10 +112,10 @@ router.post('/register', authLimiter, async (req, res) => {
 
     if (existingUser.rows.length > 0) {
       await auditService.log(
-        auditService.ACTIONS.REGISTER,
+        'register',
         null,
         {
-          status: auditService.STATUS.FAILURE,
+          status: 'failure',
           details: { reason: 'Email já existe', email },
           req
         }
@@ -158,10 +158,10 @@ router.post('/register', authLimiter, async (req, res) => {
 
     // 9. Audit log
     await auditService.log(
-      auditService.ACTIONS.REGISTER,
+      'register',
       newUser.id,
       {
-        status: auditService.STATUS.SUCCESS,
+        status: 'success',
         details: { email: newUser.email, name: newUser.name },
         req
       }
@@ -243,10 +243,10 @@ router.post('/login', authLimiter, async (req, res) => {
     if (result.rows.length === 0) {
       // Audit log (falha - usuário não existe)
       await auditService.log(
-        auditService.ACTIONS.LOGIN_FAILED,
+        'login_failed',
         null,
         {
-          status: auditService.STATUS.FAILURE,
+          status: 'failure',
           details: { reason: 'Email não encontrado', email },
           req
         }
@@ -264,10 +264,10 @@ router.post('/login', authLimiter, async (req, res) => {
     const lockCheck = await bruteForceService.isAccountLocked(user.id);
     if (lockCheck.locked) {
       await auditService.log(
-        auditService.ACTIONS.LOGIN_FAILED,
+        'login_failed',
         user.id,
         {
-          status: auditService.STATUS.FAILURE,
+          status: 'failure',
           details: {
             reason: 'Conta bloqueada',
             lockedUntil: lockCheck.until,
@@ -301,10 +301,10 @@ router.post('/login', authLimiter, async (req, res) => {
 
       // Audit log
       await auditService.log(
-        auditService.ACTIONS.LOGIN_FAILED,
+        'login_failed',
         user.id,
         {
-          status: auditService.STATUS.FAILURE,
+          status: 'failure',
           details: {
             reason: 'Senha incorreta',
             attemptsRemaining: bruteForceResult.attemptsRemaining
@@ -335,10 +335,10 @@ router.post('/login', authLimiter, async (req, res) => {
     const passwordExpired = passwordPolicyService.isPasswordExpired(user);
     if (passwordExpired) {
       await auditService.log(
-        auditService.ACTIONS.PASSWORD_EXPIRED,
+        'password_expired',
         user.id,
         {
-          status: auditService.STATUS.SUCCESS,
+          status: 'success',
           details: { expiresAt: user.password_expires_at },
           req
         }
@@ -388,10 +388,10 @@ router.post('/login', authLimiter, async (req, res) => {
 
     // 10. Audit log (sucesso)
     await auditService.log(
-      auditService.ACTIONS.LOGIN,
+      'login',
       user.id,
       {
-        status: auditService.STATUS.SUCCESS,
+        status: 'success',
         details: { email: user.email },
         req
       }
@@ -437,10 +437,10 @@ router.post('/logout', async (req, res) => {
   // Audit log
   if (userId) {
     await auditService.log(
-      auditService.ACTIONS.LOGOUT,
+      'logout',
       userId,
       {
-        status: auditService.STATUS.SUCCESS,
+        status: 'success',
         req
       }
     );
@@ -494,10 +494,10 @@ router.post('/forgot-password', authLimiter, async (req, res) => {
     // Sempre retornar sucesso (não revelar se email existe)
     if (result.rows.length === 0) {
       await auditService.log(
-        auditService.ACTIONS.PASSWORD_RESET_REQUEST,
+        'password_reset_request',
         null,
         {
-          status: auditService.STATUS.FAILURE,
+          status: 'failure',
           details: { reason: 'Email não encontrado', email },
           req
         }
@@ -538,10 +538,10 @@ router.post('/forgot-password', authLimiter, async (req, res) => {
 
     // 6. Audit log
     await auditService.log(
-      auditService.ACTIONS.PASSWORD_RESET_REQUEST,
+      'password_reset_request',
       user.id,
       {
-        status: auditService.STATUS.SUCCESS,
+        status: 'success',
         details: { emailSent: emailResult.success },
         req
       }
@@ -661,10 +661,10 @@ router.post('/reset-password', authLimiter, async (req, res) => {
 
     // 8. Audit log
     await auditService.log(
-      auditService.ACTIONS.PASSWORD_RESET_COMPLETE,
+      'password_reset_complete',
       tokenData.user_id,
       {
-        status: auditService.STATUS.SUCCESS,
+        status: 'success',
         req
       }
     );
@@ -724,10 +724,10 @@ router.post('/change-password', requireAuth, async (req, res) => {
 
     if (!currentPasswordValid) {
       await auditService.log(
-        auditService.ACTIONS.PASSWORD_CHANGE,
+        'password_change',
         userId,
         {
-          status: auditService.STATUS.FAILURE,
+          status: 'failure',
           details: { reason: 'Senha atual incorreta' },
           req
         }
@@ -760,10 +760,10 @@ router.post('/change-password', requireAuth, async (req, res) => {
 
     // 5. Audit log
     await auditService.log(
-      auditService.ACTIONS.PASSWORD_CHANGE,
+      'password_change',
       userId,
       {
-        status: auditService.STATUS.SUCCESS,
+        status: 'success',
         req
       }
     );

@@ -187,10 +187,10 @@ export const requirePermission = (permission) => {
       // Audit log
       try {
         await auditService.log(
-          auditService.ACTIONS.PERMISSION_DENIED,
+          'permission_denied',
           req.session.user.id,
           {
-            status: auditService.STATUS.FAILURE,
+            status: 'failure',
             resource: req.path,
             details: {
               permission,
@@ -242,10 +242,10 @@ export const requireAnyPermission = (permissions) => {
       console.warn(`⚠️ [PERMISSIONS] Acesso negado: ${req.session.user.email} - ${permissions.join(' OR ')}`);
 
       await auditService.log(
-        auditService.ACTIONS.PERMISSION_DENIED,
+        'permission_denied',
         req.session.user.id,
         {
-          status: auditService.STATUS.FAILURE,
+          status: 'failure',
           resource: req.path,
           details: {
             permissions,
@@ -295,10 +295,10 @@ export const requireRole = (allowedRoles) => {
       console.warn(`⚠️ [PERMISSIONS] Role insuficiente: ${req.session.user.email} - ${userRole}`);
 
       await auditService.log(
-        auditService.ACTIONS.PERMISSION_DENIED,
+        'permission_denied',
         req.session.user.id,
         {
-          status: auditService.STATUS.FAILURE,
+          status: 'failure',
           resource: req.path,
           details: {
             requiredRoles: roles,
@@ -386,10 +386,10 @@ export const requireOwnership = (resourceUserIdGetter) => {
       console.warn(`⚠️ [PERMISSIONS] Acesso negado (ownership): ${req.session.user.email}`);
 
       await auditService.log(
-        auditService.ACTIONS.PERMISSION_DENIED,
+        'permission_denied',
         userId,
         {
-          status: auditService.STATUS.FAILURE,
+          status: 'failure',
           resource: req.path,
           details: {
             reason: 'ownership_violation',

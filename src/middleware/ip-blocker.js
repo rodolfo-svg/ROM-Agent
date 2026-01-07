@@ -95,7 +95,7 @@ export const ipBlockerMiddleware = (options = {}) => {
               'ip_blocked_access_attempt',
               null,
               {
-                status: auditService.STATUS.FAILURE,
+                status: 'failure',
                 resource: req.path,
                 details: {
                   reason: blacklistCheck.reason,
