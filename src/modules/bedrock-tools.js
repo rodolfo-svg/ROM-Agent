@@ -12,6 +12,7 @@
 // ✅ ATUALIZADO: Usar serviço NOVO com Google Search + DataJud + JusBrasil
 // Importa instância singleton (já instanciada)
 import jurisprudenceService from '../services/jurisprudence-search-service.js';
+import doctrineSearchService from '../services/doctrine-search-service.js';
 import { pesquisarSumulas } from './jurisprudencia.js';
 import fs from 'fs';
 import path from 'path';
@@ -139,6 +140,35 @@ export const BEDROCK_TOOLS = [
             }
           },
           required: ['query']
+        }
+      }
+    }
+  },
+  {
+    toolSpec: {
+      name: 'pesquisar_doutrina',
+      description: 'Busca artigos jurídicos, análises doutrinárias, teses e dissertações em fontes especializadas (Google Scholar, Conjur, Migalhas, JOTA). Use quando precisar de fundamentação doutrinária, artigos de especialistas, análises acadêmicas ou posicionamento de autores renomados sobre determinado tema jurídico.',
+      inputSchema: {
+        json: {
+          type: 'object',
+          properties: {
+            termo: {
+              type: 'string',
+              description: 'Termo de busca ou tema jurídico (ex: "LGPD proteção dados", "responsabilidade civil médica")'
+            },
+            tipo: {
+              type: 'string',
+              description: 'Tipo de doutrina a buscar (opcional). Valores: "academico" (Google Scholar), "artigos" (Conjur/Migalhas), "analises" (JOTA), "todos" (padrão)',
+              enum: ['academico', 'artigos', 'analises', 'todos'],
+              default: 'todos'
+            },
+            limite: {
+              type: 'number',
+              description: 'Número máximo de resultados a retornar (padrão: 10)',
+              default: 10
+            }
+          },
+          required: ['termo']
         }
       }
     }
@@ -482,6 +512,44 @@ export async function executeTool(toolName, toolInput) {
             success: false,
             error: error.message,
             content: `Erro ao consultar Knowledge Base: ${error.message}`
+          };
+        }
+      }
+
+      case 'pesquisar_doutrina': {
+        const { termo, tipo = 'todos', limite = 10 } = toolInput;
+
+        console.log(`📚 [Doutrina] Pesquisando: "${termo}" (tipo: ${tipo}, limite: ${limite})`);
+
+        try {
+          const resultado = await doctrineSearchService.search(termo, {
+            tipo,
+            limite
+          });
+
+          // Formatar resultados usando o método do serviço
+          const respostaFormatada = doctrineSearchService.formatResults(resultado);
+
+          console.log(`✅ [Doutrina] ${resultado.resultados?.length || 0} resultados encontrados`);
+
+          return {
+            success: resultado.sucesso,
+            content: respostaFormatada,
+            metadata: {
+              termo,
+              tipo,
+              totalResultados: resultado.resultados?.length || 0,
+              fontes: resultado.estatisticas?.fontes || [],
+              timestamp: resultado.timestamp
+            }
+          };
+
+        } catch (error) {
+          console.error(`❌ [Doutrina] Erro:`, error);
+          return {
+            success: false,
+            error: error.message,
+            content: `Erro ao buscar doutrina: ${error.message}`
           };
         }
       }
