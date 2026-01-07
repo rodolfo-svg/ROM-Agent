@@ -645,6 +645,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         if (t.name === 'consultar_cnj_datajud') return '🏛️ Consultando CNJ DataJud';
         if (t.name === 'pesquisar_sumulas') return '📋 Buscando súmulas';
         if (t.name === 'consultar_kb') return '💾 Consultando base de conhecimento';
+        if (t.name === 'pesquisar_doutrina') return '📚 Buscando doutrina jurídica';
         return `⚙️ ${t.name}`;
       }).join(', ');
 
