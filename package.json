@@ -29,7 +29,9 @@
     "db:force": "node scripts/force-migrations.js",
     "db:check": "node scripts/diagnose-database.js",
     "test:persistence": "node scripts/test-database-persistence.js",
-    "create-admin": "node scripts/create-admin-user.js"
+    "create-admin": "node scripts/create-admin-user.js",
+    "user:create": "node scripts/create-user.js",
+    "user:list": "node scripts/list-users.js"
   },
   "keywords": [
     "juridico",
