@@ -1,6 +1,6 @@
 {
   "name": "rom-agent",
-  "version": "2.7.7",
+  "version": "2.7.8",
   "description": "ROM - Redator de Obras Magistrais - Agente de IA para Redação de Peças Jurídicas - Clone do Claude AI",
   "main": "src/index.js",
   "bin": {
