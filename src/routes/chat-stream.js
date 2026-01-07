@@ -85,6 +85,7 @@ const MODEL_MAPPING = {
 router.post('/stream', async (req, res) => {
   const startTime = Date.now();
   const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  let heartbeatInterval = null; // Declarar fora do try para cleanup no catch
 
   try {
     const {
@@ -141,6 +142,19 @@ router.post('/stream', async (req, res) => {
       timestamp: new Date().toISOString()
     })}\n\n`);
 
+    // Heartbeat para manter conexão viva (evita timeout Cloudflare 100s)
+    heartbeatInterval = setInterval(() => {
+      res.write(`: heartbeat ${Date.now()}\n\n`);
+    }, 15000); // A cada 15s
+
+    // Cleanup heartbeat ao finalizar
+    const cleanupHeartbeat = () => {
+      if (heartbeatInterval) {
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+      }
+    };
+
     // Variáveis para tracking
     let fullResponse = '';
     let chunkCount = 0;
@@ -187,6 +201,9 @@ router.post('/stream', async (req, res) => {
     });
 
     const totalTime = Date.now() - startTime;
+
+    // Limpar heartbeat
+    cleanupHeartbeat();
 
     if (resultado.sucesso) {
       // Enviar evento de conclusão
@@ -248,6 +265,12 @@ router.post('/stream', async (req, res) => {
 
   } catch (error) {
     const totalTime = Date.now() - startTime;
+
+    // Limpar heartbeat
+    if (heartbeatInterval) {
+      clearInterval(heartbeatInterval);
+      heartbeatInterval = null;
+    }
 
     logger.error(`[${requestId}] Chat stream exception`, {
       error: error.message,

@@ -28,7 +28,7 @@ export const SLO_CONFIG = {
 
     // Rotas assíncronas (chat, geração de peças)
     async: {
-      timeout: 300_000,      // 5min (aumentado para buscas DataJud/STJ complexas)
+      timeout: 600_000,      // 10min (aumentado para streaming longo)
       description: 'AI chat, document generation, jurisprudence search'
     },
 
@@ -45,7 +45,7 @@ export const SLO_CONFIG = {
   external: {
     // AWS Bedrock
     bedrock: {
-      timeout: 60_000,       // 1min
+      timeout: 180_000,      // 3min (aumentado para respostas longas)
       retries: 3,
       retryDelay: 1_000,     // 1s entre retries
       description: 'AWS Bedrock API calls (Claude, Nova)'
