@@ -93,10 +93,10 @@ export const csrfProtection = (options = {}) => {
 
       // Audit log
       await auditService.log(
-        auditService.ACTIONS.CSRF_VIOLATION,
+        'csrf_violation',
         req.session?.user?.id || null,
         {
-          status: auditService.STATUS.FAILURE,
+          status: 'failure',
           resource: req.path,
           details: {
             method: req.method,
@@ -169,10 +169,10 @@ export const csrfErrorHandler = async (err, req, res, next) => {
 
   // Audit log
   await auditService.log(
-    auditService.ACTIONS.CSRF_VIOLATION,
+    'csrf_violation',
     req.session?.user?.id || null,
     {
-      status: auditService.STATUS.FAILURE,
+      status: 'failure',
       resource: req.path,
       details: {
         error: err.message,
