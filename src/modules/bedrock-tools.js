@@ -237,8 +237,8 @@ export async function executeTool(toolName, toolInput) {
           metadata: {
             termo,
             tribunal,
-            totalFontes: Object.keys(resultado.fontes).length,
-            totalResultados: resultado.totalGeral
+            totalFontes: Object.keys(resultado.sources || {}).length,
+            totalResultados: resultado.totalResults || 0
           }
         };
       }

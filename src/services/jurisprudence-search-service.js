@@ -13,6 +13,7 @@
 
 import https from 'https';
 import http from 'http';
+import crypto from 'crypto';
 import cacheService from '../utils/cache/cache-service.js';
 
 class JurisprudenceSearchService {
@@ -462,7 +463,6 @@ class JurisprudenceSearchService {
    * Gerar hash da tese para cache
    */
   hashTese(tese) {
-    const crypto = require('crypto');
     return crypto.createHash('md5').update(tese).digest('hex');
   }
 
