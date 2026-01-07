@@ -9,18 +9,17 @@
  * @version 1.0.0
  */
 
-import {
-  pesquisarJurisprudencia,
-  pesquisarJusbrasil,
-  pesquisarDatajud,
-  pesquisarSumulas
-} from './jurisprudencia.js';
+// ✅ ATUALIZADO: Usar serviço NOVO com Google Search + DataJud + JusBrasil
+import JurisprudenceSearchService from '../services/jurisprudence-search-service.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Instanciar serviço de jurisprudência
+const jurisprudenceService = new JurisprudenceSearchService();
 
 // ============================================================
 // DEFINIÇÃO DAS TOOLS
@@ -165,63 +164,72 @@ export async function executeTool(toolName, toolInput) {
       case 'pesquisar_jurisprudencia': {
         const { termo, tribunal, limite = 5 } = toolInput;
 
-        // Determinar fontes com base no tribunal
-        const fontes = tribunal
-          ? ['ia']
-          : ['ia', 'stf', 'stj'];
-
-        const resultado = await pesquisarJurisprudencia(termo, {
-          fontes,
-          limite,
-          paralelo: true,
-          tribunal
+        // ✅ ATUALIZADO: Usar serviço novo (Google Search + DataJud + JusBrasil)
+        const resultado = await jurisprudenceService.searchAll(termo, {
+          limit: limite,
+          tribunal: tribunal || null,
+          enableCache: true
         });
 
-        // Formatar resultado para a IA
-        let respostaFormatada = '';
+        // ✅ ATUALIZADO: Formatar resultado do serviço novo
+        let respostaFormatada = `\n📊 **Pesquisa de Jurisprudência: "${termo}"**\n\n`;
 
-        // Resultado da IA (sempre presente, mais confiável)
-        if (resultado.fontes.ia && resultado.fontes.ia.sucesso) {
-          respostaFormatada += `\n📊 **Análise Jurisprudencial sobre "${termo}"**\n\n`;
-          respostaFormatada += resultado.fontes.ia.resultados;
-          respostaFormatada += '\n\n---\n';
-        }
+        // Informações gerais
+        respostaFormatada += `Total de resultados: ${resultado.totalResults || 0}\n`;
+        respostaFormatada += `Fontes consultadas: ${Object.keys(resultado.sources || {}).length}\n`;
+        if (tribunal) respostaFormatada += `Tribunal filtrado: ${tribunal}\n`;
+        respostaFormatada += `\n---\n\n`;
 
-        // Resultados do STF (se disponível)
-        if (resultado.fontes.stf && resultado.fontes.stf.sucesso) {
-          respostaFormatada += `\n⚖️ **Supremo Tribunal Federal (${resultado.fontes.stf.totalEncontrados} resultados)**\n\n`;
+        // Resultados do DataJud CNJ
+        if (resultado.sources?.datajud?.success && resultado.sources.datajud.results?.length > 0) {
+          respostaFormatada += `\n🏛️ **CNJ DataJud (${resultado.sources.datajud.count} resultados oficiais)**\n\n`;
 
-          resultado.fontes.stf.resultados.slice(0, 3).forEach((item, idx) => {
-            respostaFormatada += `**[${idx + 1}] ${item.classe || 'Acórdão'} ${item.numero || ''}**\n`;
-            respostaFormatada += `Relator: ${item.relator || 'Não informado'}\n`;
-            respostaFormatada += `Data: ${item.data || 'Não informada'}\n`;
-            respostaFormatada += `Ementa: ${item.ementa ? item.ementa.substring(0, 300) : 'Não disponível'}...\n`;
+          resultado.sources.datajud.results.slice(0, 3).forEach((item, idx) => {
+            respostaFormatada += `**[${idx + 1}] ${item.numero || item.titulo || 'Decisão'}**\n`;
+            if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
+            if (item.classe) respostaFormatada += `Classe: ${item.classe}\n`;
+            if (item.relator) respostaFormatada += `Relator: ${item.relator}\n`;
+            if (item.data) respostaFormatada += `Data: ${item.data}\n`;
+            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
             if (item.link) respostaFormatada += `Link: ${item.link}\n`;
             respostaFormatada += '\n';
           });
 
-          respostaFormatada += '---\n';
+          respostaFormatada += '---\n\n';
         }
 
-        // Resultados do STJ (se disponível)
-        if (resultado.fontes.stj && resultado.fontes.stj.sucesso) {
-          respostaFormatada += `\n⚖️ **Superior Tribunal de Justiça (${resultado.fontes.stj.totalEncontrados} resultados)**\n\n`;
+        // Resultados do JusBrasil
+        if (resultado.sources?.jusbrasil?.success && resultado.sources.jusbrasil.results?.length > 0) {
+          respostaFormatada += `\n📚 **JusBrasil (${resultado.sources.jusbrasil.count} resultados)**\n\n`;
 
-          resultado.fontes.stj.resultados.slice(0, 3).forEach((item, idx) => {
-            respostaFormatada += `**[${idx + 1}] ${item.classe || 'Acórdão'} ${item.numero || ''}**\n`;
-            respostaFormatada += `Relator: ${item.relator || 'Não informado'}\n`;
-            respostaFormatada += `Data: ${item.data || 'Não informada'}\n`;
-            respostaFormatada += `Ementa: ${item.ementa ? item.ementa.substring(0, 300) : 'Não disponível'}...\n`;
+          resultado.sources.jusbrasil.results.slice(0, 3).forEach((item, idx) => {
+            respostaFormatada += `**[${idx + 1}] ${item.titulo || 'Documento'}**\n`;
+            if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
+            if (item.data) respostaFormatada += `Data: ${item.data}\n`;
+            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
             if (item.link) respostaFormatada += `Link: ${item.link}\n`;
             respostaFormatada += '\n';
           });
 
-          respostaFormatada += '---\n';
+          respostaFormatada += '---\n\n';
         }
 
-        respostaFormatada += '\n✅ **Pesquisa concluída com sucesso**\n';
-        respostaFormatada += `Total de fontes consultadas: ${Object.keys(resultado.fontes).length}\n`;
-        respostaFormatada += `Timestamp: ${resultado.timestamp}\n`;
+        // Resultados da Web Search (Google)
+        if (resultado.sources?.websearch?.success && resultado.sources.websearch.results?.length > 0) {
+          respostaFormatada += `\n🔍 **Web Search - Google (${resultado.sources.websearch.count} resultados)**\n\n`;
+
+          resultado.sources.websearch.results.slice(0, 3).forEach((item, idx) => {
+            respostaFormatada += `**[${idx + 1}] ${item.titulo || item.title || 'Resultado'}**\n`;
+            if (item.snippet) respostaFormatada += `${item.snippet.substring(0, 200)}...\n`;
+            if (item.link) respostaFormatada += `Link: ${item.link}\n`;
+            respostaFormatada += '\n';
+          });
+
+          respostaFormatada += '---\n\n';
+        }
+
+        respostaFormatada += '\n✅ **Pesquisa concluída**\n';
+        respostaFormatada += `Timestamp: ${resultado.searchedAt || new Date().toISOString()}\n`;
 
         console.log(`✅ [Tool Use] pesquisar_jurisprudencia executada com sucesso`);
 
@@ -242,31 +250,33 @@ export async function executeTool(toolName, toolInput) {
 
         console.log(`🔍 [Jusbrasil] Pesquisando: ${termo}`);
 
-        const resultado = await pesquisarJusbrasil(termo, { limite });
+        // ✅ ATUALIZADO: Usar serviço novo (JusBrasil Client com autenticação)
+        const resultado = await jurisprudenceService.searchJusBrasil(termo, { limit: limite });
 
-        if (!resultado.sucesso) {
+        if (!resultado.success && !resultado.results) {
           return {
             success: false,
-            error: resultado.erro,
-            content: `Erro ao buscar no Jusbrasil: ${resultado.erro}`
+            error: resultado.error || 'Erro desconhecido',
+            content: `Erro ao buscar no Jusbrasil: ${resultado.error || 'Erro desconhecido'}`
           };
         }
 
         // Formatar resultado
-        let respostaFormatada = `\n📚 **Jusbrasil - "${termo}"** (${resultado.totalEncontrados} resultados)\n\n`;
+        const totalResultados = resultado.results?.length || 0;
+        let respostaFormatada = `\n📚 **Jusbrasil - "${termo}"** (${totalResultados} resultados)\n\n`;
 
-        resultado.resultados.slice(0, 5).forEach((item, idx) => {
-          respostaFormatada += `**[${idx + 1}] ${item.titulo || 'Documento'}**\n`;
-          respostaFormatada += `Tribunal: ${item.tribunal || 'Não informado'}\n`;
-          respostaFormatada += `Data: ${item.data || 'Não informada'}\n`;
-          if (item.ementa) {
-            respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
-          }
-          if (item.link) respostaFormatada += `Link: ${item.link}\n`;
-          respostaFormatada += '\n';
-        });
+        if (resultado.results && resultado.results.length > 0) {
+          resultado.results.slice(0, 5).forEach((item, idx) => {
+            respostaFormatada += `**[${idx + 1}] ${item.titulo || item.title || 'Documento'}**\n`;
+            if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
+            if (item.data) respostaFormatada += `Data: ${item.data}\n`;
+            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
+            if (item.link) respostaFormatada += `Link: ${item.link}\n`;
+            respostaFormatada += '\n';
+          });
+        }
 
-        console.log(`✅ [Jusbrasil] ${resultado.totalEncontrados} resultados encontrados`);
+        console.log(`✅ [Jusbrasil] ${totalResultados} resultados encontrados`);
 
         return {
           success: true,
@@ -274,7 +284,7 @@ export async function executeTool(toolName, toolInput) {
           metadata: {
             termo,
             fonte: 'Jusbrasil',
-            totalResultados: resultado.totalEncontrados
+            totalResultados
           }
         };
       }
@@ -284,35 +294,44 @@ export async function executeTool(toolName, toolInput) {
 
         console.log(`🏛️ [CNJ DataJud] Consultando processo: ${numeroProcesso}`);
 
-        const resultado = await pesquisarDatajud(numeroProcesso);
+        // ✅ ATUALIZADO: Importar datajud-service diretamente (busca por número de processo)
+        const datajudService = (await import('../services/datajud-service.js')).default;
+        const resultado = await datajudService.buscarProcessos({ numero: numeroProcesso });
 
-        if (!resultado.sucesso) {
+        if (!resultado.success && !resultado.processos) {
           return {
             success: false,
-            error: resultado.erro,
-            content: `Erro ao consultar CNJ DataJud: ${resultado.erro}`
+            error: resultado.error || 'Erro ao consultar processo',
+            content: `Erro ao consultar CNJ DataJud: ${resultado.error || 'Processo não encontrado'}`
           };
         }
 
         // Formatar resultado
         let respostaFormatada = `\n🏛️ **CNJ DataJud - Processo ${numeroProcesso}**\n\n`;
 
-        if (resultado.processo) {
-          const proc = resultado.processo;
-          respostaFormatada += `**Classe**: ${proc.classe || 'Não informada'}\n`;
-          respostaFormatada += `**Assunto**: ${proc.assunto || 'Não informado'}\n`;
-          respostaFormatada += `**Órgão Julgador**: ${proc.orgaoJulgador || 'Não informado'}\n`;
-          respostaFormatada += `**Data de Distribuição**: ${proc.dataDistribuicao || 'Não informada'}\n`;
+        if (resultado.processos && resultado.processos.length > 0) {
+          const proc = resultado.processos[0]; // Primeiro resultado
+          respostaFormatada += `**Número**: ${proc.numero || numeroProcesso}\n`;
+          if (proc.classe) respostaFormatada += `**Classe**: ${proc.classe}\n`;
+          if (proc.assunto) respostaFormatada += `**Assunto**: ${proc.assunto}\n`;
+          if (proc.orgaoJulgador) respostaFormatada += `**Órgão Julgador**: ${proc.orgaoJulgador}\n`;
+          if (proc.dataDistribuicao) respostaFormatada += `**Data de Distribuição**: ${proc.dataDistribuicao}\n`;
+          if (proc.tribunal) respostaFormatada += `**Tribunal**: ${proc.tribunal}\n`;
 
-          if (proc.movimentacoes && proc.movimentacoes.length > 0) {
-            respostaFormatada += `\n**Últimas Movimentações**:\n`;
-            proc.movimentacoes.slice(0, 3).forEach((mov, idx) => {
-              respostaFormatada += `${idx + 1}. ${mov.data || ''} - ${mov.descricao || ''}\n`;
+          if (proc.movimentos && proc.movimentos.length > 0) {
+            respostaFormatada += `\n**Últimas Movimentações** (${proc.movimentos.length} total):\n`;
+            proc.movimentos.slice(0, 5).forEach((mov, idx) => {
+              respostaFormatada += `${idx + 1}. ${mov.data || ''} - ${mov.descricao || mov.nome || ''}\n`;
             });
+            if (proc.movimentos.length > 5) {
+              respostaFormatada += `... e mais ${proc.movimentos.length - 5} movimentações\n`;
+            }
           }
+        } else {
+          respostaFormatada += 'Nenhum processo encontrado com este número.\n';
         }
 
-        respostaFormatada += '\n✅ **Fonte**: CNJ DataJud (Oficial)\n';
+        respostaFormatada += '\n✅ **Fonte**: CNJ DataJud (API Oficial)\n';
 
         console.log(`✅ [CNJ DataJud] Consulta realizada com sucesso`);
 
