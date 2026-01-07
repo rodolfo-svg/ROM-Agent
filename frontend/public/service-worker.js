@@ -199,7 +199,8 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     fetch(request)
       .then((response) => {
-        if (response.ok) {
+        // ✅ FIX: Só cachear GET requests (Cache API não suporta POST)
+        if (response.ok && request.method === 'GET') {
           const clone = response.clone();
           caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, clone));
         }
