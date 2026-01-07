@@ -286,24 +286,40 @@ export const useChatStore = create<ChatState>()(
           return { conversations: updatedConversations }
         })
 
-        // Salvar no backend de forma assíncrona
-        get().saveMessageToAPI(newMessage)
+        // 🔥 CRÍTICO: Não salvar mensagens vazias (placeholder durante streaming)
+        // Elas serão salvas quando updateMessage for chamado com conteúdo real
+        if (newMessage.content && newMessage.content.trim() !== '') {
+          console.log('   💾 Salvando mensagem no backend...')
+          get().saveMessageToAPI(newMessage)
+        } else {
+          console.log('   ⏭️ Pulando salvamento (mensagem vazia - será salva via updateMessage)')
+        }
 
         return newMessage
       },
 
       saveMessageToAPI: async (message: Message) => {
-        const activeId = get().activeConversationId
-        if (!activeId) return
+        console.log('🔍 saveMessageToAPI called - VERSION 2.0')
+        console.log('   role:', message.role)
+        console.log('   content length:', message.content?.length || 0)
+        console.log('   content preview:', message.content?.substring(0, 50))
 
-        // Não salvar mensagens vazias (streaming em progresso)
-        if (!message.content || message.content.trim() === '') {
-          console.log('⏭️  Mensagem vazia, pulando salvamento (streaming em progresso)')
+        const activeId = get().activeConversationId
+        if (!activeId) {
+          console.log('   ⚠️ No activeConversationId, skipping save')
           return
         }
 
+        // Não salvar mensagens vazias (streaming em progresso)
+        if (!message.content || message.content.trim() === '') {
+          console.log('   ⏭️ Mensagem vazia, pulando salvamento (streaming em progresso)')
+          return
+        }
+
+        console.log('   ✅ Validation passed, sending to API...')
+
         try {
-          await fetch(`/api/conversations/${activeId}/messages`, {
+          const response = await fetch(`/api/conversations/${activeId}/messages`, {
             method: 'POST',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
@@ -313,8 +329,16 @@ export const useChatStore = create<ChatState>()(
               model: message.model,
             }),
           })
+
+          if (!response.ok) {
+            console.error('   ❌ API returned error:', response.status)
+            const errorText = await response.text()
+            console.error('   Error details:', errorText)
+          } else {
+            console.log('   ✅ Message saved successfully to backend')
+          }
         } catch (error) {
-          console.error('Erro ao salvar mensagem:', error)
+          console.error('   ❌ Erro ao salvar mensagem:', error)
         }
       },
 
