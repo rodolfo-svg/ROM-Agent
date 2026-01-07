@@ -587,9 +587,13 @@ export async function conversarStream(prompt, onChunk, options = {}) {
       let stopReason = null;
       let toolUseData = [];
       let currentToolUse = null;
+      let eventCount = 0;
 
       // Processar stream de eventos
+      console.log(`🔧 [Stream Debug] Iniciando processamento do stream...`);
       for await (const event of response.stream) {
+        eventCount++;
+        console.log(`🔧 [Stream Debug] Evento ${eventCount}:`, JSON.stringify(Object.keys(event)).substring(0, 200));
         // Texto sendo gerado
         if (event.contentBlockDelta?.delta?.text) {
           const chunk = event.contentBlockDelta.delta.text;
@@ -627,8 +631,18 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         // Metadata com stopReason
         if (event.metadata) {
           stopReason = event.metadata.stopReason;
+          console.log(`🔧 [Stream Debug] Metadata recebida - stopReason: ${stopReason}`);
         }
       }
+
+      // Log resumo do stream
+      console.log(`🔧 [Stream Debug] Stream finalizado:`, {
+        eventCount,
+        textoLength: textoCompleto.length,
+        stopReason,
+        toolUseCount: toolUseData.length,
+        hasText: textoCompleto.length > 0
+      });
 
       // Se não foi tool_use, retornar resposta final
       if (stopReason !== 'tool_use' || toolUseData.length === 0) {
