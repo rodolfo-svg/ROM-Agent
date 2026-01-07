@@ -12,6 +12,7 @@
 // ✅ ATUALIZADO: Usar serviço NOVO com Google Search + DataJud + JusBrasil
 // Importa instância singleton (já instanciada)
 import jurisprudenceService from '../services/jurisprudence-search-service.js';
+import { pesquisarSumulas } from './jurisprudencia.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
