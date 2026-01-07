@@ -630,6 +630,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
         // Metadata com stopReason
         if (event.metadata) {
+          console.log(`🔧 [Stream Debug] Metadata completo:`, JSON.stringify(event.metadata, null, 2));
           stopReason = event.metadata.stopReason;
           console.log(`🔧 [Stream Debug] Metadata recebida - stopReason: ${stopReason}`);
         }
