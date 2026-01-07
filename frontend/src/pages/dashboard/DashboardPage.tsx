@@ -72,6 +72,30 @@ export function DashboardPage() {
       convId = conv.id
     }
 
+    // 🔥 CRÍTICO: Carregar mensagens antes de enviar para incluir histórico
+    let currentState = useChatStore.getState()
+    let conversation = currentState.conversations.find(c => c.id === convId)
+
+    // Se a conversa existe mas não tem mensagens carregadas, carregar agora
+    if (conversation && conversation.messages.length === 0) {
+      console.log('⏳ Mensagens não carregadas, carregando do backend...')
+      await selectConversation(convId)
+      // Atualizar referência após carregar
+      currentState = useChatStore.getState()
+      conversation = currentState.conversations.find(c => c.id === convId)
+      console.log('✅ Mensagens carregadas:', conversation?.messages?.length || 0)
+    }
+
+    // Preparar histórico (mensagens existentes, excluindo vazias)
+    const conversationMessages = conversation?.messages
+      .filter(m => m.content && m.content.trim() !== '')
+      .map(m => ({
+        role: m.role,
+        content: m.content
+      })) || []
+
+    console.log('📤 Enviando para IA:', conversationMessages.length, 'mensagens de histórico')
+
     // Add user message
     addMessage({ role: 'user', content })
 
@@ -92,6 +116,7 @@ export function DashboardPage() {
       for await (const chunk of chatStream(content, {
         conversationId: convId ?? undefined,
         model: selectedModel,
+        messages: conversationMessages, // ✅ INCLUIR HISTÓRICO
         signal: abortControllerRef.current.signal,
       })) {
         if (chunk.type === 'chunk' && chunk.content) {
