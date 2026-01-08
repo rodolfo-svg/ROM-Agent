@@ -50,8 +50,9 @@ export function clearCsrfToken() {
   console.log('🔄 CSRF token limpo - será renovado na próxima requisição')
 }
 
-// Generic fetch wrapper
-async function apiFetch<T>(
+// Generic fetch wrapper with CSRF support
+// ✅ EXPORTADO para uso em páginas React
+export async function apiFetch<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {

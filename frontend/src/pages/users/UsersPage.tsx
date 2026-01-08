@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Sidebar } from '@/components/layout'
 import { Users as UsersIcon, Search, Plus, Edit, Trash2, Shield, Mail } from 'lucide-react'
 import { Button, Avatar } from '@/components/ui'
+import { apiFetch } from '@/services/api'
 
 interface User {
   id: string
@@ -33,12 +34,9 @@ export function UsersPage() {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('/api/users', {
-        credentials: 'include',
-      })
-      const data = await response.json()
-      if (data.success) {
-        setUsers(data.users || [])
+      const response = await apiFetch<{ users: User[] }>('/users')
+      if (response.success && response.data) {
+        setUsers(response.data.users || [])
       }
     } catch (error) {
       console.error('Failed to fetch users:', error)
@@ -51,18 +49,15 @@ export function UsersPage() {
     e.preventDefault()
 
     try {
-      const url = editingUser ? `/api/users/${editingUser.id}` : '/api/users'
+      const url = editingUser ? `/users/${editingUser.id}` : '/users'
       const method = editingUser ? 'PUT' : 'POST'
 
-      const response = await fetch(url, {
+      const response = await apiFetch<{ user: User }>(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(formData),
       })
 
-      const data = await response.json()
-      if (data.success) {
+      if (response.success) {
         setShowModal(false)
         setEditingUser(null)
         setFormData({ name: '', email: '', role: 'user', oab: '', password: '' })
@@ -89,10 +84,7 @@ export function UsersPage() {
     if (!confirm('Tem certeza que deseja excluir este usuário?')) return
 
     try {
-      await fetch(`/api/users/${userId}`, {
-        method: 'DELETE',
-        credentials: 'include',
-      })
+      await apiFetch(`/users/${userId}`, { method: 'DELETE' })
       await fetchUsers()
     } catch (error) {
       console.error('Delete error:', error)
