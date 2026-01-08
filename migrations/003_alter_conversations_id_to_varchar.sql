@@ -37,6 +37,23 @@ BEGIN
       RAISE NOTICE '⏭️  Foreign key documents já removida';
     END IF;
   END IF;
+
+  -- AI Operations FK (se a tabela existir)
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_name = 'ai_operations'
+  ) THEN
+    IF EXISTS (
+      SELECT 1 FROM information_schema.table_constraints
+      WHERE constraint_name = 'ai_operations_conversation_id_fkey'
+      AND table_name = 'ai_operations'
+    ) THEN
+      ALTER TABLE ai_operations DROP CONSTRAINT ai_operations_conversation_id_fkey;
+      RAISE NOTICE '✅ Foreign key ai_operations removida';
+    ELSE
+      RAISE NOTICE '⏭️  Foreign key ai_operations já removida';
+    END IF;
+  END IF;
 END $$;
 
 -- PASSO 2: Alterar conversations.id para VARCHAR
@@ -97,6 +114,27 @@ BEGIN
   END IF;
 END $$;
 
+-- PASSO 3C: Alterar ai_operations.conversation_id para VARCHAR (se a tabela existir)
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_name = 'ai_operations'
+  ) THEN
+    IF EXISTS (
+      SELECT 1 FROM information_schema.columns
+      WHERE table_name = 'ai_operations'
+      AND column_name = 'conversation_id'
+      AND data_type = 'uuid'
+    ) THEN
+      ALTER TABLE ai_operations ALTER COLUMN conversation_id TYPE VARCHAR(255) USING conversation_id::VARCHAR;
+      RAISE NOTICE '✅ Coluna ai_operations.conversation_id alterada para VARCHAR(255)';
+    ELSE
+      RAISE NOTICE '⏭️  Coluna ai_operations.conversation_id já é VARCHAR';
+    END IF;
+  END IF;
+END $$;
+
 -- PASSO 4: Recriar foreign key constraints
 DO $$
 BEGIN
@@ -136,6 +174,27 @@ BEGIN
       RAISE NOTICE '⏭️  Foreign key documents já existe';
     END IF;
   END IF;
+
+  -- AI Operations FK (se a tabela existir)
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_name = 'ai_operations'
+  ) THEN
+    IF NOT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints
+      WHERE constraint_name = 'ai_operations_conversation_id_fkey'
+      AND table_name = 'ai_operations'
+    ) THEN
+      ALTER TABLE ai_operations
+        ADD CONSTRAINT ai_operations_conversation_id_fkey
+        FOREIGN KEY (conversation_id)
+        REFERENCES conversations(id)
+        ON DELETE CASCADE;
+      RAISE NOTICE '✅ Foreign key ai_operations recriada';
+    ELSE
+      RAISE NOTICE '⏭️  Foreign key ai_operations já existe';
+    END IF;
+  END IF;
 END $$;
 
 -- PASSO 5: Recriar índices
@@ -154,6 +213,18 @@ BEGIN
   END IF;
 END $$;
 
+DROP INDEX IF EXISTS ai_operations_conversation_id_idx;
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_name = 'ai_operations'
+  ) THEN
+    CREATE INDEX IF NOT EXISTS ai_operations_conversation_id_idx ON ai_operations(conversation_id);
+    RAISE NOTICE '✅ Índice ai_operations_conversation_id_idx criado';
+  END IF;
+END $$;
+
 -- Adicionar comentários
 COMMENT ON COLUMN conversations.id IS 'ID da conversa (VARCHAR para aceitar UUIDs e IDs customizados como conv_xxx)';
 COMMENT ON COLUMN messages.conversation_id IS 'Referência à conversa (VARCHAR)';
@@ -165,6 +236,16 @@ BEGIN
     WHERE table_name = 'documents'
   ) THEN
     COMMENT ON COLUMN documents.conversation_id IS 'Referência à conversa (VARCHAR)';
+  END IF;
+END $$;
+
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.tables
+    WHERE table_name = 'ai_operations'
+  ) THEN
+    COMMENT ON COLUMN ai_operations.conversation_id IS 'Referência à conversa (VARCHAR)';
   END IF;
 END $$;
 
