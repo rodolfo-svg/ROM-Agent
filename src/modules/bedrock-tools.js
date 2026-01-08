@@ -100,29 +100,31 @@ export const BEDROCK_TOOLS = [
       }
     }
   },
-  {
-    toolSpec: {
-      name: 'pesquisar_sumulas',
-      description: 'Pesquisa súmulas dos tribunais superiores (STF, STJ, TST, TSE). Use quando precisar de orientações jurisprudenciais consolidadas sobre determinado tema. Fontes oficiais.',
-      inputSchema: {
-        json: {
-          type: 'object',
-          properties: {
-            tema: {
-              type: 'string',
-              description: 'Tema ou palavras-chave para buscar súmulas (ex: "prescrição", "honorários advocatícios")'
-            },
-            tribunal: {
-              type: 'string',
-              description: 'Tribunal específico (opcional). Valores: "STF", "STJ", "TST", "TSE"',
-              enum: ['STF', 'STJ', 'TST', 'TSE', null]
-            }
-          },
-          required: ['tema']
-        }
-      }
-    }
-  },
+  // ❌ TEMPORARIAMENTE DESABILITADO: pesquisar_sumulas trava 12s e retorna 0 resultados
+  // TODO: Investigar e corrigir timeout no módulo jurisprudencia.js (pesquisarSTF/STJ)
+  // {
+  //   toolSpec: {
+  //     name: 'pesquisar_sumulas',
+  //     description: 'Pesquisa súmulas dos tribunais superiores (STF, STJ, TST, TSE). Use quando precisar de orientações jurisprudenciais consolidadas sobre determinado tema. Fontes oficiais.',
+  //     inputSchema: {
+  //       json: {
+  //         type: 'object',
+  //         properties: {
+  //           tema: {
+  //             type: 'string',
+  //             description: 'Tema ou palavras-chave para buscar súmulas (ex: "prescrição", "honorários advocatícios")'
+  //           },
+  //           tribunal: {
+  //             type: 'string',
+  //             description: 'Tribunal específico (opcional). Valores: "STF", "STJ", "TST", "TSE"',
+  //             enum: ['STF', 'STJ', 'TST', 'TSE', null]
+  //           }
+  //         },
+  //         required: ['tema']
+  //       }
+  //     }
+  //   }
+  // },
   {
     toolSpec: {
       name: 'consultar_kb',

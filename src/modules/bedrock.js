@@ -601,7 +601,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
     let currentMessages = messages;
     let loopCount = 0;
-    const MAX_TOOL_LOOPS = 4; // ✅ CORREÇÃO: 4 loops para permitir: busca inicial + busca complementar + apresentação dos resultados + margem
+    const MAX_TOOL_LOOPS = 3; // ✅ v2.8.1: 3 loops para: busca inicial + busca complementar + apresentação FORÇADA
 
     while (loopCount < MAX_TOOL_LOOPS) {
       const command = new ConverseStreamCommand({ ...commandParams, messages: currentMessages });
@@ -759,12 +759,59 @@ export async function conversarStream(prompt, onChunk, options = {}) {
       onChunk(`✅ Pesquisa concluída.\n\n📊 **Resultados Encontrados:**\n\n`);
 
       loopCount++;
+
+      // 🚨 CRÍTICO: Se atingiu o limite de loops, FORÇAR apresentação dos resultados
+      if (loopCount >= MAX_TOOL_LOOPS) {
+        console.log(`⚠️ [Stream] MAX_TOOL_LOOPS atingido (${loopCount}/${MAX_TOOL_LOOPS}) - FORÇANDO apresentação final`);
+
+        // Adicionar mensagem IMPERATIVA para forçar Claude a apresentar
+        currentMessages.push({
+          role: 'user',
+          content: [{
+            text: `🚨 ATENÇÃO: Você executou ${loopCount} buscas e encontrou resultados.
+
+AGORA você DEVE IMEDIATAMENTE apresentar os resultados para o usuário.
+
+NÃO execute mais buscas. NÃO pense. NÃO planeje.
+APENAS APRESENTE os resultados que você já encontrou nas ferramentas acima.
+
+Comece AGORA listando os resultados com:
+- Tribunal
+- Número do processo/decisão
+- Ementa resumida
+- Link
+
+ESCREVA A PRIMEIRA PALAVRA AGORA!`
+          }]
+        });
+
+        // Executar UMA última iteração APENAS para apresentação
+        const finalCommand = new ConverseStreamCommand({ ...commandParams, messages: currentMessages, toolConfig: undefined }); // SEM TOOLS
+        const finalResponse = await retryAwsCommand(client, finalCommand, { modelId: commandParams.modelId, operation: 'converse_stream' });
+
+        let finalText = '';
+        for await (const event of finalResponse.stream) {
+          if (event.contentBlockDelta?.delta?.text) {
+            const chunk = event.contentBlockDelta.delta.text;
+            finalText += chunk;
+            onChunk(chunk);
+          }
+        }
+
+        return {
+          sucesso: true,
+          resposta: finalText,
+          modelo
+        };
+      }
       // Loop continua para próxima iteração
     }
 
+    // Se chegou aqui sem stopReason, retornar erro
+    console.error(`❌ [Stream] Loop terminou sem resposta final`);
     return {
-      sucesso: true,
-      resposta: '',
+      sucesso: false,
+      erro: 'Sistema atingiu limite de iterações sem gerar resposta',
       modelo
     };
   } catch (error) {
