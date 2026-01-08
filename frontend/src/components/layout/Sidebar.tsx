@@ -275,9 +275,17 @@ export function Sidebar() {
                       )}
                     >
                       <MessageSquare className="w-4 h-4 flex-shrink-0 text-stone-400" />
-                      <span className="flex-1 text-sm truncate">
-                        {truncate(conv.title, 28)}
-                      </span>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm truncate">
+                          {truncate(conv.title, 28)}
+                        </div>
+                        {showAllConversations && conv.userName && (
+                          <div className="flex items-center gap-1 mt-0.5 text-xs text-stone-400">
+                            <Users className="w-3 h-3" />
+                            <span className="truncate">{conv.userName}</span>
+                          </div>
+                        )}
+                      </div>
                       {(hoveredId === conv.id || activeConversationId === conv.id) && (
                         <button
                           onClick={(e) => handleDelete(e, conv.id)}
