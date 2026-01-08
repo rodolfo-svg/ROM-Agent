@@ -17,6 +17,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import multer from 'multer';
+import sanitize from 'sanitize-filename';
 import fs from 'fs';
 import { initPostgres, initRedis, checkDatabaseHealth, closeDatabaseConnections, getPostgresPool } from './config/database.js';
 import { createSessionMiddleware, sessionEnhancerMiddleware } from './config/session-store.js';

@@ -112,6 +112,7 @@
     "retext": "^9.0.0",
     "retext-equality": "^7.1.0",
     "retext-spell": "^6.1.0",
+    "sanitize-filename": "^1.6.3",
     "sharp": "^0.34.5",
     "socket.io": "^4.8.1",
     "string-similarity": "^4.0.4",
