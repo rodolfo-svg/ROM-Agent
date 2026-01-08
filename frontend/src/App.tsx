@@ -4,7 +4,6 @@ import { useAuthStore } from '@/stores/authStore'
 
 // Lazy loading de páginas para melhor performance
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage').then(m => ({ default: m.LoginPage })))
-const RegisterPage = lazy(() => import('@/pages/auth/RegisterPage').then(m => ({ default: m.RegisterPage })))
 const ChatPage = lazy(() => import('@/pages/chat/ChatPage').then(m => ({ default: m.ChatPage })))
 const DashboardPage = lazy(() => import('@/pages/dashboard/DashboardPage').then(m => ({ default: m.DashboardPage })))
 const UploadPage = lazy(() => import('@/pages/upload/UploadPage').then(m => ({ default: m.UploadPage })))
@@ -58,7 +57,6 @@ export default function App() {
     <Suspense fallback={<PageLoader />}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
 
       {/* Dashboard (main entry) */}
       <Route

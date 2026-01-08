@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { Eye, EyeOff, ArrowRight } from 'lucide-react'
 
@@ -136,18 +136,6 @@ export function LoginPage() {
               )}
             </button>
           </form>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-stone-500">
-              Não tem uma conta?{' '}
-              <Link
-                to="/register"
-                className="text-bronze-600 hover:text-bronze-700 font-medium transition-colors"
-              >
-                Criar conta
-              </Link>
-            </p>
-          </div>
 
           <div className="mt-8 text-center">
             <div className="inline-flex items-center gap-1.5 text-xs text-stone-500">
