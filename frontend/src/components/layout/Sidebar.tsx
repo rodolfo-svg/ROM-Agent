@@ -43,17 +43,31 @@ export function Sidebar() {
   const location = useLocation()
   const [searchQuery, setSearchQuery] = useState('')
   const [hoveredId, setHoveredId] = useState<string | null>(null)
+  const [showAllConversations, setShowAllConversations] = useState(false)
 
   const {
     conversations,
     activeConversationId,
     createConversation,
     selectConversation,
-    deleteConversation
+    deleteConversation,
+    loadConversations,
+    loadAllConversations
   } = useChatStore()
 
   const { user, logout } = useAuthStore()
   const { sidebarCollapsed, toggleSidebarCollapse } = useUIStore()
+
+  // Admin toggle handler
+  const handleToggleAllConversations = async () => {
+    const newValue = !showAllConversations
+    setShowAllConversations(newValue)
+    if (newValue) {
+      await loadAllConversations()
+    } else {
+      await loadConversations()
+    }
+  }
 
   // Filter and group conversations
   const filteredConversations = useMemo(() => {
@@ -194,6 +208,27 @@ export function Sidebar() {
           <Plus className="w-4 h-4" />
           Nova conversa
         </Button>
+
+        {/* Admin Toggle - Show All Conversations */}
+        {user?.role === 'admin' && (
+          <button
+            onClick={handleToggleAllConversations}
+            className={cn(
+              "w-full flex items-center justify-between px-3 py-2 mt-2 rounded-lg text-sm transition-colors",
+              showAllConversations
+                ? "bg-blue-50 text-blue-700 hover:bg-blue-100"
+                : "bg-stone-50 text-stone-600 hover:bg-stone-100"
+            )}
+          >
+            <span className="flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              {showAllConversations ? 'Todas as Conversas' : 'Minhas Conversas'}
+            </span>
+            <span className="text-xs font-medium">
+              {showAllConversations && `${conversations.length}`}
+            </span>
+          </button>
+        )}
       </div>
 
       {/* Search */}
