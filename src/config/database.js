@@ -59,8 +59,13 @@ export async function initPostgres() {
 
     // Hook para configurar schema em TODAS as conexões do pool
     if (schema !== 'public') {
+      // Validar schema name para prevenir SQL injection
+      const safeSchema = schema.replace(/[^a-zA-Z0-9_]/g, '');
+      if (safeSchema !== schema) {
+        throw new Error(`Schema name inválido: ${schema}`);
+      }
       pgPool.on('connect', async (client) => {
-        await client.query(`SET search_path TO ${schema}, public`);
+        await client.query(`SET search_path TO "${safeSchema}", public`);
       });
     }
 
@@ -71,10 +76,15 @@ export async function initPostgres() {
 
     // Criar schema se não existir
     if (schema !== 'public') {
-      console.log(`🔍 [PG] Criando e configurando schema: ${schema}`);
-      await pgPool.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
-      await pgPool.query(`SET search_path TO ${schema}, public`);
-      console.log(`✅ [PG] Schema ${schema} configurado`);
+      // Validar schema name para prevenir SQL injection
+      const safeSchema = schema.replace(/[^a-zA-Z0-9_]/g, '');
+      if (safeSchema !== schema) {
+        throw new Error(`Schema name inválido: ${schema}`);
+      }
+      console.log(`🔍 [PG] Criando e configurando schema: ${safeSchema}`);
+      await pgPool.query(`CREATE SCHEMA IF NOT EXISTS "${safeSchema}"`);
+      await pgPool.query(`SET search_path TO "${safeSchema}", public`);
+      console.log(`✅ [PG] Schema ${safeSchema} configurado`);
     }
 
     console.log('✅ [PG] PostgreSQL CONECTADO em ' + latency + 'ms');
