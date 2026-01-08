@@ -601,7 +601,8 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
     let currentMessages = messages;
     let loopCount = 0;
-    const MAX_TOOL_LOOPS = 3; // ✅ v2.8.1: 3 loops para: busca inicial + busca complementar + apresentação FORÇADA
+    const MAX_TOOL_LOOPS = 2; // ✅ v2.8.2: 2 loops APENAS - busca inicial + apresentação IMEDIATA (velocidade claude.ai)
+    let hasJurisprudenceResults = false;
 
     while (loopCount < MAX_TOOL_LOOPS) {
       const command = new ConverseStreamCommand({ ...commandParams, messages: currentMessages });
@@ -717,6 +718,20 @@ export async function conversarStream(prompt, onChunk, options = {}) {
           const successMsg = result.success ? ' ✓\n' : ' ✗\n';
           onChunk(successMsg);
 
+          // ⚡ DETECTAR se encontrou jurisprudência - para forçar apresentação imediata
+          if (result.success && (tool.name === 'pesquisar_jurisprudencia' || tool.name === 'pesquisar_sumulas' || tool.name === 'pesquisar_doutrina')) {
+            // Verificar se tem resultados reais (não vazio)
+            const hasResults = result.content && (
+              result.content.includes('**[1]') || // Formato de resultado
+              result.content.includes('Resultados:') ||
+              result.content.length > 500 // Content substancial
+            );
+            if (hasResults) {
+              hasJurisprudenceResults = true;
+              console.log(`✅ [Stream] Jurisprudência encontrada em ${tool.name} - apresentação será forçada`);
+            }
+          }
+
           // ⚡ PREVIEW IMEDIATO: Mostrar primeiros resultados assim que chegam (anti-silêncio)
           if (!previewShown && result.success && result.content && tool.name === 'pesquisar_jurisprudencia') {
             const previewMatch = result.content.match(/\*\*\[1\]\s+(.{0,150})/);
@@ -760,9 +775,14 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
       loopCount++;
 
-      // 🚨 CRÍTICO: Se atingiu o limite de loops, FORÇAR apresentação dos resultados
-      if (loopCount >= MAX_TOOL_LOOPS) {
-        console.log(`⚠️ [Stream] MAX_TOOL_LOOPS atingido (${loopCount}/${MAX_TOOL_LOOPS}) - FORÇANDO apresentação final`);
+      // 🚨 VELOCIDADE CRÍTICA: Se encontrou jurisprudência, FORÇAR apresentação IMEDIATA (não esperar mais loops)
+      const shouldForcePresentation = hasJurisprudenceResults || loopCount >= MAX_TOOL_LOOPS;
+
+      if (shouldForcePresentation) {
+        const reason = hasJurisprudenceResults ?
+          `✅ Jurisprudência encontrada após ${loopCount} loop(s) - APRESENTAÇÃO IMEDIATA para velocidade` :
+          `⚠️ MAX_TOOL_LOOPS atingido (${loopCount}/${MAX_TOOL_LOOPS}) - FORÇANDO apresentação`;
+        console.log(`[Stream] ${reason}`);
 
         // Adicionar mensagem IMPERATIVA para forçar Claude a apresentar
         currentMessages.push({
