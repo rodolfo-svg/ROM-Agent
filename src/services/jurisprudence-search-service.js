@@ -27,7 +27,7 @@ class JurisprudenceSearchService {
         timeout: 30000 // 30 segundos
       },
       jusbrasil: {
-        enabled: process.env.JUSBRASIL_ENABLED === 'true' || true,
+        enabled: process.env.JUSBRASIL_ENABLED === 'true' || false, // Desabilitado: bloqueio anti-bot 100%
         apiUrl: 'https://www.jusbrasil.com.br/busca',
         timeout: 30000
       },
