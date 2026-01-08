@@ -826,11 +826,12 @@ COMECE AGORA escrevendo "Com base nas buscas realizadas, encontrei:" e LISTE IME
         });
 
         // Executar UMA última iteração APENAS para apresentação
-        // ⚠️ IMPORTANTE: toolConfig DEVE ser definido (array vazio) mesmo sem tools, pois mensagens anteriores têm toolUse blocks
+        // ⚠️ IMPORTANTE: Manter MESMAS tools (não remover) pois mensagens anteriores têm toolUse blocks
+        // A mensagem imperativa do user vai PROIBIR Claude de usar tools, mesmo que estejam disponíveis
         const finalCommand = new ConverseStreamCommand({
           ...commandParams,
-          messages: currentMessages,
-          toolConfig: { tools: [] } // Array vazio - desabilita novas tools mas mantém compatibilidade
+          messages: currentMessages
+          // toolConfig mantém o mesmo de commandParams (com todas as tools)
         });
         const finalResponse = await retryAwsCommand(client, finalCommand, { modelId: commandParams.modelId, operation: 'converse_stream' });
 
