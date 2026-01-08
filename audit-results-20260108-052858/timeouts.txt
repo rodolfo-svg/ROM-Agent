@@ -1,0 +1,32 @@
+src/middleware/timeout-handler.js:68:          timeout: `${timeout}ms`,
+src/middleware/timeout-handler.js:181:  timeout: timeoutMiddleware,
+src/config/database.js:52:    console.log('🔍 [PG] Connection timeout:', config.connectionTimeoutMillis + 'ms');
+src/index.js:1092:        timeout: { type: 'number', description: 'Timeout em milissegundos (máx: 600000, padrão: 120000)' },
+src/utils/bottleneck.js:269:   * @param {number} timeout - Timeout em ms (default: 30s)
+src/server-enhanced.js:2969:      timeout: 1000,
+src/modules/extracao.js:94:    await execAsync(comando, { timeout: 300000 });
+src/modules/sdkTools.js:360:      timeout: {
+src/modules/sdkTools.js:380:        timeout: Math.min(timeout, 600000),
+src/modules/sdkTools.js:441:        timeout: 30000
+src/modules/jurisprudencia.js:39:  timeout: 8000,
+src/modules/jurisprudencia.js:98:    timeout: CONFIG.timeout,
+src/modules/jusbrasilAuth.js:135:      await page.waitForSelector(seletor, { timeout: timeout / seletorArray.length });
+src/modules/jusbrasilAuth.js:248:    await page.goto(CONFIG.urls.login, { waitUntil: 'networkidle0', timeout: CONFIG.browser.timeout });
+src/modules/jusbrasilAuth.js:621:    await page.goto(url, { waitUntil: 'networkidle2', timeout: CONFIG.browser.timeout });
+src/modules/jusbrasilAuth.js:736:    await page.goto(url, { waitUntil: 'networkidle2', timeout: CONFIG.browser.timeout });
+src/modules/jusbrasilAuth.js:813:    await page.goto(url, { waitUntil: 'networkidle2', timeout: CONFIG.browser.timeout });
+src/modules/jusbrasilAuth.js:869:    await page.goto('https://ia.jusbrasil.com.br/', { waitUntil: 'networkidle2', timeout: CONFIG.browser.timeout });
+src/modules/jusbrasilAuth.js:994:  await page.goto(CONFIG.urls.login, { waitUntil: 'networkidle2', timeout: 60000 });
+src/modules/jusbrasilAuth.js:1056:    }, { timeout: 120000 });
+src/modules/jusbrasilAuth.js:1128:  await page.goto('https://www.jusbrasil.com.br/', { waitUntil: 'networkidle2', timeout: 60000 });
+src/modules/jusbrasilAuth.js:1144:      }, { timeout: 60000 });
+src/modules/jusbrasilAuth.js:1210:  await page.goto(CONFIG.urls.base, { waitUntil: 'networkidle2', timeout: 60000 });
+src/modules/jusbrasilAuth.js:1231:    }, { timeout: 120000 });
+src/modules/jusbrasilAuth.js:1242:    await page.goto(CONFIG.urls.login, { waitUntil: 'networkidle2', timeout: 60000 });
+src/modules/jusbrasilAuth.js:1282:    }, { timeout: 120000 });
+src/modules/jusbrasilAuth.js:1298:  await page.goto(urlBusca, { waitUntil: 'networkidle2', timeout: 60000 });
+src/modules/jusbrasilAuth.js:1314:    }, { timeout: 120000 });
+src/services/doctrine-search-service.js:156:        timeout: this.timeout,
+src/services/jurisprudence-search-service.js:32:        timeout: 30000
+src/services/jurisprudence-search-service.js:36:        timeout: 30000
+src/services/jurisprudence-search-service.js:322:        timeout: this.config.datajud.timeout

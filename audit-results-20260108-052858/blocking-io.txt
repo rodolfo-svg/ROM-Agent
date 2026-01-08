@@ -1,0 +1,134 @@
+src/server.js:820:      if (!fs.existsSync(filePath)) {
+src/index.js:25:const packageJson = JSON.parse(fs.readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), '../package.json'), 'utf-8'));
+src/index.js:1513:  if (fs.existsSync(kbPath)) {
+src/index.js:1516:      const conteudo = fs.readFileSync(path.join(kbPath, arquivo), 'utf-8');
+src/utils/feature-flags.js:7:import { existsSync, readFileSync } from 'fs';
+src/server-enhanced.js:335:  if (fs.existsSync(frontendPath)) {
+src/server-enhanced.js:367:const staticPath = fs.existsSync(frontendPath) ? frontendPath : publicPath;
+src/server-enhanced.js:735:    if (!fs.existsSync(documentPath)) {
+src/server-enhanced.js:1008:    if (fs.existsSync(customInstructionsPath)) {
+src/server-enhanced.js:1009:      const data = JSON.parse(fs.readFileSync(customInstructionsPath, 'utf8'));
+src/server-enhanced.js:1511:      if (fs.existsSync(kbDocsPath)) {
+src/server-enhanced.js:1526:              if (fs.existsSync(metadataPath)) {
+src/server-enhanced.js:2431:          if (!fs.existsSync(extractedTextPath)) {
+src/server-enhanced.js:2524:            if (fs.existsSync(kbDocsPath)) {
+src/server-enhanced.js:2525:              const data = fs.readFileSync(kbDocsPath, 'utf8');
+src/server-enhanced.js:2575:            fs.writeFileSync(kbDocsPath, JSON.stringify(kbDocs, null, 2));
+src/server-enhanced.js:3055:        const varDataExists = fs.existsSync('/var/data');
+src/server-enhanced.js:3071:          if (fs.existsSync('/var')) {
+src/server-enhanced.js:3094:          varExists: fs.existsSync('/var'),
+src/server-enhanced.js:3113:        const frontendExists = fs.existsSync(frontendPath);
+src/server-enhanced.js:3114:        const assetsExists = fs.existsSync(assetsPath);
+src/server-enhanced.js:3115:        const indexExists = fs.existsSync(indexPath);
+src/server-enhanced.js:3217:        exists: fs.existsSync(path1),
+src/server-enhanced.js:3218:        files: fs.existsSync(path1) ? fs.readdirSync(path1) : [],
+src/server-enhanced.js:3219:        assetsFiles: fs.existsSync(path.join(path1, 'assets')) ? fs.readdirSync(path.join(path1, 'assets')) : []
+src/server-enhanced.js:3223:        exists: fs.existsSync(path2),
+src/server-enhanced.js:3224:        files: fs.existsSync(path2) ? fs.readdirSync(path2) : [],
+src/server-enhanced.js:3225:        assetsFiles: fs.existsSync(path.join(path2, 'assets')) ? fs.readdirSync(path.join(path2, 'assets')) : []
+src/server-enhanced.js:3229:        exists: fs.existsSync(path3),
+src/server-enhanced.js:3230:        files: fs.existsSync(path3) ? fs.readdirSync(path3) : [],
+src/server-enhanced.js:3231:        assetsFiles: fs.existsSync(path.join(path3, 'assets')) ? fs.readdirSync(path.join(path3, 'assets')) : []
+src/server-enhanced.js:3235:        exists: fs.existsSync(path4),
+src/server-enhanced.js:3236:        files: fs.existsSync(path4) ? fs.readdirSync(path4) : [],
+src/server-enhanced.js:3237:        assetsFiles: fs.existsSync(path.join(path4, 'assets')) ? fs.readdirSync(path.join(path4, 'assets')) : []
+src/server-enhanced.js:3250:    if (fs.existsSync(indexPath)) {
+src/server-enhanced.js:3251:      const content = fs.readFileSync(indexPath, 'utf8');
+src/server-enhanced.js:3878:    if (!fs.existsSync(logsDir)) {
+src/server-enhanced.js:3879:      fs.mkdirSync(logsDir, { recursive: true });
+src/server-enhanced.js:3882:    if (!fs.existsSync(filePath)) {
+src/server-enhanced.js:3886:    const data = fs.readFileSync(filePath, 'utf8');
+src/server-enhanced.js:3900:    if (!fs.existsSync(logsDir)) {
+src/server-enhanced.js:3901:      fs.mkdirSync(logsDir, { recursive: true });
+src/server-enhanced.js:3904:    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+src/server-enhanced.js:3994:    if (!fs.existsSync(promptsDir)) {
+src/server-enhanced.js:3995:      fs.mkdirSync(promptsDir, { recursive: true });
+src/server-enhanced.js:4000:      const content = fs.readFileSync(path.join(promptsDir, file), 'utf8');
+src/server-enhanced.js:4024:    if (!fs.existsSync(filePath)) {
+src/server-enhanced.js:4028:    const content = fs.readFileSync(filePath, 'utf8');
+src/server-enhanced.js:4054:    if (!fs.existsSync(promptsDir)) {
+src/server-enhanced.js:4055:      fs.mkdirSync(promptsDir, { recursive: true });
+src/server-enhanced.js:4059:    fs.writeFileSync(filePath, content, 'utf8');
+src/server-enhanced.js:4089:    if (!fs.existsSync(promptsDir)) {
+src/server-enhanced.js:4090:      fs.mkdirSync(promptsDir, { recursive: true });
+src/server-enhanced.js:4095:    if (fs.existsSync(filePath)) {
+src/server-enhanced.js:4099:    fs.writeFileSync(filePath, content, 'utf8');
+src/server-enhanced.js:4124:    if (!fs.existsSync(filePath)) {
+src/server-enhanced.js:4458:    if (!fs.existsSync(kbPath)) {
+src/server-enhanced.js:4593:        if (fs.existsSync(kbDocsPath)) {
+src/server-enhanced.js:4594:          const data = fs.readFileSync(kbDocsPath, 'utf8');
+src/server-enhanced.js:4624:        fs.writeFileSync(kbDocsPath, JSON.stringify(kbDocs, null, 2));
+src/server-enhanced.js:4663:    if (!fs.existsSync(kbDocsPath)) {
+src/server-enhanced.js:4667:    const data = fs.readFileSync(kbDocsPath, 'utf8');
+src/server-enhanced.js:4698:    if (!fs.existsSync(kbDocsPath)) {
+src/server-enhanced.js:4702:    const data = fs.readFileSync(kbDocsPath, 'utf8');
+src/server-enhanced.js:4716:    if (!fs.existsSync(doc.path)) {
+src/server-enhanced.js:4742:    if (!fs.existsSync(kbDocsPath)) {
+src/server-enhanced.js:4760:        if (fs.existsSync(metadataPath)) {
+src/server-enhanced.js:4811:    if (!fs.existsSync(filePath)) {
+src/server-enhanced.js:4819:    if (fs.existsSync(metadataPath)) {
+src/server-enhanced.js:4838:    if (!fs.existsSync(filePath)) {
+src/server-enhanced.js:4846:    if (fs.existsSync(metadataPath)) {
+src/server-enhanced.js:4881:    if (fs.existsSync(kbDocsPath)) {
+src/server-enhanced.js:4898:    if (fs.existsSync(extractedPath)) {
+src/server-enhanced.js:4900:      if (fs.existsSync(extractedMetadata)) {
+src/server-enhanced.js:4974:      if (fs.existsSync(kbDocsPath)) {
+src/server-enhanced.js:5012:      if (fs.existsSync(kbDocsJsonPath)) {
+src/server-enhanced.js:5019:          if (doc.path && fs.existsSync(doc.path)) {
+src/server-enhanced.js:5078:    if (fs.existsSync(kbDocsPath)) {
+src/server-enhanced.js:5720:    if (!fs.existsSync(structuredPath)) {
+src/server-enhanced.js:5773:    if (!fs.existsSync(filePath)) {
+src/server-enhanced.js:5801:    if (!fs.existsSync(structuredPath)) {
+src/server-enhanced.js:5851:    if (!fs.existsSync(kbDocsPath)) {
+src/server-enhanced.js:5862:    const data = fs.readFileSync(kbDocsPath, 'utf8');
+src/server-enhanced.js:5903:    const modelsData = JSON.parse(fs.readFileSync(modelsPath, 'utf-8'));
+src/server-enhanced.js:6032:    const users = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
+src/server-enhanced.js:6042:      fs.writeFileSync(usersPath, JSON.stringify(users, null, 2));
+src/server-enhanced.js:6062:    const users = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
+src/server-enhanced.js:6086:    const users = JSON.parse(fs.readFileSync(usersPath, 'utf8'));
+src/server-enhanced.js:6091:      fs.writeFileSync(usersPath, JSON.stringify(users, null, 2));
+src/server-enhanced.js:7489:    if (fs.existsSync(projectsFilePath)) {
+src/server-enhanced.js:7490:      const data = fs.readFileSync(projectsFilePath, 'utf8');
+src/server-enhanced.js:7516:    if (!fs.existsSync(dataDir)) {
+src/server-enhanced.js:7517:      fs.mkdirSync(dataDir, { recursive: true });
+src/server-enhanced.js:7521:    fs.writeFileSync(projectsFilePath, JSON.stringify(projects, null, 2));
+src/server-enhanced.js:7548:    if (fs.existsSync(partnerPromptsFilePath)) {
+src/server-enhanced.js:7549:      const data = fs.readFileSync(partnerPromptsFilePath, 'utf8');
+src/server-enhanced.js:7567:    if (!fs.existsSync(dataDir)) {
+src/server-enhanced.js:7568:      fs.mkdirSync(dataDir, { recursive: true });
+src/server-enhanced.js:7571:    fs.writeFileSync(partnerPromptsFilePath, JSON.stringify(partnerPromptsCache, null, 2));
+src/server-enhanced.js:8236:      if (fs.existsSync(folderPath)) {
+src/server-enhanced.js:8242:            const content = fs.readFileSync(filePath, 'utf8');
+src/server-enhanced.js:8430:    if (!fs.existsSync(backupDir)) {
+src/server-enhanced.js:8482:    if (!fs.existsSync(filePath)) {
+src/server-enhanced.js:9283:  if (fs.existsSync(frontendIndexPath)) {
+src/modules/extracao.js:71:  if (!fs.existsSync(caminhoArquivo)) {
+src/modules/extracao.js:85:  if (!fs.existsSync(pastaSaida)) {
+src/modules/extracao.js:86:    fs.mkdirSync(pastaSaida, { recursive: true });
+src/modules/extracao.js:100:  if (!fs.existsSync(arquivoSaida)) {
+src/modules/extracao.js:369:  const textoOriginal = fs.readFileSync(extracao.arquivoSaida, 'utf-8');
+src/modules/extracao.js:383:    fs.writeFileSync(
+src/modules/extracao.js:390:  fs.writeFileSync(
+src/modules/extracao.js:396:  fs.writeFileSync(
+src/modules/bedrockAvancado.js:316:      const buffer = fs.readFileSync(imagemPath);
+src/modules/bedrockAvancado.js:404:    const imageBuffer = fs.readFileSync(imagemPath);
+src/modules/bedrockAvancado.js:426:        fs.writeFileSync(outputPath, outputBuffer);
+src/modules/bedrockAvancado.js:446:    const imageBuffer = fs.readFileSync(imagemPath);
+src/modules/bedrockAvancado.js:468:        fs.writeFileSync(outputPath, outputBuffer);
+src/modules/bedrockAvancado.js:521:        fs.writeFileSync(outputPath, outputBuffer);
+src/modules/bedrockAvancado.js:552:    const audioBuffer = fs.readFileSync(audioPath);
+src/modules/bedrockAvancado.js:625:    const videoBuffer = fs.readFileSync(videoPath);
+src/modules/documentos.js:458:    fs.writeFileSync(caminho, buffer);
+src/modules/documentos.js:475:  const imageBuffer = fs.readFileSync(caminhoImagem);
+src/modules/sdkTools.js:8:import { existsSync, createReadStream } from 'fs';
+src/modules/sdkTools.js:48:      if (!existsSync(file_path)) {
+src/modules/sdkTools.js:158:      if (!existsSync(file_path)) {
+src/modules/sdkTools.js:693:      if (!existsSync(dirPath)) {
+src/modules/ocrAvancado.js:9:import { existsSync } from 'fs';
+src/modules/jusbrasilAuth.js:109:    fs.writeFileSync(CONFIG.cookiesPath, JSON.stringify(cookies, null, 2));
+src/modules/jusbrasilAuth.js:117:  if (fs.existsSync(CONFIG.cookiesPath)) {
+src/modules/jusbrasilAuth.js:118:    const cookies = JSON.parse(fs.readFileSync(CONFIG.cookiesPath, 'utf-8'));
+src/modules/jusbrasilAuth.js:925:    cookiesSalvos: fs.existsSync(CONFIG.cookiesPath)
+src/modules/jusbrasilAuth.js:1093:  if (!fs.existsSync(CONFIG.cookiesPath)) {
+src/modules/bedrock-tools.js:480:          if (!fs.existsSync(kbDocsPath)) {
+src/modules/bedrock-tools.js:487:          const data = fs.readFileSync(kbDocsPath, 'utf8');

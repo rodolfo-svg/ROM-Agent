@@ -1,0 +1,3 @@
+src/config/database.js:63:        await client.query(`SET search_path TO ${schema}, public`);
+src/config/database.js:75:      await pgPool.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
+src/config/database.js:76:      await pgPool.query(`SET search_path TO ${schema}, public`);
