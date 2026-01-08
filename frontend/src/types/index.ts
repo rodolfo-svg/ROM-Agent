@@ -27,6 +27,10 @@ export interface Conversation {
   createdAt: string
   updatedAt: string
   model?: string
+  // Admin only fields
+  userId?: string | null
+  userName?: string | null
+  userEmail?: string | null
 }
 
 // Artifact types

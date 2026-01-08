@@ -14,6 +14,7 @@ interface ChatState {
 
   // Actions
   loadConversations: () => Promise<void>
+  loadAllConversations: () => Promise<void> // Admin only
   createConversation: () => Promise<Conversation>
   selectConversation: (id: string) => Promise<void>
   deleteConversation: (id: string) => Promise<void>
@@ -47,7 +48,7 @@ export const useChatStore = create<ChatState>()(
         return state.conversations.find(c => c.id === state.activeConversationId) || null
       },
 
-      // Carregar conversas do backend
+      // Carregar conversas do backend (usuário vê apenas suas conversas)
       loadConversations: async () => {
         set({ isLoading: true })
         try {
@@ -74,9 +75,12 @@ export const useChatStore = create<ChatState>()(
                 createdAt: c.created_at,
                 updatedAt: c.updated_at,
                 model: get().selectedModel,
+                // Incluir dados do usuário se disponível (para admin)
+                userName: c.user_name,
+                userEmail: c.user_email,
               }))
 
-              console.log('📥 loadConversations: Carregadas', conversations.length, 'conversas')
+              console.log('📥 loadConversations: Carregadas', conversations.length, 'conversas do usuário')
               console.log('   Mensagens preservadas:', conversations.filter((c: Conversation) => c.messages.length > 0).length)
 
               set({ conversations, isLoading: false })
@@ -84,6 +88,52 @@ export const useChatStore = create<ChatState>()(
           }
         } catch (error) {
           console.error('Erro ao carregar conversas:', error)
+          set({ isLoading: false })
+        }
+      },
+
+      // Carregar TODAS as conversas (apenas admin)
+      loadAllConversations: async () => {
+        set({ isLoading: true })
+        try {
+          const res = await fetch('/api/conversations/admin/all', {
+            credentials: 'include',
+          })
+
+          if (res.ok) {
+            const data = await res.json()
+
+            if (data.success && data.conversations) {
+              // Obter conversas atuais para preservar mensagens já carregadas
+              const existingConversations = get().conversations
+              const existingMessagesMap = new Map(
+                existingConversations.map(c => [c.id, c.messages])
+              )
+
+              // Mapear formato do backend para frontend
+              const conversations = data.conversations.map((c: any) => ({
+                id: c.id,
+                title: c.title,
+                messages: existingMessagesMap.get(c.id) || [],
+                createdAt: c.created_at,
+                updatedAt: c.updated_at,
+                model: get().selectedModel,
+                userName: c.user_name || 'Anônimo',
+                userEmail: c.user_email || '-',
+                userId: c.user_id,
+              }))
+
+              console.log('📥 loadAllConversations (ADMIN): Carregadas', conversations.length, 'conversas de todos os usuários')
+
+              set({ conversations, isLoading: false })
+            }
+          } else if (res.status === 403) {
+            console.warn('⚠️ Acesso negado ao endpoint admin')
+            // Fallback para conversas do usuário
+            get().loadConversations()
+          }
+        } catch (error) {
+          console.error('Erro ao carregar todas as conversas:', error)
           set({ isLoading: false })
         }
       },
