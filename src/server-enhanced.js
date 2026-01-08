@@ -267,6 +267,52 @@ checkMigrations().catch(err => {
 });
 
 
+// ============================================================
+// HEALTH CHECK - MIGRATIONS
+// ============================================================
+
+async function checkMigrations() {
+  try {
+    const pool = getPostgresPool();
+    if (!pool) {
+      console.warn('⚠️  [MIGRATIONS] Pool não disponível');
+      return false;
+    }
+
+    // Verificar se schema_migrations existe
+    const schemaCheck = await pool.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables
+        WHERE table_name = 'schema_migrations'
+      );
+    `);
+
+    if (!schemaCheck.rows[0].exists) {
+      console.warn('⚠️  [MIGRATIONS] Tabela schema_migrations não existe');
+      return false;
+    }
+
+    // Verificar versão mais recente
+    const versionCheck = await pool.query(`
+      SELECT version FROM schema_migrations
+      ORDER BY version DESC LIMIT 1
+    `);
+
+    const latestVersion = versionCheck.rows[0]?.version;
+    console.log(`✅ [MIGRATIONS] Schema atualizado (v${latestVersion})`);
+    return true;
+  } catch (error) {
+    console.error('❌ [MIGRATIONS] Erro:', error.message);
+    return false;
+  }
+}
+
+// Executar check antes de iniciar servidor
+checkMigrations().catch(err => {
+  console.warn('⚠️  [STARTUP] Migrations check falhou:', err.message);
+});
+
+
 try {
   await initRedis();
   console.log('✅ [STARTUP] Redis inicializado com sucesso');
