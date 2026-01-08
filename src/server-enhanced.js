@@ -221,6 +221,52 @@ try {
   console.error('⚠️  [STARTUP] Sessões usarão MemoryStore (dados perdidos em restart)');
 }
 
+// ============================================================
+// HEALTH CHECK - MIGRATIONS
+// ============================================================
+
+async function checkMigrations() {
+  try {
+    const pool = getPostgresPool();
+    if (!pool) {
+      console.warn('⚠️  [MIGRATIONS] Pool não disponível');
+      return false;
+    }
+
+    // Verificar se schema_migrations existe
+    const schemaCheck = await pool.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables
+        WHERE table_name = 'schema_migrations'
+      );
+    `);
+
+    if (!schemaCheck.rows[0].exists) {
+      console.warn('⚠️  [MIGRATIONS] Tabela schema_migrations não existe');
+      return false;
+    }
+
+    // Verificar versão mais recente
+    const versionCheck = await pool.query(`
+      SELECT version FROM schema_migrations
+      ORDER BY version DESC LIMIT 1
+    `);
+
+    const latestVersion = versionCheck.rows[0]?.version;
+    console.log(`✅ [MIGRATIONS] Schema atualizado (v${latestVersion})`);
+    return true;
+  } catch (error) {
+    console.error('❌ [MIGRATIONS] Erro:', error.message);
+    return false;
+  }
+}
+
+// Executar check antes de iniciar servidor
+checkMigrations().catch(err => {
+  console.warn('⚠️  [STARTUP] Migrations check falhou:', err.message);
+});
+
+
 try {
   await initRedis();
   console.log('✅ [STARTUP] Redis inicializado com sucesso');
@@ -1950,71 +1996,6 @@ Sempre cite as fontes corretamente e formate as referências em ABNT.`,
 });
 
 // API - Chat com Streaming Real-Time (SSE)
-app.post('/api/chat-stream', async (req, res) => {
-  try {
-    const { message, modelo = 'global.anthropic.claude-sonnet-4-5-20250929-v1:0' } = req.body;
-    const history = getHistory(req.session.id);
-
-    // Configurar SSE
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.setHeader('X-Accel-Buffering', 'no'); // Nginx
-
-    console.log('🌊 [Stream] Iniciando streaming...', { modelo });
-
-    const { conversarStream } = await import('./modules/bedrock.js');
-
-    let textoCompleto = '';
-    const startTime = Date.now();
-
-    await conversarStream(
-      message,
-      (chunk) => {
-        textoCompleto += chunk;
-        res.write(`data: ${JSON.stringify({ type: 'chunk', text: chunk })}\n\n`);
-      },
-      {
-        modelo,
-        historico: history.slice(-30), // Últimas 30 mensagens
-        maxTokens: 4096,
-        temperature: 0.7
-      }
-    );
-
-    const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-
-    // Enviar evento final
-    res.write(`data: ${JSON.stringify({
-      type: 'done',
-      fullText: textoCompleto,
-      elapsed: `${elapsed}s`,
-      modelo
-    })}\n\n`);
-    res.end();
-
-    // Adicionar ao histórico
-    history.push({
-      role: 'user',
-      content: message,
-      timestamp: new Date()
-    });
-
-    history.push({
-      role: 'assistant',
-      content: textoCompleto,
-      timestamp: new Date(),
-      modelo,
-      streaming: true
-    });
-
-    console.log(`✅ [Stream] Concluído em ${elapsed}s`);
-  } catch (error) {
-    console.error('❌ [Stream] Erro:', error);
-    res.write(`data: ${JSON.stringify({ type: 'error', error: error.message })}\n\n`);
-    res.end();
-  }
-});
 
 // Alias para compatibilidade com frontend React V4
 app.post('/api/chat/stream', async (req, res) => {
