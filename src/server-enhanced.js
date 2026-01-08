@@ -251,7 +251,12 @@ app.use(sessionEnhancerMiddleware);
 
 // 1. Security Headers (Helmet + custom headers)
 // Protege contra XSS, clickjacking, MIME sniffing, etc.
-app.use(securityHeadersMiddleware);
+// IMPORTANTE: securityHeadersMiddleware pode ser um array em produção
+if (Array.isArray(securityHeadersMiddleware)) {
+  securityHeadersMiddleware.forEach(middleware => app.use(middleware));
+} else {
+  app.use(securityHeadersMiddleware);
+}
 console.log('🔒 [SECURITY] Headers de segurança (Helmet) aplicados');
 
 // 2. IP Blocker (verifica blacklist antes de processar requests)

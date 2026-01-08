@@ -10,7 +10,7 @@
  * @version 5.0.0 - Network First
  */
 
-const VERSION = 'v6.1.0'; // ⚡ Atualizado: Fix streaming SSE bypass
+const VERSION = 'v6.2.0'; // ⚡ Atualizado: Fix Google Fonts CSP + JusBrasil removal
 const STATIC_CACHE = `rom-agent-static-${VERSION}`;
 const RUNTIME_CACHE = `rom-agent-runtime-${VERSION}`;
 
