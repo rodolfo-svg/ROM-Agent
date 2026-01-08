@@ -39,6 +39,9 @@ import { resilientInvoke } from '../utils/resilient-invoke.js';
 // Multi-Level Cache for 10-50x performance improvement
 import { getCache } from '../utils/multi-level-cache.js';
 
+// Model Capabilities Detection para multi-model compatibility
+import { shouldEnableTools, getToolsUnavailableMessage, getModelCapabilities } from '../utils/model-capabilities.js';
+
 // ============================================================
 // CONFIGURAÇÃO
 // ============================================================
@@ -317,9 +320,15 @@ export async function conversar(prompt, options = {}) {
         console.log(`💰 [Prompt Caching] ENABLED for KB context (${kbContext.length} chars)`);
       }
 
-      // Adicionar tools (se habilitado)
-      if (enableTools) {
+      // ✅ NOVO v2.8.0: Multi-model compatibility - verificar se modelo suporta tool use
+      const actualModelId = INFERENCE_PROFILES[modelo] || modelo;
+      const toolsEnabled = shouldEnableTools(actualModelId, enableTools);
+
+      if (toolsEnabled) {
         commandParams.toolConfig = { tools: BEDROCK_TOOLS };
+      } else if (loopCount === 0 && enableTools && !getModelCapabilities(actualModelId).toolUse) {
+        // Log apenas na primeira iteração se modelo não suporta tools
+        console.log(`⚠️ [Converse] Tools DISABLED - modelo não suporta tool use`);
       }
 
       const command = new ConverseCommand(commandParams);
@@ -563,12 +572,33 @@ export async function conversarStream(prompt, onChunk, options = {}) {
   }
 
   // ✅ NOVO v2.7.2: Adicionar ferramentas (jurisprudência, KB, CNJ, súmulas)
-  if (enableTools) {
+  // ✅ NOVO v2.8.0: Multi-model compatibility - verificar se modelo suporta tool use
+  const actualModelId = INFERENCE_PROFILES[modelo] || modelo;
+  const modelCapabilities = getModelCapabilities(actualModelId);
+  const toolsEnabled = shouldEnableTools(actualModelId, enableTools);
+
+  if (toolsEnabled) {
     commandParams.toolConfig = { tools: BEDROCK_TOOLS };
-    console.log(`🔧 [Stream] Tools ENABLED (${BEDROCK_TOOLS.length} ferramentas disponíveis)`);
+    console.log(`🔧 [Stream] Tools ENABLED (${BEDROCK_TOOLS.length} ferramentas | ${modelCapabilities.provider})`);
+  } else {
+    if (enableTools && !modelCapabilities.toolUse) {
+      // Usuário queria tools, mas modelo não suporta
+      console.log(`⚠️ [Stream] Tools DISABLED - modelo ${modelCapabilities.provider} não suporta tool use`);
+      console.log(`💡 [Stream] Use Claude Sonnet/Opus ou Amazon Nova Pro para busca automática`);
+    } else {
+      console.log(`🔧 [Stream] Tools DISABLED (desabilitado pelo usuário)`);
+    }
   }
 
   try {
+    // ✅ NOVO v2.8.0: Informar usuário se tools estão indisponíveis devido ao modelo
+    if (enableTools && !modelCapabilities.toolUse) {
+      const warningMessage = getToolsUnavailableMessage(actualModelId);
+      if (warningMessage) {
+        onChunk(warningMessage + '\n\n');
+      }
+    }
+
     let currentMessages = messages;
     let loopCount = 0;
     const MAX_TOOL_LOOPS = 4; // ✅ CORREÇÃO: 4 loops para permitir: busca inicial + busca complementar + apresentação dos resultados + margem
