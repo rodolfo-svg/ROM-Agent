@@ -1,14 +1,29 @@
 -- ════════════════════════════════════════════════════════════════
--- ROM AGENT - MIGRATION 003
+-- ROM AGENT - MIGRATION 003 (FIXED)
 -- ════════════════════════════════════════════════════════════════
 -- Alterar tipo da coluna id de UUID para VARCHAR
 -- Permite IDs customizados (conv_xxx) das conversas antigas do JSON
+-- FIX: Dropar foreign key antes de alterar tipos
 -- ════════════════════════════════════════════════════════════════
 
--- Verificar se a coluna já é VARCHAR
+-- PASSO 1: Dropar foreign key constraint (se existir)
 DO $$
 BEGIN
-  -- Se a coluna for UUID, alterar para VARCHAR
+  IF EXISTS (
+    SELECT 1 FROM information_schema.table_constraints
+    WHERE constraint_name = 'messages_conversation_id_fkey'
+    AND table_name = 'messages'
+  ) THEN
+    ALTER TABLE messages DROP CONSTRAINT messages_conversation_id_fkey;
+    RAISE NOTICE '✅ Foreign key constraint removida';
+  ELSE
+    RAISE NOTICE '⏭️  Foreign key constraint já removida';
+  END IF;
+END $$;
+
+-- PASSO 2: Alterar conversations.id para VARCHAR
+DO $$
+BEGIN
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
     WHERE table_name = 'conversations'
@@ -27,7 +42,7 @@ BEGIN
   END IF;
 END $$;
 
--- Alterar messages.conversation_id para VARCHAR também
+-- PASSO 3: Alterar messages.conversation_id para VARCHAR
 DO $$
 BEGIN
   IF EXISTS (
@@ -43,12 +58,28 @@ BEGIN
   END IF;
 END $$;
 
--- Recriar índices se necessário
-DROP INDEX IF EXISTS conversations_pkey CASCADE;
-ALTER TABLE conversations ADD PRIMARY KEY (id);
+-- PASSO 4: Recriar foreign key constraint
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints
+    WHERE constraint_name = 'messages_conversation_id_fkey'
+    AND table_name = 'messages'
+  ) THEN
+    ALTER TABLE messages
+      ADD CONSTRAINT messages_conversation_id_fkey
+      FOREIGN KEY (conversation_id)
+      REFERENCES conversations(id)
+      ON DELETE CASCADE;
+    RAISE NOTICE '✅ Foreign key constraint recriada';
+  ELSE
+    RAISE NOTICE '⏭️  Foreign key constraint já existe';
+  END IF;
+END $$;
 
-DROP INDEX IF EXISTS messages_conversation_id_idx CASCADE;
-CREATE INDEX messages_conversation_id_idx ON messages(conversation_id);
+-- PASSO 5: Recriar índices
+DROP INDEX IF EXISTS messages_conversation_id_idx;
+CREATE INDEX IF NOT EXISTS messages_conversation_id_idx ON messages(conversation_id);
 
 -- Adicionar comentários
 COMMENT ON COLUMN conversations.id IS 'ID da conversa (VARCHAR para aceitar UUIDs e IDs customizados como conv_xxx)';
@@ -59,15 +90,14 @@ DO $$
 BEGIN
   RAISE NOTICE '';
   RAISE NOTICE '════════════════════════════════════════════════════════════════';
-  RAISE NOTICE 'MIGRATION 003 - CONCLUÍDA';
+  RAISE NOTICE 'MIGRATION 003 - CONCLUÍDA COM SUCESSO';
   RAISE NOTICE '════════════════════════════════════════════════════════════════';
   RAISE NOTICE '';
   RAISE NOTICE '✅ conversations.id agora aceita:';
   RAISE NOTICE '   - UUIDs (novas conversas)';
   RAISE NOTICE '   - IDs customizados tipo conv_xxx (conversas antigas)';
   RAISE NOTICE '';
-  RAISE NOTICE '💡 Próximo passo:';
-  RAISE NOTICE '   Executar: node scripts/migrate-conversations-to-postgres.js';
+  RAISE NOTICE '✅ Foreign key constraint recriada corretamente';
   RAISE NOTICE '';
   RAISE NOTICE '════════════════════════════════════════════════════════════════';
 END $$;
