@@ -826,7 +826,12 @@ COMECE AGORA escrevendo "Com base nas buscas realizadas, encontrei:" e LISTE IME
         });
 
         // Executar UMA última iteração APENAS para apresentação
-        const finalCommand = new ConverseStreamCommand({ ...commandParams, messages: currentMessages, toolConfig: undefined }); // SEM TOOLS
+        // ⚠️ IMPORTANTE: toolConfig DEVE ser definido (array vazio) mesmo sem tools, pois mensagens anteriores têm toolUse blocks
+        const finalCommand = new ConverseStreamCommand({
+          ...commandParams,
+          messages: currentMessages,
+          toolConfig: { tools: [] } // Array vazio - desabilita novas tools mas mantém compatibilidade
+        });
         const finalResponse = await retryAwsCommand(client, finalCommand, { modelId: commandParams.modelId, operation: 'converse_stream' });
 
         let finalText = '';
