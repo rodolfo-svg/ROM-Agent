@@ -1,47 +1,16 @@
 {
-  "name": "IAROM - Sistema de Análise Processual",
-  "short_name": "IAROM",
-  "description": "Sistema Completo de Extração e Análise Processual com IA",
-  "start_url": "/dashboard",
+  "name": "ROM Agent",
+  "short_name": "ROM Agent",
+  "description": "Assistente Jurídico Inteligente",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#D97706",
-  "orientation": "portrait-primary",
-  "scope": "/",
   "icons": [
     {
-      "src": "/icons/icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icons/icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
-    }
-  ],
-  "categories": ["productivity", "business"],
-  "shortcuts": [
-    {
-      "name": "Chat IA",
-      "short_name": "Chat",
-      "description": "Abrir chat com IA jurídica",
-      "url": "/chat",
-      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
-    },
-    {
-      "name": "Processos",
-      "short_name": "Processos",
-      "description": "Ver lista de processos",
-      "url": "/processos",
-      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
     }
   ]
 }

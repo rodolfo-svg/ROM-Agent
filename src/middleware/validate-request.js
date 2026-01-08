@@ -1,25 +1,14 @@
-/**
- * Middleware de validação de request com Zod
- */
-import { z } from 'zod';
-
-export function validateRequest(schema) {
-  return (req, res, next) => {
+export const validateRequest = (schema) => {
+  return async (req, res, next) => {
     try {
-      schema.parse(req.body);
+      const validated = await schema.parseAsync(req.body);
+      req.validatedBody = validated;
       next();
     } catch (error) {
-      if (error instanceof z.ZodError) {
-        return res.status(400).json({
-          success: false,
-          error: 'Dados inválidos',
-          details: error.errors.map(e => ({
-            field: e.path.join('.'),
-            message: e.message
-          }))
-        });
-      }
-      next(error);
+      res.status(400).json({
+        error: 'Validation failed',
+        details: error.errors
+      });
     }
   };
-}
+};
