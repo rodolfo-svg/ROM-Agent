@@ -1,16 +1,41 @@
 {
-  "name": "ROM Agent",
+  "name": "ROM Agent - Assistente Jurídico",
   "short_name": "ROM Agent",
-  "description": "Assistente Jurídico Inteligente",
+  "description": "Assistente Jurídico Inteligente com IA",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#D97706",
+  "orientation": "portrait-primary",
   "icons": [
+    {
+      "src": "/icons/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
     {
       "src": "/favicon.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     }
-  ]
+  ],
+  "shortcuts": [
+    {
+      "name": "Nova Consulta",
+      "short_name": "Consulta",
+      "description": "Iniciar nova consulta jurídica",
+      "url": "/chat",
+      "icons": [{ "src": "/favicon.ico", "sizes": "96x96" }]
+    },
+    {
+      "name": "Upload Documento",
+      "short_name": "Upload",
+      "description": "Fazer upload de documento",
+      "url": "/upload",
+      "icons": [{ "src": "/favicon.ico", "sizes": "96x96" }]
+    }
+  ],
+  "categories": ["productivity", "business", "legal"],
+  "screenshots": []
 }
