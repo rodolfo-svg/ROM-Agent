@@ -44,6 +44,8 @@ export const securityHeaders = helmet({
         "'self'",
         "https://api.anthropic.com", // Claude API
         "https://cloudflareinsights.com", // Cloudflare Analytics
+        "https://fonts.googleapis.com", // Google Fonts CSS (Service Worker fetch)
+        "https://fonts.gstatic.com", // Google Fonts files (Service Worker fetch)
         "wss://*", // WebSocket para Socket.IO
         "ws://*" // WebSocket local
       ],
