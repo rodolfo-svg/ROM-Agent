@@ -99,9 +99,10 @@ router.get('/', async (req, res) => {
 /**
  * POST /api/conversations
  * Cria nova conversa
+ * MODIFICADO: Suporta usuários autenticados E anônimos
  */
-router.post('/', requireAuth, async (req, res) => {
-  const userId = req.session.user.id;
+router.post('/', async (req, res) => {
+  const userId = req.session?.user?.id || null;
   const { title } = req.body;
 
   try {
@@ -142,9 +143,10 @@ router.post('/', requireAuth, async (req, res) => {
 /**
  * GET /api/conversations/:id
  * Busca conversa específica com todas as mensagens
+ * MODIFICADO: Suporta usuários autenticados E anônimos
  */
-router.get('/:id', requireAuth, async (req, res) => {
-  const userId = req.session.user.id;
+router.get('/:id', async (req, res) => {
+  const userId = req.session?.user?.id || null;
   const { id } = req.params;
 
   try {
@@ -156,13 +158,24 @@ router.get('/:id', requireAuth, async (req, res) => {
       });
     }
 
-    // Buscar conversa
-    const convResult = await pool.query(
-      `SELECT id, title, created_at, updated_at
-       FROM conversations
-       WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL`,
-      [id, userId]
-    );
+    // Buscar conversa (com ou sem userId)
+    let convResult;
+    if (userId) {
+      convResult = await pool.query(
+        `SELECT id, title, created_at, updated_at
+         FROM conversations
+         WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL`,
+        [id, userId]
+      );
+    } else {
+      // Para usuários anônimos, buscar por user_id NULL
+      convResult = await pool.query(
+        `SELECT id, title, created_at, updated_at
+         FROM conversations
+         WHERE id = $1 AND user_id IS NULL AND deleted_at IS NULL`,
+        [id]
+      );
+    }
 
     if (convResult.rows.length === 0) {
       return res.status(404).json({
@@ -304,9 +317,10 @@ router.delete('/:id', requireAuth, async (req, res) => {
 /**
  * POST /api/conversations/:id/messages
  * Adiciona mensagem à conversa
+ * MODIFICADO: Suporta usuários autenticados E anônimos
  */
-router.post('/:id/messages', requireAuth, async (req, res) => {
-  const userId = req.session.user.id;
+router.post('/:id/messages', async (req, res) => {
+  const userId = req.session?.user?.id || null;
   const { id } = req.params;
   const { role, content, model } = req.body;
 
@@ -334,11 +348,19 @@ router.post('/:id/messages', requireAuth, async (req, res) => {
       });
     }
 
-    // Verificar se conversa pertence ao usuário
-    const convCheck = await pool.query(
-      `SELECT id FROM conversations WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL`,
-      [id, userId]
-    );
+    // Verificar se conversa existe (com ou sem userId)
+    let convCheck;
+    if (userId) {
+      convCheck = await pool.query(
+        `SELECT id FROM conversations WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL`,
+        [id, userId]
+      );
+    } else {
+      convCheck = await pool.query(
+        `SELECT id FROM conversations WHERE id = $1 AND user_id IS NULL AND deleted_at IS NULL`,
+        [id]
+      );
+    }
 
     if (convCheck.rows.length === 0) {
       return res.status(404).json({
