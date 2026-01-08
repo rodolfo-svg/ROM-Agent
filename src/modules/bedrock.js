@@ -768,20 +768,40 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         currentMessages.push({
           role: 'user',
           content: [{
-            text: `🚨 ATENÇÃO: Você executou ${loopCount} buscas e encontrou resultados.
+            text: `🚨 IMPERATIVO CRÍTICO - APRESENTAÇÃO OBRIGATÓRIA
 
-AGORA você DEVE IMEDIATAMENTE apresentar os resultados para o usuário.
+Você executou ${loopCount} buscas de jurisprudência. As ferramentas retornaram resultados COMPLETOS nas mensagens acima.
 
-NÃO execute mais buscas. NÃO pense. NÃO planeje.
-APENAS APRESENTE os resultados que você já encontrou nas ferramentas acima.
+═══════════════════════════════════════════════════════════════
+AGORA você DEVE IMEDIATAMENTE:
+═══════════════════════════════════════════════════════════════
 
-Comece AGORA listando os resultados com:
-- Tribunal
-- Número do processo/decisão
-- Ementa resumida
-- Link
+1. APRESENTAR TODOS os resultados encontrados (súmulas, decisões, temas, IRDR, teses jurisprudenciais, acórdãos, doutrina)
 
-ESCREVA A PRIMEIRA PALAVRA AGORA!`
+2. Para CADA resultado encontrado nas ferramentas acima, escreva:
+   📋 **[Número] Título/Ementa**
+   Tribunal: [tribunal]
+   Data: [data se disponível]
+   Tipo: [súmula/decisão/tese/IRDR/doutrina]
+   Ementa: [resumo da ementa - MÍNIMO 2 linhas]
+   Link: [URL completo]
+
+3. ORGANIZE por relevância e tipo
+
+4. Após listar TODOS os resultados, faça uma ANÁLISE JURÍDICA respondendo à pergunta do usuário com base nos resultados
+
+═══════════════════════════════════════════════════════════════
+PROIBIÇÕES ABSOLUTAS:
+═══════════════════════════════════════════════════════════════
+
+❌ NÃO execute mais buscas
+❌ NÃO diga "não encontrei resultados" (você JÁ encontrou!)
+❌ NÃO resuma em 1 linha (detalhe CADA resultado)
+❌ NÃO omita nenhum resultado encontrado
+
+═══════════════════════════════════════════════════════════════
+
+COMECE AGORA escrevendo "Com base nas buscas realizadas, encontrei:" e LISTE IMEDIATAMENTE o primeiro resultado!`
           }]
         });
 
