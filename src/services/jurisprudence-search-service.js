@@ -143,17 +143,18 @@ class JurisprudenceSearchService {
         );
       }
 
-      // PRIORIDADE 3: JusBrasil (timeout agressivo - frequentemente falha)
-      if (this.config.jusbrasil.enabled) {
-        sources.push('jusbrasil');
-        searchPromises.push(
-          this.withTimeout(
-            this.searchJusBrasil(tese, { limit, tribunal }),
-            JUSBRASIL_TIMEOUT,
-            'JusBrasil'
-          )
-        );
-      }
+      // ❌ PRIORIDADE 3: JusBrasil - DESABILITADO (100% bloqueio anti-bot)
+      // Google Custom Search já indexa JusBrasil sem bloqueios
+      // if (this.config.jusbrasil.enabled) {
+      //   sources.push('jusbrasil');
+      //   searchPromises.push(
+      //     this.withTimeout(
+      //       this.searchJusBrasil(tese, { limit, tribunal }),
+      //       JUSBRASIL_TIMEOUT,
+      //       'JusBrasil'
+      //     )
+      //   );
+      // }
 
       // Executar todas as buscas em paralelo
       const results = await Promise.allSettled(searchPromises);
