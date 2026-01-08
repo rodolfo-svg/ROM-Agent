@@ -57,29 +57,31 @@ export const BEDROCK_TOOLS = [
       }
     }
   },
-  {
-    toolSpec: {
-      name: 'pesquisar_jusbrasil',
-      description: 'Pesquisa jurisprudência e doutrina no Jusbrasil, maior banco de dados jurídicos do Brasil. Use para encontrar acórdãos, artigos jurídicos, notícias e peças processuais. Fonte oficial e confiável.',
-      inputSchema: {
-        json: {
-          type: 'object',
-          properties: {
-            termo: {
-              type: 'string',
-              description: 'Termo de busca jurídica (ex: "usucapião", "IPTU")'
-            },
-            limite: {
-              type: 'number',
-              description: 'Número máximo de resultados (padrão: 10)',
-              default: 10
-            }
-          },
-          required: ['termo']
-        }
-      }
-    }
-  },
+  // ❌ JusBrasil DESABILITADO - 100% bloqueio anti-bot
+  // Usar Google Custom Search que indexa JusBrasil sem bloqueios
+  // {
+  //   toolSpec: {
+  //     name: 'pesquisar_jusbrasil',
+  //     description: 'Pesquisa jurisprudência e doutrina no Jusbrasil, maior banco de dados jurídicos do Brasil. Use para encontrar acórdãos, artigos jurídicos, notícias e peças processuais. Fonte oficial e confiável.',
+  //     inputSchema: {
+  //       json: {
+  //         type: 'object',
+  //         properties: {
+  //           termo: {
+  //             type: 'string',
+  //             description: 'Termo de busca jurídica (ex: "usucapião", "IPTU")'
+  //           },
+  //           limite: {
+  //             type: 'number',
+  //             description: 'Número máximo de resultados (padrão: 10)',
+  //             default: 10
+  //           }
+  //         },
+  //         required: ['termo']
+  //       }
+  //     }
+  //   }
+  // },
   {
     toolSpec: {
       name: 'consultar_cnj_datajud',
@@ -274,49 +276,42 @@ export async function executeTool(toolName, toolInput) {
         };
       }
 
-      case 'pesquisar_jusbrasil': {
-        const { termo, limite = 10 } = toolInput;
-
-        console.log(`🔍 [Jusbrasil] Pesquisando: ${termo}`);
-
-        // ✅ ATUALIZADO: Usar serviço novo (JusBrasil Client com autenticação)
-        const resultado = await jurisprudenceService.searchJusBrasil(termo, { limit: limite });
-
-        if (!resultado.success && !resultado.results) {
-          return {
-            success: false,
-            error: resultado.error || 'Erro desconhecido',
-            content: `Erro ao buscar no Jusbrasil: ${resultado.error || 'Erro desconhecido'}`
-          };
-        }
-
-        // Formatar resultado
-        const totalResultados = resultado.results?.length || 0;
-        let respostaFormatada = `\n📚 **Jusbrasil - "${termo}"** (${totalResultados} resultados)\n\n`;
-
-        if (resultado.results && resultado.results.length > 0) {
-          resultado.results.slice(0, 5).forEach((item, idx) => {
-            respostaFormatada += `**[${idx + 1}] ${item.titulo || item.title || 'Documento'}**\n`;
-            if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
-            if (item.data) respostaFormatada += `Data: ${item.data}\n`;
-            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
-            if (item.link) respostaFormatada += `Link: ${item.link}\n`;
-            respostaFormatada += '\n';
-          });
-        }
-
-        console.log(`✅ [Jusbrasil] ${totalResultados} resultados encontrados`);
-
-        return {
-          success: true,
-          content: respostaFormatada,
-          metadata: {
-            termo,
-            fonte: 'Jusbrasil',
-            totalResultados
-          }
-        };
-      }
+      // ❌ DESABILITADO: JusBrasil com 100% bloqueio anti-bot
+      // Google Custom Search agora indexa JusBrasil sem bloqueios
+      // case 'pesquisar_jusbrasil': {
+      //   const { termo, limite = 10 } = toolInput;
+      //   console.log(`🔍 [Jusbrasil] Pesquisando: ${termo}`);
+      //   const resultado = await jurisprudenceService.searchJusBrasil(termo, { limit: limite });
+      //   if (!resultado.success && !resultado.results) {
+      //     return {
+      //       success: false,
+      //       error: resultado.error || 'Erro desconhecido',
+      //       content: `Erro ao buscar no Jusbrasil: ${resultado.error || 'Erro desconhecido'}`
+      //     };
+      //   }
+      //   const totalResultados = resultado.results?.length || 0;
+      //   let respostaFormatada = `\n📚 **Jusbrasil - "${termo}"** (${totalResultados} resultados)\n\n`;
+      //   if (resultado.results && resultado.results.length > 0) {
+      //     resultado.results.slice(0, 5).forEach((item, idx) => {
+      //       respostaFormatada += `**[${idx + 1}] ${item.titulo || item.title || 'Documento'}**\n`;
+      //       if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
+      //       if (item.data) respostaFormatada += `Data: ${item.data}\n`;
+      //       if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
+      //       if (item.link) respostaFormatada += `Link: ${item.link}\n`;
+      //       respostaFormatada += '\n';
+      //     });
+      //   }
+      //   console.log(`✅ [Jusbrasil] ${totalResultados} resultados encontrados`);
+      //   return {
+      //     success: true,
+      //     content: respostaFormatada,
+      //     metadata: {
+      //       termo,
+      //       fonte: 'Jusbrasil',
+      //       totalResultados
+      //     }
+      //   };
+      // }
 
       case 'consultar_cnj_datajud': {
         const { numeroProcesso } = toolInput;
@@ -614,12 +609,7 @@ FERRAMENTAS DISPONÍVEIS (FONTES OFICIAIS E VERIFICÁVEIS):
    - tribunal (opcional): "STF" | "STJ" | "TST" | "TSE"
    - limite (opcional): número (padrão: 5)
 
-2. **pesquisar_jusbrasil**: Pesquisa no Jusbrasil (maior banco de dados jurídicos do Brasil)
-   Parâmetros:
-   - termo (obrigatório): string - termo de busca jurídica
-   - limite (opcional): número (padrão: 10)
-
-3. **consultar_cnj_datajud**: Consulta processo específico no CNJ DataJud (fonte 100% oficial)
+2. **consultar_cnj_datajud**: Consulta processo específico no CNJ DataJud (fonte 100% oficial)
    Parâmetros:
    - numeroProcesso (obrigatório): string - número do processo CNJ
 
@@ -647,8 +637,7 @@ IMPORTANTE: Quando precisar usar uma ferramenta, responda EXATAMENTE no formato:
 </tool_use>
 
 Escolha a ferramenta mais apropriada para cada necessidade:
-- Jurisprudência geral → pesquisar_jurisprudencia
-- Busca ampla (doutrina, artigos) → pesquisar_jusbrasil
+- Jurisprudência geral → pesquisar_jurisprudencia (inclui JusBrasil via Google)
 - Consultar processo específico → consultar_cnj_datajud
 - Súmulas e orientações consolidadas → pesquisar_sumulas
 - Documentos enviados pelo usuário → consultar_kb

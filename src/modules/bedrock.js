@@ -571,7 +571,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
   try {
     let currentMessages = messages;
     let loopCount = 0;
-    const MAX_TOOL_LOOPS = 3; // Máximo de iterações de tool use em streaming
+    const MAX_TOOL_LOOPS = 2; // ⚡ Reduzido de 3→2 para evitar múltiplas iterações desnecessárias
 
     while (loopCount < MAX_TOOL_LOOPS) {
       const command = new ConverseStreamCommand({ ...commandParams, messages: currentMessages });
