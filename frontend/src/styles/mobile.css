@@ -1,0 +1,40 @@
+/* ROM Agent - Mobile Optimizations */
+
+@media (max-width: 768px) {
+  /* Aumentar áreas de toque */
+  button, a, input[type="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Esconder scrollbars em mobile */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Otimizar fontes para mobile */
+  body {
+    font-size: 16px; /* Previne zoom no iOS */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Safe areas para iPhone X+ */
+  .app-container {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Otimizar inputs */
+  input, textarea, select {
+    font-size: 16px; /* Previne zoom */
+  }
+}
+
+/* Landscape mobile */
+@media (max-width: 768px) and (orientation: landscape) {
+  .sidebar {
+    display: none; /* Esconder sidebar em landscape */
+  }
+}
