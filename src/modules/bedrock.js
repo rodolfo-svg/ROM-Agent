@@ -666,6 +666,8 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
       // Executar cada ferramenta e adicionar resultados
       const toolResults = [];
+      let previewShown = false;
+
       for (const tool of toolUseData) {
         console.log(`🔧 Executando ferramenta: ${tool.name}`);
 
@@ -684,6 +686,15 @@ export async function conversarStream(prompt, onChunk, options = {}) {
           // ⚡ FEEDBACK: Informar resultado da ferramenta
           const successMsg = result.success ? ' ✓\n' : ' ✗\n';
           onChunk(successMsg);
+
+          // ⚡ PREVIEW IMEDIATO: Mostrar primeiros resultados assim que chegam (anti-silêncio)
+          if (!previewShown && result.success && result.content && tool.name === 'pesquisar_jurisprudencia') {
+            const previewMatch = result.content.match(/\*\*\[1\]\s+(.{0,150})/);
+            if (previewMatch) {
+              onChunk(`\n💡 Preview: ${previewMatch[1]}...\n`);
+              previewShown = true;
+            }
+          }
 
           toolResults.push({
             toolResult: {
@@ -714,8 +725,8 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         content: toolResults
       });
 
-      // Enviar indicador de conclusão
-      onChunk(`✅ Pesquisa concluída. Analisando resultados...\n\n`);
+      // ⚡ STREAMING FORÇADO: Enviar header para forçar Claude a começar a escrever
+      onChunk(`✅ Pesquisa concluída.\n\n📊 **Resultados Encontrados:**\n\n`);
 
       loopCount++;
       // Loop continua para próxima iteração
