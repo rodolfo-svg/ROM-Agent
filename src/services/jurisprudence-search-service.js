@@ -115,9 +115,9 @@ class JurisprudenceSearchService {
 
       // Timeout adaptativo: tribunais estaduais precisam mais tempo
       const isEstadual = tribunal && tribunal.toLowerCase().startsWith('tj');
-      const GOOGLE_TIMEOUT = isEstadual ? 15000 : 8000;   // 15s para TJGO/TJSP, 8s para STF/STJ
-      const DATAJUD_TIMEOUT = 10000; // 10s - fonte oficial
-      const JUSBRASIL_TIMEOUT = 5000; // 5s - frequentemente falha
+      const GOOGLE_TIMEOUT = isEstadual ? 18000 : 12000;  // 18s para TJGO/TJSP, 12s para STF/STJ (margem +2-3s sobre cliente)
+      const DATAJUD_TIMEOUT = 12000; // 12s - fonte oficial (margem de 2s)
+      const JUSBRASIL_TIMEOUT = 5000; // 5s - frequentemente falha (desabilitado)
 
       // PRIORIDADE 1: Google Search (mais rápido e confiável)
       if (this.config.websearch.enabled) {
@@ -399,9 +399,14 @@ class JurisprudenceSearchService {
       // Importar dinamicamente o cliente Google Search
       const { GoogleSearchClient } = await import('../../lib/google-search-client.js');
 
+      // ⚡ Timeout adaptativo: 15s para estaduais, 10s para superiores
+      const isEstadual = tribunal && tribunal.toLowerCase().startsWith('tj');
+      const clientTimeout = isEstadual ? 15000 : 10000;
+
       const client = new GoogleSearchClient({
         apiKey: process.env.GOOGLE_SEARCH_API_KEY,
-        cx: process.env.GOOGLE_SEARCH_CX
+        cx: process.env.GOOGLE_SEARCH_CX,
+        timeout: clientTimeout  // ✅ Passar timeout adaptativo
       });
 
       // Verificar se está configurado
