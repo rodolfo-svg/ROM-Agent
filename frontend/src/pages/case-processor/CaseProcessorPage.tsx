@@ -1,3 +1,4 @@
+import { apiFetch } from '@/services/api'
 import { useState, useEffect } from 'react'
 import { Sidebar } from '@/components/layout'
 import { FolderOpen, Upload, Search, FileText, Calendar, User, AlertCircle } from 'lucide-react'
@@ -24,7 +25,7 @@ export function CaseProcessorPage() {
 
   const fetchCases = async () => {
     try {
-      const response = await fetch('/api/case-processor/cases', {
+      const response = await apiFetch('/case-processor/cases', {
         credentials: 'include',
       })
       const data = await response.json()
@@ -45,7 +46,7 @@ export function CaseProcessorPage() {
       const formData = new FormData()
       Array.from(files).forEach(file => formData.append('files', file))
 
-      const response = await fetch('/api/case-processor/process', {
+      const response = await apiFetch('/case-processor/process', {
         method: 'POST',
         credentials: 'include',
         body: formData,

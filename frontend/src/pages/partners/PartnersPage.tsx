@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Sidebar } from '@/components/layout'
 import { Building2, Search, Plus, Edit, Trash2, Globe, Key } from 'lucide-react'
 import { Button } from '@/components/ui'
+import { apiFetch } from '@/services/api'
 
 interface Partner {
   id: string
@@ -36,12 +37,9 @@ export function PartnersPage() {
 
   const fetchPartners = async () => {
     try {
-      const response = await fetch('/api/partners', {
-        credentials: 'include',
-      })
-      const data = await response.json()
-      if (data.success) {
-        setPartners(data.partners || [])
+      const response = await apiFetch<{ partners: Partner[] }>('/partners')
+      if (response.success && response.data) {
+        setPartners(response.data.partners || [])
       }
     } catch (error) {
       console.error('Failed to fetch partners:', error)
@@ -54,18 +52,15 @@ export function PartnersPage() {
     e.preventDefault()
 
     try {
-      const url = editingPartner ? `/api/partners/${editingPartner.id}` : '/api/partners'
+      const url = editingPartner ? `/partners/${editingPartner.id}` : '/partners'
       const method = editingPartner ? 'PUT' : 'POST'
 
-      const response = await fetch(url, {
+      const response = await apiFetch<{ partner: Partner }>(url, {
         method,
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
         body: JSON.stringify(formData),
       })
 
-      const data = await response.json()
-      if (data.success) {
+      if (response.success) {
         setShowModal(false)
         setEditingPartner(null)
         setFormData({ name: '', subdomain: '', logoUrl: '', letterheadUrl: '', primaryColor: '#8B7355', isActive: true })
@@ -93,9 +88,8 @@ export function PartnersPage() {
     if (!confirm('Tem certeza que deseja excluir este parceiro? Todos os usuários associados serão desativados.')) return
 
     try {
-      await fetch(`/api/partners/${partnerId}`, {
+      await apiFetch(`/partners/${partnerId}`, {
         method: 'DELETE',
-        credentials: 'include',
       })
       await fetchPartners()
     } catch (error) {

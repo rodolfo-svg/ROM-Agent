@@ -1,3 +1,4 @@
+import { apiFetch } from '@/services/api'
 import { useState, useEffect } from 'react'
 import { Sidebar } from '@/components/layout'
 import { FileCheck, Search, Download, Eye, Calendar, CheckCircle, Clock } from 'lucide-react'
@@ -31,7 +32,7 @@ export function CertidoesPage() {
 
   const fetchCertidoes = async () => {
     try {
-      const response = await fetch('/api/certidoes', {
+      const response = await apiFetch('/certidoes', {
         credentials: 'include',
       })
       const data = await response.json()
@@ -49,7 +50,7 @@ export function CertidoesPage() {
     e.preventDefault()
 
     try {
-      const response = await fetch('/api/certidoes/request', {
+      const response = await apiFetch('/certidoes/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

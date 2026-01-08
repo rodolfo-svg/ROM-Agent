@@ -1,3 +1,4 @@
+import { apiFetch } from '@/services/api'
 import { useState } from 'react'
 import { Sidebar } from '@/components/layout'
 import { Workflow, Play, FileText, CheckCircle, AlertCircle, Loader } from 'lucide-react'
@@ -27,7 +28,7 @@ export function MultiAgentPage() {
     ])
 
     try {
-      const response = await fetch('/api/multi-agent/run', {
+      const response = await apiFetch('/multi-agent/run', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

@@ -121,5 +121,38 @@
       "modelPreference": "amazon.nova-pro-v1:0",
       "temperature": 0.7
     }
+  },
+  {
+    "id": "5",
+    "name": "Projeto Teste Automático",
+    "description": "Projeto criado por script de teste",
+    "customInstructions": "Use tom formal. Cite jurisprudência recente.",
+    "kbMaxSizeMB": 500,
+    "kbCurrentSizeMB": 0.00003337860107421875,
+    "kbUsagePercent": 0,
+    "documents": 1,
+    "type": null,
+    "icon": "📁",
+    "lastModified": "2026-01-07T05:00:33.551Z",
+    "createdAt": "2026-01-07T05:00:33.476Z",
+    "status": "active",
+    "uploadedFiles": [
+      {
+        "id": "file_1767762033551_z3fq32bjx",
+        "name": "kb-test.txt",
+        "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/upload/1767762033532-94897698-kb-test.txt",
+        "size": 35,
+        "type": "text/plain",
+        "uploadedAt": "2026-01-07T05:00:33.551Z"
+      }
+    ],
+    "analysis": null,
+    "chatHistory": [],
+    "settings": {
+      "autoAnalyze": true,
+      "smartSuggestions": true,
+      "modelPreference": "amazon.nova-pro-v1:0",
+      "temperature": 0.7
+    }
   }
 ]

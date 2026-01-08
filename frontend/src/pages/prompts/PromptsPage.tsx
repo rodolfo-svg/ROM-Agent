@@ -1,3 +1,4 @@
+import { apiFetch } from '@/services/api'
 import { useState, useEffect } from 'react'
 import { Sidebar } from '@/components/layout'
 import { Search, FileText, Copy, Check, Tag, Edit, Trash2, Plus } from 'lucide-react'
@@ -41,7 +42,7 @@ export function PromptsPage() {
 
   const fetchPrompts = async () => {
     try {
-      const response = await fetch('/api/rom-prompts', {
+      const response = await apiFetch('/rom-prompts', {
         credentials: 'include',
       })
       const data = await response.json()
@@ -111,7 +112,7 @@ export function PromptsPage() {
 
       if (editingPrompt) {
         // Update existing
-        const response = await fetch(`/api/rom-prompts/${formData.category}/${promptData.prompt.id}`, {
+        const response = await apiFetch(`/rom-prompts/${formData.category}/${promptData.prompt.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -124,7 +125,7 @@ export function PromptsPage() {
         }
       } else {
         // Create new
-        const response = await fetch(`/api/rom-prompts/${formData.category}`, {
+        const response = await apiFetch(`/rom-prompts/${formData.category}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           credentials: 'include',
@@ -146,7 +147,7 @@ export function PromptsPage() {
     if (!confirm(`Tem certeza que deseja excluir "${prompt.title}"?`)) return
 
     try {
-      await fetch(`/api/rom-prompts/${prompt.category}/${prompt.id}`, {
+      await apiFetch(`/rom-prompts/${prompt.category}/${prompt.id}`, {
         method: 'DELETE',
         credentials: 'include',
       })

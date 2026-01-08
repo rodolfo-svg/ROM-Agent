@@ -1,3 +1,4 @@
+import { apiFetch } from '@/services/api'
 import { useState, useEffect } from 'react'
 import { Sidebar } from '@/components/layout'
 import {
@@ -84,13 +85,13 @@ export function ReportsPage() {
         usersRes,
         piecesRes
       ] = await Promise.all([
-        fetch('/api/stats', { credentials: 'include' }),
-        fetch('/api/dashboard/usage', { credentials: 'include' }),
-        fetch('/api/dashboard/analytics', { credentials: 'include' }),
-        fetch('/api/dashboard/quality', { credentials: 'include' }),
-        fetch('/api/dashboard/billing', { credentials: 'include' }),
-        fetch('/api/dashboard/users', { credentials: 'include' }),
-        fetch('/api/dashboard/pieces', { credentials: 'include' })
+        apiFetch('/stats', { credentials: 'include' }),
+        apiFetch('/dashboard/usage', { credentials: 'include' }),
+        apiFetch('/dashboard/analytics', { credentials: 'include' }),
+        apiFetch('/dashboard/quality', { credentials: 'include' }),
+        apiFetch('/dashboard/billing', { credentials: 'include' }),
+        apiFetch('/dashboard/users', { credentials: 'include' }),
+        apiFetch('/dashboard/pieces', { credentials: 'include' })
       ])
 
       const statsData = await statsRes.json()

@@ -39,6 +39,9 @@ import { resilientInvoke } from '../utils/resilient-invoke.js';
 // Multi-Level Cache for 10-50x performance improvement
 import { getCache } from '../utils/multi-level-cache.js';
 
+// Model Capabilities Detection para multi-model compatibility
+import { shouldEnableTools, getToolsUnavailableMessage, getModelCapabilities } from '../utils/model-capabilities.js';
+
 // ============================================================
 // CONFIGURAÇÃO
 // ============================================================
@@ -317,9 +320,15 @@ export async function conversar(prompt, options = {}) {
         console.log(`💰 [Prompt Caching] ENABLED for KB context (${kbContext.length} chars)`);
       }
 
-      // Adicionar tools (se habilitado)
-      if (enableTools) {
+      // ✅ NOVO v2.8.0: Multi-model compatibility - verificar se modelo suporta tool use
+      const actualModelId = INFERENCE_PROFILES[modelo] || modelo;
+      const toolsEnabled = shouldEnableTools(actualModelId, enableTools);
+
+      if (toolsEnabled) {
         commandParams.toolConfig = { tools: BEDROCK_TOOLS };
+      } else if (loopCount === 0 && enableTools && !getModelCapabilities(actualModelId).toolUse) {
+        // Log apenas na primeira iteração se modelo não suporta tools
+        console.log(`⚠️ [Converse] Tools DISABLED - modelo não suporta tool use`);
       }
 
       const command = new ConverseCommand(commandParams);
@@ -563,15 +572,37 @@ export async function conversarStream(prompt, onChunk, options = {}) {
   }
 
   // ✅ NOVO v2.7.2: Adicionar ferramentas (jurisprudência, KB, CNJ, súmulas)
-  if (enableTools) {
+  // ✅ NOVO v2.8.0: Multi-model compatibility - verificar se modelo suporta tool use
+  const actualModelId = INFERENCE_PROFILES[modelo] || modelo;
+  const modelCapabilities = getModelCapabilities(actualModelId);
+  const toolsEnabled = shouldEnableTools(actualModelId, enableTools);
+
+  if (toolsEnabled) {
     commandParams.toolConfig = { tools: BEDROCK_TOOLS };
-    console.log(`🔧 [Stream] Tools ENABLED (${BEDROCK_TOOLS.length} ferramentas disponíveis)`);
+    console.log(`🔧 [Stream] Tools ENABLED (${BEDROCK_TOOLS.length} ferramentas | ${modelCapabilities.provider})`);
+  } else {
+    if (enableTools && !modelCapabilities.toolUse) {
+      // Usuário queria tools, mas modelo não suporta
+      console.log(`⚠️ [Stream] Tools DISABLED - modelo ${modelCapabilities.provider} não suporta tool use`);
+      console.log(`💡 [Stream] Use Claude Sonnet/Opus ou Amazon Nova Pro para busca automática`);
+    } else {
+      console.log(`🔧 [Stream] Tools DISABLED (desabilitado pelo usuário)`);
+    }
   }
 
   try {
+    // ✅ NOVO v2.8.0: Informar usuário se tools estão indisponíveis devido ao modelo
+    if (enableTools && !modelCapabilities.toolUse) {
+      const warningMessage = getToolsUnavailableMessage(actualModelId);
+      if (warningMessage) {
+        onChunk(warningMessage + '\n\n');
+      }
+    }
+
     let currentMessages = messages;
     let loopCount = 0;
-    const MAX_TOOL_LOOPS = 3; // Máximo de iterações de tool use em streaming
+    const MAX_TOOL_LOOPS = 5; // ✅ v2.8.2: 2 loops APENAS - busca inicial + apresentação IMEDIATA (velocidade claude.ai)
+    let hasJurisprudenceResults = false;
 
     while (loopCount < MAX_TOOL_LOOPS) {
       const command = new ConverseStreamCommand({ ...commandParams, messages: currentMessages });
@@ -666,10 +697,50 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
       // Executar cada ferramenta e adicionar resultados
       const toolResults = [];
+      let previewShown = false;
+
       for (const tool of toolUseData) {
         console.log(`🔧 Executando ferramenta: ${tool.name}`);
+
+        // ⚡ FEEDBACK: Informar ao usuário que a ferramenta está sendo executada
+        const toolStartMsg = tool.name === 'pesquisar_jurisprudencia' ? '⏳ Consultando tribunais...' :
+                            tool.name === 'pesquisar_jusbrasil' ? '⏳ Acessando JusBrasil...' :
+                            tool.name === 'consultar_cnj_datajud' ? '⏳ Acessando DataJud...' :
+                            tool.name === 'pesquisar_sumulas' ? '⏳ Buscando súmulas...' :
+                            tool.name === 'consultar_kb' ? '⏳ Consultando documentos...' :
+                            `⏳ Executando ${tool.name}...`;
+        onChunk(toolStartMsg);
+
         try {
           const result = await executeTool(tool.name, tool.input);
+
+          // ⚡ FEEDBACK: Informar resultado da ferramenta
+          const successMsg = result.success ? ' ✓\n' : ' ✗\n';
+          onChunk(successMsg);
+
+          // ⚡ DETECTAR se encontrou jurisprudência - para forçar apresentação imediata
+          if (result.success && (tool.name === 'pesquisar_jurisprudencia' || tool.name === 'pesquisar_sumulas' || tool.name === 'pesquisar_doutrina')) {
+            // Verificar se tem resultados reais (não vazio)
+            const hasResults = result.content && (
+              result.content.includes('**[1]') || // Formato de resultado
+              result.content.includes('Resultados:') ||
+              result.content.length > 500 // Content substancial
+            );
+            if (hasResults) {
+              hasJurisprudenceResults = true;
+              console.log(`✅ [Stream] Jurisprudência encontrada em ${tool.name} - apresentação será forçada`);
+            }
+          }
+
+          // ⚡ PREVIEW IMEDIATO: Mostrar primeiros resultados assim que chegam (anti-silêncio)
+          if (!previewShown && result.success && result.content && tool.name === 'pesquisar_jurisprudencia') {
+            const previewMatch = result.content.match(/\*\*\[1\]\s+(.{0,150})/);
+            if (previewMatch) {
+              onChunk(`\n💡 Preview: ${previewMatch[1]}...\n`);
+              previewShown = true;
+            }
+          }
+
           toolResults.push({
             toolResult: {
               toolUseId: tool.toolUseId,
@@ -681,6 +752,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
           console.log(`✅ Ferramenta ${tool.name} executada com sucesso`);
         } catch (error) {
           console.error(`❌ Erro ao executar ${tool.name}:`, error);
+          onChunk(' ✗ (erro)\n');
           toolResults.push({
             toolResult: {
               toolUseId: tool.toolUseId,
@@ -698,16 +770,94 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         content: toolResults
       });
 
-      // Enviar indicador de conclusão
-      onChunk(`✅ Pesquisa concluída. Analisando resultados...\n\n`);
+      // ⚡ STREAMING FORÇADO: Enviar header para forçar Claude a começar a escrever
+      onChunk(`✅ Pesquisa concluída.\n\n📊 **Resultados Encontrados:**\n\n`);
 
       loopCount++;
+
+      // 🚨 VELOCIDADE CRÍTICA: Se encontrou jurisprudência, FORÇAR apresentação IMEDIATA (não esperar mais loops)
+      const shouldForcePresentation = hasJurisprudenceResults || loopCount >= MAX_TOOL_LOOPS;
+
+      if (shouldForcePresentation) {
+        const reason = hasJurisprudenceResults ?
+          `✅ Jurisprudência encontrada após ${loopCount} loop(s) - APRESENTAÇÃO IMEDIATA para velocidade` :
+          `⚠️ MAX_TOOL_LOOPS atingido (${loopCount}/${MAX_TOOL_LOOPS}) - FORÇANDO apresentação`;
+        console.log(`[Stream] ${reason}`);
+
+        // Adicionar mensagem IMPERATIVA para forçar Claude a apresentar
+        currentMessages.push({
+          role: 'user',
+          content: [{
+            text: `🚨 IMPERATIVO CRÍTICO - APRESENTAÇÃO OBRIGATÓRIA
+
+Você executou ${loopCount} buscas de jurisprudência. As ferramentas retornaram resultados COMPLETOS nas mensagens acima.
+
+═══════════════════════════════════════════════════════════════
+AGORA você DEVE IMEDIATAMENTE:
+═══════════════════════════════════════════════════════════════
+
+1. APRESENTAR TODOS os resultados encontrados (súmulas, decisões, temas, IRDR, teses jurisprudenciais, acórdãos, doutrina)
+
+2. Para CADA resultado encontrado nas ferramentas acima, escreva:
+   📋 **[Número] Título/Ementa**
+   Tribunal: [tribunal]
+   Data: [data se disponível]
+   Tipo: [súmula/decisão/tese/IRDR/doutrina]
+   Ementa: [resumo da ementa - MÍNIMO 2 linhas]
+   Link: [URL completo]
+
+3. ORGANIZE por relevância e tipo
+
+4. Após listar TODOS os resultados, faça uma ANÁLISE JURÍDICA respondendo à pergunta do usuário com base nos resultados
+
+═══════════════════════════════════════════════════════════════
+PROIBIÇÕES ABSOLUTAS:
+═══════════════════════════════════════════════════════════════
+
+❌ NÃO execute mais buscas
+❌ NÃO diga "não encontrei resultados" (você JÁ encontrou!)
+❌ NÃO resuma em 1 linha (detalhe CADA resultado)
+❌ NÃO omita nenhum resultado encontrado
+
+═══════════════════════════════════════════════════════════════
+
+COMECE AGORA escrevendo "Com base nas buscas realizadas, encontrei:" e LISTE IMEDIATAMENTE o primeiro resultado!`
+          }]
+        });
+
+        // Executar UMA última iteração APENAS para apresentação
+        // ⚠️ IMPORTANTE: Manter MESMAS tools (não remover) pois mensagens anteriores têm toolUse blocks
+        // A mensagem imperativa do user vai PROIBIR Claude de usar tools, mesmo que estejam disponíveis
+        const finalCommand = new ConverseStreamCommand({
+          ...commandParams,
+          messages: currentMessages
+          // toolConfig mantém o mesmo de commandParams (com todas as tools)
+        });
+        const finalResponse = await retryAwsCommand(client, finalCommand, { modelId: commandParams.modelId, operation: 'converse_stream' });
+
+        let finalText = '';
+        for await (const event of finalResponse.stream) {
+          if (event.contentBlockDelta?.delta?.text) {
+            const chunk = event.contentBlockDelta.delta.text;
+            finalText += chunk;
+            onChunk(chunk);
+          }
+        }
+
+        return {
+          sucesso: true,
+          resposta: finalText,
+          modelo
+        };
+      }
       // Loop continua para próxima iteração
     }
 
+    // Se chegou aqui sem stopReason, retornar erro
+    console.error(`❌ [Stream] Loop terminou sem resposta final`);
     return {
-      sucesso: true,
-      resposta: '',
+      sucesso: false,
+      erro: 'Sistema atingiu limite de iterações sem gerar resposta',
       modelo
     };
   } catch (error) {

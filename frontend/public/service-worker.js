@@ -10,7 +10,7 @@
  * @version 5.0.0 - Network First
  */
 
-const VERSION = 'v6.0.0';
+const VERSION = 'v6.2.0'; // ⚡ Atualizado: Fix Google Fonts CSP + JusBrasil removal
 const STATIC_CACHE = `rom-agent-static-${VERSION}`;
 const RUNTIME_CACHE = `rom-agent-runtime-${VERSION}`;
 
@@ -74,6 +74,15 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
+
+  // ⚡ CRÍTICO: NÃO interceptar streaming SSE (Server-Sent Events)
+  // Service Worker context pode fechar durante streaming longo
+  if (url.pathname.includes('/stream') ||
+      url.pathname.includes('/chat/stream') ||
+      url.pathname.includes('/api/chat-stream')) {
+    // Deixar streaming passar direto, sem interceptação do SW
+    return;
+  }
 
   // 1. API NUNCA cached - sempre da rede
   if (url.pathname.startsWith('/api/')) {

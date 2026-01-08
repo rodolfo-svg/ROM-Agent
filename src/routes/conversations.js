@@ -21,21 +21,122 @@ function requireAuth(req, res, next) {
 }
 
 /**
- * GET /api/conversations
- * Lista todas as conversas do usuário
+ * GET /api/conversations/admin/all
+ * Lista TODAS as conversas de TODOS os usuários (apenas para ADMIN)
  */
-router.get('/', requireAuth, async (req, res) => {
-  const userId = req.session.user.id;
+router.get('/admin/all', requireAuth, async (req, res) => {
+  const user = req.session.user;
+
+  // Verificar se é admin
+  if (!user || user.role !== 'admin') {
+    return res.status(403).json({
+      success: false,
+      error: 'Acesso negado. Apenas administradores podem ver todas as conversas.'
+    });
+  }
 
   try {
     const pool = getPostgresPool();
     if (!pool) {
-      return res.status(503).json({
-        success: false,
-        error: 'Banco de dados indisponível'
+      return res.json({
+        success: true,
+        conversations: []
       });
     }
 
+    // Buscar TODAS as conversas com informações do usuário
+    const result = await pool.query(
+      `SELECT
+        c.id,
+        c.user_id,
+        c.title,
+        c.created_at,
+        c.updated_at,
+        u.name as user_name,
+        u.email as user_email,
+        COUNT(m.id) as message_count,
+        MAX(m.created_at) as last_message_at
+       FROM conversations c
+       LEFT JOIN messages m ON c.id = m.conversation_id
+       LEFT JOIN users u ON c.user_id = u.id
+       WHERE c.deleted_at IS NULL
+       GROUP BY c.id, u.name, u.email
+       ORDER BY c.updated_at DESC
+       LIMIT 500`
+    );
+
+    logger.info('Admin acessou todas as conversas', {
+      adminId: user.id,
+      adminEmail: user.email,
+      totalConversations: result.rows.length
+    });
+
+    res.json({
+      success: true,
+      conversations: result.rows,
+      total: result.rows.length
+    });
+
+  } catch (error) {
+    logger.error('Erro ao listar conversas admin', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: 'Erro ao listar conversas'
+    });
+  }
+});
+
+/**
+ * GET /api/conversations
+ * Lista todas as conversas do usuário (ou sessão anônima)
+ * MODIFICADO: Suporta usuários autenticados E anônimos
+ */
+router.get('/', async (req, res) => {
+  // Suportar tanto usuários autenticados quanto anônimos
+  const userId = req.session?.user?.id || null;
+  const sessionId = req.session?.id || null;
+
+  try {
+    const pool = getPostgresPool();
+    if (!pool) {
+      // Se PostgreSQL não disponível, retornar lista vazia (fallback)
+      return res.json({
+        success: true,
+        conversations: []
+      });
+    }
+
+    // Se houver userId, buscar conversas do PostgreSQL
+    if (userId) {
+      const result = await pool.query(
+        `SELECT
+          c.id,
+          c.title,
+          c.created_at,
+          c.updated_at,
+          COUNT(m.id) as message_count,
+          MAX(m.created_at) as last_message_at
+         FROM conversations c
+         LEFT JOIN messages m ON c.id = m.conversation_id
+         WHERE c.user_id = $1 AND c.deleted_at IS NULL
+         GROUP BY c.id
+         ORDER BY c.updated_at DESC
+         LIMIT 100`,
+        [userId]
+      );
+
+      logger.info('Usuário listou suas conversas', {
+        userId,
+        totalConversations: result.rows.length
+      });
+
+      return res.json({
+        success: true,
+        conversations: result.rows
+      });
+    }
+
+    // Para usuários não autenticados, buscar por user_id NULL (sessões anônimas)
     const result = await pool.query(
       `SELECT
         c.id,
@@ -46,11 +147,10 @@ router.get('/', requireAuth, async (req, res) => {
         MAX(m.created_at) as last_message_at
        FROM conversations c
        LEFT JOIN messages m ON c.id = m.conversation_id
-       WHERE c.user_id = $1 AND c.deleted_at IS NULL
+       WHERE c.user_id IS NULL AND c.deleted_at IS NULL
        GROUP BY c.id
        ORDER BY c.updated_at DESC
-       LIMIT 100`,
-      [userId]
+       LIMIT 100`
     );
 
     res.json({
@@ -70,9 +170,10 @@ router.get('/', requireAuth, async (req, res) => {
 /**
  * POST /api/conversations
  * Cria nova conversa
+ * MODIFICADO: Suporta usuários autenticados E anônimos
  */
-router.post('/', requireAuth, async (req, res) => {
-  const userId = req.session.user.id;
+router.post('/', async (req, res) => {
+  const userId = req.session?.user?.id || null;
   const { title } = req.body;
 
   try {
@@ -113,9 +214,10 @@ router.post('/', requireAuth, async (req, res) => {
 /**
  * GET /api/conversations/:id
  * Busca conversa específica com todas as mensagens
+ * MODIFICADO: Suporta usuários autenticados E anônimos
  */
-router.get('/:id', requireAuth, async (req, res) => {
-  const userId = req.session.user.id;
+router.get('/:id', async (req, res) => {
+  const userId = req.session?.user?.id || null;
   const { id } = req.params;
 
   try {
@@ -127,13 +229,24 @@ router.get('/:id', requireAuth, async (req, res) => {
       });
     }
 
-    // Buscar conversa
-    const convResult = await pool.query(
-      `SELECT id, title, created_at, updated_at
-       FROM conversations
-       WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL`,
-      [id, userId]
-    );
+    // Buscar conversa (com ou sem userId)
+    let convResult;
+    if (userId) {
+      convResult = await pool.query(
+        `SELECT id, title, created_at, updated_at
+         FROM conversations
+         WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL`,
+        [id, userId]
+      );
+    } else {
+      // Para usuários anônimos, buscar por user_id NULL
+      convResult = await pool.query(
+        `SELECT id, title, created_at, updated_at
+         FROM conversations
+         WHERE id = $1 AND user_id IS NULL AND deleted_at IS NULL`,
+        [id]
+      );
+    }
 
     if (convResult.rows.length === 0) {
       return res.status(404).json({
@@ -275,9 +388,10 @@ router.delete('/:id', requireAuth, async (req, res) => {
 /**
  * POST /api/conversations/:id/messages
  * Adiciona mensagem à conversa
+ * MODIFICADO: Suporta usuários autenticados E anônimos
  */
-router.post('/:id/messages', requireAuth, async (req, res) => {
-  const userId = req.session.user.id;
+router.post('/:id/messages', async (req, res) => {
+  const userId = req.session?.user?.id || null;
   const { id } = req.params;
   const { role, content, model } = req.body;
 
@@ -305,11 +419,19 @@ router.post('/:id/messages', requireAuth, async (req, res) => {
       });
     }
 
-    // Verificar se conversa pertence ao usuário
-    const convCheck = await pool.query(
-      `SELECT id FROM conversations WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL`,
-      [id, userId]
-    );
+    // Verificar se conversa existe (com ou sem userId)
+    let convCheck;
+    if (userId) {
+      convCheck = await pool.query(
+        `SELECT id FROM conversations WHERE id = $1 AND user_id = $2 AND deleted_at IS NULL`,
+        [id, userId]
+      );
+    } else {
+      convCheck = await pool.query(
+        `SELECT id FROM conversations WHERE id = $1 AND user_id IS NULL AND deleted_at IS NULL`,
+        [id]
+      );
+    }
 
     if (convCheck.rows.length === 0) {
       return res.status(404).json({

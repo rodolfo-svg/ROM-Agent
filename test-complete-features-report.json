@@ -5,16 +5,16 @@
     "failed": 8,
     "warnings": 0,
     "successRate": 81.4,
-    "duration": 1.04,
-    "timestamp": "2026-01-06T05:00:22.918Z"
+    "duration": 1.59,
+    "timestamp": "2026-01-07T05:00:33.689Z"
   },
   "tests": [
     {
       "name": "Health Check (/api/info)",
       "passed": {
         "status": "healthy",
-        "uptime": "26h 25m",
-        "uptimeSeconds": 95127
+        "uptime": "50h 25m",
+        "uptimeSeconds": 181538
       },
       "details": "Status: 200, Version: 2.7.0, Health: healthy, Bedrock: connected"
     },
@@ -36,7 +36,7 @@
     {
       "name": "Criar Projeto com Custom Instructions (/api/projects/create)",
       "passed": true,
-      "details": "Status: 200, ID: 4, KB: 500MB, Custom Instructions: Sim"
+      "details": "Status: 200, ID: 5, KB: 500MB, Custom Instructions: Sim"
     },
     {
       "name": "Listar Projetos (/api/projects/list)",
@@ -44,7 +44,7 @@
       "details": "Status: 404, Projetos: 0"
     },
     {
-      "name": "Upload para Projeto com KB Tracking (/api/projects/4/upload)",
+      "name": "Upload para Projeto com KB Tracking (/api/projects/5/upload)",
       "passed": {
         "currentMB": "0.00",
         "maxMB": 500,
@@ -226,7 +226,7 @@
     {
       "name": "Status de Backups (/api/backup/status)",
       "passed": true,
-      "details": "Status: 200, Backups: 5"
+      "details": "Status: 200, Backups: 6"
     },
     {
       "name": "Estatísticas de Cache (/api/cache/statistics)",

@@ -22,6 +22,36 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ============================================================
+// DEDUPLICAÇÃO DE RESULTADOS
+// ============================================================
+
+/**
+ * Deduplica resultados de jurisprudência por hash
+ * Evita duplicação entre Google Search, DataJud, JusBrasil
+ */
+function deduplicateResults(results) {
+  if (!results || !Array.isArray(results)) return [];
+
+  const seen = new Set();
+
+  return results.filter(result => {
+    // Hash baseado em: número do processo + tribunal + tipo
+    const numero = (result.numero || '').toLowerCase().trim();
+    const tribunal = (result.tribunal || '').toLowerCase().trim();
+    const tipo = (result.tipo || '').toLowerCase().trim();
+    const hashKey = `${numero}_${tribunal}_${tipo}`;
+
+    if (seen.has(hashKey)) {
+      console.log(`⚠️ [Dedup] Resultado duplicado removido: ${result.numero || result.titulo}`);
+      return false;
+    }
+
+    seen.add(hashKey);
+    return true;
+  });
+}
+
+// ============================================================
 // DEFINIÇÃO DAS TOOLS
 // ============================================================
 
@@ -57,29 +87,31 @@ export const BEDROCK_TOOLS = [
       }
     }
   },
-  {
-    toolSpec: {
-      name: 'pesquisar_jusbrasil',
-      description: 'Pesquisa jurisprudência e doutrina no Jusbrasil, maior banco de dados jurídicos do Brasil. Use para encontrar acórdãos, artigos jurídicos, notícias e peças processuais. Fonte oficial e confiável.',
-      inputSchema: {
-        json: {
-          type: 'object',
-          properties: {
-            termo: {
-              type: 'string',
-              description: 'Termo de busca jurídica (ex: "usucapião", "IPTU")'
-            },
-            limite: {
-              type: 'number',
-              description: 'Número máximo de resultados (padrão: 10)',
-              default: 10
-            }
-          },
-          required: ['termo']
-        }
-      }
-    }
-  },
+  // ❌ JusBrasil DESABILITADO - 100% bloqueio anti-bot
+  // Usar Google Custom Search que indexa JusBrasil sem bloqueios
+  // {
+  //   toolSpec: {
+  //     name: 'pesquisar_jusbrasil',
+  //     description: 'Pesquisa jurisprudência e doutrina no Jusbrasil, maior banco de dados jurídicos do Brasil. Use para encontrar acórdãos, artigos jurídicos, notícias e peças processuais. Fonte oficial e confiável.',
+  //     inputSchema: {
+  //       json: {
+  //         type: 'object',
+  //         properties: {
+  //           termo: {
+  //             type: 'string',
+  //             description: 'Termo de busca jurídica (ex: "usucapião", "IPTU")'
+  //           },
+  //           limite: {
+  //             type: 'number',
+  //             description: 'Número máximo de resultados (padrão: 10)',
+  //             default: 10
+  //           }
+  //         },
+  //         required: ['termo']
+  //       }
+  //     }
+  //   }
+  // },
   {
     toolSpec: {
       name: 'consultar_cnj_datajud',
@@ -101,14 +133,14 @@ export const BEDROCK_TOOLS = [
   {
     toolSpec: {
       name: 'pesquisar_sumulas',
-      description: 'Pesquisa súmulas dos tribunais superiores (STF, STJ, TST, TSE). Use quando precisar de orientações jurisprudenciais consolidadas sobre determinado tema. Fontes oficiais.',
+      description: 'Pesquisa súmulas, temas, IRDR e teses jurisprudenciais dos tribunais superiores (STF, STJ, TST, TSE). Use quando precisar de orientações jurisprudenciais consolidadas, súmulas vinculantes, temas de repercussão geral ou teses fixadas. Fontes oficiais.',
       inputSchema: {
         json: {
           type: 'object',
           properties: {
             tema: {
               type: 'string',
-              description: 'Tema ou palavras-chave para buscar súmulas (ex: "prescrição", "honorários advocatícios")'
+              description: 'Tema ou palavras-chave para buscar súmulas/teses (ex: "prescrição", "honorários advocatícios")'
             },
             tribunal: {
               type: 'string',
@@ -200,6 +232,17 @@ export async function executeTool(toolName, toolInput) {
           enableCache: true
         });
 
+        // ✅ DEDUPLICAÇÃO: Remover duplicatas de cada fonte
+        if (resultado.sources?.datajud?.results) {
+          resultado.sources.datajud.results = deduplicateResults(resultado.sources.datajud.results);
+        }
+        if (resultado.sources?.jusbrasil?.results) {
+          resultado.sources.jusbrasil.results = deduplicateResults(resultado.sources.jusbrasil.results);
+        }
+        if (resultado.sources?.websearch?.results) {
+          resultado.sources.websearch.results = deduplicateResults(resultado.sources.websearch.results);
+        }
+
         // ✅ ATUALIZADO: Formatar resultado do serviço novo
         let respostaFormatada = `\n📊 **Pesquisa de Jurisprudência: "${termo}"**\n\n`;
 
@@ -213,16 +256,21 @@ export async function executeTool(toolName, toolInput) {
         if (resultado.sources?.datajud?.success && resultado.sources.datajud.results?.length > 0) {
           respostaFormatada += `\n🏛️ **CNJ DataJud (${resultado.sources.datajud.count} resultados oficiais)**\n\n`;
 
-          resultado.sources.datajud.results.slice(0, 3).forEach((item, idx) => {
+          // ✅ CORREÇÃO: Mostrar TODOS os resultados, não apenas 3 (até limite de 10)
+          resultado.sources.datajud.results.slice(0, Math.min(10, resultado.sources.datajud.results.length)).forEach((item, idx) => {
             respostaFormatada += `**[${idx + 1}] ${item.numero || item.titulo || 'Decisão'}**\n`;
             if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
             if (item.classe) respostaFormatada += `Classe: ${item.classe}\n`;
             if (item.relator) respostaFormatada += `Relator: ${item.relator}\n`;
             if (item.data) respostaFormatada += `Data: ${item.data}\n`;
-            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
+            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 400)}...\n`;
             if (item.link) respostaFormatada += `Link: ${item.link}\n`;
             respostaFormatada += '\n';
           });
+
+          if (resultado.sources.datajud.results.length > 10) {
+            respostaFormatada += `... e mais ${resultado.sources.datajud.results.length - 10} resultados disponíveis\n`;
+          }
 
           respostaFormatada += '---\n\n';
         }
@@ -231,14 +279,19 @@ export async function executeTool(toolName, toolInput) {
         if (resultado.sources?.jusbrasil?.success && resultado.sources.jusbrasil.results?.length > 0) {
           respostaFormatada += `\n📚 **JusBrasil (${resultado.sources.jusbrasil.count} resultados)**\n\n`;
 
-          resultado.sources.jusbrasil.results.slice(0, 3).forEach((item, idx) => {
+          // ✅ CORREÇÃO: Mostrar TODOS os resultados, não apenas 3 (até limite de 10)
+          resultado.sources.jusbrasil.results.slice(0, Math.min(10, resultado.sources.jusbrasil.results.length)).forEach((item, idx) => {
             respostaFormatada += `**[${idx + 1}] ${item.titulo || 'Documento'}**\n`;
             if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
             if (item.data) respostaFormatada += `Data: ${item.data}\n`;
-            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
+            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 400)}...\n`;
             if (item.link) respostaFormatada += `Link: ${item.link}\n`;
             respostaFormatada += '\n';
           });
+
+          if (resultado.sources.jusbrasil.results.length > 10) {
+            respostaFormatada += `... e mais ${resultado.sources.jusbrasil.results.length - 10} resultados disponíveis\n`;
+          }
 
           respostaFormatada += '---\n\n';
         }
@@ -247,12 +300,17 @@ export async function executeTool(toolName, toolInput) {
         if (resultado.sources?.websearch?.success && resultado.sources.websearch.results?.length > 0) {
           respostaFormatada += `\n🔍 **Web Search - Google (${resultado.sources.websearch.count} resultados)**\n\n`;
 
-          resultado.sources.websearch.results.slice(0, 3).forEach((item, idx) => {
+          // ✅ CORREÇÃO: Mostrar TODOS os resultados, não apenas 3 (até limite de 10)
+          resultado.sources.websearch.results.slice(0, Math.min(10, resultado.sources.websearch.results.length)).forEach((item, idx) => {
             respostaFormatada += `**[${idx + 1}] ${item.titulo || item.title || 'Resultado'}**\n`;
-            if (item.snippet) respostaFormatada += `${item.snippet.substring(0, 200)}...\n`;
+            if (item.snippet) respostaFormatada += `${item.snippet.substring(0, 250)}...\n`;
             if (item.link) respostaFormatada += `Link: ${item.link}\n`;
             respostaFormatada += '\n';
           });
+
+          if (resultado.sources.websearch.results.length > 10) {
+            respostaFormatada += `... e mais ${resultado.sources.websearch.results.length - 10} resultados disponíveis\n`;
+          }
 
           respostaFormatada += '---\n\n';
         }
@@ -274,49 +332,42 @@ export async function executeTool(toolName, toolInput) {
         };
       }
 
-      case 'pesquisar_jusbrasil': {
-        const { termo, limite = 10 } = toolInput;
-
-        console.log(`🔍 [Jusbrasil] Pesquisando: ${termo}`);
-
-        // ✅ ATUALIZADO: Usar serviço novo (JusBrasil Client com autenticação)
-        const resultado = await jurisprudenceService.searchJusBrasil(termo, { limit: limite });
-
-        if (!resultado.success && !resultado.results) {
-          return {
-            success: false,
-            error: resultado.error || 'Erro desconhecido',
-            content: `Erro ao buscar no Jusbrasil: ${resultado.error || 'Erro desconhecido'}`
-          };
-        }
-
-        // Formatar resultado
-        const totalResultados = resultado.results?.length || 0;
-        let respostaFormatada = `\n📚 **Jusbrasil - "${termo}"** (${totalResultados} resultados)\n\n`;
-
-        if (resultado.results && resultado.results.length > 0) {
-          resultado.results.slice(0, 5).forEach((item, idx) => {
-            respostaFormatada += `**[${idx + 1}] ${item.titulo || item.title || 'Documento'}**\n`;
-            if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
-            if (item.data) respostaFormatada += `Data: ${item.data}\n`;
-            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
-            if (item.link) respostaFormatada += `Link: ${item.link}\n`;
-            respostaFormatada += '\n';
-          });
-        }
-
-        console.log(`✅ [Jusbrasil] ${totalResultados} resultados encontrados`);
-
-        return {
-          success: true,
-          content: respostaFormatada,
-          metadata: {
-            termo,
-            fonte: 'Jusbrasil',
-            totalResultados
-          }
-        };
-      }
+      // ❌ DESABILITADO: JusBrasil com 100% bloqueio anti-bot
+      // Google Custom Search agora indexa JusBrasil sem bloqueios
+      // case 'pesquisar_jusbrasil': {
+      //   const { termo, limite = 10 } = toolInput;
+      //   console.log(`🔍 [Jusbrasil] Pesquisando: ${termo}`);
+      //   const resultado = await jurisprudenceService.searchJusBrasil(termo, { limit: limite });
+      //   if (!resultado.success && !resultado.results) {
+      //     return {
+      //       success: false,
+      //       error: resultado.error || 'Erro desconhecido',
+      //       content: `Erro ao buscar no Jusbrasil: ${resultado.error || 'Erro desconhecido'}`
+      //     };
+      //   }
+      //   const totalResultados = resultado.results?.length || 0;
+      //   let respostaFormatada = `\n📚 **Jusbrasil - "${termo}"** (${totalResultados} resultados)\n\n`;
+      //   if (resultado.results && resultado.results.length > 0) {
+      //     resultado.results.slice(0, 5).forEach((item, idx) => {
+      //       respostaFormatada += `**[${idx + 1}] ${item.titulo || item.title || 'Documento'}**\n`;
+      //       if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
+      //       if (item.data) respostaFormatada += `Data: ${item.data}\n`;
+      //       if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
+      //       if (item.link) respostaFormatada += `Link: ${item.link}\n`;
+      //       respostaFormatada += '\n';
+      //     });
+      //   }
+      //   console.log(`✅ [Jusbrasil] ${totalResultados} resultados encontrados`);
+      //   return {
+      //     success: true,
+      //     content: respostaFormatada,
+      //     metadata: {
+      //       termo,
+      //       fonte: 'Jusbrasil',
+      //       totalResultados
+      //     }
+      //   };
+      // }
 
       case 'consultar_cnj_datajud': {
         const { numeroProcesso } = toolInput;
@@ -614,12 +665,7 @@ FERRAMENTAS DISPONÍVEIS (FONTES OFICIAIS E VERIFICÁVEIS):
    - tribunal (opcional): "STF" | "STJ" | "TST" | "TSE"
    - limite (opcional): número (padrão: 5)
 
-2. **pesquisar_jusbrasil**: Pesquisa no Jusbrasil (maior banco de dados jurídicos do Brasil)
-   Parâmetros:
-   - termo (obrigatório): string - termo de busca jurídica
-   - limite (opcional): número (padrão: 10)
-
-3. **consultar_cnj_datajud**: Consulta processo específico no CNJ DataJud (fonte 100% oficial)
+2. **consultar_cnj_datajud**: Consulta processo específico no CNJ DataJud (fonte 100% oficial)
    Parâmetros:
    - numeroProcesso (obrigatório): string - número do processo CNJ
 
@@ -647,8 +693,7 @@ IMPORTANTE: Quando precisar usar uma ferramenta, responda EXATAMENTE no formato:
 </tool_use>
 
 Escolha a ferramenta mais apropriada para cada necessidade:
-- Jurisprudência geral → pesquisar_jurisprudencia
-- Busca ampla (doutrina, artigos) → pesquisar_jusbrasil
+- Jurisprudência geral → pesquisar_jurisprudencia (inclui JusBrasil via Google)
 - Consultar processo específico → consultar_cnj_datajud
 - Súmulas e orientações consolidadas → pesquisar_sumulas
 - Documentos enviados pelo usuário → consultar_kb

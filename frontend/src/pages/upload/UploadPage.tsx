@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Sidebar } from '@/components/layout'
 import { Upload, FileText, Trash2, Search, Download, Eye } from 'lucide-react'
 import { Button } from '@/components/ui'
+import { apiFetch } from '@/services/api'
 
 export function UploadPage() {
   const [files, setFiles] = useState<any[]>([])
@@ -47,9 +48,8 @@ export function UploadPage() {
 
   const handleDelete = async (fileId: string) => {
     try {
-      await fetch(`/api/upload/${fileId}`, {
+      await apiFetch(`/upload/${fileId}`, {
         method: 'DELETE',
-        credentials: 'include',
       })
       setFiles(prev => prev.filter(f => f.id !== fileId))
     } catch (error) {

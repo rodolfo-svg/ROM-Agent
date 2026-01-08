@@ -18,7 +18,7 @@ import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import multer from 'multer';
 import fs from 'fs';
-import { initPostgres, initRedis, checkDatabaseHealth, closeDatabaseConnections } from './config/database.js';
+import { initPostgres, initRedis, checkDatabaseHealth, closeDatabaseConnections, getPostgresPool } from './config/database.js';
 import { createSessionMiddleware, sessionEnhancerMiddleware } from './config/session-store.js';
 import { ROMAgent, CONFIG } from './index.js';
 import { BedrockAgent } from './modules/bedrock.js';
@@ -67,6 +67,7 @@ import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import authRoutes from './routes/auth.js';
 import conversationsRoutes from './routes/conversations.js';
+import usersRoutes from './routes/users.js';
 import { requireAuth } from './middleware/auth.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 
@@ -220,6 +221,52 @@ try {
   console.error('⚠️  [STARTUP] Sessões usarão MemoryStore (dados perdidos em restart)');
 }
 
+// ============================================================
+// HEALTH CHECK - MIGRATIONS
+// ============================================================
+
+async function checkMigrations() {
+  try {
+    const pool = getPostgresPool();
+    if (!pool) {
+      console.warn('⚠️  [MIGRATIONS] Pool não disponível');
+      return false;
+    }
+
+    // Verificar se schema_migrations existe
+    const schemaCheck = await pool.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables
+        WHERE table_name = 'schema_migrations'
+      );
+    `);
+
+    if (!schemaCheck.rows[0].exists) {
+      console.warn('⚠️  [MIGRATIONS] Tabela schema_migrations não existe');
+      return false;
+    }
+
+    // Verificar versão mais recente
+    const versionCheck = await pool.query(`
+      SELECT version FROM schema_migrations
+      ORDER BY version DESC LIMIT 1
+    `);
+
+    const latestVersion = versionCheck.rows[0]?.version;
+    console.log(`✅ [MIGRATIONS] Schema atualizado (v${latestVersion})`);
+    return true;
+  } catch (error) {
+    console.error('❌ [MIGRATIONS] Erro:', error.message);
+    return false;
+  }
+}
+
+// Executar check antes de iniciar servidor
+checkMigrations().catch(err => {
+  console.warn('⚠️  [STARTUP] Migrations check falhou:', err.message);
+});
+
+
 try {
   await initRedis();
   console.log('✅ [STARTUP] Redis inicializado com sucesso');
@@ -251,7 +298,12 @@ app.use(sessionEnhancerMiddleware);
 
 // 1. Security Headers (Helmet + custom headers)
 // Protege contra XSS, clickjacking, MIME sniffing, etc.
-app.use(securityHeadersMiddleware);
+// IMPORTANTE: securityHeadersMiddleware pode ser um array em produção
+if (Array.isArray(securityHeadersMiddleware)) {
+  securityHeadersMiddleware.forEach(middleware => app.use(middleware));
+} else {
+  app.use(securityHeadersMiddleware);
+}
 console.log('🔒 [SECURITY] Headers de segurança (Helmet) aplicados');
 
 // 2. IP Blocker (verifica blacklist antes de processar requests)
@@ -351,15 +403,55 @@ app.use('/api/', generalLimiter);
 // - Rotas GET (não modificam dados)
 app.use('/api', csrfProtection.protection({
   exemptPaths: [
-    '/auth/login',        // Sem /api prefix (req.path é relativo)
-    '/auth/register',     // Sem /api prefix
-    '/auth/forgot-password', // Sem /api prefix
-    '/auth/csrf-token',   // Endpoint para obter token
-    '/chat',              // Chat principal (sem /api prefix)
-    '/chat/stream',       // Chat com streaming SSE (sem /api prefix)
-    '/stream',            // Streaming genérico (sem /api prefix)
-    '/messages',          // Mensagens (sem /api prefix)
-    '/conversations*'     // Conversações e sub-rotas (sem /api prefix)
+    // ═══════════════════════════════════════════════════════════════
+    // AUTH ROUTES
+    // ═══════════════════════════════════════════════════════════════
+    '/auth/login',              // Login (sem /api prefix - req.path é relativo)
+    '/auth/register',           // Registro
+    '/auth/forgot-password',    // Esqueci senha
+    '/auth/logout',             // ✅ ADICIONADO: Logout
+    '/auth/csrf-token',         // Endpoint para obter token
+    '/auth/change-password',    // ✅ ADICIONADO: Trocar senha
+    '/auth/me',                 // ✅ ADICIONADO: Verificar sessão do usuário
+
+    // ═══════════════════════════════════════════════════════════════
+    // CHAT & CONVERSATIONS
+    // ═══════════════════════════════════════════════════════════════
+    '/chat',                    // Chat principal
+    '/chat/stream',             // Chat com streaming SSE
+    '/stream',                  // Streaming genérico
+    '/messages',                // Mensagens
+    '/conversations*',          // Conversações e sub-rotas (wildcard)
+
+    // ═══════════════════════════════════════════════════════════════
+    // ADMIN & USER MANAGEMENT
+    // ═══════════════════════════════════════════════════════════════
+    '/users*',                  // ✅ ADICIONADO: CRUD de usuários (wildcard)
+
+    // ═══════════════════════════════════════════════════════════════
+    // FILE UPLOADS
+    // ═══════════════════════════════════════════════════════════════
+    '/upload*',                 // ✅ ADICIONADO: Upload e gerenciamento (wildcard)
+    '/kb/upload',               // ✅ ADICIONADO: Upload para Knowledge Base
+
+    // ═══════════════════════════════════════════════════════════════
+    // CONTENT MANAGEMENT
+    // ═══════════════════════════════════════════════════════════════
+    '/partners*',               // ✅ ADICIONADO: CRUD de parceiros (wildcard)
+    '/rom-prompts*',            // ✅ ADICIONADO: CRUD de prompts (wildcard)
+
+    // ═══════════════════════════════════════════════════════════════
+    // LEGAL SERVICES
+    // ═══════════════════════════════════════════════════════════════
+    '/certidoes*',              // ✅ ADICIONADO: Geração de certidões (wildcard)
+    '/multi-agent*',            // ✅ ADICIONADO: Sistema multi-agent (wildcard)
+    '/case-processor*',         // ✅ ADICIONADO: Processamento de casos (wildcard)
+
+    // ═══════════════════════════════════════════════════════════════
+    // FEEDBACK & MISC
+    // ═══════════════════════════════════════════════════════════════
+    '/feedback',                // ✅ ADICIONADO: Feedback de usuários
+    '/deploy/execute'           // ✅ ADICIONADO: Execução de deploy
   ]
 }));
 console.log('🔐 [SECURITY] CSRF validation aplicada em rotas de mutação');
@@ -381,6 +473,9 @@ app.use('/api/rom-project', romProjectRouter);
 
 // Rotas de Autenticação (login/logout)
 app.use('/api/auth', authRoutes);
+
+// Rotas de Gerenciamento de Usuários (Admin Only)
+app.use('/api', usersRoutes);
 
 // Rotas de Conversas (Histórico de Chat)
 app.use('/api/conversations', conversationsRoutes);
@@ -1015,25 +1110,53 @@ export function buildSystemPrompt() {
   prompt += `   - USE quando usuário pedir: doutrina, artigos, análise doutrinária, fundamentação teórica\n\n`;
   prompt += `⚠️ IMPORTANTE: SEMPRE use as ferramentas disponíveis. NUNCA diga que não tem acesso a tribunais ou jurisprudência.\n`;
   prompt += `Se o usuário pedir jurisprudência do TJGO (ou qualquer tribunal), USE a ferramenta pesquisar_jurisprudencia!\n\n`;
-  prompt += `## 📋 APRESENTAÇÃO DOS RESULTADOS DAS FERRAMENTAS - OBRIGATÓRIO:\n\n`;
-  prompt += `Quando você usar qualquer ferramenta e receber os resultados:\n\n`;
-  prompt += `✅ VOCÊ DEVE OBRIGATORIAMENTE:\n`;
-  prompt += `1. LER COMPLETAMENTE os resultados retornados pela ferramenta\n`;
-  prompt += `2. APRESENTAR os resultados ao usuário de forma CLARA e FORMATADA\n`;
-  prompt += `3. RESUMIR os principais achados e sua relevância para a questão\n`;
-  prompt += `4. CITAR os resultados específicos (números de processo, tribunais, datas)\n`;
-  prompt += `5. EXPLICAR como os resultados respondem à pergunta do usuário\n\n`;
-  prompt += `❌ VOCÊ ESTÁ PROIBIDO DE:\n`;
-  prompt += `1. Ignorar os resultados das ferramentas\n`;
-  prompt += `2. Dizer apenas "busquei mas não encontrei" sem mostrar o que foi retornado\n`;
-  prompt += `3. Usar a ferramenta e não apresentar os resultados ao usuário\n`;
-  prompt += `4. Responder de forma genérica sem mencionar os dados específicos obtidos\n\n`;
-  prompt += `**EXEMPLO CORRETO:**\n`;
-  prompt += `"Busquei jurisprudência sobre [tema] e encontrei 8 resultados relevantes:\n\n`;
-  prompt += `1. STJ - REsp 1.234.567 (2023): [resumo da decisão]\n`;
-  prompt += `2. TJGO - Apelação 5678-90 (2024): [resumo da decisão]\n`;
-  prompt += `[...continue apresentando os resultados]\n\n`;
-  prompt += `Esses precedentes indicam que [análise e conclusão baseada nos resultados]"\n\n`;
+  prompt += `## 📋 APRESENTAÇÃO DOS RESULTADOS - IMPERATIVO ULTRA CRÍTICO:\n\n`;
+  prompt += `🚨🚨🚨 REGRA MÁXIMA DO STREAMING (NÃO VIOLÁVEL):\n\n`;
+  prompt += `Quando o usuário pede pesquisa/busca/consulta:\n`;
+  prompt += `1. ESCREVA primeiro "Vou pesquisar [tema] em [fontes]..." ← ESCREVA ISSO ANTES de usar ferramentas!\n`;
+  prompt += `2. SÓ DEPOIS execute a ferramenta de busca\n`;
+  prompt += `3. Assim que receber resultados, APRESENTE IMEDIATAMENTE (< 1 segundo)\n`;
+  prompt += `4. NÃO execute buscas adicionais - APRESENTE o que encontrou!\n\n`;
+  prompt += `⚡ VELOCIDADE OBRIGATÓRIA (como claude.ai):\n`;
+  prompt += `- Primeira palavra em < 0.5 segundos do pedido do usuário\n`;
+  prompt += `- Escreva introdução ANTES de buscar (não depois)\n`;
+  prompt += `- Apresente resultados assim que recebê-los (não pense, escreva!)\n`;
+  prompt += `- UMA busca é suficiente - não faça 5-10 buscas!\n\n`;
+  prompt += `✅ FLUXO CORRETO (RÁPIDO):\n`;
+  prompt += `User: "pesquise X"\n`;
+  prompt += `Você: "Vou pesquisar X no STJ e tribunais..." ← ESCREVA ISSO AGORA\n`;
+  prompt += `Você: [USA ferramenta pesquisar_jurisprudencia]\n`;
+  prompt += `Você: "Encontrei 35 decisões relevantes:" ← ESCREVA < 1s após receber\n`;
+  prompt += `Você: "📋 **[1] Decisão ABC**..." ← LISTE imediatamente\n\n`;
+  prompt += `❌ FLUXO ERRADO (LENTO - PROIBIDO):\n`;
+  prompt += `Você: [USA ferramenta]\n`;
+  prompt += `Você: [USA outra ferramenta]\n`;
+  prompt += `Você: [USA mais ferramenta]\n`;
+  prompt += `Você: "Analisando..." ← 15 SEGUNDOS DEPOIS - INACEITÁVEL!\n\n`;
+  prompt += `❌ COMPORTAMENTOS ABSOLUTAMENTE PROIBIDOS:\n`;
+  prompt += `1. ❌ NUNCA diga apenas "Pesquisa concluída. Analisando resultados..." e PARE\n`;
+  prompt += `2. ❌ NUNCA use a ferramenta e não apresente os resultados ao usuário\n`;
+  prompt += `3. ❌ NUNCA ignore os resultados recebidos das ferramentas\n`;
+  prompt += `4. ❌ NUNCA responda de forma genérica sem citar os dados específicos obtidos\n`;
+  prompt += `5. ❌ NUNCA faça novas buscas se já recebeu resultados suficientes - APRESENTE-OS!\n\n`;
+  prompt += `🎯 FLUXO CORRETO OBRIGATÓRIO:\n`;
+  prompt += `1️⃣ Use a ferramenta de busca → 2️⃣ Receba os resultados → 3️⃣ APRESENTE-OS IMEDIATAMENTE AO USUÁRIO\n`;
+  prompt += `NÃO faça: Busca → Resultados → Nova busca → Resultados → "Analisando..." → PARA ❌\n`;
+  prompt += `FAÇA: Busca → Resultados → APRESENTAÇÃO COMPLETA DOS RESULTADOS ✅\n\n`;
+  prompt += `**EXEMPLO CORRETO DE RESPOSTA:**\n`;
+  prompt += `"Realizei busca de jurisprudência sobre [tema] e encontrei os seguintes precedentes do TJGO:\n\n`;
+  prompt += `📋 **RESULTADOS ENCONTRADOS:**\n\n`;
+  prompt += `1️⃣ **TJGO - Apelação nº 5678-90.2024.8.09.0000** (2024)\n`;
+  prompt += `   Tribunal: Tribunal de Justiça de Goiás\n`;
+  prompt += `   Ementa: [transcrever ementa completa recebida]\n`;
+  prompt += `   Link: [URL]\n`;
+  prompt += `   Análise: [explicar relevância para o caso]\n\n`;
+  prompt += `2️⃣ **[Próximo resultado com TODOS os detalhes]**\n\n`;
+  prompt += `[...continue apresentando TODOS os resultados recebidos]\n\n`;
+  prompt += `💡 **ANÁLISE DOS PRECEDENTES:**\n`;
+  prompt += `[Desenvolver análise completa baseada nos resultados apresentados]\n\n`;
+  prompt += `📌 **CONCLUSÃO:**\n`;
+  prompt += `[Conclusão fundamentada nos precedentes citados]"\n\n`;
 
   prompt += `---\n\n`;
   prompt += `**EXCELÊNCIA NAS RESPOSTAS - IMPERATIVO:**\n\n`;
@@ -1336,7 +1459,45 @@ Enquanto isso, pode continuar usando o sistema normalmente.
       timestamp: new Date()
     });
 
-    // ✅ SALVAR MENSAGEM DO USUÁRIO NA CONVERSA PERSISTENTE
+    // ✅ SALVAR MENSAGEM DO USUÁRIO NA CONVERSA PERSISTENTE (PostgreSQL)
+    try {
+      const pgPool = await getPostgresPool();
+      if (pgPool) {
+        // Verificar se conversação existe no PostgreSQL, se não criar
+        const convCheck = await pgPool.query(
+          'SELECT id FROM conversations WHERE id = $1',
+          [conversationId]
+        );
+
+        if (convCheck.rows.length === 0) {
+          // Criar conversação no PostgreSQL
+          const userId = req.session.userId || (req.session.user && req.session.user.id) || null;
+          await pgPool.query(
+            `INSERT INTO conversations (id, user_id, title, created_at, updated_at)
+             VALUES ($1, $2, $3, NOW(), NOW())
+             ON CONFLICT (id) DO NOTHING`,
+            [conversationId, userId, 'Nova Conversa']
+          );
+        }
+
+        // Salvar mensagem do usuário no PostgreSQL
+        await pgPool.query(
+          `INSERT INTO messages (conversation_id, role, content, created_at)
+           VALUES ($1, $2, $3, NOW())`,
+          [conversationId, 'user', message]
+        );
+
+        // Atualizar timestamp da conversa
+        await pgPool.query(
+          'UPDATE conversations SET updated_at = NOW() WHERE id = $1',
+          [conversationId]
+        );
+      }
+    } catch (dbError) {
+      console.warn('⚠️ Erro ao salvar mensagem do usuário no PostgreSQL:', dbError.message);
+    }
+
+    // Manter compatibilidade com sistema antigo (JSON)
     conversationsManager.addMessage(conversationId, {
       role: 'user',
       content: message
@@ -1622,7 +1783,53 @@ Enquanto isso, pode continuar usando o sistema normalmente.
     // Adicionar resposta ao histórico em memória
     history.push({ role: 'assistant', content: resposta, timestamp: new Date() });
 
-    // ✅ SALVAR RESPOSTA DO ASSISTANT NA CONVERSA PERSISTENTE
+    // ✅ SALVAR RESPOSTA DO ASSISTANT NA CONVERSA PERSISTENTE (PostgreSQL)
+    try {
+      const pgPool = await getPostgresPool();
+      if (pgPool) {
+        // Salvar resposta do assistant no PostgreSQL
+        await pgPool.query(
+          `INSERT INTO messages (conversation_id, role, content, model, created_at)
+           VALUES ($1, $2, $3, $4, NOW())`,
+          [conversationId, 'assistant', resposta, selectedModel || null]
+        );
+
+        // Atualizar timestamp da conversa
+        await pgPool.query(
+          'UPDATE conversations SET updated_at = NOW() WHERE id = $1',
+          [conversationId]
+        );
+
+        // Gerar título automaticamente após primeira resposta se ainda não tiver
+        const convCheck = await pgPool.query(
+          `SELECT title FROM conversations WHERE id = $1`,
+          [conversationId]
+        );
+
+        if (convCheck.rows.length > 0 && convCheck.rows[0].title === 'Nova Conversa') {
+          const firstUserMessage = history.find(m => m.role === 'user');
+          if (firstUserMessage) {
+            let title = firstUserMessage.content.substring(0, 50).trim();
+            title = title.replace(/\n/g, ' ');
+            if (firstUserMessage.content.length > 50) {
+              const lastSpace = title.lastIndexOf(' ');
+              if (lastSpace > 20) {
+                title = title.substring(0, lastSpace);
+              }
+              title += '...';
+            }
+            await pgPool.query(
+              'UPDATE conversations SET title = $1 WHERE id = $2',
+              [title, conversationId]
+            );
+          }
+        }
+      }
+    } catch (dbError) {
+      console.warn('⚠️ Erro ao salvar resposta do assistant no PostgreSQL:', dbError.message);
+    }
+
+    // Manter compatibilidade com sistema antigo (JSON)
     conversationsManager.addMessage(conversationId, {
       role: 'assistant',
       content: resposta
@@ -1865,71 +2072,6 @@ Sempre cite as fontes corretamente e formate as referências em ABNT.`,
 });
 
 // API - Chat com Streaming Real-Time (SSE)
-app.post('/api/chat-stream', async (req, res) => {
-  try {
-    const { message, modelo = 'global.anthropic.claude-sonnet-4-5-20250929-v1:0' } = req.body;
-    const history = getHistory(req.session.id);
-
-    // Configurar SSE
-    res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
-    res.setHeader('X-Accel-Buffering', 'no'); // Nginx
-
-    console.log('🌊 [Stream] Iniciando streaming...', { modelo });
-
-    const { conversarStream } = await import('./modules/bedrock.js');
-
-    let textoCompleto = '';
-    const startTime = Date.now();
-
-    await conversarStream(
-      message,
-      (chunk) => {
-        textoCompleto += chunk;
-        res.write(`data: ${JSON.stringify({ type: 'chunk', text: chunk })}\n\n`);
-      },
-      {
-        modelo,
-        historico: history.slice(-30), // Últimas 30 mensagens
-        maxTokens: 4096,
-        temperature: 0.7
-      }
-    );
-
-    const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
-
-    // Enviar evento final
-    res.write(`data: ${JSON.stringify({
-      type: 'done',
-      fullText: textoCompleto,
-      elapsed: `${elapsed}s`,
-      modelo
-    })}\n\n`);
-    res.end();
-
-    // Adicionar ao histórico
-    history.push({
-      role: 'user',
-      content: message,
-      timestamp: new Date()
-    });
-
-    history.push({
-      role: 'assistant',
-      content: textoCompleto,
-      timestamp: new Date(),
-      modelo,
-      streaming: true
-    });
-
-    console.log(`✅ [Stream] Concluído em ${elapsed}s`);
-  } catch (error) {
-    console.error('❌ [Stream] Erro:', error);
-    res.write(`data: ${JSON.stringify({ type: 'error', error: error.message })}\n\n`);
-    res.end();
-  }
-});
 
 // Alias para compatibilidade com frontend React V4
 app.post('/api/chat/stream', async (req, res) => {

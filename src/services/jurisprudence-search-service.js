@@ -27,7 +27,7 @@ class JurisprudenceSearchService {
         timeout: 30000 // 30 segundos
       },
       jusbrasil: {
-        enabled: process.env.JUSBRASIL_ENABLED === 'true' || true,
+        enabled: process.env.JUSBRASIL_ENABLED === 'true' || false, // Desabilitado: bloqueio anti-bot 100%
         apiUrl: 'https://www.jusbrasil.com.br/busca',
         timeout: 30000
       },
@@ -106,16 +106,18 @@ class JurisprudenceSearchService {
       const sources = [];
 
       // ═══════════════════════════════════════════════════════════════
-      // ESTRATÉGIA DE TIMEOUT AGRESSIVA PARA PRODUÇÃO
+      // ESTRATÉGIA DE TIMEOUT ADAPTATIVA PARA PRODUÇÃO
       // ═══════════════════════════════════════════════════════════════
-      // Google Search: 8s (rápido e confiável - PRIORIDADE MÁXIMA)
+      // Google Search: 8s (tribunais superiores) / 15s (estaduais)
       // DataJud: 10s (API oficial mas pode ser lenta)
       // JusBrasil: 5s (frequentemente bloqueado/lento - menor prioridade)
       // ═══════════════════════════════════════════════════════════════
 
-      const GOOGLE_TIMEOUT = 8000;   // 8s - fonte principal
-      const DATAJUD_TIMEOUT = 10000; // 10s - fonte oficial
-      const JUSBRASIL_TIMEOUT = 5000; // 5s - frequentemente falha
+      // Timeout adaptativo: tribunais estaduais precisam mais tempo
+      const isEstadual = tribunal && tribunal.toLowerCase().startsWith('tj');
+      const GOOGLE_TIMEOUT = isEstadual ? 18000 : 12000;  // 18s para TJGO/TJSP, 12s para STF/STJ (margem +2-3s sobre cliente)
+      const DATAJUD_TIMEOUT = 12000; // 12s - fonte oficial (margem de 2s)
+      const JUSBRASIL_TIMEOUT = 5000; // 5s - frequentemente falha (desabilitado)
 
       // PRIORIDADE 1: Google Search (mais rápido e confiável)
       if (this.config.websearch.enabled) {
@@ -141,17 +143,18 @@ class JurisprudenceSearchService {
         );
       }
 
-      // PRIORIDADE 3: JusBrasil (timeout agressivo - frequentemente falha)
-      if (this.config.jusbrasil.enabled) {
-        sources.push('jusbrasil');
-        searchPromises.push(
-          this.withTimeout(
-            this.searchJusBrasil(tese, { limit, tribunal }),
-            JUSBRASIL_TIMEOUT,
-            'JusBrasil'
-          )
-        );
-      }
+      // ❌ PRIORIDADE 3: JusBrasil - DESABILITADO (100% bloqueio anti-bot)
+      // Google Custom Search já indexa JusBrasil sem bloqueios
+      // if (this.config.jusbrasil.enabled) {
+      //   sources.push('jusbrasil');
+      //   searchPromises.push(
+      //     this.withTimeout(
+      //       this.searchJusBrasil(tese, { limit, tribunal }),
+      //       JUSBRASIL_TIMEOUT,
+      //       'JusBrasil'
+      //     )
+      //   );
+      // }
 
       // Executar todas as buscas em paralelo
       const results = await Promise.allSettled(searchPromises);
@@ -396,9 +399,14 @@ class JurisprudenceSearchService {
       // Importar dinamicamente o cliente Google Search
       const { GoogleSearchClient } = await import('../../lib/google-search-client.js');
 
+      // ⚡ Timeout adaptativo: 15s para estaduais, 10s para superiores
+      const isEstadual = tribunal && tribunal.toLowerCase().startsWith('tj');
+      const clientTimeout = isEstadual ? 15000 : 10000;
+
       const client = new GoogleSearchClient({
         apiKey: process.env.GOOGLE_SEARCH_API_KEY,
-        cx: process.env.GOOGLE_SEARCH_CX
+        cx: process.env.GOOGLE_SEARCH_CX,
+        timeout: clientTimeout  // ✅ Passar timeout adaptativo
       });
 
       // Verificar se está configurado
