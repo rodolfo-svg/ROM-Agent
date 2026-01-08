@@ -215,16 +215,21 @@ export async function executeTool(toolName, toolInput) {
         if (resultado.sources?.datajud?.success && resultado.sources.datajud.results?.length > 0) {
           respostaFormatada += `\n🏛️ **CNJ DataJud (${resultado.sources.datajud.count} resultados oficiais)**\n\n`;
 
-          resultado.sources.datajud.results.slice(0, 3).forEach((item, idx) => {
+          // ✅ CORREÇÃO: Mostrar TODOS os resultados, não apenas 3 (até limite de 10)
+          resultado.sources.datajud.results.slice(0, Math.min(10, resultado.sources.datajud.results.length)).forEach((item, idx) => {
             respostaFormatada += `**[${idx + 1}] ${item.numero || item.titulo || 'Decisão'}**\n`;
             if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
             if (item.classe) respostaFormatada += `Classe: ${item.classe}\n`;
             if (item.relator) respostaFormatada += `Relator: ${item.relator}\n`;
             if (item.data) respostaFormatada += `Data: ${item.data}\n`;
-            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
+            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 400)}...\n`;
             if (item.link) respostaFormatada += `Link: ${item.link}\n`;
             respostaFormatada += '\n';
           });
+
+          if (resultado.sources.datajud.results.length > 10) {
+            respostaFormatada += `... e mais ${resultado.sources.datajud.results.length - 10} resultados disponíveis\n`;
+          }
 
           respostaFormatada += '---\n\n';
         }
@@ -233,14 +238,19 @@ export async function executeTool(toolName, toolInput) {
         if (resultado.sources?.jusbrasil?.success && resultado.sources.jusbrasil.results?.length > 0) {
           respostaFormatada += `\n📚 **JusBrasil (${resultado.sources.jusbrasil.count} resultados)**\n\n`;
 
-          resultado.sources.jusbrasil.results.slice(0, 3).forEach((item, idx) => {
+          // ✅ CORREÇÃO: Mostrar TODOS os resultados, não apenas 3 (até limite de 10)
+          resultado.sources.jusbrasil.results.slice(0, Math.min(10, resultado.sources.jusbrasil.results.length)).forEach((item, idx) => {
             respostaFormatada += `**[${idx + 1}] ${item.titulo || 'Documento'}**\n`;
             if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
             if (item.data) respostaFormatada += `Data: ${item.data}\n`;
-            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 300)}...\n`;
+            if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 400)}...\n`;
             if (item.link) respostaFormatada += `Link: ${item.link}\n`;
             respostaFormatada += '\n';
           });
+
+          if (resultado.sources.jusbrasil.results.length > 10) {
+            respostaFormatada += `... e mais ${resultado.sources.jusbrasil.results.length - 10} resultados disponíveis\n`;
+          }
 
           respostaFormatada += '---\n\n';
         }
@@ -249,12 +259,17 @@ export async function executeTool(toolName, toolInput) {
         if (resultado.sources?.websearch?.success && resultado.sources.websearch.results?.length > 0) {
           respostaFormatada += `\n🔍 **Web Search - Google (${resultado.sources.websearch.count} resultados)**\n\n`;
 
-          resultado.sources.websearch.results.slice(0, 3).forEach((item, idx) => {
+          // ✅ CORREÇÃO: Mostrar TODOS os resultados, não apenas 3 (até limite de 10)
+          resultado.sources.websearch.results.slice(0, Math.min(10, resultado.sources.websearch.results.length)).forEach((item, idx) => {
             respostaFormatada += `**[${idx + 1}] ${item.titulo || item.title || 'Resultado'}**\n`;
-            if (item.snippet) respostaFormatada += `${item.snippet.substring(0, 200)}...\n`;
+            if (item.snippet) respostaFormatada += `${item.snippet.substring(0, 250)}...\n`;
             if (item.link) respostaFormatada += `Link: ${item.link}\n`;
             respostaFormatada += '\n';
           });
+
+          if (resultado.sources.websearch.results.length > 10) {
+            respostaFormatada += `... e mais ${resultado.sources.websearch.results.length - 10} resultados disponíveis\n`;
+          }
 
           respostaFormatada += '---\n\n';
         }
