@@ -357,15 +357,54 @@ app.use('/api/', generalLimiter);
 // - Rotas GET (não modificam dados)
 app.use('/api', csrfProtection.protection({
   exemptPaths: [
-    '/auth/login',        // Sem /api prefix (req.path é relativo)
-    '/auth/register',     // Sem /api prefix
-    '/auth/forgot-password', // Sem /api prefix
-    '/auth/csrf-token',   // Endpoint para obter token
-    '/chat',              // Chat principal (sem /api prefix)
-    '/chat/stream',       // Chat com streaming SSE (sem /api prefix)
-    '/stream',            // Streaming genérico (sem /api prefix)
-    '/messages',          // Mensagens (sem /api prefix)
-    '/conversations*'     // Conversações e sub-rotas (sem /api prefix)
+    // ═══════════════════════════════════════════════════════════════
+    // AUTH ROUTES
+    // ═══════════════════════════════════════════════════════════════
+    '/auth/login',              // Login (sem /api prefix - req.path é relativo)
+    '/auth/register',           // Registro
+    '/auth/forgot-password',    // Esqueci senha
+    '/auth/logout',             // ✅ ADICIONADO: Logout
+    '/auth/csrf-token',         // Endpoint para obter token
+    '/auth/change-password',    // ✅ ADICIONADO: Trocar senha
+
+    // ═══════════════════════════════════════════════════════════════
+    // CHAT & CONVERSATIONS
+    // ═══════════════════════════════════════════════════════════════
+    '/chat',                    // Chat principal
+    '/chat/stream',             // Chat com streaming SSE
+    '/stream',                  // Streaming genérico
+    '/messages',                // Mensagens
+    '/conversations*',          // Conversações e sub-rotas (wildcard)
+
+    // ═══════════════════════════════════════════════════════════════
+    // ADMIN & USER MANAGEMENT
+    // ═══════════════════════════════════════════════════════════════
+    '/users*',                  // ✅ ADICIONADO: CRUD de usuários (wildcard)
+
+    // ═══════════════════════════════════════════════════════════════
+    // FILE UPLOADS
+    // ═══════════════════════════════════════════════════════════════
+    '/upload*',                 // ✅ ADICIONADO: Upload e gerenciamento (wildcard)
+    '/kb/upload',               // ✅ ADICIONADO: Upload para Knowledge Base
+
+    // ═══════════════════════════════════════════════════════════════
+    // CONTENT MANAGEMENT
+    // ═══════════════════════════════════════════════════════════════
+    '/partners*',               // ✅ ADICIONADO: CRUD de parceiros (wildcard)
+    '/rom-prompts*',            // ✅ ADICIONADO: CRUD de prompts (wildcard)
+
+    // ═══════════════════════════════════════════════════════════════
+    // LEGAL SERVICES
+    // ═══════════════════════════════════════════════════════════════
+    '/certidoes*',              // ✅ ADICIONADO: Geração de certidões (wildcard)
+    '/multi-agent*',            // ✅ ADICIONADO: Sistema multi-agent (wildcard)
+    '/case-processor*',         // ✅ ADICIONADO: Processamento de casos (wildcard)
+
+    // ═══════════════════════════════════════════════════════════════
+    // FEEDBACK & MISC
+    // ═══════════════════════════════════════════════════════════════
+    '/feedback',                // ✅ ADICIONADO: Feedback de usuários
+    '/deploy/execute'           // ✅ ADICIONADO: Execução de deploy
   ]
 }));
 console.log('🔐 [SECURITY] CSRF validation aplicada em rotas de mutação');
