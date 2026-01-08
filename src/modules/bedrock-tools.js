@@ -22,6 +22,36 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // ============================================================
+// DEDUPLICAÇÃO DE RESULTADOS
+// ============================================================
+
+/**
+ * Deduplica resultados de jurisprudência por hash
+ * Evita duplicação entre Google Search, DataJud, JusBrasil
+ */
+function deduplicateResults(results) {
+  if (!results || !Array.isArray(results)) return [];
+
+  const seen = new Set();
+
+  return results.filter(result => {
+    // Hash baseado em: número do processo + tribunal + tipo
+    const numero = (result.numero || '').toLowerCase().trim();
+    const tribunal = (result.tribunal || '').toLowerCase().trim();
+    const tipo = (result.tipo || '').toLowerCase().trim();
+    const hashKey = `${numero}_${tribunal}_${tipo}`;
+
+    if (seen.has(hashKey)) {
+      console.log(`⚠️ [Dedup] Resultado duplicado removido: ${result.numero || result.titulo}`);
+      return false;
+    }
+
+    seen.add(hashKey);
+    return true;
+  });
+}
+
+// ============================================================
 // DEFINIÇÃO DAS TOOLS
 // ============================================================
 
@@ -201,6 +231,17 @@ export async function executeTool(toolName, toolInput) {
           tribunal: tribunal || null,
           enableCache: true
         });
+
+        // ✅ DEDUPLICAÇÃO: Remover duplicatas de cada fonte
+        if (resultado.sources?.datajud?.results) {
+          resultado.sources.datajud.results = deduplicateResults(resultado.sources.datajud.results);
+        }
+        if (resultado.sources?.jusbrasil?.results) {
+          resultado.sources.jusbrasil.results = deduplicateResults(resultado.sources.jusbrasil.results);
+        }
+        if (resultado.sources?.websearch?.results) {
+          resultado.sources.websearch.results = deduplicateResults(resultado.sources.websearch.results);
+        }
 
         // ✅ ATUALIZADO: Formatar resultado do serviço novo
         let respostaFormatada = `\n📊 **Pesquisa de Jurisprudência: "${termo}"**\n\n`;
