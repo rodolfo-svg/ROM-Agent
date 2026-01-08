@@ -106,14 +106,16 @@ class JurisprudenceSearchService {
       const sources = [];
 
       // ═══════════════════════════════════════════════════════════════
-      // ESTRATÉGIA DE TIMEOUT AGRESSIVA PARA PRODUÇÃO
+      // ESTRATÉGIA DE TIMEOUT ADAPTATIVA PARA PRODUÇÃO
       // ═══════════════════════════════════════════════════════════════
-      // Google Search: 8s (rápido e confiável - PRIORIDADE MÁXIMA)
+      // Google Search: 8s (tribunais superiores) / 15s (estaduais)
       // DataJud: 10s (API oficial mas pode ser lenta)
       // JusBrasil: 5s (frequentemente bloqueado/lento - menor prioridade)
       // ═══════════════════════════════════════════════════════════════
 
-      const GOOGLE_TIMEOUT = 8000;   // 8s - fonte principal
+      // Timeout adaptativo: tribunais estaduais precisam mais tempo
+      const isEstadual = tribunal && tribunal.toLowerCase().startsWith('tj');
+      const GOOGLE_TIMEOUT = isEstadual ? 15000 : 8000;   // 15s para TJGO/TJSP, 8s para STF/STJ
       const DATAJUD_TIMEOUT = 10000; // 10s - fonte oficial
       const JUSBRASIL_TIMEOUT = 5000; // 5s - frequentemente falha
 

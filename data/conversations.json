@@ -336,5 +336,28 @@
     "createdAt": "2026-01-06T05:01:09.354Z",
     "updatedAt": "2026-01-06T05:01:19.004Z",
     "messageCount": 2
+  },
+  "conv_1767762096845_539agn": {
+    "id": "conv_1767762096845_539agn",
+    "userId": "anonymous",
+    "sessionId": "szg57x53ezjWQXJxmA8OtQLJUMS6-9g2",
+    "projectId": "rom-agent",
+    "title": "Teste de conexão",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de conexão",
+        "timestamp": "2026-01-07T05:01:36.863Z"
+      },
+      {
+        "role": "assistant",
+        "content": "# ✅ Conexão Estabelecida com Sucesso\n\n---\n\n## Status do Sistema Jurídico\n\n**Assistente Jurídico Especializado** está **ONLINE** e operacional.\n\n---\n\n## 🔧 Recursos Disponíveis:\n\n### 1️⃣ **Pesquisa Jurisprudencial**\n- ✅ STF (Supremo Tribunal Federal)\n- ✅ STJ (Superior Tribunal de Justiça)\n- ✅ TST (Tribunal Superior do Trabalho)\n- ✅ TSE (Tribunal Superior Eleitoral)\n- ✅ CNJ DataJud (Base oficial do Conselho Nacional de Justiça)\n- ✅ Jusbrasil (Maior banco de dados jurídicos do Brasil)\n\n### 2️⃣ **Pesquisa de Súmulas**\n- ✅ Acesso a súmulas vinculantes e persuasivas\n- ✅ Todos os tribunais superiores\n\n### 3️⃣ **Consulta Processual**\n- ✅ CNJ DataJud (processos oficiais)\n\n### 4️⃣ **Knowledge Base**\n- ✅ Acesso a documentos previamente enviados\n\n### 5️⃣ **Redação Jurídica**\n- ✅ Petições iniciais, contestações, recursos\n- ✅ Contratos e documentos extrajudiciais\n- ✅ Alterações contratuais (DNRC)\n- ✅ Pareceres e memoriais\n- ✅ Análise de prazos processuais\n\n---\n\n## 📋 Como Posso Ajudar?\n\nEstou preparado para:\n- 📝 Redigir peças processuais completas\n- 🔍 Pesquisar jurisprudência relevante\n- ⚖️ Analisar questões jurídicas complexas\n- 📅 Calcular prazos processuais\n- 📄 Elaborar contratos e documentos extrajudiciais\n- 🏢 Preparar alterações contratuais conforme normas DNRC\n\n---\n\n**Aguardando suas instruções para iniciar o trabalho jurídico.** \n\nComo posso auxiliá-lo hoje?",
+        "timestamp": "2026-01-07T05:01:46.234Z"
+      }
+    ],
+    "createdAt": "2026-01-07T05:01:36.845Z",
+    "updatedAt": "2026-01-07T05:01:46.234Z",
+    "messageCount": 2
   }
 }
