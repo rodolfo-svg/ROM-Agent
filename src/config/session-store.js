@@ -47,6 +47,11 @@ export function createSessionMiddleware() {
     throw new Error('❌ SESSION_SECRET é obrigatório! Configure no .env ou Render.com');
   }
 
+  // Validar SESSION_SECRET
+  if (!process.env.SESSION_SECRET) {
+    throw new Error('❌ SESSION_SECRET é obrigatório! Configure no .env ou Render.com');
+  }
+
   const sessionConfig = {
     store,
     secret: process.env.SESSION_SECRET,
