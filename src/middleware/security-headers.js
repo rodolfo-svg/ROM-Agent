@@ -26,3 +26,5 @@ export const securityHeaders = helmet({
   xssFilter: true,
   hidePoweredBy: true,
 });
+
+export default securityHeaders;
