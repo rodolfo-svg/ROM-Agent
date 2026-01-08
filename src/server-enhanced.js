@@ -67,6 +67,7 @@ import { scheduler } from './jobs/scheduler.js';
 import { deployJob } from './jobs/deploy-job.js';
 import authRoutes from './routes/auth.js';
 import conversationsRoutes from './routes/conversations.js';
+import usersRoutes from './routes/users.js';
 import { requireAuth } from './middleware/auth.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 
@@ -386,6 +387,9 @@ app.use('/api/rom-project', romProjectRouter);
 
 // Rotas de Autenticação (login/logout)
 app.use('/api/auth', authRoutes);
+
+// Rotas de Gerenciamento de Usuários (Admin Only)
+app.use('/api', usersRoutes);
 
 // Rotas de Conversas (Histórico de Chat)
 app.use('/api/conversations', conversationsRoutes);
@@ -1020,25 +1024,40 @@ export function buildSystemPrompt() {
   prompt += `   - USE quando usuário pedir: doutrina, artigos, análise doutrinária, fundamentação teórica\n\n`;
   prompt += `⚠️ IMPORTANTE: SEMPRE use as ferramentas disponíveis. NUNCA diga que não tem acesso a tribunais ou jurisprudência.\n`;
   prompt += `Se o usuário pedir jurisprudência do TJGO (ou qualquer tribunal), USE a ferramenta pesquisar_jurisprudencia!\n\n`;
-  prompt += `## 📋 APRESENTAÇÃO DOS RESULTADOS DAS FERRAMENTAS - OBRIGATÓRIO:\n\n`;
+  prompt += `## 📋 APRESENTAÇÃO DOS RESULTADOS DAS FERRAMENTAS - IMPERATIVO CRÍTICO:\n\n`;
+  prompt += `⚠️ ATENÇÃO: Esta é a instrução MAIS IMPORTANTE do sistema!\n\n`;
   prompt += `Quando você usar qualquer ferramenta e receber os resultados:\n\n`;
-  prompt += `✅ VOCÊ DEVE OBRIGATORIAMENTE:\n`;
-  prompt += `1. LER COMPLETAMENTE os resultados retornados pela ferramenta\n`;
-  prompt += `2. APRESENTAR os resultados ao usuário de forma CLARA e FORMATADA\n`;
-  prompt += `3. RESUMIR os principais achados e sua relevância para a questão\n`;
-  prompt += `4. CITAR os resultados específicos (números de processo, tribunais, datas)\n`;
-  prompt += `5. EXPLICAR como os resultados respondem à pergunta do usuário\n\n`;
-  prompt += `❌ VOCÊ ESTÁ PROIBIDO DE:\n`;
-  prompt += `1. Ignorar os resultados das ferramentas\n`;
-  prompt += `2. Dizer apenas "busquei mas não encontrei" sem mostrar o que foi retornado\n`;
-  prompt += `3. Usar a ferramenta e não apresentar os resultados ao usuário\n`;
-  prompt += `4. Responder de forma genérica sem mencionar os dados específicos obtidos\n\n`;
-  prompt += `**EXEMPLO CORRETO:**\n`;
-  prompt += `"Busquei jurisprudência sobre [tema] e encontrei 8 resultados relevantes:\n\n`;
-  prompt += `1. STJ - REsp 1.234.567 (2023): [resumo da decisão]\n`;
-  prompt += `2. TJGO - Apelação 5678-90 (2024): [resumo da decisão]\n`;
-  prompt += `[...continue apresentando os resultados]\n\n`;
-  prompt += `Esses precedentes indicam que [análise e conclusão baseada nos resultados]"\n\n`;
+  prompt += `✅ VOCÊ DEVE **IMEDIATAMENTE** APRESENTAR OS RESULTADOS:\n`;
+  prompt += `1. PARE de fazer novas buscas - você JÁ TEM os dados necessários\n`;
+  prompt += `2. LEIA COMPLETAMENTE os resultados retornados pela ferramenta\n`;
+  prompt += `3. APRESENTE os resultados ao usuário de forma CLARA, DETALHADA e FORMATADA\n`;
+  prompt += `4. CITE TODOS os resultados específicos recebidos (números de processo, tribunais, datas, ementas)\n`;
+  prompt += `5. ANALISE e EXPLIQUE como os resultados respondem à pergunta do usuário\n`;
+  prompt += `6. DESENVOLVA uma análise COMPLETA baseada nos precedentes encontrados\n\n`;
+  prompt += `❌ COMPORTAMENTOS ABSOLUTAMENTE PROIBIDOS:\n`;
+  prompt += `1. ❌ NUNCA diga apenas "Pesquisa concluída. Analisando resultados..." e PARE\n`;
+  prompt += `2. ❌ NUNCA use a ferramenta e não apresente os resultados ao usuário\n`;
+  prompt += `3. ❌ NUNCA ignore os resultados recebidos das ferramentas\n`;
+  prompt += `4. ❌ NUNCA responda de forma genérica sem citar os dados específicos obtidos\n`;
+  prompt += `5. ❌ NUNCA faça novas buscas se já recebeu resultados suficientes - APRESENTE-OS!\n\n`;
+  prompt += `🎯 FLUXO CORRETO OBRIGATÓRIO:\n`;
+  prompt += `1️⃣ Use a ferramenta de busca → 2️⃣ Receba os resultados → 3️⃣ APRESENTE-OS IMEDIATAMENTE AO USUÁRIO\n`;
+  prompt += `NÃO faça: Busca → Resultados → Nova busca → Resultados → "Analisando..." → PARA ❌\n`;
+  prompt += `FAÇA: Busca → Resultados → APRESENTAÇÃO COMPLETA DOS RESULTADOS ✅\n\n`;
+  prompt += `**EXEMPLO CORRETO DE RESPOSTA:**\n`;
+  prompt += `"Realizei busca de jurisprudência sobre [tema] e encontrei os seguintes precedentes do TJGO:\n\n`;
+  prompt += `📋 **RESULTADOS ENCONTRADOS:**\n\n`;
+  prompt += `1️⃣ **TJGO - Apelação nº 5678-90.2024.8.09.0000** (2024)\n`;
+  prompt += `   Tribunal: Tribunal de Justiça de Goiás\n`;
+  prompt += `   Ementa: [transcrever ementa completa recebida]\n`;
+  prompt += `   Link: [URL]\n`;
+  prompt += `   Análise: [explicar relevância para o caso]\n\n`;
+  prompt += `2️⃣ **[Próximo resultado com TODOS os detalhes]**\n\n`;
+  prompt += `[...continue apresentando TODOS os resultados recebidos]\n\n`;
+  prompt += `💡 **ANÁLISE DOS PRECEDENTES:**\n`;
+  prompt += `[Desenvolver análise completa baseada nos resultados apresentados]\n\n`;
+  prompt += `📌 **CONCLUSÃO:**\n`;
+  prompt += `[Conclusão fundamentada nos precedentes citados]"\n\n`;
 
   prompt += `---\n\n`;
   prompt += `**EXCELÊNCIA NAS RESPOSTAS - IMPERATIVO:**\n\n`;
