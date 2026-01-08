@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { User } from '@/types'
+import { clearCsrfToken } from '@/services/api'
 
 interface AuthState {
   user: User | null
@@ -94,17 +95,35 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         try {
+          // Buscar CSRF token para logout
+          const tokenRes = await fetch('/api/auth/csrf-token', {
+            credentials: 'include',
+          })
+          const tokenData = await tokenRes.json()
+          const csrfToken = tokenData.csrfToken
+
+          const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+          }
+          if (csrfToken) {
+            headers['x-csrf-token'] = csrfToken
+          }
+
           await fetch('/api/auth/logout', {
             method: 'POST',
             credentials: 'include',
+            headers,
           })
         } catch (err) {
           console.error('Logout error:', err)
         } finally {
-          set({ 
-            user: null, 
-            isAuthenticated: false, 
-            isLoading: false 
+          // Limpar CSRF token após logout
+          clearCsrfToken()
+
+          set({
+            user: null,
+            isAuthenticated: false,
+            isLoading: false
           })
         }
       },

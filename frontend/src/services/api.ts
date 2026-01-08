@@ -2,24 +2,92 @@ import type { StreamChunk, ChatRequest, ApiResponse } from '@/types'
 
 const API_BASE = '/api'
 
+// ============================================================
+// CSRF TOKEN MANAGEMENT
+// ============================================================
+
+let csrfToken: string | null = null
+
+/**
+ * Busca CSRF token do backend
+ * Token é armazenado em memória e reutilizado
+ */
+async function getCsrfToken(): Promise<string | null> {
+  if (csrfToken) {
+    return csrfToken
+  }
+
+  try {
+    const res = await fetch(`${API_BASE}/auth/csrf-token`, {
+      credentials: 'include',
+    })
+
+    if (!res.ok) {
+      console.error('❌ Falha ao buscar CSRF token:', res.status)
+      return null
+    }
+
+    const data = await res.json()
+    csrfToken = data.csrfToken || null
+
+    if (csrfToken) {
+      console.log('✅ CSRF token obtido com sucesso')
+    }
+
+    return csrfToken
+  } catch (err) {
+    console.error('❌ Erro ao buscar CSRF token:', err)
+    return null
+  }
+}
+
+/**
+ * Limpa CSRF token armazenado (forçar nova busca)
+ * Exportado para uso em logout e outras situações
+ */
+export function clearCsrfToken() {
+  csrfToken = null
+  console.log('🔄 CSRF token limpo - será renovado na próxima requisição')
+}
+
 // Generic fetch wrapper
 async function apiFetch<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
   try {
+    // Buscar CSRF token se for requisição que modifica dados
+    const methodsNeedingCsrf = ['POST', 'PUT', 'DELETE', 'PATCH']
+    const method = (options.method || 'GET').toUpperCase()
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      ...(options.headers as Record<string, string> || {}),
+    }
+
+    // Adicionar CSRF token se necessário
+    if (methodsNeedingCsrf.includes(method)) {
+      const token = await getCsrfToken()
+      if (token) {
+        headers['x-csrf-token'] = token
+      }
+    }
+
     const res = await fetch(`${API_BASE}${endpoint}`, {
       ...options,
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
+      headers,
     })
 
     const data = await res.json()
 
     if (!res.ok) {
+      // Se 403 e usamos CSRF token, limpar e sugerir reload
+      if (res.status === 403 && methodsNeedingCsrf.includes(method)) {
+        console.warn('⚠️ CSRF token inválido - limpando cache')
+        clearCsrfToken()
+      }
+
       return { success: false, error: data.error || 'Erro desconhecido' }
     }
 
@@ -42,13 +110,22 @@ export async function* chatStream(
   const { conversationId, model, messages = [], signal } = options
 
   try {
+    // Buscar CSRF token (mesmo que /chat/stream esteja em exempt, boa prática incluir)
+    const token = await getCsrfToken()
+
+    const headers: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'Accept': 'text/event-stream',
+    }
+
+    if (token) {
+      headers['x-csrf-token'] = token
+    }
+
     const res = await fetch(`${API_BASE}/chat/stream`, {
       method: 'POST',
       credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'text/event-stream',
-      },
+      headers,
       body: JSON.stringify({
         message,
         conversationId,
@@ -170,10 +247,19 @@ export async function uploadFile(file: File): Promise<ApiResponse<{ id: string; 
   formData.append('file', file)
 
   try {
+    // Buscar CSRF token para upload
+    const token = await getCsrfToken()
+
+    const headers: Record<string, string> = {}
+    if (token) {
+      headers['x-csrf-token'] = token
+    }
+
     const res = await fetch(`${API_BASE}/upload`, {
       method: 'POST',
       credentials: 'include',
-      body: formData,
+      headers, // CSRF token adicionado
+      body: formData, // FormData - não incluir Content-Type (browser define automaticamente)
     })
 
     const data = await res.json()
