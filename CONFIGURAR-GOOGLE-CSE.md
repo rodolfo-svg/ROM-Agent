@@ -19,24 +19,48 @@ Adicionar `jusbrasil.com.br` ao Google Custom Search Engine para manter **triple
 2. Faça login com a conta Google que criou o CSE atual
 3. Clique no CSE existente (ID: `f14c0d3793b7346c0`)
 
-### 2. Adicionar JusBrasil aos Sites
+### 2. ⚠️ CONFIGURAR MODO DE BUSCA (CRÍTICO)
 
-1. No painel do CSE, vá em **"Sites to search"**
-2. Clique em **"Add"**
-3. Adicione o site: `jusbrasil.com.br/*`
-4. Clique em **"Save"**
+1. No painel do CSE, vá em **"Setup"** ou **"Basics"**
+2. Procure pela seção **"Sites to Search"**
+3. **IMPORTANTE**: Selecione a opção:
+   ```
+   ☑️ Search the entire web but emphasize included sites
+   ```
+   (Ou em português: "Pesquisar toda a web mas dar ênfase aos sites incluídos")
 
-### 3. Configurar Prioridade (Opcional)
+4. **NÃO** selecione "Search only included sites" (isso limitaria APENAS aos sites listados)
 
-Para dar **prioridade aos tribunais oficiais**:
+### 3. Adicionar Sites Prioritários
 
-1. Em "Sites to search", defina **pesos de rankeamento**:
-   - `*.jus.br/*` → Peso: **10** (prioridade máxima)
-   - `jusbrasil.com.br/*` → Peso: **5** (secundário)
+Com o modo "Search entire web" ativo, adicione os sites para receber boost de rankeamento:
+
+1. Clique em **"Add"** na lista de sites
+2. Adicione os seguintes sites (um por vez):
+   ```
+   *.jus.br
+   jusbrasil.com.br
+   conjur.com.br
+   migalhas.com.br
+   ```
+3. Clique em **"Save"**
+
+### 4. (OPCIONAL) Configurar Pesos de Rankeamento
+
+Se o console permitir configurar "weights" (pesos):
+
+1. Encontre a opção de **"Ranking"** ou **"Weights"**
+2. Configure assim:
+   - `*.jus.br` → Peso: **10** (prioridade máxima - tribunais oficiais)
+   - `jusbrasil.com.br` → Peso: **7** (alta prioridade - jurisprudência)
+   - `conjur.com.br` → Peso: **5** (média prioridade - notícias/doutrinas)
+   - `migalhas.com.br` → Peso: **5** (média prioridade - notícias/doutrinas)
 
 2. Isso garante que:
-   - Tribunais oficiais aparecem primeiro
-   - JusBrasil complementa quando tribunais não têm resultados
+   - Tribunais oficiais (.jus.br) aparecem PRIMEIRO
+   - JusBrasil aparece em segundo lugar
+   - Outros sites jurídicos complementam
+   - Demais resultados da web aparecem por último
 
 ### 4. Testar Configuração
 
