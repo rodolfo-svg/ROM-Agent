@@ -35,8 +35,8 @@ const CONFIG = {
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15'
   ],
 
-  // Timeout padrão (ms)
-  timeout: 30000,
+  // Timeout padrão (ms) - Reduzido para evitar travamento em APIs lentas
+  timeout: 8000,
 
   // Delay entre requisições (ms) - respeitar rate limits
   delayEntreRequisicoes: 2000,

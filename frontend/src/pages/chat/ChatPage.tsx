@@ -144,6 +144,10 @@ export function ChatPage() {
         if (chunk.type === 'chunk' && chunk.content) {
           fullContent += chunk.content
           updateMessage(assistantMsg.id, fullContent)
+        } else if (chunk.type === 'tool_executing') {
+          // Typing indicator durante tool execution
+          const toolMessage = (chunk as any).message || '⏳ Processando...'
+          updateMessage(assistantMsg.id, toolMessage)
         } else if (chunk.type === 'artifact' && chunk.artifact) {
           // Create artifact
           const artifact = addArtifact({

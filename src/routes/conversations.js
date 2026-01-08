@@ -21,6 +21,72 @@ function requireAuth(req, res, next) {
 }
 
 /**
+ * GET /api/conversations/admin/all
+ * Lista TODAS as conversas de TODOS os usuários (apenas para ADMIN)
+ */
+router.get('/admin/all', requireAuth, async (req, res) => {
+  const user = req.session.user;
+
+  // Verificar se é admin
+  if (!user || user.role !== 'admin') {
+    return res.status(403).json({
+      success: false,
+      error: 'Acesso negado. Apenas administradores podem ver todas as conversas.'
+    });
+  }
+
+  try {
+    const pool = getPostgresPool();
+    if (!pool) {
+      return res.json({
+        success: true,
+        conversations: []
+      });
+    }
+
+    // Buscar TODAS as conversas com informações do usuário
+    const result = await pool.query(
+      `SELECT
+        c.id,
+        c.user_id,
+        c.title,
+        c.created_at,
+        c.updated_at,
+        u.name as user_name,
+        u.email as user_email,
+        COUNT(m.id) as message_count,
+        MAX(m.created_at) as last_message_at
+       FROM conversations c
+       LEFT JOIN messages m ON c.id = m.conversation_id
+       LEFT JOIN users u ON c.user_id = u.id
+       WHERE c.deleted_at IS NULL
+       GROUP BY c.id, u.name, u.email
+       ORDER BY c.updated_at DESC
+       LIMIT 500`
+    );
+
+    logger.info('Admin acessou todas as conversas', {
+      adminId: user.id,
+      adminEmail: user.email,
+      totalConversations: result.rows.length
+    });
+
+    res.json({
+      success: true,
+      conversations: result.rows,
+      total: result.rows.length
+    });
+
+  } catch (error) {
+    logger.error('Erro ao listar conversas admin', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: 'Erro ao listar conversas'
+    });
+  }
+});
+
+/**
  * GET /api/conversations
  * Lista todas as conversas do usuário (ou sessão anônima)
  * MODIFICADO: Suporta usuários autenticados E anônimos
@@ -58,6 +124,11 @@ router.get('/', async (req, res) => {
          LIMIT 100`,
         [userId]
       );
+
+      logger.info('Usuário listou suas conversas', {
+        userId,
+        totalConversations: result.rows.length
+      });
 
       return res.json({
         success: true,
