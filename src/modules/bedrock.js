@@ -601,7 +601,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
     let currentMessages = messages;
     let loopCount = 0;
-    const MAX_TOOL_LOOPS = 2; // ✅ v2.8.2: 2 loops APENAS - busca inicial + apresentação IMEDIATA (velocidade claude.ai)
+    const MAX_TOOL_LOOPS = 5; // ✅ v2.8.2: 2 loops APENAS - busca inicial + apresentação IMEDIATA (velocidade claude.ai)
     let hasJurisprudenceResults = false;
 
     while (loopCount < MAX_TOOL_LOOPS) {
