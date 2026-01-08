@@ -412,6 +412,7 @@ app.use('/api', csrfProtection.protection({
     '/auth/logout',             // ✅ ADICIONADO: Logout
     '/auth/csrf-token',         // Endpoint para obter token
     '/auth/change-password',    // ✅ ADICIONADO: Trocar senha
+    '/auth/me',                 // ✅ ADICIONADO: Verificar sessão do usuário
 
     // ═══════════════════════════════════════════════════════════════
     // CHAT & CONVERSATIONS
