@@ -291,10 +291,10 @@
     "updatedAt": "2025-12-29T23:03:06.992Z",
     "messageCount": 2
   },
-  "conv_1767589274167_gshkdq": {
-    "id": "conv_1767589274167_gshkdq",
+  "conv_1767848494744_2zueh": {
+    "id": "conv_1767848494744_2zueh",
     "userId": "anonymous",
-    "sessionId": "JGTYKz0rJ676LIyrorrnqOjAqUqDO_9F",
+    "sessionId": "K_7ED885KCM9msmVd9qaCtlm6VwxwoIH",
     "projectId": "rom-agent",
     "title": "Teste de conexão",
     "titleGenerated": true,
@@ -302,22 +302,22 @@
       {
         "role": "user",
         "content": "Teste de conexão",
-        "timestamp": "2026-01-05T05:01:14.187Z"
+        "timestamp": "2026-01-08T05:01:34.766Z"
       },
       {
         "role": "assistant",
-        "content": "# ✅ Conexão Estabelecida com Sucesso\n\nOlá! Sou seu **assistente jurídico especializado** em redação de peças processuais e documentos extrajudiciais.\n\n## 🎯 Estou pronto para auxiliar você com:\n\n### **Peças Judiciais:**\n- Petições iniciais (ações cíveis, trabalhistas, penais)\n- Contestações e reconvenções\n- Recursos (apelação, agravo, especial, extraordinário)\n- Embargos de declaração\n- Memoriais e alegações finais\n- Impugnações e manifestações processuais\n\n### **Peças Extrajudiciais:**\n- Contratos (compra e venda, prestação de serviços, locação, etc.)\n- Alterações contratuais conforme normas DNRC\n- Substabelecimentos e procurações\n- Notificações extrajudiciais\n- Pareceres jurídicos\n\n### **Análises Especializadas:**\n- Consulta de jurisprudência (STF, STJ, TST, TSE)\n- Pesquisa de súmulas\n- Análise de prazos processuais e contagem de prazo\n- Verificação de preclusão, prescrição e decadência\n- Fundamentação legal e doutrinária\n\n### **Ferramentas Disponíveis:**\n- 🔍 Pesquisa em tribunais superiores\n- 📚 Busca no Jusbrasil (jurisprudência e doutrina)\n- 📋 Consulta CNJ DataJud\n- ⚖️ Pesquisa de súmulas\n- 📄 Análise de documentos da sua Knowledge Base\n\n---\n\n**Como posso auxiliá-lo hoje?** \n\nDescreva o caso, a peça que precisa redigir ou a dúvida jurídica que possui, e fornecerei uma resposta técnica, fundamentada e detalhada.",
-        "timestamp": "2026-01-05T05:01:23.055Z"
+        "content": "# ✅ Conexão Estabelecida com Sucesso\n\n**Status:** Operacional  \n**Sistema:** Assistente Jurídico Especializado  \n**Ferramentas Disponíveis:** 5 módulos ativos\n\n---\n\n## 📋 **Recursos Ativos e Prontos para Uso:**\n\n### **1. Pesquisa Jurisprudencial**\n- ✅ STF (Supremo Tribunal Federal)\n- ✅ STJ (Superior Tribunal de Justiça)\n- ✅ TST (Tribunal Superior do Trabalho)\n- ✅ TSE (Tribunal Superior Eleitoral)\n- ✅ CNJ DataJud (Base nacional de processos)\n\n### **2. Pesquisa Jusbrasil**\n- ✅ Acórdãos\n- ✅ Doutrina\n- ✅ Artigos jurídicos\n- ✅ Peças processuais\n\n### **3. Consulta de Súmulas**\n- ✅ Súmulas vinculantes e não vinculantes\n- ✅ Todos os tribunais superiores\n\n### **4. Consulta CNJ DataJud**\n- ✅ Processos judiciais específicos\n- ✅ Dados oficiais verificáveis\n\n### **5. Knowledge Base**\n- ✅ Documentos do usuário já processados\n- ✅ 33 ferramentas de extração ativas\n\n---\n\n## 🎯 **Como Posso Auxiliar:**\n\n✍️ **Redação de Peças:**\n- Petições iniciais\n- Contestações e reconvenções\n- Recursos (apelação, agravo, especial, extraordinário)\n- Embargos de declaração\n- Contratos e aditivos\n- Alterações contratuais DNRC\n- Substabelecimentos\n\n📊 **Análises Técnicas:**\n- Cálculo de prazos processuais\n- Análise de viabilidade recursal\n- Fundamentação jurídica completa\n- Pareceres jurídicos\n\n🔍 **Pesquisas:**\n- Jurisprudência atualizada\n- Súmulas aplicáveis\n- Legislação comentada\n- Doutrina especializada\n\n---\n\n**Estou pronto para atender suas demandas jurídicas com excelência técnica e rigor formal.**\n\nComo posso auxiliá-lo hoje?",
+        "timestamp": "2026-01-08T05:01:44.674Z"
       }
     ],
-    "createdAt": "2026-01-05T05:01:14.167Z",
-    "updatedAt": "2026-01-05T05:01:23.055Z",
+    "createdAt": "2026-01-08T05:01:34.744Z",
+    "updatedAt": "2026-01-08T05:01:44.674Z",
     "messageCount": 2
   },
-  "conv_1767675669354_f6rqn1": {
-    "id": "conv_1767675669354_f6rqn1",
+  "conv_1767870190389_2r0ah": {
+    "id": "conv_1767870190389_2r0ah",
     "userId": "anonymous",
-    "sessionId": "8ew9O16Ox3RAV2Cb8brVpbXIRDZ1qN8I",
+    "sessionId": "Com5QutULuiG9kp6STo5jPCPO3qLP4XC",
     "projectId": "rom-agent",
     "title": "Teste de conexão",
     "titleGenerated": true,
@@ -325,39 +325,16 @@
       {
         "role": "user",
         "content": "Teste de conexão",
-        "timestamp": "2026-01-06T05:01:09.375Z"
+        "timestamp": "2026-01-08T11:03:10.390Z"
       },
       {
         "role": "assistant",
-        "content": "# ✅ Conexão Estabelecida com Sucesso\n\nOlá! Sou seu **assistente jurídico especializado** em redação de peças processuais e documentos extrajudiciais. Estou plenamente operacional e pronto para auxiliá-lo.\n\n## 🎯 Capacidades Principais Disponíveis:\n\n### 📝 **Redação de Peças Judiciais:**\n- Petições iniciais (todas as áreas do Direito)\n- Contestações e respostas\n- Recursos (apelação, agravo, especial, extraordinário)\n- Embargos (declaração, execução)\n- Mandados de segurança\n- Habeas corpus\n\n### 📄 **Documentos Extrajudiciais:**\n- Contratos (todos os tipos)\n- Alterações contratuais (padrão DNRC)\n- Substabelecimentos e procurações\n- Notificações extrajudiciais\n- Pareceres jurídicos\n\n### 🔍 **Ferramentas de Pesquisa Ativas:**\n- ⚖️ Jurisprudência (STF, STJ, TST, TSE)\n- 📚 Base Jusbrasil (doutrina e jurisprudência)\n- 📋 Súmulas dos Tribunais Superiores\n- 🔎 Consulta CNJ DataJud\n- 📁 Análise de documentos enviados (Knowledge Base)\n\n### ⏱️ **Análise de Prazos Processuais:**\n- Cálculo preciso conforme Lei 11.419/2006\n- Consideração de prazos em dobro\n- Identificação de preclusão e prescrição\n\n---\n\n## 💬 Como posso auxiliá-lo hoje?\n\nPode me solicitar:\n- Redigir uma peça processual específica\n- Analisar prazos de certidão do DJe\n- Pesquisar jurisprudência sobre algum tema\n- Revisar ou adaptar documentos\n- Consultar súmulas\n- Elaborar contratos ou alterações contratuais\n\n**Aguardo suas instruções!** 🚀",
-        "timestamp": "2026-01-06T05:01:19.004Z"
+        "content": "# ✅ Conexão Estabelecida com Sucesso!\n\nOlá! Sou seu **assistente jurídico especializado** e estou plenamente operacional. Todos os sistemas estão funcionando perfeitamente:\n\n## 🔧 **Ferramentas Disponíveis e Ativas:**\n\n✅ **pesquisar_jurisprudencia** - Acesso a STF, STJ, TST, TSE, TRFs, TJs (27 estados), TRTs e CNJ DataJud  \n✅ **pesquisar_sumulas** - Consulta a súmulas e teses dos tribunais superiores  \n✅ **consultar_cnj_datajud** - Consulta processual no sistema CNJ  \n✅ **consultar_kb** - Acesso à base de conhecimento local  \n✅ **pesquisar_doutrina** - Busca em Google Scholar, Conjur, Migalhas e JOTA  \n\n## 📚 **Minhas Capacidades:**\n\n- ✍️ Redação de peças judiciais (petições iniciais, contestações, recursos, embargos)\n- 📄 Redação de peças extrajudiciais (contratos, alterações contratuais DNRC, substabelecimentos)\n- ⚖️ Análise jurisprudencial com busca em tempo real\n- 📅 Cálculo de prazos processuais (Lei 11.419/2006)\n- 🎯 Fundamentação legal e doutrinária completa\n- 🏛️ Conhecimento de CPC, CPP, CLT e normas DNRC\n\n## 💬 **Como posso ajudá-lo hoje?**\n\nEstou pronto para:\n- Redigir qualquer peça processual ou contrato\n- Pesquisar jurisprudência específica em qualquer tribunal\n- Analisar prazos e calcular preclusões\n- Fundamentar teses jurídicas com doutrina e precedentes\n- Revisar documentos e sugerir melhorias\n\n**Aguardo suas instruções!** 🎓⚖️",
+        "timestamp": "2026-01-08T11:03:18.819Z"
       }
     ],
-    "createdAt": "2026-01-06T05:01:09.354Z",
-    "updatedAt": "2026-01-06T05:01:19.004Z",
-    "messageCount": 2
-  },
-  "conv_1767762096845_539agn": {
-    "id": "conv_1767762096845_539agn",
-    "userId": "anonymous",
-    "sessionId": "szg57x53ezjWQXJxmA8OtQLJUMS6-9g2",
-    "projectId": "rom-agent",
-    "title": "Teste de conexão",
-    "titleGenerated": true,
-    "messages": [
-      {
-        "role": "user",
-        "content": "Teste de conexão",
-        "timestamp": "2026-01-07T05:01:36.863Z"
-      },
-      {
-        "role": "assistant",
-        "content": "# ✅ Conexão Estabelecida com Sucesso\n\n---\n\n## Status do Sistema Jurídico\n\n**Assistente Jurídico Especializado** está **ONLINE** e operacional.\n\n---\n\n## 🔧 Recursos Disponíveis:\n\n### 1️⃣ **Pesquisa Jurisprudencial**\n- ✅ STF (Supremo Tribunal Federal)\n- ✅ STJ (Superior Tribunal de Justiça)\n- ✅ TST (Tribunal Superior do Trabalho)\n- ✅ TSE (Tribunal Superior Eleitoral)\n- ✅ CNJ DataJud (Base oficial do Conselho Nacional de Justiça)\n- ✅ Jusbrasil (Maior banco de dados jurídicos do Brasil)\n\n### 2️⃣ **Pesquisa de Súmulas**\n- ✅ Acesso a súmulas vinculantes e persuasivas\n- ✅ Todos os tribunais superiores\n\n### 3️⃣ **Consulta Processual**\n- ✅ CNJ DataJud (processos oficiais)\n\n### 4️⃣ **Knowledge Base**\n- ✅ Acesso a documentos previamente enviados\n\n### 5️⃣ **Redação Jurídica**\n- ✅ Petições iniciais, contestações, recursos\n- ✅ Contratos e documentos extrajudiciais\n- ✅ Alterações contratuais (DNRC)\n- ✅ Pareceres e memoriais\n- ✅ Análise de prazos processuais\n\n---\n\n## 📋 Como Posso Ajudar?\n\nEstou preparado para:\n- 📝 Redigir peças processuais completas\n- 🔍 Pesquisar jurisprudência relevante\n- ⚖️ Analisar questões jurídicas complexas\n- 📅 Calcular prazos processuais\n- 📄 Elaborar contratos e documentos extrajudiciais\n- 🏢 Preparar alterações contratuais conforme normas DNRC\n\n---\n\n**Aguardando suas instruções para iniciar o trabalho jurídico.** \n\nComo posso auxiliá-lo hoje?",
-        "timestamp": "2026-01-07T05:01:46.234Z"
-      }
-    ],
-    "createdAt": "2026-01-07T05:01:36.845Z",
-    "updatedAt": "2026-01-07T05:01:46.234Z",
+    "createdAt": "2026-01-08T11:03:10.389Z",
+    "updatedAt": "2026-01-08T11:03:18.819Z",
     "messageCount": 2
   }
 }
