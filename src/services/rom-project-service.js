@@ -9,6 +9,8 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+// Import prompt cache para manter sincronizado
+import { updateCacheFromROMProject, isPromptCacheInitialized } from '../lib/prompt-cache.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -143,6 +145,7 @@ class ROMProjectService {
 
   /**
    * Atualiza as custom instructions
+   * Também atualiza o cache de prompts para manter sincronização
    */
   async updateCustomInstructions(instructions) {
     this.customInstructions = {
@@ -154,7 +157,13 @@ class ROMProjectService {
     const filePath = path.join(ROM_PROJECT_PATH, 'custom-instructions.json');
     await fs.writeFile(filePath, JSON.stringify(this.customInstructions, null, 2));
 
-    console.log('✅ Custom instructions atualizadas');
+    // Atualizar prompt cache para manter sincronização (Single Source of Truth)
+    if (isPromptCacheInitialized()) {
+      updateCacheFromROMProject(this.customInstructions);
+      console.log('[ROM-PROJECT] Cache de prompts atualizado');
+    }
+
+    console.log('[ROM-PROJECT] Custom instructions atualizadas');
     return this.customInstructions;
   }
 
