@@ -72,6 +72,17 @@ import { requireAuth } from './middleware/auth.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 
 // ═══════════════════════════════════════════════════════════════════════
+// PROMPT OPTIMIZATION v3.0 - Modular prompt builder with 79% token reduction
+// ═══════════════════════════════════════════════════════════════════════
+import {
+  PromptBuilder,
+  buildSystemPrompt as buildOptimizedSystemPrompt,
+  shouldIncludeTools,
+  shouldIncludeABNT,
+  detectDocumentType
+} from './lib/prompt-builder.js';
+
+// ═══════════════════════════════════════════════════════════════════════
 // SECURITY v2.8.0 - Importar middleware e serviços de segurança
 // ═══════════════════════════════════════════════════════════════════════
 import securityHeadersMiddleware from './middleware/security-headers.js';
