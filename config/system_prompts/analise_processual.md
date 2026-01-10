@@ -161,5 +161,5 @@ DIREITO:
 - `file_read`: Para ler arquivos de processo
 - `grep`: Para buscar termos específicos
 - `glob`: Para encontrar arquivos
-- `web_search`: Para pesquisar jurisprudência
+- `pesquisar_jurisprudencia`: Para pesquisar jurisprudência
 - `web_fetch`: Para acessar informações de tribunais

@@ -9,7 +9,7 @@
   "descricao": "Prompt para Habeas Corpus",
   "tags": [],
   "source": "promptsCompletos.js",
-  "estrutura": "\nI. ENDEREÇAMENTO E QUALIFICAÇÃO\n   - Tribunal competente\n   - Impetrante (advogado)\n   - Paciente (qualificação completa)\n   - Autoridade coatora (nome, cargo)\n\nII. DOS FATOS\n   - Narrativa objetiva\n   - Cronologia processual\n   - Descrição do ato coator\n\nIII. DO CABIMENTO\n   - Modalidade de HC\n   - Hipótese legal (art. 648, CPP)\n\nIV. DO CONSTRANGIMENTO ILEGAL\n   - Fundamentação jurídica\n   - Demonstração concreta da ilegalidade\n   - Precedentes (verificar via web_search)\n\nV. DA LIMINAR (se aplicável)\n   - Fumus boni iuris\n   - Periculum in mora\n\nVI. DOS PEDIDOS\n   A. LIMINARMENTE: [se urgente]\n   B. NO MÉRITO:\n      - Concessão da ordem\n      - Relaxamento/revogação/substituição\n      - Expedição de alvará de soltura",
+  "estrutura": "\nI. ENDEREÇAMENTO E QUALIFICAÇÃO\n   - Tribunal competente\n   - Impetrante (advogado)\n   - Paciente (qualificação completa)\n   - Autoridade coatora (nome, cargo)\n\nII. DOS FATOS\n   - Narrativa objetiva\n   - Cronologia processual\n   - Descrição do ato coator\n\nIII. DO CABIMENTO\n   - Modalidade de HC\n   - Hipótese legal (art. 648, CPP)\n\nIV. DO CONSTRANGIMENTO ILEGAL\n   - Fundamentação jurídica\n   - Demonstração concreta da ilegalidade\n   - Precedentes (verificar via pesquisar_jurisprudencia)\n\nV. DA LIMINAR (se aplicável)\n   - Fumus boni iuris\n   - Periculum in mora\n\nVI. DOS PEDIDOS\n   A. LIMINARMENTE: [se urgente]\n   B. NO MÉRITO:\n      - Concessão da ordem\n      - Relaxamento/revogação/substituição\n      - Expedição de alvará de soltura",
   "fundamentos": {
     "constituicao": {
       "Art. 5º, LXVIII": "Conceder-se-á habeas corpus sempre que alguém sofrer ou se achar ameaçado de sofrer violência ou coação em sua liberdade de locomoção, por ilegalidade ou abuso de poder.",
@@ -51,7 +51,7 @@
     "fundamentacao": [
       "Base constitucional (art. 5º, LXVIII + conexos)",
       "Base legal (CPP)",
-      "Precedentes VERIFICADOS via web_search",
+      "Precedentes VERIFICADOS via pesquisar_jurisprudencia",
       "Súmulas aplicáveis"
     ],
     "documentacao": [
@@ -113,7 +113,7 @@
         "Crime impossível (art. 17, CP)",
         "Excludentes de ilicitude (arts. 23-25, CP)"
       ],
-      "verificar": "web_search \"STJ flagrante forjado relaxamento\""
+      "verificar": "pesquisar_jurisprudencia \"STJ flagrante forjado relaxamento\""
     },
     "2. Prisão preventiva ilegal": {
       "requisitos": "Art. 312, CPP (fumus commissi delicti + periculum libertatis)",
@@ -124,12 +124,12 @@
         "Ausência de indícios suficientes",
         "Cabimento de medidas alternativas (art. 319)"
       ],
-      "verificar": "web_search \"STJ prisão preventiva fundamentação genérica\""
+      "verificar": "pesquisar_jurisprudencia \"STJ prisão preventiva fundamentação genérica\""
     },
     "3. Excesso de prazo": {
       "fundamento": "Art. 648, II, CPP",
       "analise": "Razoabilidade + complexidade + diligência das partes",
-      "verificar": "web_search \"STJ excesso prazo prisão preventiva\""
+      "verificar": "pesquisar_jurisprudencia \"STJ excesso prazo prisão preventiva\""
     },
     "4. Execução penal ilegal": {
       "hipoteses": [
@@ -155,7 +155,7 @@
         "Extinção da punibilidade evidente",
         "Ausência de indícios mínimos"
       ],
-      "verificar": "web_search \"STJ trancamento ação penal habeas corpus\""
+      "verificar": "pesquisar_jurisprudencia \"STJ trancamento ação penal habeas corpus\""
     },
     "7. Nulidades processuais": {
       "fundamento": "Art. 648, VI, CPP",
@@ -174,7 +174,7 @@
         "Confissão mediante tortura/coação",
         "Prova derivada de ilícita (teoria dos frutos)"
       ],
-      "verificar": "web_search \"STF prova ilícita habeas corpus\""
+      "verificar": "pesquisar_jurisprudencia \"STF prova ilícita habeas corpus\""
     },
     "9. Medidas cautelares desproporcionais": {
       "fundamento": "Art. 282, CPP",
