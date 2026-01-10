@@ -63,17 +63,17 @@ Foram identificados **78 problemas** no sistema IAROM, categorizados por severid
 
 **Credenciais expostas:**
 ```
-AWS_ACCESS_KEY_ID=AKIA***REVOGADO***
-AWS_SECRET_ACCESS_KEY=***AWS_SECRET_REVOGADO***
+AWS_ACCESS_KEY_ID=AKIA******************* (REVOGADO)
+AWS_SECRET_ACCESS_KEY=************************************ (REVOGADO)
 ANTHROPIC_API_KEY=sk-ant-bedrock-fallback
-DATAJUD_API_KEY=cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw==
+DATAJUD_API_KEY=************************ (REDACTED)
 JUSBRASIL_EMAIL=rodolfo@rom.adv.br
-JUSBRASIL_SENHA=Fortioli23.
-GITHUB_TOKEN=ghp_***GITHUB_TOKEN_REVOGADO***
-SESSION_SECRET=480c4af87dc988a09444cfbfc232d5fa766ec015169d58de1d6a1098c98e02db
-ADMIN_TOKEN=7bc41fdf1e83741ffe6ff176d410760a
-GOOGLE_SEARCH_API_KEY=AIzaSyASQ6IzrLay4PVsPPhYPFXisTubiTq7ocI
-GOOGLE_SEARCH_CX=f14c0d3793b7346c0
+JUSBRASIL_SENHA=********** (REDACTED)
+GITHUB_TOKEN=ghp_******************************** (REVOGADO)
+SESSION_SECRET=************************************************
+ADMIN_TOKEN=**********************************
+GOOGLE_SEARCH_API_KEY=********************************** (REDACTED)
+GOOGLE_SEARCH_CX=*****************
 ```
 
 **Impacto:**
@@ -584,7 +584,7 @@ Melhorias, refatora\u00e7\u00f5es, documenta\u00e7\u00e3o, etc.
 
 ```bash
 # 1. REVOGAR CREDENCIAIS EXPOSTAS
-aws iam delete-access-key --access-key-id AKIA***REVOGADO***
+aws iam delete-access-key --access-key-id AKIA******************* # (REVOGADO)
 gh auth logout && gh auth login  # Gerar novo token
 
 # 2. DESABILITAR CLUSTER MODE
