@@ -115,7 +115,7 @@ export const BEDROCK_TOOLS = [
   {
     toolSpec: {
       name: 'consultar_cnj_datajud',
-      description: 'Consulta processo judicial específico na base do CNJ DataJud (Conselho Nacional de Justiça). Use quando tiver um número de processo e precisar de informações oficiais sobre ele. Fonte 100% oficial e verificável.',
+      description: 'Consulta processo judicial especifico na base do CNJ DataJud (Conselho Nacional de Justica). Use quando tiver um numero de processo e precisar de informacoes oficiais sobre ele. Requer DATAJUD_API_TOKEN configurado.',
       inputSchema: {
         json: {
           type: 'object',
@@ -665,7 +665,7 @@ FERRAMENTAS DISPONÍVEIS (FONTES OFICIAIS E VERIFICÁVEIS):
    - tribunal (opcional): "STF" | "STJ" | "TST" | "TSE"
    - limite (opcional): número (padrão: 5)
 
-2. **consultar_cnj_datajud**: Consulta processo específico no CNJ DataJud (fonte 100% oficial)
+2. **consultar_cnj_datajud**: Consulta processo especifico no CNJ DataJud (requer DATAJUD_API_TOKEN)
    Parâmetros:
    - numeroProcesso (obrigatório): string - número do processo CNJ
 

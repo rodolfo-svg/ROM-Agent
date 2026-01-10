@@ -2,23 +2,49 @@
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+    <!-- Viewport with iOS notch support -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#D97706" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#D97706" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#78716C" />
+
+    <!-- iOS PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="IAROM" />
+    <meta name="apple-mobile-web-app-title" content="ROM Agent" />
+    <meta name="mobile-web-app-capable" content="yes" />
 
-    <!-- Icons -->
+    <!-- iOS Status Bar -->
+    <meta name="apple-touch-fullscreen" content="yes" />
+
+    <!-- Disable iOS phone number detection -->
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Standard Icons -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/icons/icon-180x180.png" />
     <link rel="manifest" href="/manifest.json" />
 
-    <!-- SEO -->
-    <meta name="description" content="Sistema Completo de Extração e Análise Processual com IA" />
+    <!-- Apple Touch Icons (iOS Home Screen) -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-180x180.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icons/icon-512x512.png" />
 
-    <title>IAROM - Sistema de Análise Processual</title>
+    <!-- iOS Splash Screens -->
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/splash/iphone-14-pro-max-portrait.png" />
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/splash/iphone-14-pro-portrait.png" />
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/splash/iphone-13-portrait.png" />
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" href="/splash/iphone-x-portrait.png" />
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/splash/iphone-11-portrait.png" />
+    <link rel="apple-touch-startup-image" media="screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="/splash/iphone-8-portrait.png" />
+
+    <!-- SEO -->
+    <meta name="description" content="Assistente Jurídico Inteligente com IA - Análise Processual Completa" />
+    <meta name="keywords" content="assistente jurídico, IA, análise processual, direito, advocacia" />
+
+    <title>ROM Agent - Assistente Jurídico Inteligente</title>
   </head>
   <body>
     <div id="root"></div>

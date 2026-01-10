@@ -53,8 +53,23 @@ echo ""
 # ════════════════════════════════════════════════════════════════════
 
 log "═══════════════════════════════════════════════════════════════"
-log "FASE 1: AUDITORIA FINAL"
+log "FASE 1: VERIFICAÇÃO E AUDITORIA FINAL"
 log "═══════════════════════════════════════════════════════════════"
+
+# Executar script de verificação final
+log "🔍 Executando verificação final completa..."
+
+if [ -f "./scripts/verification-final.sh" ]; then
+  if ./scripts/verification-final.sh "$LOGS_DIR/verification-report.txt"; then
+    success "Verificação final passou - sistema OK para deploy"
+  else
+    error "Verificação final falhou - deploy abortado"
+    log "   Veja relatório detalhado em: $LOGS_DIR/verification-report.txt"
+    exit 1
+  fi
+else
+  warn "Script de verificação não encontrado - continuando sem verificação"
+fi
 
 log "📊 Gerando relatório de auditoria final..."
 

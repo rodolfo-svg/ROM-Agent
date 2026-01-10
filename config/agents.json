@@ -18,7 +18,7 @@
       "type": "analysis",
       "model": "claude-sonnet-4-20250514",
       "maxTokens": 150000,
-      "tools": ["file_read", "grep", "glob", "web_search", "web_fetch"],
+      "tools": ["file_read", "grep", "glob", "pesquisar_jurisprudencia", "web_fetch"],
       "systemPrompt": "system_prompts/analise_processual.md",
       "capabilities": [
         "Análise completa de autos processuais",
@@ -35,7 +35,7 @@
       "type": "summary",
       "model": "claude-sonnet-4-20250514",
       "maxTokens": 150000,
-      "tools": ["file_read", "grep", "web_search"],
+      "tools": ["file_read", "grep", "pesquisar_jurisprudencia"],
       "systemPrompt": "system_prompts/resumo_executivo.md",
       "outputFormat": "structured",
       "layers": {
@@ -51,7 +51,7 @@
       "type": "research",
       "model": "claude-sonnet-4-20250514",
       "maxTokens": 100000,
-      "tools": ["web_search", "web_fetch", "grep"],
+      "tools": ["pesquisar_jurisprudencia", "web_fetch", "grep"],
       "systemPrompt": "system_prompts/jurisprudencia.md",
       "sources": [
         "STF", "STJ", "TST", "TSE", "STM",
@@ -84,7 +84,7 @@
       "type": "analysis",
       "model": "claude-sonnet-4-20250514",
       "maxTokens": 120000,
-      "tools": ["web_search", "web_fetch", "grep"],
+      "tools": ["pesquisar_jurisprudencia", "web_fetch", "grep"],
       "systemPrompt": "system_prompts/leading_case.md",
       "precedentTypes": [
         "Súmulas Vinculantes",
@@ -122,7 +122,7 @@
       "type": "drafting",
       "model": "claude-sonnet-4-20250514",
       "maxTokens": 150000,
-      "tools": ["file_read", "file_write", "grep", "web_search"],
+      "tools": ["file_read", "file_write", "grep", "pesquisar_jurisprudencia"],
       "systemPrompt": "system_prompts/redator_civel.md",
       "documentTypes": [
         "Petição Inicial",
@@ -143,7 +143,7 @@
       "type": "drafting",
       "model": "claude-sonnet-4-20250514",
       "maxTokens": 150000,
-      "tools": ["file_read", "file_write", "grep", "web_search"],
+      "tools": ["file_read", "file_write", "grep", "pesquisar_jurisprudencia"],
       "systemPrompt": "system_prompts/redator_criminal.md",
       "documentTypes": [
         "Habeas Corpus",
@@ -162,7 +162,7 @@
       "type": "drafting",
       "model": "claude-sonnet-4-20250514",
       "maxTokens": 150000,
-      "tools": ["file_read", "file_write", "grep", "web_search"],
+      "tools": ["file_read", "file_write", "grep", "pesquisar_jurisprudencia"],
       "systemPrompt": "system_prompts/redator_trabalhista.md",
       "documentTypes": [
         "Reclamação Trabalhista",
@@ -277,7 +277,7 @@
       "type": "research",
       "model": "claude-sonnet-4-20250514",
       "maxTokens": 100000,
-      "tools": ["web_search", "web_fetch"],
+      "tools": ["pesquisar_doutrina", "web_fetch"],
       "systemPrompt": "system_prompts/pesquisador_cientifico.md",
       "sources": [
         "Google Scholar",

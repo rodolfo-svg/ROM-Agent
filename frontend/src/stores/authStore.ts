@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { User } from '@/types'
-import { clearCsrfToken } from '@/services/api'
+import { apiFetch, clearCsrfToken } from '@/services/api'
 
 interface AuthState {
   user: User | null
@@ -28,25 +28,21 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null })
 
         try {
-          const res = await fetch('/api/auth/login', {
+          const result = await apiFetch<{ user: User; success: boolean }>('/auth/login', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
             body: JSON.stringify({ email, password }),
           })
 
-          const data = await res.json()
-
-          if (data.success && data.user) {
+          if (result.success && result.data?.user) {
             set({
-              user: data.user,
+              user: result.data.user,
               isAuthenticated: true,
               isLoading: false
             })
             return true
           } else {
             set({
-              error: data.error || 'Credenciais inválidas',
+              error: result.error || 'Credenciais inválidas',
               isLoading: false
             })
             return false
@@ -64,22 +60,18 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null })
 
         try {
-          const res = await fetch('/api/auth/register', {
+          const result = await apiFetch<{ success: boolean }>('/auth/register', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
             body: JSON.stringify({ email, password, name, oab }),
           })
 
-          const data = await res.json()
-
-          if (data.success) {
+          if (result.success) {
             // Registrou com sucesso - agora faz login automático
             const loginSuccess = await get().login(email, password)
             return loginSuccess
           } else {
             set({
-              error: data.error || 'Erro ao criar conta',
+              error: result.error || 'Erro ao criar conta',
               isLoading: false
             })
             return false
@@ -95,24 +87,9 @@ export const useAuthStore = create<AuthState>()(
 
       logout: async () => {
         try {
-          // Buscar CSRF token para logout
-          const tokenRes = await fetch('/api/auth/csrf-token', {
-            credentials: 'include',
-          })
-          const tokenData = await tokenRes.json()
-          const csrfToken = tokenData.csrfToken
-
-          const headers: Record<string, string> = {
-            'Content-Type': 'application/json',
-          }
-          if (csrfToken) {
-            headers['x-csrf-token'] = csrfToken
-          }
-
-          await fetch('/api/auth/logout', {
+          // apiFetch automaticamente busca e inclui CSRF token
+          await apiFetch('/auth/logout', {
             method: 'POST',
-            credentials: 'include',
-            headers,
           })
         } catch (err) {
           console.error('Logout error:', err)
@@ -132,20 +109,15 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true })
 
         try {
-          const res = await fetch('/api/auth/me', {
-            credentials: 'include',
-          })
+          const result = await apiFetch<{ authenticated: boolean; user: User }>('/auth/me')
 
-          if (res.ok) {
-            const data = await res.json()
-            if (data.authenticated && data.user) {
-              set({
-                user: data.user,
-                isAuthenticated: true,
-                isLoading: false
-              })
-              return
-            }
+          if (result.success && result.data?.authenticated && result.data?.user) {
+            set({
+              user: result.data.user,
+              isAuthenticated: true,
+              isLoading: false
+            })
+            return
           }
         } catch (err) {
           console.error('Auth check error:', err)

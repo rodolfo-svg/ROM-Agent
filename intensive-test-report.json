@@ -9,141 +9,134 @@
   },
   "approved": false,
   "stats": {
-    "startTime": 1767762042119,
+    "startTime": 1767870134639,
     "tests": {
       "burst": {
         "total": 1500,
         "success": 366,
         "failed": 1134,
-        "avgLatency": 505.69733333333346
+        "avgLatency": 395.5699999999992
       },
       "sustained": {
-        "total": 12199,
-        "success": 1166,
-        "failed": 11033,
-        "avgLatency": 258.52176407902266
+        "total": 12300,
+        "success": 1171,
+        "failed": 11129,
+        "avgLatency": 256.53113821138226
       },
       "concurrent": {
-        "total": 4420,
-        "success": 1449,
-        "failed": 2971,
-        "avgLatency": 370.28235294117593
+        "total": 4440,
+        "success": 1422,
+        "failed": 3018,
+        "avgLatency": 328.235585585586
       },
       "apiStress": {
-        "total": 2431,
-        "success": 575,
-        "failed": 1856,
-        "avgLatency": 261.2776635129575
+        "total": 2442,
+        "success": 570,
+        "failed": 1872,
+        "avgLatency": 249.68099918099918
       },
       "database": {
-        "total": 221,
-        "success": 18,
+        "total": 222,
+        "success": 19,
         "failed": 203,
-        "avgLatency": 256.9773755656109
+        "avgLatency": 252.4009009009009
       },
       "memory": {
-        "total": 221,
+        "total": 222,
         "success": 18,
-        "failed": 203,
-        "avgLatency": 251.12217194570138
+        "failed": 204,
+        "avgLatency": 251.69819819819827
       },
       "longOps": {
-        "total": 110,
-        "success": 8,
+        "total": 111,
+        "success": 9,
         "failed": 102,
-        "avgLatency": 504.74545454545455
+        "avgLatency": 477.972972972973
       },
       "pwa": {
-        "total": 221,
-        "success": 221,
+        "total": 222,
+        "success": 222,
         "failed": 0,
-        "avgLatency": 251.50226244343892
+        "avgLatency": 249.98648648648654
       }
     },
-    "totalRequests": 21323,
-    "totalSuccess": 3821,
-    "totalFailed": 17502,
-    "totalLatency": 6407461,
-    "errors": [
-      {
-        "type": "apiStress",
-        "endpoint": "/api/jurisprudencia/cache/stats",
-        "error": "read ECONNRESET",
-        "time": "2026-01-07T05:07:14.393Z"
-      }
-    ],
+    "totalRequests": 21459,
+    "totalSuccess": 3797,
+    "totalFailed": 17662,
+    "totalLatency": 6036237,
+    "errors": [],
     "memorySnapshots": [
       {
-        "time": "2026-01-07T05:00:53.030Z",
-        "heapUsed": 146
-      },
-      {
-        "time": "2026-01-07T05:01:09.873Z",
+        "time": "2026-01-08T11:02:24.065Z",
         "heapUsed": 148
       },
       {
-        "time": "2026-01-07T05:01:30.727Z",
+        "time": "2026-01-08T11:02:41.046Z",
+        "heapUsed": 151
+      },
+      {
+        "time": "2026-01-08T11:03:00.656Z",
         "heapUsed": 147
       },
       {
-        "time": "2026-01-07T05:01:47.497Z",
+        "time": "2026-01-08T11:03:17.585Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-08T11:03:38.075Z",
+        "heapUsed": 147
+      },
+      {
+        "time": "2026-01-08T11:03:54.437Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-08T11:04:13.645Z",
+        "heapUsed": 147
+      },
+      {
+        "time": "2026-01-08T11:04:30.028Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-08T11:04:49.434Z",
+        "heapUsed": 147
+      },
+      {
+        "time": "2026-01-08T11:05:06.393Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-08T11:05:25.599Z",
+        "heapUsed": 147
+      },
+      {
+        "time": "2026-01-08T11:05:41.885Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-08T11:06:01.273Z",
+        "heapUsed": 147
+      },
+      {
+        "time": "2026-01-08T11:06:17.521Z",
         "heapUsed": 150
       },
       {
-        "time": "2026-01-07T05:02:07.658Z",
-        "heapUsed": 148
+        "time": "2026-01-08T11:06:36.318Z",
+        "heapUsed": 147
       },
       {
-        "time": "2026-01-07T05:02:23.505Z",
-        "heapUsed": 150
+        "time": "2026-01-08T11:06:52.504Z",
+        "heapUsed": 149
       },
       {
-        "time": "2026-01-07T05:02:43.972Z",
-        "heapUsed": 148
+        "time": "2026-01-08T11:07:11.965Z",
+        "heapUsed": 147
       },
       {
-        "time": "2026-01-07T05:03:00.146Z",
-        "heapUsed": 150
-      },
-      {
-        "time": "2026-01-07T05:03:19.059Z",
-        "heapUsed": 148
-      },
-      {
-        "time": "2026-01-07T05:03:35.581Z",
-        "heapUsed": 150
-      },
-      {
-        "time": "2026-01-07T05:03:56.069Z",
-        "heapUsed": 148
-      },
-      {
-        "time": "2026-01-07T05:04:12.166Z",
-        "heapUsed": 150
-      },
-      {
-        "time": "2026-01-07T05:04:32.494Z",
-        "heapUsed": 148
-      },
-      {
-        "time": "2026-01-07T05:04:48.708Z",
-        "heapUsed": 150
-      },
-      {
-        "time": "2026-01-07T05:05:08.853Z",
-        "heapUsed": 148
-      },
-      {
-        "time": "2026-01-07T05:05:25.224Z",
-        "heapUsed": 150
-      },
-      {
-        "time": "2026-01-07T05:05:43.931Z",
-        "heapUsed": 148
-      },
-      {
-        "time": "2026-01-07T06:00:47.958Z",
-        "heapUsed": 157
+        "time": "2026-01-08T12:02:12.122Z",
+        "heapUsed": 155
       }
     ],
     "peakLatency": 30000,

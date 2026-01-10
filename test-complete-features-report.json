@@ -1,22 +1,22 @@
 {
   "summary": {
-    "total": 43,
-    "passed": 35,
-    "failed": 8,
+    "total": 41,
+    "passed": 30,
+    "failed": 11,
     "warnings": 0,
-    "successRate": 81.4,
-    "duration": 1.59,
-    "timestamp": "2026-01-07T05:00:33.689Z"
+    "successRate": 73.2,
+    "duration": 0.08,
+    "timestamp": "2026-01-08T11:02:03.559Z"
   },
   "tests": [
     {
       "name": "Health Check (/api/info)",
       "passed": {
         "status": "healthy",
-        "uptime": "50h 25m",
-        "uptimeSeconds": 181538
+        "uptime": "4h 24m",
+        "uptimeSeconds": 15899
       },
-      "details": "Status: 200, Version: 2.7.0, Health: healthy, Bedrock: connected"
+      "details": "Status: 200, Version: 2.8.0, Health: healthy, Bedrock: connected"
     },
     {
       "name": "Estatísticas do Sistema (/api/stats)",
@@ -26,7 +26,7 @@
     {
       "name": "Upload e Extração de TXT (/api/upload-documents)",
       "passed": true,
-      "details": "Status: 200, Arquivos: 1, Extrações: 1, Metadados: Não"
+      "details": "Status: 200, Arquivos: 1, Extrações: 1, Metadados: Sim"
     },
     {
       "name": "Suporte a Múltiplas Extensões",
@@ -35,8 +35,8 @@
     },
     {
       "name": "Criar Projeto com Custom Instructions (/api/projects/create)",
-      "passed": true,
-      "details": "Status: 200, ID: 5, KB: 500MB, Custom Instructions: Sim"
+      "passed": false,
+      "details": "Status: 403, ID: null, KB: undefinedMB, Custom Instructions: Não"
     },
     {
       "name": "Listar Projetos (/api/projects/list)",
@@ -44,24 +44,9 @@
       "details": "Status: 404, Projetos: 0"
     },
     {
-      "name": "Upload para Projeto com KB Tracking (/api/projects/5/upload)",
-      "passed": {
-        "currentMB": "0.00",
-        "maxMB": 500,
-        "usagePercent": 0,
-        "remainingMB": "500.00"
-      },
-      "details": "Status: 200, KB Usage: 0.00/500MB (0%)"
-    },
-    {
-      "name": "Validação de Limite de KB",
-      "passed": true,
-      "details": "Erro esperado: Invalid string length"
-    },
-    {
       "name": "Status do Knowledge Base (/api/kb/status)",
       "passed": true,
-      "details": "Status: 200, Documentos: 5"
+      "details": "Status: 200, Documentos: 3"
     },
     {
       "name": "Suporte a Export TXT",
@@ -90,8 +75,8 @@
     },
     {
       "name": "Listar Conversas para Export (/api/conversations/organized)",
-      "passed": true,
-      "details": "Status: 200"
+      "passed": false,
+      "details": "Status: 503"
     },
     {
       "name": "Página Principal HTML (/)",
@@ -215,8 +200,8 @@
     },
     {
       "name": "Busca Semântica (/api/semantic-search)",
-      "passed": true,
-      "details": "Status: 200"
+      "passed": false,
+      "details": "Status: 403"
     },
     {
       "name": "Listar Templates (/api/templates/list)",
@@ -226,7 +211,7 @@
     {
       "name": "Status de Backups (/api/backup/status)",
       "passed": true,
-      "details": "Status: 200, Backups: 6"
+      "details": "Status: 200, Backups: 7"
     },
     {
       "name": "Estatísticas de Cache (/api/cache/statistics)",

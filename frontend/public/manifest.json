@@ -1,23 +1,35 @@
 {
-  "name": "ROM Agent - Assistente Jurídico",
+  "name": "ROM Agent - Assistente Jurídico Inteligente",
   "short_name": "ROM Agent",
-  "description": "Assistente Jurídico Inteligente com IA",
+  "description": "Assistente Jurídico Inteligente com IA - Análise Processual Completa",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "display_override": ["standalone", "fullscreen"],
+  "background_color": "#FAFAF9",
   "theme_color": "#D97706",
   "orientation": "portrait-primary",
+  "dir": "ltr",
+  "lang": "pt-BR",
+  "prefer_related_applications": false,
   "icons": [
     {
-      "src": "/icons/icon-512x512.svg",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
+      "src": "/icons/icon-180x180.png",
+      "type": "image/png",
+      "sizes": "180x180",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
       "purpose": "any maskable"
     },
     {
-      "src": "/favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "/icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "shortcuts": [
@@ -26,16 +38,18 @@
       "short_name": "Consulta",
       "description": "Iniciar nova consulta jurídica",
       "url": "/chat",
-      "icons": [{ "src": "/favicon.ico", "sizes": "96x96" }]
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
     },
     {
       "name": "Upload Documento",
       "short_name": "Upload",
       "description": "Fazer upload de documento",
       "url": "/upload",
-      "icons": [{ "src": "/favicon.ico", "sizes": "96x96" }]
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
     }
   ],
   "categories": ["productivity", "business", "legal"],
-  "screenshots": []
+  "screenshots": [],
+  "related_applications": [],
+  "iarc_rating_id": ""
 }

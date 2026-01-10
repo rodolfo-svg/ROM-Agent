@@ -87,5 +87,24 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    // Safe area insets plugin for iOS PWA (pb-safe class)
+    function({ addUtilities }) {
+      const newUtilities = {
+        '.pb-safe': {
+          paddingBottom: 'env(safe-area-inset-bottom)',
+        },
+        '.pt-safe': {
+          paddingTop: 'env(safe-area-inset-top)',
+        },
+        '.pl-safe': {
+          paddingLeft: 'env(safe-area-inset-left)',
+        },
+        '.pr-safe': {
+          paddingRight: 'env(safe-area-inset-right)',
+        },
+      }
+      addUtilities(newUtilities)
+    },
+  ],
 }

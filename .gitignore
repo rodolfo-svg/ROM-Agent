@@ -5,6 +5,11 @@ node_modules/
 .env
 .env.local
 .env.production
+.env.backup*
+*.env.backup*
+
+# Backups directory (contains sensitive data)
+backups/
 
 # Logs
 logs/
