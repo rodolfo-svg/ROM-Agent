@@ -3,6 +3,28 @@ import type { StreamChunk, ChatRequest, ApiResponse } from '@/types'
 const API_BASE = '/api'
 
 // ============================================================
+// SSE RECONNECTION LOGIC
+// ============================================================
+
+interface ReconnectionConfig {
+  maxRetries: number
+  initialDelay: number // ms
+  maxDelay: number // ms
+  backoffMultiplier: number
+}
+
+const DEFAULT_RECONNECTION: ReconnectionConfig = {
+  maxRetries: 3,
+  initialDelay: 1000, // 1s
+  maxDelay: 10000, // 10s
+  backoffMultiplier: 2,
+}
+
+async function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
+// ============================================================
 // CSRF TOKEN MANAGEMENT
 // ============================================================
 
@@ -109,7 +131,64 @@ export async function apiFetch<T>(
   }
 }
 
-// Chat streaming with SSE
+// Chat streaming with SSE (with automatic reconnection)
+export async function* chatStreamWithRetry(
+  message: string,
+  options: {
+    conversationId?: string
+    model?: string
+    messages?: Array<{ role: string; content: string }>
+    signal?: AbortSignal
+    reconnection?: Partial<ReconnectionConfig>
+  } = {}
+): AsyncGenerator<StreamChunk> {
+  const config = { ...DEFAULT_RECONNECTION, ...options.reconnection }
+  let attempt = 0
+  let delay = config.initialDelay
+
+  while (attempt <= config.maxRetries) {
+    try {
+      // Try to stream
+      for await (const chunk of chatStream(message, options)) {
+        yield chunk
+
+        // Reset on successful stream
+        if (chunk.type === 'done') {
+          return
+        }
+      }
+      return // Stream completed successfully
+    } catch (err: any) {
+      // Don't retry if aborted by user
+      if (err.name === 'AbortError' || options.signal?.aborted) {
+        yield { type: 'error', error: 'Conexão interrompida' }
+        return
+      }
+
+      attempt++
+
+      if (attempt > config.maxRetries) {
+        yield {
+          type: 'error',
+          error: `Falha na conexão após ${config.maxRetries} tentativas. Tente novamente.`
+        }
+        return
+      }
+
+      // Exponential backoff
+      console.warn(`⚠️ SSE falhou (tentativa ${attempt}/${config.maxRetries}), reconectando em ${delay}ms...`)
+      yield {
+        type: 'chunk',
+        content: `\n\n⏳ Reconectando (tentativa ${attempt}/${config.maxRetries})...\n\n`
+      }
+
+      await sleep(delay)
+      delay = Math.min(delay * config.backoffMultiplier, config.maxDelay)
+    }
+  }
+}
+
+// Chat streaming with SSE (internal - without retry, exported for backward compatibility)
 export async function* chatStream(
   message: string,
   options: {

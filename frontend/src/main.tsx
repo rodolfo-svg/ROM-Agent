@@ -30,3 +30,22 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
       })
   })
 }
+
+// PWA Install Prompt Handler
+let deferredPrompt: any = null
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
+  e.preventDefault()
+  // Stash the event so it can be triggered later
+  deferredPrompt = e
+  console.log('✅ PWA: beforeinstallprompt event captured')
+
+  // Dispatch custom event for UI components to listen
+  window.dispatchEvent(new CustomEvent('pwa-installable', { detail: { prompt: deferredPrompt } }))
+})
+
+window.addEventListener('appinstalled', () => {
+  console.log('✅ PWA: App instalado com sucesso')
+  deferredPrompt = null
+})

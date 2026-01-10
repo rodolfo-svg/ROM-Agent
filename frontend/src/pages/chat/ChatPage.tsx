@@ -1,11 +1,13 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, lazy, Suspense } from 'react'
 import { useParams } from 'react-router-dom'
 import { useChatStore } from '@/stores/chatStore'
 import { useArtifactStore } from '@/stores/artifactStore'
 import { Sidebar } from '@/components/layout'
 import { ChatInput, MessageItem, EmptyState } from '@/components/chat'
-import { ArtifactPanel } from '@/components/artifacts'
 import { chatStream } from '@/services/api'
+
+// Lazy load ArtifactPanel (682KB bundle reduction)
+const ArtifactPanel = lazy(() => import('@/components/artifacts').then(m => ({ default: m.ArtifactPanel })))
 
 export function ChatPage() {
   const { conversationId } = useParams()
@@ -236,8 +238,10 @@ export function ChatPage() {
         </div>
       </div>
 
-      {/* Artifact Panel */}
-      <ArtifactPanel />
+      {/* Artifact Panel - Lazy Loaded */}
+      <Suspense fallback={null}>
+        <ArtifactPanel />
+      </Suspense>
     </div>
   )
 }
