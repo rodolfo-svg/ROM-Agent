@@ -83,6 +83,17 @@ export async function apiFetch<T>(
     const data = await res.json()
 
     if (!res.ok) {
+      // Se 401 - não autenticado, redirecionar para login
+      if (res.status === 401) {
+        console.warn('⚠️ Sessão expirada ou não autenticado - redirecionando para login')
+        clearCsrfToken()
+        // Redirecionar para login se não estiver já na página de login
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+          window.location.href = '/login'
+        }
+        return { success: false, error: 'Sessão expirada. Por favor, faça login novamente.' }
+      }
+
       // Se 403 e usamos CSRF token, limpar e sugerir reload
       if (res.status === 403 && methodsNeedingCsrf.includes(method)) {
         console.warn('⚠️ CSRF token inválido - limpando cache')
@@ -138,6 +149,15 @@ export async function* chatStream(
     })
 
     if (!res.ok) {
+      // Se 401 - não autenticado, redirecionar para login
+      if (res.status === 401) {
+        clearCsrfToken()
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+          window.location.href = '/login'
+        }
+        yield { type: 'error', error: 'Sessão expirada. Por favor, faça login novamente.' }
+        return
+      }
       const error = await res.json().catch(() => ({ error: 'Erro desconhecido' }))
       yield { type: 'error', error: error.error || `Erro ${res.status}` }
       return
@@ -264,6 +284,16 @@ export async function uploadFile(file: File): Promise<ApiResponse<{ id: string; 
     })
 
     const data = await res.json()
+
+    // Se 401 - não autenticado, redirecionar para login
+    if (res.status === 401) {
+      clearCsrfToken()
+      if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) {
+        window.location.href = '/login'
+      }
+      return { success: false, error: 'Sessão expirada. Por favor, faça login novamente.' }
+    }
+
     return res.ok ? { success: true, data } : { success: false, error: data.error }
   } catch (err) {
     return { success: false, error: 'Erro ao fazer upload' }
