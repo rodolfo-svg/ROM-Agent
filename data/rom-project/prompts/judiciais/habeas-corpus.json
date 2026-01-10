@@ -99,7 +99,7 @@
     "VI. DOS PEDIDOS"
   ],
 
-  "instrucoes": "HABEAS CORPUS - ESTRUTURA COMPLETA\n\nENDEREÇAMENTO:\nEXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) DESEMBARGADOR(A) PRESIDENTE DO EGRÉGIO TRIBUNAL DE JUSTIÇA\n\nQUALIFICAÇÃO:\n- Impetrante (advogado)\n- Paciente (preso)\n- Autoridade coatora\n- Processo de origem\n\nDOS FATOS:\n- Narrativa objetiva\n- Cronologia processual\n- Descrição do ato coator\n\nDO CONSTRANGIMENTO ILEGAL:\n- Demonstração concreta da ilegalidade\n- Precedentes verificados via web_search\n- Enquadramento no art. 648, CPP\n\nDA LIMINAR:\n- Fumus boni iuris (plausibilidade)\n- Periculum in mora (urgência)\n\nDOS PEDIDOS:\na) LIMINARMENTE: [pedido urgente]\nb) NO MÉRITO: concessão definitiva da ordem\n\nEXTENSÃO: 10-30 páginas",
+  "instrucoes": "HABEAS CORPUS - ESTRUTURA COMPLETA\n\nENDEREÇAMENTO:\nEXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) DESEMBARGADOR(A) PRESIDENTE DO EGRÉGIO TRIBUNAL DE JUSTIÇA\n\nQUALIFICAÇÃO:\n- Impetrante (advogado)\n- Paciente (preso)\n- Autoridade coatora\n- Processo de origem\n\nDOS FATOS:\n- Narrativa objetiva\n- Cronologia processual\n- Descrição do ato coator\n\nDO CONSTRANGIMENTO ILEGAL:\n- Demonstração concreta da ilegalidade\n- Precedentes verificados via pesquisar_jurisprudencia\n- Enquadramento no art. 648, CPP\n\nDA LIMINAR:\n- Fumus boni iuris (plausibilidade)\n- Periculum in mora (urgência)\n\nDOS PEDIDOS:\na) LIMINARMENTE: [pedido urgente]\nb) NO MÉRITO: concessão definitiva da ordem\n\nEXTENSÃO: 10-30 páginas",
 
   "dadosPaciente": [
     "Nome completo",

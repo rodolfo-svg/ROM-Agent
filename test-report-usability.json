@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-01-07T05:01:04.362Z",
+  "timestamp": "2026-01-08T11:02:29.245Z",
   "summary": {
-    "total": 28,
-    "passed": 18,
-    "failed": 2,
-    "warnings": 8,
-    "successRate": 64.3,
-    "duration": 22830
+    "total": 26,
+    "passed": 14,
+    "failed": 5,
+    "warnings": 7,
+    "successRate": 53.8,
+    "duration": 17399
   },
   "results": [
     {
@@ -16,7 +16,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 1310,
+      "duration": 43,
       "validation": "✓ Contém 'version'"
     },
     {
@@ -29,8 +29,8 @@
         "averageResponseTime": 3,
         "unit": "seconds"
       },
-      "duration": 121,
-      "validation": "✓ Stats completas (21 conversas)"
+      "duration": 2,
+      "validation": "✓ Stats completas (17 conversas)"
     },
     {
       "category": "Sistema",
@@ -39,18 +39,18 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 14,
+      "duration": 2,
       "validation": "✓ Contém 'authenticated'"
     },
     {
       "category": "Conversação",
       "name": "Listar conversas organizadas (/api/conversations/organized)",
       "url": "http://localhost:3000/api/conversations/organized",
-      "status": 200,
+      "status": 503,
       "expected": 200,
-      "passed": true,
-      "duration": 112,
-      "validation": "✓ Contém 'organized'"
+      "passed": false,
+      "duration": 1,
+      "validation": ""
     },
     {
       "category": "Conversação",
@@ -59,38 +59,18 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 18254,
+      "duration": 17312,
       "validation": "✓ Contém 'response'"
     },
     {
       "category": "Conversação",
       "name": "Criar nova conversa (POST /api/conversations)",
       "url": "http://localhost:3000/api/conversations",
-      "status": 200,
+      "status": 503,
       "expected": 200,
-      "passed": true,
-      "duration": 965,
-      "validation": "✓ Contém 'conversationId'"
-    },
-    {
-      "category": "Conversação",
-      "name": "Obter conversa específica (/api/conversations/conv_1767049376125_cw0txr5)",
-      "url": "http://localhost:3000/api/conversations/conv_1767049376125_cw0txr5",
-      "status": 200,
-      "expected": 200,
-      "passed": true,
-      "duration": 27,
-      "validation": "✓ Estrutura válida com 2 mensagens"
-    },
-    {
-      "category": "Conversação",
-      "name": "Renomear conversa (PUT /api/conversations/conv_1767049376125_cw0txr5/rename)",
-      "url": "http://localhost:3000/api/conversations/conv_1767049376125_cw0txr5/rename",
-      "status": 200,
-      "expected": 200,
-      "passed": true,
-      "duration": 22,
-      "validation": "✓ Contém 'success'"
+      "passed": false,
+      "duration": 4,
+      "validation": ""
     },
     {
       "category": "Knowledge Base",
@@ -99,8 +79,8 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 97,
-      "validation": "✓ KB com 5 documentos"
+      "duration": 6,
+      "validation": "✓ KB com 3 documentos"
     },
     {
       "category": "Knowledge Base",
@@ -109,7 +89,7 @@
       "status": 401,
       "expected": 401,
       "passed": true,
-      "duration": 33,
+      "duration": 3,
       "validation": ""
     },
     {
@@ -119,7 +99,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 1221,
+      "duration": 3,
       "validation": ""
     },
     {
@@ -129,18 +109,18 @@
       "status": 404,
       "expected": 200,
       "passed": false,
-      "duration": 24,
+      "duration": 2,
       "validation": ""
     },
     {
       "category": "Ferramentas",
       "name": "Busca semântica (/api/semantic-search)",
       "url": "http://localhost:3000/api/semantic-search",
-      "status": 200,
+      "status": 403,
       "expected": 200,
-      "passed": true,
-      "duration": 41,
-      "validation": "✓ É array com 0 itens"
+      "passed": false,
+      "duration": 2,
+      "validation": ""
     },
     {
       "category": "Ferramentas",
@@ -149,7 +129,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 62,
+      "duration": 4,
       "validation": "✓ É array com 0 itens"
     },
     {
@@ -159,8 +139,8 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 57,
-      "validation": "✓ É array com 6 itens"
+      "duration": 4,
+      "validation": "✓ É array com 7 itens"
     },
     {
       "category": "Ferramentas",
@@ -169,7 +149,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 51,
+      "duration": 2,
       "validation": "✓ Contém 'stats'"
     },
     {
@@ -179,7 +159,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 296,
+      "duration": 3,
       "validation": "✓ HTML válido"
     },
     {
@@ -189,7 +169,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 67,
+      "duration": 3,
       "validation": "✓ Analytics HTML válido"
     }
   ]

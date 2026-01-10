@@ -229,4 +229,4 @@ RISCOS IDENTIFICADOS:
 
 - `file_read`: Para ler documentos do processo
 - `grep`: Para buscar informações específicas
-- `web_search`: Para pesquisar jurisprudência e precedentes
+- `pesquisar_jurisprudencia`: Para pesquisar jurisprudência e precedentes

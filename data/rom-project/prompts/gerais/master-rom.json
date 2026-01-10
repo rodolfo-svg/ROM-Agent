@@ -53,7 +53,7 @@
     ],
     "fundamentacao": [
       "Base legal citada corretamente",
-      "Jurisprudência VERIFICADA via web_search",
+      "Jurisprudência VERIFICADA via pesquisar_jurisprudencia",
       "Mínimo 3-5 precedentes relevantes",
       "Doutrina citada (quando aplicável)"
     ],
@@ -276,7 +276,7 @@
     }
   },
   "precedentes": {
-    "regra_critica": "SEMPRE usar web_search para verificar precedentes ANTES de citar. NUNCA inventar súmulas, julgados ou números de processo.",
+    "regra_critica": "SEMPRE usar pesquisar_jurisprudencia para verificar precedentes ANTES de citar. NUNCA inventar súmulas, julgados ou números de processo.",
     "formato_inline": "(STJ, REsp X.XXX.XXX/UF, Rel. Min. NOME, Xa Turma, j. DD/MM/AAAA)",
     "formato_bloco": "Citação da ementa em bloco recuado, seguida de: (REsp X.XXX.XXX/UF, Rel. Min. NOME, Turma, DJe DD/MM/AAAA)",
     "documentacao_anexos": {

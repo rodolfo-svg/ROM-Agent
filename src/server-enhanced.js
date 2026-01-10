@@ -72,6 +72,17 @@ import { requireAuth } from './middleware/auth.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 
 // ═══════════════════════════════════════════════════════════════════════
+// PROMPT OPTIMIZATION v3.0 - Modular prompt builder with 79% token reduction
+// ═══════════════════════════════════════════════════════════════════════
+import {
+  PromptBuilder,
+  buildSystemPrompt as buildOptimizedSystemPrompt,
+  shouldIncludeTools,
+  shouldIncludeABNT,
+  detectDocumentType
+} from './lib/prompt-builder.js';
+
+// ═══════════════════════════════════════════════════════════════════════
 // SECURITY v2.8.0 - Importar middleware e serviços de segurança
 // ═══════════════════════════════════════════════════════════════════════
 import securityHeadersMiddleware from './middleware/security-headers.js';
@@ -1030,18 +1041,95 @@ function loadCustomInstructions() {
 }
 
 /**
- * Constrói system prompt completo com custom instructions
+ * Constroi system prompt completo com custom instructions
+ *
+ * PERFORMANCE OTIMIZADA v3.0: Sistema modular com 79% reducao de tokens
+ * - Versao original: ~7.203 chars (~2.058 tokens)
+ * - Versao otimizada: ~1.750 chars (~438 tokens base)
+ * - Feature flag: PROMPTS_VERSION (optimized | original | legacy)
+ * - A/B testing: TRAFFIC_PERCENTAGE (0-100)
+ *
+ * @param {Object} options - Opcoes de construcao
+ * @param {boolean} options.forceReload - Se true, reconstroi o prompt do zero
+ * @param {string} options.userMessage - Mensagem do usuario para auto-deteccao
+ * @param {string} options.userId - ID do usuario para A/B testing
+ * @param {boolean} options.includeTools - Forcar inclusao de instrucoes de tools
+ * @param {boolean} options.includeABNT - Forcar inclusao de regras ABNT
+ * @returns {string} System prompt
  */
-export function buildSystemPrompt() {
-  console.log(`🏗️ [DEBUG] Construindo system prompt...`);
+export function buildSystemPrompt(options = {}) {
+  // Suporte para chamadas legadas com boolean
+  const forceReload = typeof options === 'boolean' ? options : (options.forceReload || false);
+  const userMessage = options.userMessage || '';
+  const userId = options.userId || null;
+
+  // Verificar feature flag para versao dos prompts
+  const promptsVersion = process.env.PROMPTS_VERSION || 'optimized';
+  const trafficPercentage = parseFloat(process.env.TRAFFIC_PERCENTAGE || '100');
+
+  // Se versao for 'optimized' ou 'v3', usar novo sistema modular
+  if (promptsVersion === 'optimized' || promptsVersion === 'v3') {
+    try {
+      const builder = new PromptBuilder({
+        version: promptsVersion,
+        trafficPercentage,
+        legacyPromptLoader: () => buildLegacySystemPrompt(forceReload)
+      });
+
+      // Auto-detectar modulos necessarios ou usar valores explicitos
+      const includeTools = options.includeTools !== undefined
+        ? options.includeTools
+        : shouldIncludeTools(userMessage);
+
+      const includeABNT = options.includeABNT !== undefined
+        ? options.includeABNT
+        : shouldIncludeABNT(userMessage);
+
+      const result = builder.build({
+        includeTools,
+        includeABNT,
+        documentType: detectDocumentType(userMessage),
+        userId
+      });
+
+      console.log(`[buildSystemPrompt] OPTIMIZED v3.0 | ${result.size} chars | ~${result.tokens} tokens | modules: ${result.modules.join(', ')}`);
+
+      // Metricas de performance
+      if (typeof metricsCollector !== 'undefined' && metricsCollector.recordPromptBuild) {
+        metricsCollector.recordPromptBuild({
+          version: 'optimized',
+          tokens: result.tokens,
+          modules: result.modules
+        });
+      }
+
+      return result.prompt;
+    } catch (error) {
+      console.error(`[buildSystemPrompt] Erro ao usar PromptBuilder, fallback para legacy:`, error.message);
+      // Fallback para versao legacy em caso de erro
+    }
+  }
+
+  // Versao original/legacy
+  return buildLegacySystemPrompt(forceReload);
+}
+
+/**
+ * Constroi system prompt na versao legacy (original)
+ * Mantido para backward compatibility e rollback
+ *
+ * @param {boolean} forceReload - Se true, reconstroi o prompt do zero
+ * @returns {string} System prompt
+ */
+function buildLegacySystemPrompt(forceReload = false) {
+  console.log(`[buildSystemPrompt] Construindo prompt legacy...`);
 
   const customInstructions = loadCustomInstructions();
 
   if (!customInstructions) {
-    // Fallback: prompt básico
-    const fallbackPrompt = 'Você é o ROM Agent, um assistente jurídico especializado em Direito brasileiro.';
-    console.log(`⚠️ [DEBUG] Usando FALLBACK prompt (custom instructions não carregadas)`);
-    console.log(`   Prompt: ${fallbackPrompt}`);
+    // Fallback: prompt basico
+    const fallbackPrompt = 'Voce e o ROM Agent, um assistente juridico especializado em Direito brasileiro.';
+    console.log(`[buildSystemPrompt] Usando FALLBACK prompt (custom instructions nao carregadas)`);
     return fallbackPrompt;
   }
 
@@ -1050,7 +1138,7 @@ export function buildSystemPrompt() {
 
   // Expertise
   if (customInstructions.expertise && customInstructions.expertise.length > 0) {
-    prompt += `## Áreas de Expertise:\n`;
+    prompt += `## Areas de Expertise:\n`;
     customInstructions.expertise.forEach(area => {
       prompt += `- ${area}\n`;
     });
@@ -1059,7 +1147,7 @@ export function buildSystemPrompt() {
 
   // Guidelines
   if (customInstructions.guidelines && customInstructions.guidelines.length > 0) {
-    prompt += `## Diretrizes Obrigatórias:\n`;
+    prompt += `## Diretrizes Obrigatorias:\n`;
     customInstructions.guidelines.forEach(guideline => {
       prompt += `- ${guideline}\n`;
     });
@@ -1068,9 +1156,9 @@ export function buildSystemPrompt() {
 
   // Prohibitions
   if (customInstructions.prohibitions && customInstructions.prohibitions.length > 0) {
-    prompt += `## Proibições:\n`;
+    prompt += `## Proibicoes:\n`;
     customInstructions.prohibitions.forEach(prohibition => {
-      prompt += `- ❌ ${prohibition}\n`;
+      prompt += `- ${prohibition}\n`;
     });
     prompt += '\n';
   }
@@ -1080,103 +1168,78 @@ export function buildSystemPrompt() {
     prompt += `## Tom: ${customInstructions.tone}\n\n`;
   }
 
-  // Análise de Prazos
+  // Analise de Prazos
   if (customInstructions.deadlineAnalysis) {
-    prompt += `## Análise de Prazos Processuais:\n`;
-    prompt += `- Lei 11.419/2006: Publicação eletrônica (DJe/DJEN)\n`;
-    prompt += `- Início do prazo: SEMPRE no 1º dia útil APÓS a publicação\n`;
-    prompt += `- Contagem: Dias úteis (excluem sábados, domingos e feriados)\n`;
-    prompt += `- Prazo em dobro: Fazenda Pública, Defensoria, litisconsortes\n\n`;
+    prompt += `## Analise de Prazos Processuais:\n`;
+    prompt += `- Lei 11.419/2006: Publicacao eletronica (DJe/DJEN)\n`;
+    prompt += `- Inicio do prazo: SEMPRE no 1o dia util APOS a publicacao\n`;
+    prompt += `- Contagem: Dias uteis (excluem sabados, domingos e feriados)\n`;
+    prompt += `- Prazo em dobro: Fazenda Publica, Defensoria, litisconsortes\n\n`;
   }
 
-  // ✅ CRÍTICO: Instruções para uso de ferramentas
-  prompt += `## ⚙️ FERRAMENTAS DISPONÍVEIS - USO OBRIGATÓRIO:\n\n`;
-  prompt += `VOCÊ TEM ACESSO ÀS SEGUINTES FERRAMENTAS E DEVE USÁ-LAS SEMPRE QUE APROPRIADO:\n\n`;
-  prompt += `1. **pesquisar_jurisprudencia** - Busca jurisprudência em tempo real\n`;
-  prompt += `   - Fontes: Google Search (67 sites jurídicos), DataJud CNJ, JusBrasil\n`;
+  // Instrucoes para uso de ferramentas
+  prompt += `## FERRAMENTAS DISPONIVEIS - USO OBRIGATORIO:\n\n`;
+  prompt += `VOCE TEM ACESSO AS SEGUINTES FERRAMENTAS E DEVE USA-LAS SEMPRE QUE APROPRIADO:\n\n`;
+  prompt += `1. **pesquisar_jurisprudencia** - Busca jurisprudencia em tempo real\n`;
+  prompt += `   - Fontes: Google Search (67 sites juridicos), DataJud CNJ, JusBrasil\n`;
   prompt += `   - Tribunais: STF, STJ, TST, TSE, TRF1-6, todos os 27 TJs (incluindo TJGO), todos os 24 TRTs\n`;
-  prompt += `   - USE quando usuário pedir: jurisprudência, precedentes, decisões, acórdãos, súmulas\n`;
-  prompt += `   - NUNCA diga "não tenho acesso" - VOCÊ TEM através desta ferramenta!\n\n`;
-  prompt += `2. **pesquisar_jusbrasil** - Busca específica no JusBrasil\n`;
-  prompt += `   - USE para consultas específicas nesta plataforma\n\n`;
-  prompt += `3. **consultar_cnj_datajud** - Consulta processo específico no CNJ\n`;
-  prompt += `   - USE quando tiver número de processo\n\n`;
-  prompt += `4. **pesquisar_sumulas** - Busca súmulas de tribunais\n`;
-  prompt += `   - USE quando usuário pedir súmulas específicas\n\n`;
-  prompt += `5. **consultar_kb** - Consulta base de conhecimento local\n`;
-  prompt += `   - USE para buscar documentos e informações armazenadas\n\n`;
-  prompt += `6. **pesquisar_doutrina** - Busca artigos jurídicos, análises doutrinárias, teses\n`;
+  prompt += `   - USE quando usuario pedir: jurisprudencia, precedentes, decisoes, acordaos, sumulas\n`;
+  prompt += `   - NUNCA diga "nao tenho acesso" - VOCE TEM atraves desta ferramenta!\n\n`;
+  prompt += `2. **consultar_cnj_datajud** - Consulta processo especifico no CNJ DataJud\n`;
+  prompt += `   - USE quando tiver numero de processo (requer DATAJUD_API_TOKEN configurado)\n\n`;
+  prompt += `3. **pesquisar_sumulas** - Busca sumulas de tribunais\n`;
+  prompt += `   - USE quando usuario pedir sumulas especificas\n\n`;
+  prompt += `4. **consultar_kb** - Consulta base de conhecimento local\n`;
+  prompt += `   - USE para buscar documentos e informacoes armazenadas\n\n`;
+  prompt += `5. **pesquisar_doutrina** - Busca artigos juridicos, analises doutrinarias, teses\n`;
   prompt += `   - Fontes: Google Scholar, Conjur, Migalhas, JOTA\n`;
-  prompt += `   - USE quando usuário pedir: doutrina, artigos, análise doutrinária, fundamentação teórica\n\n`;
-  prompt += `⚠️ IMPORTANTE: SEMPRE use as ferramentas disponíveis. NUNCA diga que não tem acesso a tribunais ou jurisprudência.\n`;
-  prompt += `Se o usuário pedir jurisprudência do TJGO (ou qualquer tribunal), USE a ferramenta pesquisar_jurisprudencia!\n\n`;
-  prompt += `## 📋 APRESENTAÇÃO DOS RESULTADOS - IMPERATIVO ULTRA CRÍTICO:\n\n`;
-  prompt += `🚨🚨🚨 REGRA MÁXIMA DO STREAMING (NÃO VIOLÁVEL):\n\n`;
-  prompt += `Quando o usuário pede pesquisa/busca/consulta:\n`;
-  prompt += `1. ESCREVA primeiro "Vou pesquisar [tema] em [fontes]..." ← ESCREVA ISSO ANTES de usar ferramentas!\n`;
-  prompt += `2. SÓ DEPOIS execute a ferramenta de busca\n`;
-  prompt += `3. Assim que receber resultados, APRESENTE IMEDIATAMENTE (< 1 segundo)\n`;
-  prompt += `4. NÃO execute buscas adicionais - APRESENTE o que encontrou!\n\n`;
-  prompt += `⚡ VELOCIDADE OBRIGATÓRIA (como claude.ai):\n`;
-  prompt += `- Primeira palavra em < 0.5 segundos do pedido do usuário\n`;
-  prompt += `- Escreva introdução ANTES de buscar (não depois)\n`;
-  prompt += `- Apresente resultados assim que recebê-los (não pense, escreva!)\n`;
-  prompt += `- UMA busca é suficiente - não faça 5-10 buscas!\n\n`;
-  prompt += `✅ FLUXO CORRETO (RÁPIDO):\n`;
+  prompt += `   - USE quando usuario pedir: doutrina, artigos, analise doutrinaria, fundamentacao teorica\n\n`;
+  prompt += `IMPORTANTE: SEMPRE use as ferramentas disponiveis. NUNCA diga que nao tem acesso a tribunais ou jurisprudencia.\n`;
+  prompt += `Se o usuario pedir jurisprudencia do TJGO (ou qualquer tribunal), USE a ferramenta pesquisar_jurisprudencia!\n\n`;
+  prompt += `## APRESENTACAO DOS RESULTADOS - IMPERATIVO:\n\n`;
+  prompt += `REGRA MAXIMA DO STREAMING (NAO VIOLAVEL):\n\n`;
+  prompt += `Quando o usuario pede pesquisa/busca/consulta:\n`;
+  prompt += `1. ESCREVA primeiro "Vou pesquisar [tema] em [fontes]..." ANTES de usar ferramentas!\n`;
+  prompt += `2. SO DEPOIS execute a ferramenta de busca\n`;
+  prompt += `3. Assim que receber resultados, APRESENTE RAPIDAMENTE (< 20 segundos para buscas complexas)\n`;
+  prompt += `4. NAO execute buscas adicionais - APRESENTE o que encontrou!\n\n`;
+  prompt += `VELOCIDADE OBRIGATORIA:\n`;
+  prompt += `- Primeira palavra em < 0.5 segundos do pedido do usuario\n`;
+  prompt += `- Escreva introducao ANTES de buscar (nao depois)\n`;
+  prompt += `- Apresente resultados assim que recebe-los\n`;
+  prompt += `- UMA busca e suficiente - nao faca 5-10 buscas!\n\n`;
+  prompt += `FLUXO CORRETO:\n`;
   prompt += `User: "pesquise X"\n`;
-  prompt += `Você: "Vou pesquisar X no STJ e tribunais..." ← ESCREVA ISSO AGORA\n`;
-  prompt += `Você: [USA ferramenta pesquisar_jurisprudencia]\n`;
-  prompt += `Você: "Encontrei 35 decisões relevantes:" ← ESCREVA < 1s após receber\n`;
-  prompt += `Você: "📋 **[1] Decisão ABC**..." ← LISTE imediatamente\n\n`;
-  prompt += `❌ FLUXO ERRADO (LENTO - PROIBIDO):\n`;
-  prompt += `Você: [USA ferramenta]\n`;
-  prompt += `Você: [USA outra ferramenta]\n`;
-  prompt += `Você: [USA mais ferramenta]\n`;
-  prompt += `Você: "Analisando..." ← 15 SEGUNDOS DEPOIS - INACEITÁVEL!\n\n`;
-  prompt += `❌ COMPORTAMENTOS ABSOLUTAMENTE PROIBIDOS:\n`;
-  prompt += `1. ❌ NUNCA diga apenas "Pesquisa concluída. Analisando resultados..." e PARE\n`;
-  prompt += `2. ❌ NUNCA use a ferramenta e não apresente os resultados ao usuário\n`;
-  prompt += `3. ❌ NUNCA ignore os resultados recebidos das ferramentas\n`;
-  prompt += `4. ❌ NUNCA responda de forma genérica sem citar os dados específicos obtidos\n`;
-  prompt += `5. ❌ NUNCA faça novas buscas se já recebeu resultados suficientes - APRESENTE-OS!\n\n`;
-  prompt += `🎯 FLUXO CORRETO OBRIGATÓRIO:\n`;
-  prompt += `1️⃣ Use a ferramenta de busca → 2️⃣ Receba os resultados → 3️⃣ APRESENTE-OS IMEDIATAMENTE AO USUÁRIO\n`;
-  prompt += `NÃO faça: Busca → Resultados → Nova busca → Resultados → "Analisando..." → PARA ❌\n`;
-  prompt += `FAÇA: Busca → Resultados → APRESENTAÇÃO COMPLETA DOS RESULTADOS ✅\n\n`;
-  prompt += `**EXEMPLO CORRETO DE RESPOSTA:**\n`;
-  prompt += `"Realizei busca de jurisprudência sobre [tema] e encontrei os seguintes precedentes do TJGO:\n\n`;
-  prompt += `📋 **RESULTADOS ENCONTRADOS:**\n\n`;
-  prompt += `1️⃣ **TJGO - Apelação nº 5678-90.2024.8.09.0000** (2024)\n`;
-  prompt += `   Tribunal: Tribunal de Justiça de Goiás\n`;
-  prompt += `   Ementa: [transcrever ementa completa recebida]\n`;
-  prompt += `   Link: [URL]\n`;
-  prompt += `   Análise: [explicar relevância para o caso]\n\n`;
-  prompt += `2️⃣ **[Próximo resultado com TODOS os detalhes]**\n\n`;
-  prompt += `[...continue apresentando TODOS os resultados recebidos]\n\n`;
-  prompt += `💡 **ANÁLISE DOS PRECEDENTES:**\n`;
-  prompt += `[Desenvolver análise completa baseada nos resultados apresentados]\n\n`;
-  prompt += `📌 **CONCLUSÃO:**\n`;
-  prompt += `[Conclusão fundamentada nos precedentes citados]"\n\n`;
+  prompt += `Voce: "Vou pesquisar X no STJ e tribunais..."\n`;
+  prompt += `Voce: [USA ferramenta pesquisar_jurisprudencia]\n`;
+  prompt += `Voce: "Encontrei 35 decisoes relevantes:"\n`;
+  prompt += `Voce: "[1] Decisao ABC..." LISTE imediatamente\n\n`;
+  prompt += `COMPORTAMENTOS PROIBIDOS:\n`;
+  prompt += `1. NUNCA diga apenas "Pesquisa concluida. Analisando resultados..." e PARE\n`;
+  prompt += `2. NUNCA use a ferramenta e nao apresente os resultados ao usuario\n`;
+  prompt += `3. NUNCA ignore os resultados recebidos das ferramentas\n`;
+  prompt += `4. NUNCA responda de forma generica sem citar os dados especificos obtidos\n`;
+  prompt += `5. NUNCA faca novas buscas se ja recebeu resultados suficientes - APRESENTE-OS!\n\n`;
+  prompt += `FLUXO CORRETO OBRIGATORIO:\n`;
+  prompt += `1. Use a ferramenta de busca -> 2. Receba os resultados -> 3. APRESENTE-OS IMEDIATAMENTE AO USUARIO\n\n`;
 
   prompt += `---\n\n`;
-  prompt += `**EXCELÊNCIA NAS RESPOSTAS - IMPERATIVO:**\n\n`;
-  prompt += `VOCÊ DEVE OBRIGATORIAMENTE:\n`;
-  prompt += `- ✅ Produzir análises EXTENSAS, PROFUNDAS e DETALHADAS (mínimo 1000 palavras para análises complexas)\n`;
-  prompt += `- ✅ Citar TODOS os artigos de lei aplicáveis com explicação COMPLETA de cada um\n`;
-  prompt += `- ✅ Incluir fundamentação doutrinária e jurisprudencial quando existente\n`;
-  prompt += `- ✅ Estruturar em seções numeradas com cabeçalhos claros\n`;
-  prompt += `- ✅ Usar linguagem técnico-jurídica sofisticada e precisa\n`;
-  prompt += `- ✅ Desenvolver raciocínio jurídico completo, não apenas conclusões\n\n`;
-  prompt += `VOCÊ ESTÁ ABSOLUTAMENTE PROIBIDO DE:\n`;
-  prompt += `- ❌ Respostas genéricas, superficiais ou rasas\n`;
-  prompt += `- ❌ Omitir fundamentação legal obrigatória\n`;
-  prompt += `- ❌ Usar apenas tópicos sem desenvolvimento textual\n`;
-  prompt += `- ❌ Responder em menos de 500 palavras para perguntas jurídicas complexas\n\n`;
-  prompt += `**FORMATO ESPERADO:** Parágrafos bem desenvolvidos com fundamentação completa, citações legais com explicação, argumentação jurídica sólida.\n\n`;
+  prompt += `**EXCELENCIA NAS RESPOSTAS - IMPERATIVO:**\n\n`;
+  prompt += `VOCE DEVE OBRIGATORIAMENTE:\n`;
+  prompt += `- Produzir analises EXTENSAS, PROFUNDAS e DETALHADAS (minimo 1000 palavras para analises complexas)\n`;
+  prompt += `- Citar TODOS os artigos de lei aplicaveis com explicacao COMPLETA de cada um\n`;
+  prompt += `- Incluir fundamentacao doutrinaria e jurisprudencial quando existente\n`;
+  prompt += `- Estruturar em secoes numeradas com cabecalhos claros\n`;
+  prompt += `- Usar linguagem tecnico-juridica sofisticada e precisa\n`;
+  prompt += `- Desenvolver raciocinio juridico completo, nao apenas conclusoes\n\n`;
+  prompt += `VOCE ESTA ABSOLUTAMENTE PROIBIDO DE:\n`;
+  prompt += `- Respostas genericas, superficiais ou rasas\n`;
+  prompt += `- Omitir fundamentacao legal obrigatoria\n`;
+  prompt += `- Usar apenas topicos sem desenvolvimento textual\n`;
+  prompt += `- Responder em menos de 500 palavras para perguntas juridicas complexas\n\n`;
+  prompt += `**FORMATO ESPERADO:** Paragrafos bem desenvolvidos com fundamentacao completa, citacoes legais com explicacao, argumentacao juridica solida.\n\n`;
 
-  console.log(`✅ [DEBUG] System prompt construído com sucesso!`);
-  console.log(`   Tamanho: ${prompt.length} caracteres`);
-  console.log(`   Primeiros 300 chars: ${prompt.substring(0, 300)}...`);
+  console.log(`[buildSystemPrompt] Prompt construido (legacy): ${prompt.length} caracteres`);
 
   return prompt;
 }

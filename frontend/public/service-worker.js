@@ -10,21 +10,26 @@
  * @version 5.0.0 - Network First
  */
 
-const VERSION = 'v6.2.0'; // ⚡ Atualizado: Fix Google Fonts CSP + JusBrasil removal
+const VERSION = 'v6.3.0-ios'; // ⚡ iOS PWA Support + Splash Screens
 const STATIC_CACHE = `rom-agent-static-${VERSION}`;
 const RUNTIME_CACHE = `rom-agent-runtime-${VERSION}`;
+
+// iOS detection
+const isIOS = /iPad|iPhone|iPod/.test(self.navigator.userAgent);
 
 // Assets que PODEM ser cached (não mudam frequentemente)
 const STATIC_ASSETS = [
   '/manifest.json',
-  '/icons/icon-72.png',
-  '/icons/icon-96.png',
-  '/icons/icon-128.png',
-  '/icons/icon-144.png',
-  '/icons/icon-152.png',
-  '/icons/icon-192.png',
-  '/icons/icon-384.png',
-  '/icons/icon-512.png',
+  '/icons/icon-180x180.png',
+  '/icons/icon-192x192.png',
+  '/icons/icon-512x512.png',
+  // iOS Splash Screens
+  '/splash/iphone-14-pro-max-portrait.png',
+  '/splash/iphone-14-pro-portrait.png',
+  '/splash/iphone-13-portrait.png',
+  '/splash/iphone-x-portrait.png',
+  '/splash/iphone-11-portrait.png',
+  '/splash/iphone-8-portrait.png',
 ];
 
 // Fontes externas (podem ser cached)
@@ -35,12 +40,25 @@ const FONT_URLS = [
 
 // ===== INSTALAÇÃO =====
 self.addEventListener('install', (event) => {
+  console.log(`[SW ${VERSION}] Installing... iOS: ${isIOS}`);
+
   event.waitUntil(
     caches.open(STATIC_CACHE)
       .then((cache) => {
-        return cache.addAll(STATIC_ASSETS).catch(() => {
-          // Não falhar se alguns assets não existirem
-        });
+        // iOS cache handling (more forgiving for splash screens)
+        if (isIOS) {
+          const promises = STATIC_ASSETS.map(url =>
+            cache.add(url).catch(err => {
+              console.warn(`[SW] iOS: Failed to cache ${url}`, err.message);
+              return Promise.resolve();
+            })
+          );
+          return Promise.all(promises);
+        } else {
+          return cache.addAll(STATIC_ASSETS).catch((err) => {
+            console.warn('[SW] Failed to cache some assets:', err.message);
+          });
+        }
       })
       .then(() => self.skipWaiting())
   );
@@ -225,8 +243,8 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   const options = {
     body: event.data ? event.data.text() : 'Nova notificação do ROM Agent',
-    icon: '/icons/icon-192.png',
-    badge: '/icons/icon-72.png',
+    icon: '/icons/icon-192x192.png',
+    badge: '/icons/icon-180x180.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
