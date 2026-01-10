@@ -17,14 +17,9 @@ const RUNTIME_CACHE = `rom-agent-runtime-${VERSION}`;
 // Assets que PODEM ser cached (não mudam frequentemente)
 const STATIC_ASSETS = [
   '/manifest.json',
-  '/icons/icon-72.png',
-  '/icons/icon-96.png',
-  '/icons/icon-128.png',
-  '/icons/icon-144.png',
-  '/icons/icon-152.png',
-  '/icons/icon-192.png',
-  '/icons/icon-384.png',
-  '/icons/icon-512.png',
+  '/icons/icon-192x192.png',
+  '/icons/icon-512x512.png',
+  '/icons/icon-180x180.png',
 ];
 
 // Fontes externas (podem ser cached)
@@ -225,8 +220,8 @@ self.addEventListener('fetch', (event) => {
 self.addEventListener('push', (event) => {
   const options = {
     body: event.data ? event.data.text() : 'Nova notificação do ROM Agent',
-    icon: '/icons/icon-192.png',
-    badge: '/icons/icon-72.png',
+    icon: '/icons/icon-192x192.png',
+    badge: '/icons/icon-180x180.png',
     vibrate: [100, 50, 100],
     data: {
       dateOfArrival: Date.now(),
