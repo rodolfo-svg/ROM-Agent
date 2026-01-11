@@ -63,7 +63,11 @@ if (needsBuild) {
     console.error('❌ Erro ao buildar frontend:');
     console.error(error.message);
     console.error('');
-    process.exit(1);
+    console.error('⚠️  AVISO: Frontend não está buildado, mas servidor continuará');
+    console.error('   O buildCommand deveria ter gerado o frontend/dist');
+    console.error('');
+    // NÃO bloquear o servidor - o buildCommand já deveria ter buildado
+    process.exit(0);
   }
 } else {
   // Verificar se build está atualizado

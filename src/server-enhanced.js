@@ -176,17 +176,8 @@ const __dirname = path.dirname(__filename);
 // HELPER FUNCTIONS GLOBAIS - Extração inteligente de metadados
 // ═══════════════════════════════════════════════════════════════════════
 
-function detectDocumentType(text) {
-  const lower = text.toLowerCase();
-  if (lower.includes('petição inicial')) return 'Petição Inicial';
-  if (lower.includes('recurso')) return 'Recurso';
-  if (lower.includes('contestação')) return 'Contestação';
-  if (lower.includes('sentença')) return 'Sentença';
-  if (lower.includes('agravo')) return 'Agravo';
-  if (lower.includes('habeas corpus')) return 'Habeas Corpus';
-  if (lower.includes('contrato')) return 'Contrato';
-  return 'Documento Jurídico';
-}
+// NOTE: detectDocumentType is imported from './lib/prompt-builder.js' (line 82)
+// Removed duplicate local declaration to fix: SyntaxError: Identifier 'detectDocumentType' has already been declared
 
 function extractProcessNumber(text) {
   const match = text.match(/\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}/);
