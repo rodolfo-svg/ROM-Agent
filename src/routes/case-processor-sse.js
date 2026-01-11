@@ -3,13 +3,21 @@
  *
  * Permite que o frontend receba updates linha a linha durante o processamento
  *
- * @version 1.0.0
+ * Features v2.0.0:
+ * - SSEConnectionManager para gerenciamento centralizado
+ * - Heartbeat seguro com verificacao de conexao
+ * - TTL automatico e cleanup
+ *
+ * @version 2.0.0
+ * @since WS5 - SSE Streaming Optimization
  */
 
 import express from 'express';
 import progressEmitter from '../utils/progress-emitter.js';
+import { getSSEConnectionManager } from '../utils/sse-connection-manager.js';
 
 const router = express.Router();
+const sseManager = getSSEConnectionManager();
 
 /**
  * GET /api/case-processor/:casoId/stream
@@ -32,54 +40,49 @@ const router = express.Router();
  */
 router.get('/:casoId/stream', (req, res) => {
   const { casoId } = req.params;
+  const connectionId = `case_${casoId}_${Date.now()}`;
 
-  // Configurar headers para SSE
-  res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
-  res.setHeader('Connection', 'keep-alive');
-  res.setHeader('X-Accel-Buffering', 'no'); // Nginx
+  // Usar SSEConnectionManager para gerenciar conexao
+  const connection = sseManager.addConnection(connectionId, res, { casoId });
 
-  // Enviar headers imediatamente
-  res.flushHeaders();
+  console.log(`[CaseProcessor-SSE] Cliente conectado: ${connectionId}`);
 
-  console.log(`📡 Cliente conectado ao stream SSE: ${casoId}`);
-
-  // Enviar updates históricos (caso já tenha começado)
+  // Enviar updates historicos (caso ja tenha comecado)
   const historicalUpdates = progressEmitter.getSessionUpdates(casoId);
   if (historicalUpdates.length > 0) {
     for (const update of historicalUpdates) {
-      res.write(`data: ${JSON.stringify(update)}\n\n`);
+      sseManager.writeEvent(connectionId, null, update);
     }
   }
 
   // Listener para novos updates
   const updateListener = ({ casoId: updatedCasoId, update }) => {
-    if (updatedCasoId === casoId) {
-      res.write(`data: ${JSON.stringify(update)}\n\n`);
+    if (updatedCasoId === casoId && sseManager.isActive(connectionId)) {
+      sseManager.writeEvent(connectionId, null, update);
+      // Renovar TTL a cada update
+      sseManager.renewTTL(connectionId);
     }
   };
 
-  // Listener para conclusão
+  // Listener para conclusao
   const completeListener = ({ casoId: completedCasoId, totalTime, summary }) => {
-    if (completedCasoId === casoId) {
-      res.write(`event: complete\n`);
-      res.write(`data: ${JSON.stringify({ totalTime, summary })}\n\n`);
+    if (completedCasoId === casoId && sseManager.isActive(connectionId)) {
+      sseManager.writeEvent(connectionId, 'complete', { totalTime, summary });
 
-      // Aguardar 1 segundo e fechar conexão
+      // Aguardar 1 segundo e fechar conexao
       setTimeout(() => {
-        res.end();
+        sseManager.removeConnection(connectionId);
       }, 1000);
     }
   };
 
   // Listener para erro
   const failListener = ({ casoId: failedCasoId, error, totalTime }) => {
-    if (failedCasoId === casoId) {
-      res.write(`event: error\n`);
-      res.write(`data: ${JSON.stringify({ error, totalTime })}\n\n`);
+    if (failedCasoId === casoId && sseManager.isActive(connectionId)) {
+      sseManager.writeEvent(connectionId, 'error', { error, totalTime });
 
       setTimeout(() => {
-        res.end();
+        sseManager.removeConnection(connectionId);
       }, 1000);
     }
   };
@@ -89,21 +92,15 @@ router.get('/:casoId/stream', (req, res) => {
   progressEmitter.on('session-complete', completeListener);
   progressEmitter.on('session-failed', failListener);
 
-  // Heartbeat para manter conexão viva (a cada 15 segundos)
-  const heartbeat = setInterval(() => {
-    res.write(': heartbeat\n\n');
-  }, 15000);
-
   // Cleanup quando cliente desconectar
   req.on('close', () => {
-    console.log(`📡 Cliente desconectado do stream SSE: ${casoId}`);
+    console.log(`[CaseProcessor-SSE] Cliente desconectado: ${connectionId}`);
 
-    clearInterval(heartbeat);
     progressEmitter.off('update', updateListener);
     progressEmitter.off('session-complete', completeListener);
     progressEmitter.off('session-failed', failListener);
 
-    res.end();
+    sseManager.removeConnection(connectionId);
   });
 });
 

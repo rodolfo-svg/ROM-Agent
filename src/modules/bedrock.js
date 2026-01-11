@@ -18,6 +18,11 @@ import {
   ListInferenceProfilesCommand
 } from '@aws-sdk/client-bedrock';
 
+// Validar credenciais AWS no startup
+if (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY) {
+  throw new Error('❌ AWS credentials not configured! Set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY');
+}
+
 // Integração com ROM Tools (KB, Jurisprudência, CNJ)
 import { BEDROCK_TOOLS, executeTool } from './bedrock-tools.js';
 

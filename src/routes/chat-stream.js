@@ -1,10 +1,16 @@
 /**
  * Server-Sent Events (SSE) para Chat em Tempo Real
  *
- * Streaming de respostas AI para experiência 5-8x mais rápida
+ * Streaming de respostas AI para experiencia 5-8x mais rapida
  * Time to First Token: <1s (vs 5-10s sem streaming)
  *
- * @version 2.7.0
+ * Features v2.8.0:
+ * - Heartbeat seguro com verificacao de conexao
+ * - Registro de latencia para metricas
+ * - Cleanup automatico de conexoes
+ *
+ * @version 2.8.0
+ * @since WS5 - SSE Streaming Optimization
  */
 
 import express from 'express';
@@ -12,8 +18,10 @@ import { conversarStream } from '../modules/bedrock.js';
 import { logger } from '../utils/logger.js';
 import metricsCollector from '../utils/metrics-collector-v2.js';
 import { buildSystemPrompt } from '../server-enhanced.js';
+import { getSSEConnectionManager } from '../utils/sse-connection-manager.js';
 
 const router = express.Router();
+const sseManager = getSSEConnectionManager();
 
 // Mapeamento de modelos curtos para IDs completos do Bedrock
 const MODEL_MAPPING = {
@@ -142,11 +150,25 @@ router.post('/stream', async (req, res) => {
       timestamp: new Date().toISOString()
     })}\n\n`);
 
-    // Heartbeat para manter conexão viva
+    // Heartbeat para manter conexao viva - COM VERIFICACAO DE CONEXAO
     // IMPORTANTE: Cloudflare tem timeout HTTP/2 de ~2min (120s)
     // Enviar heartbeat frequente para evitar ERR_HTTP2_PROTOCOL_ERROR
     heartbeatInterval = setInterval(() => {
-      res.write(`: heartbeat ${Date.now()}\n\n`);
+      // SEGURANCA: Verificar se conexao ainda esta viva antes de escrever
+      if (res.writableEnded || res.destroyed || res.socket?.destroyed) {
+        logger.debug(`[${requestId}] Connection detected as closed during heartbeat`);
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+        return;
+      }
+
+      try {
+        res.write(`: heartbeat ${Date.now()}\n\n`);
+      } catch (err) {
+        logger.error(`[${requestId}] Heartbeat write failed:`, err.message);
+        clearInterval(heartbeatInterval);
+        heartbeatInterval = null;
+      }
     }, 10000); // A cada 10s (antes era 15s)
 
     // Cleanup heartbeat ao finalizar
@@ -173,19 +195,31 @@ router.post('/stream', async (req, res) => {
           chunkLength: chunk.length
         });
 
-        // Métrica: Time To First Token
+        // Metrica: Time To First Token
         metricsCollector.recordTTFT(ttft, selectedModel || 'default');
+
+        // Registrar latencia no SSEConnectionManager para metricas globais
+        sseManager.recordLatency(ttft);
       }
 
       fullResponse += chunk;
       chunkCount++;
 
+      // SEGURANCA: Verificar se conexao ainda esta viva antes de escrever
+      if (res.writableEnded || res.destroyed) {
+        return;
+      }
+
       // Enviar chunk via SSE
-      res.write(`data: ${JSON.stringify({
-        type: 'chunk',
-        content: chunk,
-        chunkNumber: chunkCount
-      })}\n\n`);
+      try {
+        res.write(`data: ${JSON.stringify({
+          type: 'chunk',
+          content: chunk,
+          chunkNumber: chunkCount
+        })}\n\n`);
+      } catch (err) {
+        logger.error(`[${requestId}] Chunk write failed:`, err.message);
+      }
     };
 
     // ✅ CRÍTICO: Usar systemPrompt com instruções de ferramentas se não vier do frontend
@@ -308,14 +342,30 @@ router.post('/stream', async (req, res) => {
 /**
  * GET /api/chat/stream/health
  *
- * Health check para streaming endpoint
+ * Health check para streaming endpoint com metricas SSE
  */
 router.get('/stream/health', (req, res) => {
+  const sseMetrics = sseManager.getMetrics();
+  const latencyStats = sseManager.getLatencyStats();
+
   res.json({
     success: true,
     status: 'operational',
-    features: ['sse', 'streaming', 'real-time-chat'],
-    version: '2.7.0',
+    features: ['sse', 'streaming', 'real-time-chat', 'safe-heartbeat', 'ttl-connections'],
+    version: '2.8.0',
+    sse: {
+      activeConnections: sseMetrics.activeConnections,
+      totalConnections: sseMetrics.totalConnections,
+      heartbeatsSent: sseMetrics.heartbeatsSent,
+      heartbeatsFailed: sseMetrics.heartbeatsFailed,
+      latency: latencyStats ? {
+        avg: `${Math.round(latencyStats.avg)}ms`,
+        p50: `${latencyStats.p50}ms`,
+        p95: `${latencyStats.p95}ms`,
+        p99: `${latencyStats.p99}ms`,
+        samples: latencyStats.count
+      } : null
+    },
     timestamp: new Date().toISOString()
   });
 });

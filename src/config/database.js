@@ -1,6 +1,12 @@
 /**
- * DATABASE CONFIGURATION
+ * DATABASE CONFIGURATION (v2.0.0)
  * PostgreSQL + Redis connection management with graceful degradation
+ *
+ * Redis Enhancements (WS8):
+ * - Optimized connection pooling
+ * - Automatic reconnection with exponential backoff
+ * - Command timeout configuration
+ * - Connection health monitoring
  */
 
 import pg from 'pg';
@@ -25,15 +31,24 @@ export async function initPostgres() {
   }
 
   try {
+    // Optimized pool configuration for production performance
+    const poolConfig = {
+      max: parseInt(process.env.POSTGRES_POOL_SIZE) || 20,
+      min: parseInt(process.env.POSTGRES_POOL_MIN) || 2,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 5000,
+      statement_timeout: 30000,
+      query_timeout: 30000,
+      application_name: 'ROM-Agent'
+    };
+
     const config = process.env.DATABASE_URL
       ? {
           connectionString: process.env.DATABASE_URL,
           ssl: process.env.NODE_ENV === 'production'
             ? { rejectUnauthorized: false }
             : false,
-          max: parseInt(process.env.POSTGRES_POOL_SIZE) || 20,
-          idleTimeoutMillis: 30000,
-          connectionTimeoutMillis: 5000
+          ...poolConfig
         }
       : {
           host: process.env.POSTGRES_HOST || 'localhost',
@@ -41,15 +56,15 @@ export async function initPostgres() {
           database: process.env.POSTGRES_DB || 'rom_agent',
           user: process.env.POSTGRES_USER || 'postgres',
           password: process.env.POSTGRES_PASSWORD,
-          max: parseInt(process.env.POSTGRES_POOL_SIZE) || 20,
-          idleTimeoutMillis: 30000,
-          connectionTimeoutMillis: 5000
+          ...poolConfig
         };
 
     console.log('🔍 [PG] Usando DATABASE_URL:', !!process.env.DATABASE_URL);
     console.log('🔍 [PG] SSL habilitado:', !!config.ssl);
-    console.log('🔍 [PG] Pool size:', config.max);
+    console.log('🔍 [PG] Pool size:', config.max, '(min:', config.min + ')');
     console.log('🔍 [PG] Connection timeout:', config.connectionTimeoutMillis + 'ms');
+    console.log('🔍 [PG] Statement timeout:', config.statement_timeout + 'ms');
+    console.log('🔍 [PG] Application name:', config.application_name);
 
     console.log('🔍 [PG] Criando pg.Pool...');
     pgPool = new pg.Pool(config);
@@ -107,7 +122,7 @@ export async function initPostgres() {
 }
 
 /**
- * Inicializa conexão Redis
+ * Inicializa conexao Redis com configuracao otimizada
  * @returns {Redis|null} Cliente Redis ou null se falhar
  */
 export async function initRedis() {
@@ -115,39 +130,108 @@ export async function initRedis() {
     return redisClient;
   }
 
+  console.log('[Redis] initRedis() INICIADO');
+  console.log('[Redis] REDIS_URL existe:', !!process.env.REDIS_URL);
+
   try {
-    const config = process.env.REDIS_URL || {
-      host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT) || 6379,
-      password: process.env.REDIS_PASSWORD,
-      db: parseInt(process.env.REDIS_DB) || 0,
-      retryStrategy: () => null, // Não tentar reconectar
-      lazyConnect: true,
-      enableReadyCheck: true,
-      maxRetriesPerRequest: 1
+    // Enhanced retry strategy with exponential backoff
+    const retryStrategy = (times) => {
+      if (times > 3) {
+        logger.warn('Redis max retries exceeded, giving up');
+        return null; // Stop retrying
+      }
+      const delay = Math.min(times * 200, 2000);
+      logger.info(`Redis reconnecting in ${delay}ms (attempt ${times})`);
+      return delay;
     };
 
-    redisClient = new Redis(config);
+    // Base configuration for optimized performance
+    const baseConfig = {
+      // Connection settings
+      connectTimeout: 10000,
+      commandTimeout: 5000,
+      keepAlive: 30000,
 
+      // Retry configuration
+      retryStrategy,
+      maxRetriesPerRequest: 3,
+      enableReadyCheck: true,
+      lazyConnect: true,
+
+      // Performance optimizations
+      enableOfflineQueue: true,
+      enableAutoPipelining: true,
+      autoPipeliningIgnoredCommands: ['subscribe', 'psubscribe', 'unsubscribe', 'punsubscribe'],
+
+      // Connection pool (for cluster mode)
+      family: 4, // IPv4
+
+      // Logging
+      showFriendlyErrorStack: process.env.NODE_ENV !== 'production'
+    };
+
+    let config;
+
+    if (process.env.REDIS_URL) {
+      // Parse REDIS_URL and merge with base config
+      config = {
+        ...baseConfig
+      };
+      console.log('[Redis] Usando REDIS_URL');
+      redisClient = new Redis(process.env.REDIS_URL, config);
+    } else {
+      // Use individual environment variables
+      config = {
+        host: process.env.REDIS_HOST || 'localhost',
+        port: parseInt(process.env.REDIS_PORT) || 6379,
+        password: process.env.REDIS_PASSWORD || undefined,
+        db: parseInt(process.env.REDIS_DB) || 0,
+        ...baseConfig
+      };
+      console.log('[Redis] Usando configuracao individual');
+      console.log('[Redis] Host:', config.host, 'Port:', config.port, 'DB:', config.db);
+      redisClient = new Redis(config);
+    }
+
+    // Connect and test
     const startTime = Date.now();
     await redisClient.connect();
     await redisClient.ping();
     const latency = Date.now() - startTime;
 
-    logger.info('Redis conectado', {
-      latency: `${latency}ms`
+    console.log('[Redis] Redis CONECTADO em ' + latency + 'ms');
+    logger.info('Redis conectado (otimizado)', {
+      latency: `${latency}ms`,
+      autoPipelining: true,
+      commandTimeout: '5000ms'
     });
 
+    // Event handlers
     redisClient.on('error', (err) => {
       logger.error('Redis error', { error: err.message });
     });
 
+    redisClient.on('reconnecting', (delay) => {
+      logger.info('Redis reconnecting', { delay });
+    });
+
+    redisClient.on('ready', () => {
+      logger.info('Redis ready');
+    });
+
+    redisClient.on('close', () => {
+      logger.warn('Redis connection closed');
+    });
+
     return redisClient;
   } catch (error) {
-    logger.warn('Redis INDISPONÍVEL - cache e sessões serão efêmeros!', {
+    console.error('[Redis] ERRO AO CONECTAR REDIS');
+    console.error('[Redis] Error message:', error.message);
+
+    logger.warn('Redis INDISPONIVEL - cache e sessoes serao efemeros!', {
       error: error.message
     });
-    logger.warn('Configure REDIS_URL para sessões persistentes');
+    logger.warn('Configure REDIS_URL para sessoes persistentes');
     redisClient = null;
     return null;
   }
@@ -207,33 +291,79 @@ export async function closeDatabaseConnections() {
 
 export async function checkDatabaseHealth() {
   const health = {
-    postgres: { available: false, latency: null },
-    redis: { available: false, latency: null }
+    postgres: { available: false, latency: null, poolSize: null, idleCount: null },
+    redis: { available: false, latency: null, status: null, memoryUsage: null }
   };
 
+  // Check PostgreSQL
   if (pgPool) {
     try {
       const start = Date.now();
       await pgPool.query('SELECT 1');
       health.postgres.available = true;
       health.postgres.latency = Date.now() - start;
+      health.postgres.poolSize = pgPool.totalCount;
+      health.postgres.idleCount = pgPool.idleCount;
+      health.postgres.waitingCount = pgPool.waitingCount;
     } catch (error) {
       logger.error('PostgreSQL health check failed', { error: error.message });
+      health.postgres.error = error.message;
     }
   }
 
+  // Check Redis with enhanced info
   if (redisClient) {
     try {
       const start = Date.now();
       await redisClient.ping();
       health.redis.available = true;
       health.redis.latency = Date.now() - start;
+      health.redis.status = redisClient.status;
+
+      // Get memory info
+      try {
+        const info = await redisClient.info('memory');
+        const usedMemoryMatch = info.match(/used_memory_human:(\S+)/);
+        if (usedMemoryMatch) {
+          health.redis.memoryUsage = usedMemoryMatch[1];
+        }
+      } catch {
+        // Ignore memory info errors
+      }
+
+      // Get connection info
+      try {
+        const clientInfo = await redisClient.info('clients');
+        const connectedClientsMatch = clientInfo.match(/connected_clients:(\d+)/);
+        if (connectedClientsMatch) {
+          health.redis.connectedClients = parseInt(connectedClientsMatch[1]);
+        }
+      } catch {
+        // Ignore client info errors
+      }
     } catch (error) {
       logger.error('Redis health check failed', { error: error.message });
+      health.redis.error = error.message;
     }
   }
 
   return health;
+}
+
+/**
+ * Get Redis client status
+ * @returns {Object} Redis status info
+ */
+export function getRedisStatus() {
+  if (!redisClient) {
+    return { connected: false, status: 'disconnected' };
+  }
+
+  return {
+    connected: redisClient.status === 'ready',
+    status: redisClient.status,
+    commandQueueLength: redisClient.commandQueue?.length || 0
+  };
 }
 
 export default {
@@ -241,6 +371,7 @@ export default {
   initRedis,
   getPostgresPool,
   getRedisClient,
+  getRedisStatus,
   safeQuery,
   closeDatabaseConnections,
   checkDatabaseHealth

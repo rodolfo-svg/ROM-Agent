@@ -35,6 +35,8 @@ import prazosProcessuaisService from '../../modules/prazos-processuais.js';
 import * as portugues from '../../modules/portugues.js';
 import tracing from '../../../lib/tracing.js';
 import certidoesDJEService from '../certidoes-dje-service.js';
+import entityExtractorService from './entity-extractor-service.js';
+import consolidationService from './consolidation-service.js';
 
 class ROMCaseProcessorService {
   constructor() {
@@ -1825,12 +1827,23 @@ class ROMCaseProcessorService {
   }
 
   _extractEntities(documents) {
-    // TODO: Implementar extração de entidades (NER)
+    // Usar EntityExtractorService para NER completo
+    const entities = entityExtractorService.extractFromDocuments(documents);
+
     return {
-      partes: [],
-      advogados: [],
-      juizes: [],
-      tribunais: []
+      partes: [
+        ...entities.partes.polo_ativo.map(p => ({ ...p, polo: 'ativo' })),
+        ...entities.partes.polo_passivo.map(p => ({ ...p, polo: 'passivo' }))
+      ],
+      advogados: entities.advogados,
+      juizes: entities.juizes,
+      tribunais: entities.tribunais,
+      processos: entities.processos,
+      documentos: entities.documentos,
+      valores: entities.valores,
+      datas: entities.datas,
+      legislacao: entities.legislacao,
+      varas: entities.varas
     };
   }
 
@@ -1858,10 +1871,13 @@ class ROMCaseProcessorService {
   }
 
   _extractKeyEntities(documents, limit = 5) {
-    // TODO: Implementar extração de entidades principais
+    // Usar EntityExtractorService para extrair entidades-chave
+    const keyEntities = entityExtractorService.extractKeyEntities(documents, limit);
+
     return {
-      principais: [],
-      secundarias: []
+      principais: keyEntities.principais,
+      secundarias: keyEntities.secundarias,
+      estatisticas: keyEntities.estatisticas
     };
   }
 
@@ -1887,18 +1903,18 @@ class ROMCaseProcessorService {
   }
 
   _extractPreliminaryFacts(documents) {
-    // TODO: Implementar extração de fatos preliminares
-    return [];
+    // Usar ConsolidationService para extração de fatos preliminares
+    return consolidationService.extractPreliminaryFacts(documents, 10);
   }
 
   _identifyLegalIssues(documents) {
-    // TODO: Implementar identificação de questões jurídicas
-    return [];
+    // Usar ConsolidationService para identificar questões jurídicas
+    return consolidationService.identifyLegalIssues(documents);
   }
 
   _buildCrossReferences(documents) {
-    // TODO: Implementar referências cruzadas entre documentos
-    return {};
+    // Usar ConsolidationService para construir referências cruzadas
+    return consolidationService.buildCrossReferences(documents);
   }
 
   async _createMicrofichamento(document) {
@@ -1937,37 +1953,43 @@ class ROMCaseProcessorService {
   }
 
   _consolidateQualificacao(microfichamentos) {
-    // TODO: Consolidar qualificações de todos os documentos
-    return {};
+    // Usar ConsolidationService para consolidar qualificações
+    return consolidationService.consolidateQualificacao(microfichamentos);
   }
 
   _consolidateFatos(microfichamentos) {
-    // TODO: Consolidar fatos
-    return [];
+    // Usar ConsolidationService para consolidar fatos
+    return consolidationService.consolidateFatos(microfichamentos);
   }
 
   _consolidateProvas(microfichamentos) {
-    // TODO: Consolidar provas
-    return [];
+    // Usar ConsolidationService para consolidar provas
+    return consolidationService.consolidateProvas(microfichamentos);
   }
 
   _consolidateTeses(microfichamentos) {
-    // TODO: Consolidar teses jurídicas
-    return [];
+    // Usar ConsolidationService para consolidar teses jurídicas
+    return consolidationService.consolidateTeses(microfichamentos);
   }
 
   _consolidatePedidos(microfichamentos) {
-    // TODO: Consolidar pedidos
-    return [];
+    // Usar ConsolidationService para consolidar pedidos
+    return consolidationService.consolidatePedidos(microfichamentos);
   }
 
   _buildRiskMatrix(consolidacoes) {
-    // TODO: Construir matriz de risco baseada nas consolidações
-    return {
-      procedencia: { probabilidade: 'média', impacto: 'alto' },
-      prazo: { probabilidade: 'baixa', impacto: 'médio' },
-      custos: { probabilidade: 'média', impacto: 'médio' }
-    };
+    // Usar ConsolidationService para construir matriz de risco
+    return consolidationService.buildRiskMatrix(consolidacoes);
+  }
+
+  /**
+   * Constrói timeline cronológica do caso
+   * @param {Array} documents - Array de documentos
+   * @param {Object} consolidacoes - Consolidações existentes
+   * @returns {Object} Timeline cronológica
+   */
+  _buildTimeline(documents, consolidacoes = {}) {
+    return consolidationService.buildTimeline(documents, consolidacoes);
   }
 
   _selectPrompt(tipo) {
@@ -1983,11 +2005,51 @@ class ROMCaseProcessorService {
   }
 
   async _getCacheHitRate(casoId) {
-    const stats = await cacheService.getStats(casoId);
-    if (!stats) return '0%';
+    try {
+      const stats = await cacheService.getStats(casoId);
+      if (!stats) {
+        return {
+          rate: '0%',
+          hits: 0,
+          misses: 0,
+          total: 0
+        };
+      }
 
-    // Estimativa simples - TODO: melhorar tracking
-    return `${Math.min(stats.totalCaches * 10, 80)}%`;
+      // Calcular hit rate real
+      const hits = stats.cacheHits || 0;
+      const misses = stats.cacheMisses || 0;
+      const total = hits + misses;
+
+      let rate = 0;
+      if (total > 0) {
+        rate = Math.round((hits / total) * 100);
+      } else if (stats.totalCaches > 0) {
+        // Fallback: estimar baseado em caches existentes
+        // Assume que caches existentes foram hits em algum momento
+        rate = Math.min(stats.totalCaches * 15, 85);
+      }
+
+      return {
+        rate: `${rate}%`,
+        hits,
+        misses,
+        total,
+        cacheCount: stats.totalCaches || 0,
+        lastUpdated: stats.lastUpdated || new Date().toISOString(),
+        layers: {
+          layer1: stats.layer1 || { hits: 0, misses: 0 },
+          layer2: stats.layer2 || { hits: 0, misses: 0 },
+          layer3: stats.layer3 || { hits: 0, misses: 0 }
+        }
+      };
+    } catch (error) {
+      console.error(`Erro ao obter cache hit rate para ${casoId}:`, error);
+      return {
+        rate: '0%',
+        error: error.message
+      };
+    }
   }
 }
 
