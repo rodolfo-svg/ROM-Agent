@@ -37,7 +37,10 @@ services:
       echo "✅ Build completo!"
 
     # ═══ START ═══
-    startCommand: bash scripts/migrate-with-logging.sh && node scripts/ensure-frontend-build.js && npm run web:enhanced
+    # CRÍTICO: Iniciar servidor IMEDIATAMENTE para evitar port scan timeout
+    # Frontend já foi buildado no buildCommand
+    # Migrations rodam assíncronamente após servidor abrir porta
+    startCommand: npm run web:enhanced
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
@@ -150,7 +153,10 @@ services:
       echo "✅ Build completo!"
 
     # ═══ START ═══
-    startCommand: bash scripts/migrate-with-logging.sh && node scripts/ensure-frontend-build.js && npm run web:enhanced
+    # CRÍTICO: Iniciar servidor IMEDIATAMENTE para evitar port scan timeout
+    # Frontend já foi buildado no buildCommand
+    # Migrations rodam assíncronamente após servidor abrir porta
+    startCommand: npm run web:enhanced
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
