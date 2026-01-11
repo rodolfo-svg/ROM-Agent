@@ -1,29 +1,43 @@
 /**
- * ROM Agent - Service Worker "Network First"
+ * ROM Agent - Service Worker v7.0.0
  *
- * Estratégia Otimizada para App Jurídico:
- * ✅ HTML/JS/CSS sempre da REDE (código sempre atualizado)
- * ✅ Assets estáticos em CACHE (fonts, imagens - performance)
- * ✅ API nunca cached (dados sempre frescos)
- * ✅ Mantém features PWA (instalável, notificações)
+ * Estrategias de Cache Completas para App Juridico:
+ * - Network First: HTML/JS/CSS (codigo sempre atualizado)
+ * - Cache First: Assets estaticos (fonts, imagens - performance)
+ * - Stale While Revalidate: Recursos secundarios
+ * - API: Network only com fallback offline
  *
- * @version 5.0.0 - Network First
+ * Features:
+ * - Suporte iOS PWA com splash screens
+ * - Sincronizacao em background
+ * - Notificacoes push
+ * - Offline fallback page
+ * - Precache de recursos criticos
+ *
+ * @version 7.0.0 - Complete Cache Strategies
  */
 
-const VERSION = 'v6.3.0-ios'; // ⚡ iOS PWA Support + Splash Screens
+const VERSION = 'v7.0.0';
 const STATIC_CACHE = `rom-agent-static-${VERSION}`;
 const RUNTIME_CACHE = `rom-agent-runtime-${VERSION}`;
+const OFFLINE_CACHE = `rom-agent-offline-${VERSION}`;
 
 // iOS detection
 const isIOS = /iPad|iPhone|iPod/.test(self.navigator.userAgent);
 
-// Assets que PODEM ser cached (não mudam frequentemente)
-const STATIC_ASSETS = [
+// ===== CACHE CONFIGURATION =====
+
+// Critical assets to precache
+const PRECACHE_ASSETS = [
+  '/',
   '/manifest.json',
   '/icons/icon-180x180.png',
   '/icons/icon-192x192.png',
   '/icons/icon-512x512.png',
-  // iOS Splash Screens
+];
+
+// iOS Splash Screens (optional - fail gracefully)
+const IOS_SPLASH_SCREENS = [
   '/splash/iphone-14-pro-max-portrait.png',
   '/splash/iphone-14-pro-portrait.png',
   '/splash/iphone-13-portrait.png',
@@ -32,235 +46,625 @@ const STATIC_ASSETS = [
   '/splash/iphone-8-portrait.png',
 ];
 
-// Fontes externas (podem ser cached)
-const FONT_URLS = [
+// Font URLs to cache
+const FONT_ORIGINS = [
   'https://fonts.googleapis.com',
   'https://fonts.gstatic.com',
 ];
 
-// ===== INSTALAÇÃO =====
+// Cache time limits (in ms)
+const CACHE_EXPIRATION = {
+  FONTS: 30 * 24 * 60 * 60 * 1000, // 30 days
+  IMAGES: 7 * 24 * 60 * 60 * 1000,  // 7 days
+  API: 5 * 60 * 1000,               // 5 minutes (for offline fallback)
+};
+
+// Offline fallback HTML
+const OFFLINE_HTML = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#D97706">
+  <title>Sem Conexao - ROM Agent</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      margin: 0;
+      background: linear-gradient(135deg, #fafaf9 0%, #f5f5f4 100%);
+      color: #292524;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    }
+    .container {
+      text-align: center;
+      padding: 2rem;
+      max-width: 400px;
+    }
+    .icon {
+      font-size: 4rem;
+      margin-bottom: 1.5rem;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #44403c;
+    }
+    p {
+      color: #78716c;
+      margin-bottom: 0.5rem;
+      line-height: 1.5;
+    }
+    .actions {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    button {
+      padding: 0.875rem 1.5rem;
+      background: #d97706;
+      color: white;
+      border: none;
+      border-radius: 0.75rem;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:hover {
+      background: #b45309;
+      transform: translateY(-1px);
+    }
+    button:active {
+      transform: translateY(0);
+    }
+    .secondary {
+      background: transparent;
+      color: #78716c;
+      border: 1px solid #d6d3d1;
+    }
+    .secondary:hover {
+      background: #f5f5f4;
+    }
+    .status {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #fef3c7;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      color: #92400e;
+    }
+    .status.online {
+      background: #d1fae5;
+      color: #065f46;
+    }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="icon">&#128268;</div>
+    <h1>Sem Conexao com a Internet</h1>
+    <p>O ROM Agent precisa de conexao para funcionar.</p>
+    <p>Verifique sua internet e tente novamente.</p>
+
+    <div class="actions">
+      <button onclick="location.reload()">Tentar Novamente</button>
+      <button class="secondary" onclick="checkStatus()">Verificar Conexao</button>
+    </div>
+
+    <div id="status" class="status hidden"></div>
+  </div>
+
+  <script>
+    // Check connection status
+    function checkStatus() {
+      const statusEl = document.getElementById('status');
+      statusEl.classList.remove('hidden', 'online');
+      statusEl.textContent = 'Verificando conexao...';
+
+      if (navigator.onLine) {
+        statusEl.classList.add('online');
+        statusEl.textContent = 'Conexao detectada! Recarregando...';
+        setTimeout(() => location.reload(), 1000);
+      } else {
+        statusEl.textContent = 'Ainda sem conexao. Verifique seu Wi-Fi ou dados moveis.';
+      }
+    }
+
+    // Auto-reload when back online
+    window.addEventListener('online', () => {
+      const statusEl = document.getElementById('status');
+      statusEl.classList.remove('hidden');
+      statusEl.classList.add('online');
+      statusEl.textContent = 'Conexao restaurada! Recarregando...';
+      setTimeout(() => location.reload(), 1000);
+    });
+
+    // Show offline message
+    window.addEventListener('offline', () => {
+      const statusEl = document.getElementById('status');
+      statusEl.classList.remove('hidden', 'online');
+      statusEl.textContent = 'Conexao perdida.';
+    });
+  </script>
+</body>
+</html>`;
+
+// ===== HELPER FUNCTIONS =====
+
+/**
+ * Check if request is for API
+ */
+function isApiRequest(url) {
+  return url.pathname.startsWith('/api/');
+}
+
+/**
+ * Check if request is for streaming
+ */
+function isStreamingRequest(url) {
+  return url.pathname.includes('/stream') ||
+         url.pathname.includes('/chat/stream') ||
+         url.pathname.includes('/api/chat-stream') ||
+         url.pathname.includes('/sse');
+}
+
+/**
+ * Check if request is for fonts
+ */
+function isFontRequest(url) {
+  return FONT_ORIGINS.some(origin => url.href.includes(origin));
+}
+
+/**
+ * Check if request is for static assets
+ */
+function isStaticAsset(url) {
+  return /\.(png|jpg|jpeg|svg|ico|webp|woff|woff2|ttf|eot)$/i.test(url.pathname);
+}
+
+/**
+ * Check if request is for app shell (HTML/JS/CSS)
+ */
+function isAppShell(request, url) {
+  return url.pathname.endsWith('.html') ||
+         url.pathname.endsWith('.js') ||
+         url.pathname.endsWith('.css') ||
+         url.pathname === '/' ||
+         request.mode === 'navigate';
+}
+
+/**
+ * Add timestamp to cached response for expiration check
+ */
+function addTimestamp(response) {
+  const headers = new Headers(response.headers);
+  headers.set('sw-cached-at', Date.now().toString());
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
+/**
+ * Check if cached response is expired
+ */
+function isCacheExpired(response, maxAge) {
+  const cachedAt = response.headers.get('sw-cached-at');
+  if (!cachedAt) return true;
+  return Date.now() - parseInt(cachedAt) > maxAge;
+}
+
+// ===== CACHE STRATEGIES =====
+
+/**
+ * Network First - Try network, fallback to cache
+ * Used for: App shell (HTML/JS/CSS)
+ */
+async function networkFirst(request, cacheName = RUNTIME_CACHE) {
+  try {
+    const response = await fetch(request);
+    if (response.ok && request.method === 'GET') {
+      const cache = await caches.open(cacheName);
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (error) {
+    const cached = await caches.match(request);
+    if (cached) {
+      return cached;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Cache First - Try cache, fallback to network
+ * Used for: Static assets (images, fonts)
+ */
+async function cacheFirst(request, cacheName = STATIC_CACHE, maxAge = CACHE_EXPIRATION.IMAGES) {
+  const cached = await caches.match(request);
+
+  if (cached && !isCacheExpired(cached, maxAge)) {
+    return cached;
+  }
+
+  try {
+    const response = await fetch(request);
+    if (response.ok && request.method === 'GET') {
+      const cache = await caches.open(cacheName);
+      cache.put(request, addTimestamp(response.clone()));
+    }
+    return response;
+  } catch (error) {
+    if (cached) {
+      return cached;
+    }
+    throw error;
+  }
+}
+
+/**
+ * Stale While Revalidate - Return cache immediately, update in background
+ * Used for: Secondary resources
+ */
+async function staleWhileRevalidate(request, cacheName = RUNTIME_CACHE) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+
+  const fetchPromise = fetch(request)
+    .then(response => {
+      if (response.ok && request.method === 'GET') {
+        cache.put(request, response.clone());
+      }
+      return response;
+    })
+    .catch(() => cached);
+
+  return cached || fetchPromise;
+}
+
+/**
+ * Network Only with Offline Fallback
+ * Used for: API requests
+ */
+async function networkOnlyWithFallback(request) {
+  try {
+    return await fetch(request);
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        error: 'Sem conexao',
+        message: 'Voce esta offline. Verifique sua conexao com a internet.',
+        offline: true,
+        timestamp: Date.now(),
+      }),
+      {
+        status: 503,
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Offline': 'true',
+        },
+      }
+    );
+  }
+}
+
+// ===== SERVICE WORKER EVENTS =====
+
+/**
+ * Install Event - Precache critical assets
+ */
 self.addEventListener('install', (event) => {
   console.log(`[SW ${VERSION}] Installing... iOS: ${isIOS}`);
 
   event.waitUntil(
-    caches.open(STATIC_CACHE)
-      .then((cache) => {
-        // iOS cache handling (more forgiving for splash screens)
-        if (isIOS) {
-          const promises = STATIC_ASSETS.map(url =>
-            cache.add(url).catch(err => {
-              console.warn(`[SW] iOS: Failed to cache ${url}`, err.message);
-              return Promise.resolve();
-            })
-          );
-          return Promise.all(promises);
-        } else {
-          return cache.addAll(STATIC_ASSETS).catch((err) => {
-            console.warn('[SW] Failed to cache some assets:', err.message);
-          });
+    Promise.all([
+      // Precache critical assets
+      caches.open(STATIC_CACHE).then(async (cache) => {
+        // Add critical assets
+        for (const asset of PRECACHE_ASSETS) {
+          try {
+            await cache.add(asset);
+          } catch (err) {
+            console.warn(`[SW] Failed to cache ${asset}:`, err.message);
+          }
         }
-      })
-      .then(() => self.skipWaiting())
+
+        // Add iOS splash screens (optional)
+        if (isIOS) {
+          for (const splash of IOS_SPLASH_SCREENS) {
+            try {
+              await cache.add(splash);
+            } catch (err) {
+              // Splash screens are optional
+              console.debug(`[SW] iOS splash not available: ${splash}`);
+            }
+          }
+        }
+      }),
+
+      // Cache offline page
+      caches.open(OFFLINE_CACHE).then((cache) => {
+        return cache.put(
+          new Request('/offline.html'),
+          new Response(OFFLINE_HTML, {
+            headers: { 'Content-Type': 'text/html' },
+          })
+        );
+      }),
+    ])
+    .then(() => self.skipWaiting())
   );
 });
 
-// ===== ATIVAÇÃO =====
+/**
+ * Activate Event - Clean old caches, take control
+ */
 self.addEventListener('activate', (event) => {
+  console.log(`[SW ${VERSION}] Activating...`);
+
   event.waitUntil(
     Promise.all([
-      // Limpar caches antigos
+      // Clean old caches
       caches.keys().then((cacheNames) => {
         return Promise.all(
           cacheNames
             .filter((name) => {
-              // Deletar qualquer cache que não seja da versão atual
               return name.startsWith('rom-agent-') &&
                      name !== STATIC_CACHE &&
-                     name !== RUNTIME_CACHE;
+                     name !== RUNTIME_CACHE &&
+                     name !== OFFLINE_CACHE;
             })
-            .map((name) => caches.delete(name))
+            .map((name) => {
+              console.log(`[SW] Deleting old cache: ${name}`);
+              return caches.delete(name);
+            })
         );
       }),
 
-      // Tomar controle imediato
+      // Take control immediately
       self.clients.claim(),
     ])
   );
 });
 
-// ===== FETCH - ESTRATÉGIA NETWORK FIRST =====
+/**
+ * Fetch Event - Handle all network requests
+ */
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // ⚡ CRÍTICO: NÃO interceptar streaming SSE (Server-Sent Events)
-  // Service Worker context pode fechar durante streaming longo
-  if (url.pathname.includes('/stream') ||
-      url.pathname.includes('/chat/stream') ||
-      url.pathname.includes('/api/chat-stream')) {
-    // Deixar streaming passar direto, sem interceptação do SW
+  // Skip non-GET requests for caching (except API)
+  if (request.method !== 'GET' && !isApiRequest(url)) {
     return;
   }
 
-  // 1. API NUNCA cached - sempre da rede
-  if (url.pathname.startsWith('/api/')) {
-    event.respondWith(
-      fetch(request).catch(() => {
-        return new Response(
-          JSON.stringify({ error: 'Sem conexão. Verifique sua internet.' }),
-          { headers: { 'Content-Type': 'application/json' }, status: 503 }
-        );
-      })
-    );
+  // Skip streaming requests entirely
+  if (isStreamingRequest(url)) {
     return;
   }
 
-  // 2. Fontes externas - Cache First (otimização)
-  if (FONT_URLS.some(fontUrl => url.origin.includes(fontUrl))) {
+  // Skip chrome-extension and other non-http(s) requests
+  if (!url.protocol.startsWith('http')) {
+    return;
+  }
+
+  // API Requests - Network only with offline fallback
+  if (isApiRequest(url)) {
+    event.respondWith(networkOnlyWithFallback(request));
+    return;
+  }
+
+  // Font Requests - Cache first with long TTL
+  if (isFontRequest(url)) {
+    event.respondWith(cacheFirst(request, STATIC_CACHE, CACHE_EXPIRATION.FONTS));
+    return;
+  }
+
+  // Static Assets (images, icons) - Cache first
+  if (isStaticAsset(url)) {
+    event.respondWith(cacheFirst(request, STATIC_CACHE, CACHE_EXPIRATION.IMAGES));
+    return;
+  }
+
+  // App Shell (HTML/JS/CSS) - Network first with offline fallback
+  if (isAppShell(request, url)) {
     event.respondWith(
-      caches.match(request).then((cached) => {
-        if (cached) {
-          return cached;
-        }
-        return fetch(request).then((response) => {
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone));
+      networkFirst(request, RUNTIME_CACHE)
+        .catch(async () => {
+          // Try offline page for navigation requests
+          if (request.mode === 'navigate') {
+            const offlinePage = await caches.match('/offline.html');
+            if (offlinePage) {
+              return offlinePage;
+            }
           }
-          return response;
-        });
-      })
-    );
-    return;
-  }
 
-  // 3. Assets estáticos (imagens, ícones) - Cache First
-  if (url.pathname.match(/\.(png|jpg|jpeg|svg|ico|webp)$/)) {
-    event.respondWith(
-      caches.match(request).then((cached) => {
-        if (cached) {
-          return cached;
-        }
-        return fetch(request).then((response) => {
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone));
-          }
-          return response;
-        });
-      })
-    );
-    return;
-  }
-
-  // 4. HTML/JS/CSS - SEMPRE NETWORK FIRST (código atualizado)
-  if (
-    url.pathname.endsWith('.html') ||
-    url.pathname.endsWith('.js') ||
-    url.pathname.endsWith('.css') ||
-    url.pathname === '/' ||
-    request.mode === 'navigate'
-  ) {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          // Não cachear código - sempre buscar da rede
-          return response;
-        })
-        .catch(() => {
-          // Sem fallback - força conexão para código
-          return new Response(
-            `<!DOCTYPE html>
-            <html>
-            <head>
-              <title>Sem Conexão - ROM Agent</title>
-              <meta charset="UTF-8">
-              <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <style>
-                body {
-                  font-family: system-ui, -apple-system, sans-serif;
-                  display: flex;
-                  align-items: center;
-                  justify-content: center;
-                  min-height: 100vh;
-                  margin: 0;
-                  background: #fafaf9;
-                  color: #292524;
-                }
-                .container {
-                  text-align: center;
-                  padding: 2rem;
-                }
-                h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-                p { color: #78716c; }
-                button {
-                  margin-top: 1rem;
-                  padding: 0.75rem 1.5rem;
-                  background: #0ea5e9;
-                  color: white;
-                  border: none;
-                  border-radius: 0.5rem;
-                  font-size: 1rem;
-                  cursor: pointer;
-                }
-                button:hover { background: #0284c7; }
-              </style>
-            </head>
-            <body>
-              <div class="container">
-                <h1>⚠️ Sem Conexão com a Internet</h1>
-                <p>O ROM Agent precisa de conexão para funcionar.</p>
-                <p>Verifique sua internet e tente novamente.</p>
-                <button onclick="location.reload()">Tentar Novamente</button>
-              </div>
-            </body>
-            </html>`,
-            { headers: { 'Content-Type': 'text/html' } }
-          );
+          // Return offline HTML as last resort
+          return new Response(OFFLINE_HTML, {
+            headers: { 'Content-Type': 'text/html' },
+          });
         })
     );
     return;
   }
 
-  // 5. Outros recursos - Network First com fallback para cache
-  event.respondWith(
-    fetch(request)
-      .then((response) => {
-        // ✅ FIX: Só cachear GET requests (Cache API não suporta POST)
-        if (response.ok && request.method === 'GET') {
-          const clone = response.clone();
-          caches.open(RUNTIME_CACHE).then((cache) => cache.put(request, clone));
-        }
-        return response;
-      })
-      .catch(() => {
-        return caches.match(request);
-      })
-  );
+  // Other requests - Stale while revalidate
+  event.respondWith(staleWhileRevalidate(request, RUNTIME_CACHE));
 });
 
-// ===== NOTIFICAÇÕES PUSH =====
+// ===== BACKGROUND SYNC =====
+
+/**
+ * Sync Event - Process pending offline actions
+ */
+self.addEventListener('sync', (event) => {
+  console.log(`[SW] Sync event: ${event.tag}`);
+
+  if (event.tag === 'rom-agent-sync') {
+    event.waitUntil(syncPendingActions());
+  }
+});
+
+/**
+ * Sync pending actions from IndexedDB
+ */
+async function syncPendingActions() {
+  try {
+    // Notify clients to sync
+    const clients = await self.clients.matchAll({ type: 'window' });
+    for (const client of clients) {
+      client.postMessage({
+        type: 'SYNC_REQUESTED',
+        timestamp: Date.now(),
+      });
+    }
+  } catch (error) {
+    console.error('[SW] Sync failed:', error);
+  }
+}
+
+// ===== PUSH NOTIFICATIONS =====
+
+/**
+ * Push Event - Handle push notifications
+ */
 self.addEventListener('push', (event) => {
-  const options = {
-    body: event.data ? event.data.text() : 'Nova notificação do ROM Agent',
+  let data = {
+    title: 'ROM Agent',
+    body: 'Nova notificacao',
     icon: '/icons/icon-192x192.png',
     badge: '/icons/icon-180x180.png',
+  };
+
+  try {
+    if (event.data) {
+      const payload = event.data.json();
+      data = { ...data, ...payload };
+    }
+  } catch (e) {
+    if (event.data) {
+      data.body = event.data.text();
+    }
+  }
+
+  const options = {
+    body: data.body,
+    icon: data.icon || '/icons/icon-192x192.png',
+    badge: data.badge || '/icons/icon-180x180.png',
     vibrate: [100, 50, 100],
+    tag: data.tag || 'rom-agent-notification',
+    renotify: true,
+    requireInteraction: false,
     data: {
+      url: data.url || '/',
       dateOfArrival: Date.now(),
-      primaryKey: 1,
+      ...data.data,
     },
+    actions: data.actions || [],
   };
 
   event.waitUntil(
-    self.registration.showNotification('ROM Agent', options)
+    self.registration.showNotification(data.title, options)
   );
 });
 
-// ===== CLICK EM NOTIFICAÇÃO =====
+/**
+ * Notification Click - Handle notification interactions
+ */
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
+
+  const url = event.notification.data?.url || '/';
+
   event.waitUntil(
-    clients.openWindow('/')
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        // Focus existing window if available
+        for (const client of clientList) {
+          if (client.url.includes(self.location.origin) && 'focus' in client) {
+            client.navigate(url);
+            return client.focus();
+          }
+        }
+        // Open new window
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(url);
+        }
+      })
   );
 });
+
+// ===== MESSAGE HANDLING =====
+
+/**
+ * Message Event - Handle messages from clients
+ */
+self.addEventListener('message', (event) => {
+  const { type, data } = event.data || {};
+
+  switch (type) {
+    case 'SKIP_WAITING':
+      self.skipWaiting();
+      break;
+
+    case 'GET_VERSION':
+      event.ports[0]?.postMessage({ version: VERSION });
+      break;
+
+    case 'CLEAR_CACHE':
+      caches.keys()
+        .then(names => Promise.all(names.map(name => caches.delete(name))))
+        .then(() => {
+          event.ports[0]?.postMessage({ success: true });
+        });
+      break;
+
+    case 'CACHE_URLS':
+      if (Array.isArray(data?.urls)) {
+        caches.open(RUNTIME_CACHE)
+          .then(cache => cache.addAll(data.urls))
+          .then(() => {
+            event.ports[0]?.postMessage({ success: true });
+          })
+          .catch(err => {
+            event.ports[0]?.postMessage({ success: false, error: err.message });
+          });
+      }
+      break;
+
+    default:
+      console.log(`[SW] Unknown message type: ${type}`);
+  }
+});
+
+// ===== PERIODIC SYNC (if supported) =====
+
+self.addEventListener('periodicsync', (event) => {
+  if (event.tag === 'rom-agent-periodic-sync') {
+    event.waitUntil(syncPendingActions());
+  }
+});
+
+console.log(`[SW ${VERSION}] Service Worker loaded`);

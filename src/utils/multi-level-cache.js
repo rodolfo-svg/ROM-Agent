@@ -1,22 +1,33 @@
 /**
- * Multi-Level Cache System (v2.7.1 Performance Optimized)
+ * Multi-Level Cache System (v2.9.0 Redis Enhanced)
  *
  * 3-Layer cache architecture for 10-50x performance improvement:
  * - L1: Memory (LRU-cache library) - 0.001s - 100MB - OPTIMIZED
  * - L2: Disk (Filesystem) - 0.010s - 1GB - ENABLED
- * - L3: Redis (Distributed) - 0.050s - Remote
+ * - L3: Redis (Distributed) - 0.050s - Remote - OPTIMIZED
  *
  * TTL Strategy:
  * - Simple analysis: 1 hour
- * - Jurisprudence: 24 hours
- * - Legislation: 7 days
- * - Templates: 30 days
+ * - Jurisprudence: 24 hours (36h in L3 with 1.5x multiplier)
+ * - Legislation: 7 days (14d in L3 with 2x multiplier)
+ * - Templates: 30 days (90d in L3 with 3x multiplier)
  *
  * PERFORMANCE IMPROVEMENTS (v2.7.1):
  * - L1 now uses optimized lru-cache library (O(1) operations)
  * - L2 enabled with filesystem backend
  * - Removed O(n) iteration for expired entries
  * - Added automatic cleanup with setInterval
+ *
+ * MEMORY LEAK FIX (v2.8.0 - WS5):
+ * - Latency arrays now use CircularBuffer (max 1000 entries)
+ * - Prevents unbounded memory growth
+ *
+ * REDIS OPTIMIZATION (v2.9.0 - WS8):
+ * - L3 now uses key prefixes for safer operations
+ * - Adaptive TTL multipliers based on data type
+ * - Metadata wrapper for cache introspection
+ * - Pipeline support for batch operations (mget/mset)
+ * - Touch operation for TTL extension
  */
 
 import crypto from 'crypto';
@@ -25,6 +36,63 @@ import fs from 'fs/promises';
 import path from 'path';
 import { logger } from './logger.js';
 import metricsCollector from './metrics-collector-v2.js';
+
+// Maximum entries for latency tracking (prevents memory leak)
+const MAX_LATENCY_ENTRIES = 1000;
+
+/**
+ * CircularBuffer - Fixed-size buffer that overwrites oldest entries
+ * Used for latency tracking to prevent unbounded memory growth
+ */
+class CircularBuffer {
+  constructor(maxSize = MAX_LATENCY_ENTRIES) {
+    this.maxSize = maxSize;
+    this.buffer = new Array(maxSize);
+    this.head = 0;
+    this.count = 0;
+  }
+
+  push(value) {
+    this.buffer[this.head] = value;
+    this.head = (this.head + 1) % this.maxSize;
+    if (this.count < this.maxSize) {
+      this.count++;
+    }
+  }
+
+  toArray() {
+    if (this.count < this.maxSize) {
+      return this.buffer.slice(0, this.count);
+    }
+    // Buffer cheio - retornar em ordem cronologica
+    return [
+      ...this.buffer.slice(this.head),
+      ...this.buffer.slice(0, this.head)
+    ].filter(v => v !== undefined);
+  }
+
+  getStats() {
+    const values = this.toArray();
+    if (values.length === 0) return { count: 0, avg: 0, min: 0, max: 0 };
+
+    const sorted = [...values].sort((a, b) => a - b);
+    return {
+      count: values.length,
+      min: sorted[0],
+      max: sorted[sorted.length - 1],
+      avg: Math.round(values.reduce((a, b) => a + b, 0) / values.length),
+      p50: sorted[Math.floor(values.length * 0.5)],
+      p95: sorted[Math.floor(values.length * 0.95)],
+      p99: sorted[Math.floor(values.length * 0.99)]
+    };
+  }
+
+  clear() {
+    this.buffer = new Array(this.maxSize);
+    this.head = 0;
+    this.count = 0;
+  }
+}
 
 // L1: In-Memory LRU Cache (using optimized library)
 class LRUCache {
@@ -248,60 +316,286 @@ class DiskCache {
   }
 }
 
-// L3: Redis Cache
+// L3: Redis Cache (OPTIMIZED v2.0 - WS8)
 class RedisCache {
   constructor(redisClient) {
     this.redis = redisClient;
+    this.prefix = 'mlc:'; // Multi-level cache prefix
+    this.hitCount = 0;
+    this.missCount = 0;
+    this.errorCount = 0;
+
+    // TTL optimization: adaptive TTL multipliers based on key type
+    this.ttlMultipliers = {
+      jurisprudence: 1.5,  // Longer TTL for stable data
+      legislation: 2.0,    // Even longer for rarely changing data
+      templates: 3.0,      // Templates rarely change
+      simple: 1.0          // Default multiplier
+    };
   }
 
-  async get(key) {
-    if (!this.redis) return null;
+  /**
+   * Check if Redis is available
+   */
+  isAvailable() {
+    return !!(this.redis && this.redis.status === 'ready');
+  }
+
+  /**
+   * Get optimized TTL based on key type
+   */
+  _getOptimizedTTL(ttlMs, type = 'simple') {
+    const multiplier = this.ttlMultipliers[type] || 1.0;
+    return Math.ceil((ttlMs * multiplier) / 1000);
+  }
+
+  /**
+   * Get value from Redis with metadata support
+   */
+  async get(key, type = 'simple') {
+    if (!this.isAvailable()) return null;
 
     try {
-      const value = await this.redis.get(key);
-      return value ? JSON.parse(value) : null;
+      const fullKey = `${this.prefix}${key}`;
+      const value = await this.redis.get(fullKey);
+
+      if (value) {
+        this.hitCount++;
+        const parsed = JSON.parse(value);
+
+        // Check for metadata wrapper
+        if (parsed._mlc_meta) {
+          return parsed.data;
+        }
+        return parsed;
+      }
+
+      this.missCount++;
+      return null;
     } catch (error) {
-      logger.error('Redis get error:', error);
+      this.errorCount++;
+      logger.error('Redis get error:', { error: error.message, key: key.substring(0, 16) });
       return null;
     }
   }
 
-  async set(key, value, ttlMs) {
-    if (!this.redis) return;
+  /**
+   * Set value in Redis with optimized TTL and metadata
+   */
+  async set(key, value, ttlMs, type = 'simple') {
+    if (!this.isAvailable()) return;
 
     try {
-      const ttlSeconds = Math.ceil(ttlMs / 1000);
-      await this.redis.setex(key, ttlSeconds, JSON.stringify(value));
+      const fullKey = `${this.prefix}${key}`;
+      const ttlSeconds = this._getOptimizedTTL(ttlMs, type);
+
+      // Wrap with metadata for debugging and optimization
+      const wrapped = {
+        _mlc_meta: {
+          cachedAt: Date.now(),
+          type,
+          originalTTL: ttlMs
+        },
+        data: value
+      };
+
+      const serialized = JSON.stringify(wrapped);
+
+      // Use setex for atomic operation with TTL
+      await this.redis.setex(fullKey, ttlSeconds, serialized);
+
+      logger.debug('Redis L3 SET', {
+        key: key.substring(0, 16),
+        type,
+        ttl: `${ttlSeconds}s`,
+        size: serialized.length
+      });
     } catch (error) {
-      logger.error('Redis set error:', error);
+      this.errorCount++;
+      logger.error('Redis set error:', { error: error.message, key: key.substring(0, 16) });
     }
   }
 
+  /**
+   * Delete a specific key
+   */
+  async delete(key) {
+    if (!this.isAvailable()) return;
+
+    try {
+      const fullKey = `${this.prefix}${key}`;
+      await this.redis.del(fullKey);
+    } catch (error) {
+      logger.error('Redis delete error:', { error: error.message });
+    }
+  }
+
+  /**
+   * Clear all multi-level cache entries (safer than flushdb)
+   */
   async clear() {
-    if (!this.redis) return;
+    if (!this.isAvailable()) return;
 
     try {
-      await this.redis.flushdb();
+      // Only clear keys with our prefix (safer than flushdb)
+      const pattern = `${this.prefix}*`;
+      const keys = await this.redis.keys(pattern);
+
+      if (keys.length > 0) {
+        await this.redis.del(...keys);
+        logger.info('Redis L3 cache cleared', { keysDeleted: keys.length });
+      }
     } catch (error) {
-      logger.error('Redis clear error:', error);
+      logger.error('Redis clear error:', { error: error.message });
     }
   }
 
+  /**
+   * Get comprehensive Redis stats
+   */
   async getStats() {
-    if (!this.redis) {
-      return { enabled: false, entries: 0 };
+    if (!this.isAvailable()) {
+      return {
+        enabled: false,
+        entries: 0,
+        hitCount: this.hitCount,
+        missCount: this.missCount,
+        errorCount: this.errorCount
+      };
     }
 
     try {
-      const info = await this.redis.info('keyspace');
-      const keysMatch = info.match(/keys=(\d+)/);
+      // Count only our prefixed keys
+      const pattern = `${this.prefix}*`;
+      const keys = await this.redis.keys(pattern);
+
+      // Get memory info
+      let usedMemory = 'N/A';
+      try {
+        const memoryInfo = await this.redis.info('memory');
+        const usedMemoryMatch = memoryInfo.match(/used_memory_human:(\S+)/);
+        if (usedMemoryMatch) {
+          usedMemory = usedMemoryMatch[1];
+        }
+      } catch {
+        // Ignore memory info errors
+      }
+
       return {
         enabled: true,
-        entries: keysMatch ? parseInt(keysMatch[1]) : 0
+        entries: keys.length,
+        hitCount: this.hitCount,
+        missCount: this.missCount,
+        errorCount: this.errorCount,
+        hitRate: (this.hitCount + this.missCount) > 0
+          ? `${((this.hitCount / (this.hitCount + this.missCount)) * 100).toFixed(2)}%`
+          : '0%',
+        usedMemory
       };
     } catch (error) {
-      logger.error('Redis stats error:', error);
-      return { enabled: true, entries: 0 };
+      logger.error('Redis stats error:', { error: error.message });
+      return {
+        enabled: true,
+        entries: 0,
+        hitCount: this.hitCount,
+        missCount: this.missCount,
+        errorCount: this.errorCount
+      };
+    }
+  }
+
+  /**
+   * Batch get multiple keys (pipeline for performance)
+   */
+  async mget(keys) {
+    if (!this.isAvailable()) return {};
+
+    try {
+      const fullKeys = keys.map(k => `${this.prefix}${k}`);
+      const values = await this.redis.mget(...fullKeys);
+
+      const result = {};
+      for (let i = 0; i < keys.length; i++) {
+        if (values[i]) {
+          this.hitCount++;
+          const parsed = JSON.parse(values[i]);
+          result[keys[i]] = parsed._mlc_meta ? parsed.data : parsed;
+        } else {
+          this.missCount++;
+          result[keys[i]] = null;
+        }
+      }
+
+      return result;
+    } catch (error) {
+      this.errorCount++;
+      logger.error('Redis mget error:', { error: error.message });
+      return {};
+    }
+  }
+
+  /**
+   * Batch set multiple keys (pipeline for performance)
+   */
+  async mset(entries, type = 'simple') {
+    if (!this.isAvailable()) return;
+
+    try {
+      const pipeline = this.redis.pipeline();
+
+      for (const { key, value, ttlMs } of entries) {
+        const fullKey = `${this.prefix}${key}`;
+        const ttlSeconds = this._getOptimizedTTL(ttlMs || 3600000, type);
+
+        const wrapped = {
+          _mlc_meta: {
+            cachedAt: Date.now(),
+            type
+          },
+          data: value
+        };
+
+        pipeline.setex(fullKey, ttlSeconds, JSON.stringify(wrapped));
+      }
+
+      await pipeline.exec();
+
+      logger.debug('Redis L3 MSET', { count: entries.length, type });
+    } catch (error) {
+      this.errorCount++;
+      logger.error('Redis mset error:', { error: error.message });
+    }
+  }
+
+  /**
+   * Touch key to extend TTL without fetching data
+   */
+  async touch(key, ttlMs, type = 'simple') {
+    if (!this.isAvailable()) return false;
+
+    try {
+      const fullKey = `${this.prefix}${key}`;
+      const ttlSeconds = this._getOptimizedTTL(ttlMs, type);
+      const result = await this.redis.expire(fullKey, ttlSeconds);
+      return result === 1;
+    } catch (error) {
+      logger.error('Redis touch error:', { error: error.message });
+      return false;
+    }
+  }
+
+  /**
+   * Check if key exists without fetching
+   */
+  async exists(key) {
+    if (!this.isAvailable()) return false;
+
+    try {
+      const fullKey = `${this.prefix}${key}`;
+      const result = await this.redis.exists(fullKey);
+      return result === 1;
+    } catch (error) {
+      return false;
     }
   }
 }
@@ -323,12 +617,16 @@ class MultiLevelCache {
       templates: 30 * 24 * 60 * 60 * 1000  // 30 days
     };
 
-    // Statistics
+    // Statistics with CircularBuffer for latency (prevents memory leak)
     this.stats = {
       hits: { l1: 0, l2: 0, l3: 0 },
       misses: 0,
       sets: { l1: 0, l2: 0, l3: 0 },
-      latency: { l1: [], l2: [], l3: [] }
+      latency: {
+        l1: new CircularBuffer(MAX_LATENCY_ENTRIES),
+        l2: new CircularBuffer(MAX_LATENCY_ENTRIES),
+        l3: new CircularBuffer(MAX_LATENCY_ENTRIES)
+      }
     };
 
     // Start periodic cleanup for L2
@@ -488,11 +786,16 @@ class MultiLevelCache {
     await this.l2.clear();
     await this.l3.clear();
 
+    // Reset stats with new CircularBuffers
     this.stats = {
       hits: { l1: 0, l2: 0, l3: 0 },
       misses: 0,
       sets: { l1: 0, l2: 0, l3: 0 },
-      latency: { l1: [], l2: [], l3: [] }
+      latency: {
+        l1: new CircularBuffer(MAX_LATENCY_ENTRIES),
+        l2: new CircularBuffer(MAX_LATENCY_ENTRIES),
+        l3: new CircularBuffer(MAX_LATENCY_ENTRIES)
+      }
     };
 
     logger.info('Cache cleared (all levels)');
@@ -505,10 +808,10 @@ class MultiLevelCache {
     const l3Stats = await this.l3.getStats();
     const l2Stats = await this.l2.getStats();
 
-    const avgLatency = (arr) => {
-      if (arr.length === 0) return 0;
-      return Math.round(arr.reduce((a, b) => a + b, 0) / arr.length);
-    };
+    // Use CircularBuffer's getStats() method
+    const l1LatencyStats = this.stats.latency.l1.getStats();
+    const l2LatencyStats = this.stats.latency.l2.getStats();
+    const l3LatencyStats = this.stats.latency.l3.getStats();
 
     const totalHits = this.stats.hits.l1 + this.stats.hits.l2 + this.stats.hits.l3;
     const totalRequests = totalHits + this.stats.misses;
@@ -524,19 +827,22 @@ class MultiLevelCache {
       l1: {
         ...this.l1.getStats(),
         hits: this.stats.hits.l1,
-        avgLatency: `${avgLatency(this.stats.latency.l1)}ms`,
+        avgLatency: `${l1LatencyStats.avg}ms`,
+        p95Latency: `${l1LatencyStats.p95 || 0}ms`,
         hitRate: totalRequests > 0 ? `${((this.stats.hits.l1 / totalRequests) * 100).toFixed(2)}%` : '0%'
       },
       l2: {
         ...l2Stats,
         hits: this.stats.hits.l2,
-        avgLatency: `${avgLatency(this.stats.latency.l2)}ms`,
+        avgLatency: `${l2LatencyStats.avg}ms`,
+        p95Latency: `${l2LatencyStats.p95 || 0}ms`,
         hitRate: totalRequests > 0 ? `${((this.stats.hits.l2 / totalRequests) * 100).toFixed(2)}%` : '0%'
       },
       l3: {
         ...l3Stats,
         hits: this.stats.hits.l3,
-        avgLatency: `${avgLatency(this.stats.latency.l3)}ms`,
+        avgLatency: `${l3LatencyStats.avg}ms`,
+        p95Latency: `${l3LatencyStats.p95 || 0}ms`,
         hitRate: totalRequests > 0 ? `${((this.stats.hits.l3 / totalRequests) * 100).toFixed(2)}%` : '0%'
       }
     };
@@ -568,10 +874,10 @@ let cacheInstance = null;
 export function initializeCache(redisClient = null) {
   if (!cacheInstance) {
     cacheInstance = new MultiLevelCache(redisClient);
-    logger.info('Multi-level cache initialized (OPTIMIZED v2.7.1)', {
+    logger.info('Multi-level cache initialized (OPTIMIZED v2.9.0)', {
       l1: 'Memory (lru-cache library, 100MB)',
       l2: 'Disk (ENABLED, filesystem)',
-      l3: redisClient ? 'Redis (enabled)' : 'Redis (disabled)'
+      l3: redisClient ? 'Redis (OPTIMIZED, adaptive TTL)' : 'Redis (disabled)'
     });
   }
   return cacheInstance;

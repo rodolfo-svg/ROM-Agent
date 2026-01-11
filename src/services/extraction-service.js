@@ -217,26 +217,27 @@ export async function extractCompleteDocument(options = {}) {
       console.log('🔍 Executando OCR...');
 
       try {
-        // Import dinâmico - OCR pode não estar disponível
+        // Import OCR service (Tesseract.js)
         const { performOCR } = await import('./ocr-service.js');
         const ocrResult = await performOCR(filePath, metadata.paths.ocr);
 
         if (ocrResult.success) {
           textContent = ocrResult.fullText;
-          progressEmitter.addSuccess(sessionId, `OCR concluído: ${ocrResult.pagesProcessed} páginas processadas`);
+          progressEmitter.addSuccess(sessionId, `OCR concluido: ${ocrResult.processedPages} paginas processadas`);
           extractionLog.steps.push({
             step: 'ocr',
             status: 'sucesso',
-            pages: ocrResult.pagesProcessed,
-            confidence: ocrResult.averageConfidence
+            pages: ocrResult.processedPages,
+            confidence: ocrResult.averageConfidence,
+            motor: 'Tesseract.js'
           });
         } else {
-          progressEmitter.addError(sessionId, 'Falha no OCR', ocrResult.error);
-          extractionLog.errors.push({ step: 'ocr', error: ocrResult.error });
+          progressEmitter.addError(sessionId, 'Falha no OCR', ocrResult.errors?.join(', ') || 'Erro desconhecido');
+          extractionLog.errors.push({ step: 'ocr', error: ocrResult.errors?.join(', ') || 'Erro desconhecido' });
         }
       } catch (importError) {
-        const errorMsg = 'OCR service não disponível (dependências AWS Textract não instaladas)';
-        console.warn(`⚠️  ${errorMsg}`);
+        const errorMsg = `OCR service nao disponivel: ${importError.message}`;
+        console.warn(`  ${errorMsg}`);
         progressEmitter.addWarning(sessionId, errorMsg);
         extractionLog.warnings = extractionLog.warnings || [];
         extractionLog.warnings.push({ step: 'ocr', message: errorMsg });

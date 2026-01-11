@@ -47,7 +47,7 @@ function debugFallbackLog(payload) {
  */
 export const FALLBACK_CHAIN = [
   {
-    modelId: 'global.anthropic.claude-opus-4-5-20251101-v1:0',
+    modelId: 'us.anthropic.claude-opus-4-5-20251101-v1:0',
     tier: 'premium',
     quality: 'maximum',
     speed: 'slow',
@@ -55,7 +55,7 @@ export const FALLBACK_CHAIN = [
     description: 'Claude Opus 4.5 - Most powerful, maximum quality'
   },
   {
-    modelId: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
+    modelId: 'us.anthropic.claude-sonnet-4-5-20250929-v1:0',
     tier: 'primary',
     quality: 'highest',
     speed: 'medium',
@@ -63,7 +63,7 @@ export const FALLBACK_CHAIN = [
     description: 'Claude Sonnet 4.5 - Best cost-benefit ratio'
   },
   {
-    modelId: 'global.anthropic.claude-haiku-4-5-20251001-v1:0',
+    modelId: 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
     tier: 'fallback-fast',
     quality: 'high',
     speed: 'fastest',

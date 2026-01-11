@@ -1,32 +1,112 @@
 /**
- * Sistema de Emissão de Progresso em Tempo Real
+ * Sistema de Emissao de Progresso em Tempo Real
  *
- * Permite enviar updates linha a linha para o usuário durante processamentos longos
+ * Permite enviar updates linha a linha para o usuario durante processamentos longos
  * Similar ao feedback visual do Claude.ai
  *
- * @version 1.0.0
+ * Features v2.0.0:
+ * - TTL automatico de 30min para sessions
+ * - Cleanup periodico de sessions antigas
+ * - Limite de updates por session para evitar memory leaks
+ *
+ * @version 2.0.0
+ * @since WS5 - SSE Streaming Optimization
  */
 
 import EventEmitter from 'events';
 
+// Configuracoes de TTL e cleanup
+const SESSION_TTL = 30 * 60 * 1000; // 30 minutos
+const CLEANUP_INTERVAL = 5 * 60 * 1000; // 5 minutos
+const MAX_UPDATES_PER_SESSION = 10000; // Limite de updates para evitar memory leak
+
 class ProgressEmitter extends EventEmitter {
   constructor() {
     super();
-    this.sessions = new Map(); // casoId -> { updates: [], startTime, status }
+    this.sessions = new Map(); // casoId -> { updates: [], startTime, status, lastActivity }
+
+    // Iniciar cleanup periodico
+    this._startCleanupTimer();
+
+    // Metricas
+    this.metrics = {
+      totalSessionsCreated: 0,
+      sessionsCleanedUp: 0,
+      updatesDropped: 0
+    };
   }
 
   /**
-   * Iniciar sessão de progresso
+   * Inicia timer de cleanup periodico
+   */
+  _startCleanupTimer() {
+    this._cleanupTimer = setInterval(() => {
+      this._cleanupStaleSessions();
+    }, CLEANUP_INTERVAL);
+
+    // Nao bloquear shutdown do processo
+    if (this._cleanupTimer.unref) {
+      this._cleanupTimer.unref();
+    }
+  }
+
+  /**
+   * Remove sessions antigas (TTL expirado)
+   */
+  _cleanupStaleSessions() {
+    const now = Date.now();
+    let cleaned = 0;
+
+    for (const [casoId, session] of this.sessions.entries()) {
+      const lastActivity = session.lastActivity || session.startTime;
+      const age = now - lastActivity;
+
+      // Remover se TTL expirou
+      if (age > SESSION_TTL) {
+        this.sessions.delete(casoId);
+        cleaned++;
+
+        this.emit('session-expired', {
+          casoId,
+          age,
+          status: session.status
+        });
+      }
+    }
+
+    if (cleaned > 0) {
+      this.metrics.sessionsCleanedUp += cleaned;
+      console.log(`[ProgressEmitter] Cleanup: ${cleaned} sessions removidas (TTL ${SESSION_TTL / 60000}min)`);
+    }
+  }
+
+  /**
+   * Obtem metricas do emitter
+   */
+  getMetrics() {
+    return {
+      ...this.metrics,
+      activeSessions: this.sessions.size,
+      sessionTTL: SESSION_TTL,
+      timestamp: Date.now()
+    };
+  }
+
+  /**
+   * Iniciar sessao de progresso
    */
   startSession(casoId, metadata = {}) {
     this.sessions.set(casoId, {
       updates: [],
       startTime: Date.now(),
+      lastActivity: Date.now(),
       status: 'processing',
       metadata,
       currentLayer: null,
       currentStep: null
     });
+
+    this.metrics.totalSessionsCreated++;
 
     this.emit('session-start', {
       casoId,
@@ -46,8 +126,20 @@ class ProgressEmitter extends EventEmitter {
   addUpdate(casoId, type, message, data = {}) {
     const session = this.sessions.get(casoId);
     if (!session) {
-      console.warn(`Sessão não encontrada para caso ${casoId}`);
+      console.warn(`Sessao nao encontrada para caso ${casoId}`);
       return;
+    }
+
+    // Atualizar timestamp de atividade
+    session.lastActivity = Date.now();
+
+    // Verificar limite de updates para evitar memory leak
+    if (session.updates.length >= MAX_UPDATES_PER_SESSION) {
+      // Manter apenas os ultimos 50% dos updates
+      const keepCount = Math.floor(MAX_UPDATES_PER_SESSION / 2);
+      session.updates = session.updates.slice(-keepCount);
+      this.metrics.updatesDropped += keepCount;
+      console.warn(`[ProgressEmitter] Session ${casoId}: updates truncados (limite ${MAX_UPDATES_PER_SESSION})`);
     }
 
     const update = {
