@@ -115,7 +115,8 @@ function showUpdateNotification(registration: ServiceWorkerRegistration) {
   // Remove existing notification if any
   const existing = document.getElementById('pwa-update-notification')
   if (existing) {
-    existing.remove()
+    console.log('[PWA] Notificação já existe, não criando duplicata')
+    return // Previne duplicação
   }
 
   // Create notification element
@@ -158,7 +159,7 @@ function showUpdateNotification(registration: ServiceWorkerRegistration) {
         </div>
       </div>
       <div style="display: flex; gap: 8px; align-items: center;">
-        <button id="pwa-update-btn" style="
+        <button id="pwa-update-btn" class="pwa-update-button" style="
           background: #d97706;
           color: white;
           border: none;
@@ -172,14 +173,14 @@ function showUpdateNotification(registration: ServiceWorkerRegistration) {
           display: flex;
           align-items: center;
           gap: 8px;
-        " onmouseover="this.style.background='#ea580c'" onmouseout="this.style.background='#d97706'">
+        ">
           <span id="pwa-update-text">Atualizar</span>
           <svg id="pwa-update-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <polyline points="23 4 23 10 17 10"></polyline>
             <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
           </svg>
         </button>
-        <button id="pwa-dismiss-btn" style="
+        <button id="pwa-dismiss-btn" class="pwa-dismiss-button" style="
           background: rgba(255,255,255,0.1);
           color: #d6d3d1;
           border: none;
@@ -194,7 +195,7 @@ function showUpdateNotification(registration: ServiceWorkerRegistration) {
           display: flex;
           align-items: center;
           justify-content: center;
-        " onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+        ">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
@@ -224,6 +225,13 @@ function showUpdateNotification(registration: ServiceWorkerRegistration) {
       }
       .pwa-updating #pwa-update-icon {
         animation: spin 1s linear infinite;
+      }
+      /* CSS Hover effects (CSP compliant) */
+      .pwa-update-button:hover {
+        background: #ea580c !important;
+      }
+      .pwa-dismiss-button:hover {
+        background: rgba(255,255,255,0.15) !important;
       }
       @media (max-width: 640px) {
         .pwa-notification {
