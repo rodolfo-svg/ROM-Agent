@@ -25,19 +25,18 @@ export function CaseProcessorPage() {
 
   const fetchCases = async () => {
     try {
-      const response = await apiFetch('/case-processor/cases', {
+      const response = await apiFetch<{ cases: Case[] }>('/case-processor/cases', {
         credentials: 'include',
       })
 
-      // Verificar se resposta é válida antes de parsear JSON
-      if (!response.ok) {
-        console.error(`[CaseProcessor] Failed to fetch cases: ${response.status} ${response.statusText}`)
+      // apiFetch retorna { success, data?, error? }
+      if (!response.success) {
+        console.error(`[CaseProcessor] Failed to fetch cases:`, response.error)
         return
       }
 
-      const data = await response.json()
-      if (data.success) {
-        setCases(data.cases || [])
+      if (response.data?.cases) {
+        setCases(response.data.cases)
       }
     } catch (error) {
       console.error('[CaseProcessor] Network error fetching cases:', error instanceof Error ? error.message : 'Unknown error')
@@ -53,16 +52,33 @@ export function CaseProcessorPage() {
       const formData = new FormData()
       Array.from(files).forEach(file => formData.append('files', file))
 
-      const response = await apiFetch('/case-processor/process', {
+      // Buscar CSRF token manualmente (apiFetch não funciona com FormData)
+      const csrfResponse = await fetch('/api/auth/csrf-token', {
+        credentials: 'include',
+      })
+
+      let csrfToken = null
+      if (csrfResponse.ok) {
+        const csrfData = await csrfResponse.json()
+        csrfToken = csrfData.csrfToken
+      }
+
+      const headers: Record<string, string> = {}
+      if (csrfToken) {
+        headers['x-csrf-token'] = csrfToken
+      }
+
+      // Usar fetch direto (não apiFetch) para FormData
+      const response = await fetch('/api/case-processor/process', {
         method: 'POST',
         credentials: 'include',
+        headers, // NÃO incluir Content-Type - browser define automaticamente
         body: formData,
       })
 
-      // Verificar se resposta é válida antes de parsear JSON
       if (!response.ok) {
-        const errorText = await response.text()
-        console.error(`Processing failed: ${response.status} ${response.statusText}`, errorText)
+        const errorText = await response.text().catch(() => 'Erro desconhecido')
+        console.error(`[CaseProcessor] Processing failed: ${response.status} ${response.statusText}`, errorText)
         alert(`Erro ao processar: ${response.status} - ${response.statusText}`)
         return
       }
@@ -71,9 +87,11 @@ export function CaseProcessorPage() {
       if (data.success) {
         alert('Processo enviado com sucesso!')
         await fetchCases()
+      } else {
+        alert(`Erro: ${data.error || 'Erro desconhecido'}`)
       }
     } catch (error) {
-      console.error('Processing error:', error)
+      console.error('[CaseProcessor] Processing error:', error)
       alert(`Erro ao processar: ${error instanceof Error ? error.message : 'Erro desconhecido'}`)
     } finally {
       setProcessing(false)
