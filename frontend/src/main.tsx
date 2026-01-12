@@ -106,51 +106,138 @@ async function registerServiceWorker(config?: ServiceWorkerConfig) {
  * Show update notification to user
  */
 function showUpdateNotification(registration: ServiceWorkerRegistration) {
+  // Remove existing notification if any
+  const existing = document.getElementById('pwa-update-notification')
+  if (existing) {
+    existing.remove()
+  }
+
   // Create notification element
   const notification = document.createElement('div')
   notification.id = 'pwa-update-notification'
   notification.innerHTML = `
-    <div style="
+    <div class="pwa-notification" style="
       position: fixed;
-      bottom: 20px;
+      bottom: 24px;
       left: 50%;
       transform: translateX(-50%);
-      background: #1c1917;
+      background: linear-gradient(135deg, #1c1917 0%, #292524 100%);
       color: white;
-      padding: 16px 24px;
-      border-radius: 12px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      padding: 20px 28px;
+      border-radius: 16px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1);
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 20px;
       z-index: 10000;
       font-family: system-ui, -apple-system, sans-serif;
-      animation: slideUp 0.3s ease;
+      animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(10px);
+      max-width: calc(100vw - 48px);
+      width: auto;
     ">
-      <span style="font-size: 14px;">Nova versao disponivel</span>
-      <button id="pwa-update-btn" style="
-        background: #d97706;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 6px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-      ">Atualizar</button>
-      <button id="pwa-dismiss-btn" style="
-        background: transparent;
-        color: #a8a29e;
-        border: none;
-        padding: 8px;
-        cursor: pointer;
-        font-size: 18px;
-      ">x</button>
+      <div style="
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      ">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #d97706; flex-shrink: 0;">
+          <circle cx="12" cy="12" r="10"></circle>
+          <path d="M12 16v-4"></path>
+          <path d="M12 8h.01"></path>
+        </svg>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 15px; font-weight: 600; line-height: 1.4;">Nova versão disponível</span>
+          <span style="font-size: 13px; color: #a8a29e; line-height: 1.3;">Clique para atualizar agora</span>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center;">
+        <button id="pwa-update-btn" style="
+          background: #d97706;
+          color: white;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          white-space: nowrap;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        " onmouseover="this.style.background='#ea580c'" onmouseout="this.style.background='#d97706'">
+          <span id="pwa-update-text">Atualizar</span>
+          <svg id="pwa-update-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+        </button>
+        <button id="pwa-dismiss-btn" style="
+          background: rgba(255,255,255,0.1);
+          color: #d6d3d1;
+          border: none;
+          padding: 10px;
+          border-radius: 8px;
+          cursor: pointer;
+          font-size: 14px;
+          font-weight: 500;
+          transition: all 0.2s ease;
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        " onmouseover="this.style.background='rgba(255,255,255,0.15)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
     </div>
     <style>
       @keyframes slideUp {
-        from { transform: translateX(-50%) translateY(100px); opacity: 0; }
-        to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        from {
+          transform: translateX(-50%) translateY(120px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(-50%) translateY(0);
+          opacity: 1;
+        }
+      }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      .pwa-updating #pwa-update-btn {
+        opacity: 0.7;
+        cursor: wait !important;
+        pointer-events: none;
+      }
+      .pwa-updating #pwa-update-icon {
+        animation: spin 1s linear infinite;
+      }
+      @media (max-width: 640px) {
+        .pwa-notification {
+          bottom: 16px !important;
+          left: 16px !important;
+          right: 16px !important;
+          transform: none !important;
+          width: auto !important;
+          max-width: none !important;
+        }
+        @keyframes slideUp {
+          from {
+            transform: translateY(120px);
+            opacity: 0;
+          }
+          to {
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
       }
     </style>
   `
@@ -158,29 +245,82 @@ function showUpdateNotification(registration: ServiceWorkerRegistration) {
   document.body.appendChild(notification)
 
   // Handle update button
-  document.getElementById('pwa-update-btn')?.addEventListener('click', () => {
+  const updateBtn = document.getElementById('pwa-update-btn')
+  const updateText = document.getElementById('pwa-update-text')
+
+  updateBtn?.addEventListener('click', () => {
     const waiting = registration.waiting
     if (waiting) {
+      // Show loading state
+      notification.classList.add('pwa-updating')
+      if (updateText) {
+        updateText.textContent = 'Atualizando...'
+      }
+
       // Listen for controller change (new SW activated)
       let refreshing = false
       navigator.serviceWorker.addEventListener('controllerchange', () => {
         if (!refreshing) {
           refreshing = true
           console.log('[PWA] Novo Service Worker ativo - recarregando...')
-          window.location.reload()
+
+          // Update UI before reload
+          if (updateText) {
+            updateText.textContent = 'Recarregando...'
+          }
+
+          // Small delay to show feedback
+          setTimeout(() => {
+            window.location.reload()
+          }, 300)
         }
       })
 
       // Send message to activate new SW
       console.log('[PWA] Enviando SKIP_WAITING...')
       waiting.postMessage({ type: 'SKIP_WAITING' })
+    } else {
+      console.warn('[PWA] No waiting service worker found')
+      // Fallback: just reload
+      window.location.reload()
     }
   })
 
   // Handle dismiss button
   document.getElementById('pwa-dismiss-btn')?.addEventListener('click', () => {
-    notification.remove()
+    notification.style.animation = 'slideDown 0.3s ease forwards'
+    setTimeout(() => {
+      notification.remove()
+    }, 300)
   })
+
+  // Add slideDown animation
+  const style = document.createElement('style')
+  style.textContent = `
+    @keyframes slideDown {
+      from {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+      }
+      to {
+        transform: translateX(-50%) translateY(120px);
+        opacity: 0;
+      }
+    }
+    @media (max-width: 640px) {
+      @keyframes slideDown {
+        from {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateY(120px);
+          opacity: 0;
+        }
+      }
+    }
+  `
+  document.head.appendChild(style)
 }
 
 // Register service worker
