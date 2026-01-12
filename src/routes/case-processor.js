@@ -5,67 +5,198 @@
  */
 
 import express from 'express';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 import romCaseProcessorService from '../services/processors/rom-case-processor-service.js';
 import cacheService from '../utils/cache/cache-service.js';
+import { getPostgresPool } from '../config/database.js';
 
 const router = express.Router();
 
+// Configurar multer para upload de arquivos
+const upload = multer({
+  dest: process.env.UPLOAD_FOLDER || 'upload/',
+  limits: {
+    fileSize: 50 * 1024 * 1024, // 50MB
+    files: 10
+  },
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /pdf|doc|docx/;
+    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    const mimetype = allowedTypes.test(file.mimetype);
+
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb(new Error('Apenas arquivos PDF, DOC e DOCX são permitidos'));
+    }
+  }
+});
+
+/**
+ * GET /api/case-processor/cases
+ * Listar todos os casos processados
+ */
+router.get('/cases', async (req, res) => {
+  try {
+    const pool = getPostgresPool();
+    if (!pool) {
+      return res.status(503).json({
+        success: false,
+        error: 'Banco de dados indisponível'
+      });
+    }
+
+    const userId = req.session?.user?.id;
+
+    // Query para buscar casos do usuário (ou todos se admin)
+    const query = userId
+      ? `SELECT
+          id,
+          case_number as "caseNumber",
+          title,
+          status,
+          created_at as "createdAt",
+          metadata
+         FROM cases
+         WHERE user_id = $1
+         ORDER BY created_at DESC
+         LIMIT 100`
+      : `SELECT
+          id,
+          case_number as "caseNumber",
+          title,
+          status,
+          created_at as "createdAt",
+          metadata
+         FROM cases
+         ORDER BY created_at DESC
+         LIMIT 100`;
+
+    const result = userId
+      ? await pool.query(query, [userId])
+      : await pool.query(query);
+
+    // Parsear metadata JSON e extrair parties
+    const cases = result.rows.map(row => ({
+      ...row,
+      parties: row.metadata?.parties || { plaintiff: 'N/A', defendant: 'N/A' }
+    }));
+
+    res.json({
+      success: true,
+      cases
+    });
+
+  } catch (error) {
+    console.error('Erro ao listar casos:', error);
+
+    // Se tabela não existe, retornar array vazio
+    if (error.code === '42P01') { // PostgreSQL: undefined_table
+      return res.json({
+        success: true,
+        cases: []
+      });
+    }
+
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 /**
  * POST /api/case-processor/process
- * Processar caso completo com 5 layers
+ * Processar caso completo com upload de arquivos
  *
- * Body:
- * {
- *   "casoId": "CASO_123",
- *   "documentPaths": ["/path/to/doc1.pdf", "/path/to/doc2.pdf"],
- *   "indexLevel": "quick|medium|full",  // Opcional, default: quick
- *   "generateDocument": true|false,      // Opcional, default: false
- *   "documentType": "peticao-inicial"    // Opcional, default: peticao-inicial
- * }
+ * Suporta dois formatos:
+ * 1. FormData com upload de arquivos
+ * 2. JSON com documentPaths existentes
  */
-router.post('/process', async (req, res) => {
+router.post('/process', upload.array('files', 10), async (req, res) => {
   try {
-    const {
-      casoId,
-      documentPaths,
-      indexLevel = 'quick',
-      generateDocument = false,
-      documentType = 'peticao-inicial',
-      extractorService, // TODO: Injetar serviço de extração
-      searchServices = {} // TODO: Injetar serviços de busca
-    } = req.body;
+    let documentPaths = [];
+    let casoId = req.body.casoId;
+
+    // Se recebeu arquivos via upload
+    if (req.files && req.files.length > 0) {
+      documentPaths = req.files.map(file => file.path);
+
+      // Gerar ID do caso se não fornecido
+      if (!casoId) {
+        casoId = `CASO_${Date.now()}`;
+      }
+    }
+    // Se recebeu paths via JSON
+    else if (req.body.documentPaths) {
+      documentPaths = Array.isArray(req.body.documentPaths)
+        ? req.body.documentPaths
+        : [req.body.documentPaths];
+    }
 
     // Validações
     if (!casoId) {
       return res.status(400).json({
         success: false,
-        error: 'casoId é obrigatório'
+        error: 'casoId é obrigatório ou arquivos devem ser enviados'
       });
     }
 
-    if (!documentPaths || !Array.isArray(documentPaths) || documentPaths.length === 0) {
+    if (documentPaths.length === 0) {
       return res.status(400).json({
         success: false,
-        error: 'documentPaths deve ser um array não vazio'
+        error: 'Nenhum arquivo foi enviado ou documentPaths está vazio'
       });
     }
+
+    const {
+      indexLevel = 'quick',
+      generateDocument = false,
+      documentType = 'peticao-inicial',
+      extractorService,
+      searchServices = {}
+    } = req.body;
 
     // Processar caso
     const result = await romCaseProcessorService.processCaso(casoId, {
       documentPaths,
-      extractorService, // TODO: Implementar injeção
-      searchServices,   // TODO: Implementar injeção
+      extractorService,
+      searchServices,
       indexLevel,
       generateDocument,
       documentType
     });
 
-    res.json(result);
+    // Limpar arquivos temporários após processar (opcional)
+    if (req.files) {
+      for (const file of req.files) {
+        fs.unlink(file.path, (err) => {
+          if (err) console.error('Erro ao deletar arquivo temporário:', err);
+        });
+      }
+    }
+
+    res.json({
+      success: true,
+      casoId,
+      result
+    });
+
   } catch (error) {
     console.error('Erro ao processar caso:', error);
+
+    // Limpar arquivos em caso de erro
+    if (req.files) {
+      for (const file of req.files) {
+        fs.unlink(file.path, () => {});
+      }
+    }
+
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message || 'Erro ao processar caso'
     });
   }
 });
