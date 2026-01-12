@@ -159,10 +159,52 @@ router.post('/process', upload.array('files', 10), async (req, res) => {
       searchServices = {}
     } = req.body;
 
+    // Criar extractor service se não fornecido
+    let actualExtractorService = extractorService;
+    if (!actualExtractorService) {
+      // Import direto do textract para extração rápida
+      const { extractTextFromPDF } = await import('../modules/textract.js');
+
+      // Wrapper simples para extrair apenas o texto
+      actualExtractorService = {
+        extractDocument: async (filePath) => {
+          try {
+            console.log(`[Case Processor] Extraindo ${filePath}...`);
+            const result = await extractTextFromPDF(filePath);
+
+            if (result.success) {
+              return {
+                success: true,
+                text: result.text || '',
+                pages: result.pageCount || 0,
+                metadata: {
+                  pageCount: result.pageCount,
+                  extractedAt: new Date().toISOString()
+                }
+              };
+            } else {
+              return {
+                success: false,
+                error: 'Falha ao extrair texto do PDF'
+              };
+            }
+          } catch (error) {
+            console.error('[Case Processor] Erro na extração:', error);
+            return {
+              success: false,
+              error: error.message
+            };
+          }
+        }
+      };
+
+      console.log('[Case Processor] Usando extração rápida com textract');
+    }
+
     // Processar caso
     const result = await romCaseProcessorService.processCaso(casoId, {
       documentPaths,
-      extractorService,
+      extractorService: actualExtractorService,
       searchServices,
       indexLevel,
       generateDocument,
