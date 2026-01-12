@@ -45,26 +45,22 @@ async function registerServiceWorker(config?: ServiceWorkerConfig) {
 
     console.log('[PWA] Service Worker registrado:', registration.scope)
 
-    // Flag to prevent multiple update notifications
-    let updateNotificationShown = false
-
     // Handle updates
     registration.onupdatefound = () => {
       const installingWorker = registration.installing
       if (!installingWorker) return
 
       installingWorker.onstatechange = () => {
+        console.log(`[PWA] Worker state: ${installingWorker.state}`)
+
         if (installingWorker.state === 'installed') {
           if (navigator.serviceWorker.controller) {
             // New content available
             console.log('[PWA] Nova versao disponivel')
             config?.onUpdate?.(registration)
 
-            // Show update notification only once
-            if (!updateNotificationShown) {
-              updateNotificationShown = true
-              showUpdateNotification(registration)
-            }
+            // Show update notification (early return inside prevents duplicates)
+            showUpdateNotification(registration)
           } else {
             // Content cached for offline
             console.log('[PWA] Conteudo cached para uso offline')
@@ -108,16 +104,29 @@ async function registerServiceWorker(config?: ServiceWorkerConfig) {
   }
 }
 
+// Global flag to prevent duplicate notifications
+let globalNotificationShown = false
+
 /**
  * Show update notification to user
  */
 function showUpdateNotification(registration: ServiceWorkerRegistration) {
-  // Remove existing notification if any
+  // Check global flag first (fastest check)
+  if (globalNotificationShown) {
+    console.log('[PWA] Notificação já foi mostrada (flag global)')
+    return
+  }
+
+  // Check if element exists in DOM
   const existing = document.getElementById('pwa-update-notification')
   if (existing) {
-    console.log('[PWA] Notificação já existe, não criando duplicata')
-    return // Previne duplicação
+    console.log('[PWA] Notificação já existe no DOM')
+    return
   }
+
+  // Set flag immediately to prevent race conditions
+  globalNotificationShown = true
+  console.log('[PWA] Mostrando notificação de atualização')
 
   // Create notification element
   const notification = document.createElement('div')
