@@ -645,7 +645,15 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         if (event.contentBlockDelta?.delta?.text) {
           const chunk = event.contentBlockDelta.delta.text;
           textoCompleto += chunk;
-          onChunk(chunk);
+
+          // ✅ CORREÇÃO: Try/catch para prevenir stream quebrado
+          try {
+            onChunk(chunk);
+          } catch (err) {
+            logger.error('[Bedrock Stream] onChunk falhou:', err.message);
+            // Abortar stream se callback falhou (conexão SSE morreu)
+            break;
+          }
         }
 
         // Início de tool use

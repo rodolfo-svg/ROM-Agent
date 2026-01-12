@@ -143,8 +143,45 @@ router.post('/stream', async (req, res) => {
       historicoOriginalSize: conversationHistory.length
     });
 
+    // ✅ CORREÇÃO: Write queue para prevenir race condition heartbeat/chunks
+    const writeQueue = [];
+    let isWriting = false;
+
+    const safeWrite = (data) => {
+      return new Promise((resolve) => {
+        writeQueue.push({ data, resolve });
+        processWriteQueue();
+      });
+    };
+
+    const processWriteQueue = () => {
+      if (isWriting || writeQueue.length === 0) return;
+      if (res.writableEnded || res.destroyed) {
+        // Limpar queue se conexão morreu
+        writeQueue.length = 0;
+        return;
+      }
+
+      isWriting = true;
+      const { data, resolve } = writeQueue.shift();
+
+      try {
+        res.write(data);
+        resolve(true);
+      } catch (err) {
+        logger.error(`[${requestId}] Write failed:`, err.message);
+        resolve(false);
+      }
+
+      isWriting = false;
+      // Processar próximo item imediatamente
+      if (writeQueue.length > 0) {
+        setImmediate(processWriteQueue);
+      }
+    };
+
     // Enviar evento de início
-    res.write(`data: ${JSON.stringify({
+    await safeWrite(`data: ${JSON.stringify({
       type: 'start',
       requestId,
       timestamp: new Date().toISOString()
@@ -162,13 +199,12 @@ router.post('/stream', async (req, res) => {
         return;
       }
 
-      try {
-        res.write(`: heartbeat ${Date.now()}\n\n`);
-      } catch (err) {
+      // Usar safeWrite para evitar race condition
+      safeWrite(`: heartbeat ${Date.now()}\n\n`).catch(err => {
         logger.error(`[${requestId}] Heartbeat write failed:`, err.message);
         clearInterval(heartbeatInterval);
         heartbeatInterval = null;
-      }
+      });
     }, 10000); // A cada 10s (antes era 15s)
 
     // Cleanup heartbeat ao finalizar
@@ -210,16 +246,14 @@ router.post('/stream', async (req, res) => {
         return;
       }
 
-      // Enviar chunk via SSE
-      try {
-        res.write(`data: ${JSON.stringify({
-          type: 'chunk',
-          content: chunk,
-          chunkNumber: chunkCount
-        })}\n\n`);
-      } catch (err) {
+      // Enviar chunk via SSE usando write queue
+      safeWrite(`data: ${JSON.stringify({
+        type: 'chunk',
+        content: chunk,
+        chunkNumber: chunkCount
+      })}\n\n`).catch(err => {
         logger.error(`[${requestId}] Chunk write failed:`, err.message);
-      }
+      });
     };
 
     // ✅ CRÍTICO: Usar systemPrompt com instruções de ferramentas se não vier do frontend
