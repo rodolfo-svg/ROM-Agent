@@ -31,7 +31,7 @@ export function CaseProcessorPage() {
 
       // Verificar se resposta é válida antes de parsear JSON
       if (!response.ok) {
-        console.error(`Failed to fetch cases: ${response.status} ${response.statusText}`)
+        console.error(`[CaseProcessor] Failed to fetch cases: ${response.status} ${response.statusText}`)
         return
       }
 
@@ -40,7 +40,7 @@ export function CaseProcessorPage() {
         setCases(data.cases || [])
       }
     } catch (error) {
-      console.error('Failed to fetch cases:', error)
+      console.error('[CaseProcessor] Network error fetching cases:', error instanceof Error ? error.message : 'Unknown error')
     } finally {
       setLoading(false)
     }

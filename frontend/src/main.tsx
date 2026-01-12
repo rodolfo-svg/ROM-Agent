@@ -45,6 +45,9 @@ async function registerServiceWorker(config?: ServiceWorkerConfig) {
 
     console.log('[PWA] Service Worker registrado:', registration.scope)
 
+    // Flag to prevent multiple update notifications
+    let updateNotificationShown = false
+
     // Handle updates
     registration.onupdatefound = () => {
       const installingWorker = registration.installing
@@ -57,8 +60,11 @@ async function registerServiceWorker(config?: ServiceWorkerConfig) {
             console.log('[PWA] Nova versao disponivel')
             config?.onUpdate?.(registration)
 
-            // Show update notification
-            showUpdateNotification(registration)
+            // Show update notification only once
+            if (!updateNotificationShown) {
+              updateNotificationShown = true
+              showUpdateNotification(registration)
+            }
           } else {
             // Content cached for offline
             console.log('[PWA] Conteudo cached para uso offline')
