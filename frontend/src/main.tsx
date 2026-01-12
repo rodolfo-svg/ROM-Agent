@@ -161,8 +161,19 @@ function showUpdateNotification(registration: ServiceWorkerRegistration) {
   document.getElementById('pwa-update-btn')?.addEventListener('click', () => {
     const waiting = registration.waiting
     if (waiting) {
+      // Listen for controller change (new SW activated)
+      let refreshing = false
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true
+          console.log('[PWA] Novo Service Worker ativo - recarregando...')
+          window.location.reload()
+        }
+      })
+
+      // Send message to activate new SW
+      console.log('[PWA] Enviando SKIP_WAITING...')
       waiting.postMessage({ type: 'SKIP_WAITING' })
-      window.location.reload()
     }
   })
 
