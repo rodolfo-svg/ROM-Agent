@@ -28,6 +28,13 @@ export function CaseProcessorPage() {
       const response = await apiFetch('/case-processor/cases', {
         credentials: 'include',
       })
+
+      // Verificar se resposta é válida antes de parsear JSON
+      if (!response.ok) {
+        console.error(`Failed to fetch cases: ${response.status} ${response.statusText}`)
+        return
+      }
+
       const data = await response.json()
       if (data.success) {
         setCases(data.cases || [])
@@ -52,12 +59,22 @@ export function CaseProcessorPage() {
         body: formData,
       })
 
+      // Verificar se resposta é válida antes de parsear JSON
+      if (!response.ok) {
+        const errorText = await response.text()
+        console.error(`Processing failed: ${response.status} ${response.statusText}`, errorText)
+        alert(`Erro ao processar: ${response.status} - ${response.statusText}`)
+        return
+      }
+
       const data = await response.json()
       if (data.success) {
+        alert('Processo enviado com sucesso!')
         await fetchCases()
       }
     } catch (error) {
       console.error('Processing error:', error)
+      alert(`Erro ao processar: ${error instanceof Error ? error.message : 'Erro desconhecido'}`)
     } finally {
       setProcessing(false)
     }
