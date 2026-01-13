@@ -15,9 +15,9 @@
  * Uso: node test-production-complete.js
  */
 
-const https = require('https');
-const http = require('http');
-const { spawn } = require('child_process');
+import https from 'https';
+import http from 'http';
+import { spawn } from 'child_process';
 
 // Configuração
 const config = {
@@ -390,12 +390,10 @@ class ProductionTester {
 }
 
 // Executar testes
-if (require.main === module) {
-  const tester = new ProductionTester();
-  tester.runAllTests().catch((error) => {
-    console.error('Erro fatal nos testes:', error);
-    process.exit(1);
-  });
-}
+const tester = new ProductionTester();
+tester.runAllTests().catch((error) => {
+  console.error('Erro fatal nos testes:', error);
+  process.exit(1);
+});
 
-module.exports = ProductionTester;
+export default ProductionTester;
