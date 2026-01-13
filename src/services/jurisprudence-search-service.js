@@ -240,6 +240,20 @@ class JurisprudenceSearchService {
         const enriched = await this.enrichWithCompleteEmentas(consolidated.allResults, tese);
         consolidated.allResults = enriched;
         consolidated.enriched = true;
+
+        // ✅ CRÍTICO: Atualizar também os resultados nas fontes individuais
+        // para que bedrock-tools.js mostre as ementas completas
+        enriched.forEach(enrichedResult => {
+          const source = enrichedResult.source;
+          if (source && consolidated.sources[source]?.results) {
+            const index = consolidated.sources[source].results.findIndex(r =>
+              r.url === enrichedResult.url || r.link === enrichedResult.link
+            );
+            if (index !== -1) {
+              consolidated.sources[source].results[index] = enrichedResult;
+            }
+          }
+        });
       } catch (enrichError) {
         console.error('[ENRIQUECIMENTO] Erro:', enrichError.message);
         consolidated.enriched = false;

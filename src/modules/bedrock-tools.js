@@ -296,23 +296,88 @@ export async function executeTool(toolName, toolInput) {
           respostaFormatada += '---\n\n';
         }
 
-        // Resultados da Web Search (Google)
+        // Resultados da Web Search (Google) - COM ENRIQUECIMENTO
         if (resultado.sources?.websearch?.success && resultado.sources.websearch.results?.length > 0) {
           respostaFormatada += `\n🔍 **Web Search - Google (${resultado.sources.websearch.count} resultados)**\n\n`;
 
-          // ✅ CORREÇÃO: Mostrar TODOS os resultados, não apenas 3 (até limite de 10)
+          // ✅ NOVO: Mostrar ementas completas + análise semântica quando disponível
           resultado.sources.websearch.results.slice(0, Math.min(10, resultado.sources.websearch.results.length)).forEach((item, idx) => {
             respostaFormatada += `**[${idx + 1}] ${item.titulo || item.title || 'Resultado'}**\n`;
-            if (item.snippet) respostaFormatada += `${item.snippet.substring(0, 250)}...\n`;
-            if (item.link) respostaFormatada += `Link: ${item.link}\n`;
-            respostaFormatada += '\n';
+            if (item.tribunal) respostaFormatada += `📍 Tribunal: ${item.tribunal}\n`;
+
+            // ✅ DIFERENCIAL: Mostrar ementa COMPLETA se disponível (scraping)
+            if (item.ementaCompleta && item.ementaCompleta.length > 500) {
+              respostaFormatada += `\n📝 **Ementa Completa** (${item.ementaCompleta.length} caracteres):\n`;
+              respostaFormatada += `${item.ementaCompleta.substring(0, 1500)}...\n`;
+              if (item.scraped) {
+                respostaFormatada += `✅ Scraped do tribunal oficial\n`;
+              }
+            } else if (item.snippet) {
+              respostaFormatada += `${item.snippet.substring(0, 250)}...\n`;
+            }
+
+            // ✅ DIFERENCIAL: Mostrar análise semântica se disponível (Bedrock)
+            if (item.analise) {
+              respostaFormatada += `\n🧠 **Análise Semântica Automática**:\n`;
+
+              if (item.analise.teseJuridica) {
+                respostaFormatada += `\n💡 Tese Central:\n"${item.analise.teseJuridica}"\n`;
+              }
+
+              if (item.analise.resultado) {
+                respostaFormatada += `\n⚖️ Resultado: ${item.analise.resultado}\n`;
+              }
+
+              if (item.analise.fundamentosLegais?.length > 0) {
+                respostaFormatada += `\n📚 Fundamentos Legais:\n`;
+                item.analise.fundamentosLegais.slice(0, 5).forEach(f => {
+                  respostaFormatada += `  • ${f}\n`;
+                });
+                if (item.analise.fundamentosLegais.length > 5) {
+                  respostaFormatada += `  ... e mais ${item.analise.fundamentosLegais.length - 5}\n`;
+                }
+              }
+
+              if (item.analise.sumulas?.length > 0) {
+                respostaFormatada += `\n⚖️ Súmulas Citadas:\n`;
+                item.analise.sumulas.forEach(s => {
+                  respostaFormatada += `  • ${s}\n`;
+                });
+              }
+
+              if (item.analise.precedentes?.length > 0) {
+                respostaFormatada += `\n📖 Precedentes:\n`;
+                item.analise.precedentes.slice(0, 3).forEach(p => {
+                  respostaFormatada += `  • ${p}\n`;
+                });
+              }
+
+              if (item.analise.relevanciaParaCaso) {
+                respostaFormatada += `\n🎯 Relevância para o caso: ${item.analise.relevanciaParaCaso}/100\n`;
+              }
+
+              if (item.analise.resumoExecutivo) {
+                respostaFormatada += `\n📋 Resumo Executivo:\n${item.analise.resumoExecutivo.substring(0, 400)}...\n`;
+              }
+            }
+
+            if (item.link) respostaFormatada += `\n🔗 Link: ${item.link}\n`;
+            respostaFormatada += '\n---\n\n';
           });
 
           if (resultado.sources.websearch.results.length > 10) {
-            respostaFormatada += `... e mais ${resultado.sources.websearch.results.length - 10} resultados disponíveis\n`;
+            respostaFormatada += `... e mais ${resultado.sources.websearch.results.length - 10} resultados disponíveis\n\n`;
           }
+        }
 
-          respostaFormatada += '---\n\n';
+        // ✅ Indicador de enrichment
+        if (resultado.enriched) {
+          respostaFormatada += '\n🎯 **DIFERENCIAL ROM AGENT**\n';
+          respostaFormatada += '✅ Ementas completas extraídas via scraping\n';
+          respostaFormatada += '✅ Análise semântica com IA (tese + fundamentos)\n';
+          respostaFormatada += '✅ Relevância calculada automaticamente\n';
+        } else if (resultado.enrichError) {
+          respostaFormatada += `\n⚠️ Enriquecimento parcial: ${resultado.enrichError}\n`;
         }
 
         respostaFormatada += '\n✅ **Pesquisa concluída**\n';
