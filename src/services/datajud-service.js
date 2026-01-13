@@ -237,8 +237,9 @@ export async function buscarDecisoes(filtros = {}, options = {}) {
         }
       },
       from: offset,
-      size: limit,
-      sort: [{ dataPublicacao: { order: 'desc' } }]
+      size: limit
+      // Não incluir sort por dataPublicacao (campo não existe em alguns tribunais)
+      // ElasticSearch ordenará por relevância (_score) por padrão
     };
 
     // Adicionar termo de busca
@@ -253,13 +254,13 @@ export async function buscarDecisoes(filtros = {}, options = {}) {
       });
     }
 
-    // Filtro de data
-    if (dataInicio || dataFim) {
-      const rangeFilter = { dataPublicacao: {} };
-      if (dataInicio) rangeFilter.dataPublicacao.gte = dataInicio;
-      if (dataFim) rangeFilter.dataPublicacao.lte = dataFim;
-      queryBody.query.bool.must.push({ range: rangeFilter });
-    }
+    // Filtro de data (desabilitado - campo não padronizado entre tribunais)
+    // if (dataInicio || dataFim) {
+    //   const rangeFilter = { dataPublicacao: {} };
+    //   if (dataInicio) rangeFilter.dataPublicacao.gte = dataInicio;
+    //   if (dataFim) rangeFilter.dataPublicacao.lte = dataFim;
+    //   queryBody.query.bool.must.push({ range: rangeFilter });
+    // }
 
     // Filtros adicionais
     if (orgaoJulgador) {
@@ -296,7 +297,13 @@ export async function buscarDecisoes(filtros = {}, options = {}) {
     return resultado;
 
   } catch (error) {
-    logger.warn('DataJud decisoes falhou, usando fallback Google Search', { error: error.message });
+    logger.error('[DataJud] Erro detalhado:', {
+      message: error.message,
+      status: error.response?.status,
+      data: error.response?.data,
+      url: error.config?.url
+    });
+    logger.warn('DataJud decisoes falhou, usando fallback Google Search');
     return await fallbackToGoogleSearch({ ...filtros, termo }, 'decisoes');
   }
 }

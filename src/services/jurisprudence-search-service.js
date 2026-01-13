@@ -235,6 +235,17 @@ class JurisprudenceSearchService {
       consolidated.allResults = consolidated.allResults.slice(0, limit);
       consolidated.totalResults = consolidated.allResults.length;
 
+      // ✅ DIFERENCIAL: Enriquecer com ementas completas + análise semântica
+      try {
+        const enriched = await this.enrichWithCompleteEmentas(consolidated.allResults, tese);
+        consolidated.allResults = enriched;
+        consolidated.enriched = true;
+      } catch (enrichError) {
+        console.error('[ENRIQUECIMENTO] Erro:', enrichError.message);
+        consolidated.enriched = false;
+        consolidated.enrichError = enrichError.message;
+      }
+
       // Calcular tempo de busca
       const searchDuration = Date.now() - searchStartTime;
       consolidated.performance = {
@@ -642,6 +653,55 @@ class JurisprudenceSearchService {
   }
 
   /**
+   * ✅ DIFERENCIAL: Enriquecer com ementas completas + análise semântica
+   *
+   * Pipeline:
+   * 1. Scraping paralelo de URLs para obter ementas completas
+   * 2. Análise semântica com Bedrock para extrair tese + fundamentos
+   * 3. Cache agressivo para reutilização
+   */
+  async enrichWithCompleteEmentas(decisoes, contextoUsuario = '') {
+    if (!decisoes || decisoes.length === 0) {
+      return decisoes;
+    }
+
+    console.log(`🔬 [ENRIQUECIMENTO] Iniciando pipeline para ${decisoes.length} decisões`);
+    const startTime = Date.now();
+
+    try {
+      // Lazy import dos serviços especializados
+      const scraperModule = await import('./jurisprudence-scraper-service.js');
+      const analyzerModule = await import('./jurisprudence-analyzer-service.js');
+
+      const scraper = scraperModule.default;
+      const analyzer = analyzerModule.default;
+
+      // ETAPA 1: Scraping paralelo (3-5s por decisão)
+      console.log('📥 [SCRAPING] Extraindo ementas completas...');
+      const scraped = await scraper.enrichDecisions(decisoes);
+
+      // ETAPA 2: Análise semântica com Bedrock (1-2s por decisão)
+      console.log('🧠 [ANÁLISE] Extraindo teses e fundamentos com Bedrock...');
+      const analyzed = await analyzer.analyzeBatch(scraped, contextoUsuario);
+
+      const duration = Date.now() - startTime;
+      const successCount = analyzed.filter(d => d.scraped && d.analyzed).length;
+
+      console.log(`✅ [ENRIQUECIMENTO] Concluído em ${duration}ms`);
+      console.log(`   Scraped: ${scraped.filter(d => d.scraped).length}/${decisoes.length}`);
+      console.log(`   Analyzed: ${analyzed.filter(d => d.analyzed).length}/${decisoes.length}`);
+      console.log(`   Taxa de sucesso: ${(successCount / decisoes.length * 100).toFixed(1)}%`);
+
+      return analyzed;
+
+    } catch (error) {
+      console.error('[ENRIQUECIMENTO] Erro fatal:', error.message);
+      // Fallback: retornar decisões originais
+      return decisoes;
+    }
+  }
+
+  /**
    * Formatar resultados para exibição
    */
   formatResults(results, format = 'detailed') {
@@ -649,8 +709,9 @@ class JurisprudenceSearchService {
       return results.allResults.map(r => ({
         tribunal: r.tribunal,
         numero: r.numero,
-        ementa: r.ementa.substring(0, 200) + '...',
-        relevancia: r.relevancia
+        ementa: r.ementaCompleta?.substring(0, 200) || r.ementa?.substring(0, 200) || '',
+        relevancia: r.relevancia,
+        teseJuridica: r.analise?.teseJuridica
       }));
     }
 
