@@ -8,48 +8,62 @@
 
 -- PASSO 1: Dropar foreign key constraints (se existirem)
 DO $$
+DECLARE
+  fk_name TEXT;
 BEGIN
-  -- Messages FK
-  IF EXISTS (
-    SELECT 1 FROM information_schema.table_constraints
-    WHERE constraint_name = 'messages_conversation_id_fkey'
-    AND table_name = 'messages'
-  ) THEN
-    ALTER TABLE messages DROP CONSTRAINT messages_conversation_id_fkey;
-    RAISE NOTICE '✅ Foreign key messages removida';
+  -- Messages FK - procurar qualquer constraint que referencie conversations(id)
+  SELECT constraint_name INTO fk_name
+  FROM information_schema.table_constraints tc
+  JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name
+  JOIN information_schema.constraint_column_usage ccu ON tc.constraint_name = ccu.constraint_name
+  WHERE tc.table_name = 'messages'
+    AND tc.constraint_type = 'FOREIGN KEY'
+    AND ccu.table_name = 'conversations'
+    AND ccu.column_name = 'id'
+  LIMIT 1;
+
+  IF fk_name IS NOT NULL THEN
+    EXECUTE format('ALTER TABLE messages DROP CONSTRAINT %I', fk_name);
+    RAISE NOTICE '✅ Foreign key messages removida: %', fk_name;
   ELSE
     RAISE NOTICE '⏭️  Foreign key messages já removida';
   END IF;
 
   -- Documents FK (se a tabela existir)
-  IF EXISTS (
-    SELECT 1 FROM information_schema.tables
-    WHERE table_name = 'documents'
-  ) THEN
-    IF EXISTS (
-      SELECT 1 FROM information_schema.table_constraints
-      WHERE constraint_name = 'documents_conversation_id_fkey'
-      AND table_name = 'documents'
-    ) THEN
-      ALTER TABLE documents DROP CONSTRAINT documents_conversation_id_fkey;
-      RAISE NOTICE '✅ Foreign key documents removida';
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'documents') THEN
+    SELECT constraint_name INTO fk_name
+    FROM information_schema.table_constraints tc
+    JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name
+    JOIN information_schema.constraint_column_usage ccu ON tc.constraint_name = ccu.constraint_name
+    WHERE tc.table_name = 'documents'
+      AND tc.constraint_type = 'FOREIGN KEY'
+      AND ccu.table_name = 'conversations'
+      AND ccu.column_name = 'id'
+    LIMIT 1;
+
+    IF fk_name IS NOT NULL THEN
+      EXECUTE format('ALTER TABLE documents DROP CONSTRAINT %I', fk_name);
+      RAISE NOTICE '✅ Foreign key documents removida: %', fk_name;
     ELSE
       RAISE NOTICE '⏭️  Foreign key documents já removida';
     END IF;
   END IF;
 
   -- AI Operations FK (se a tabela existir)
-  IF EXISTS (
-    SELECT 1 FROM information_schema.tables
-    WHERE table_name = 'ai_operations'
-  ) THEN
-    IF EXISTS (
-      SELECT 1 FROM information_schema.table_constraints
-      WHERE constraint_name = 'ai_operations_conversation_id_fkey'
-      AND table_name = 'ai_operations'
-    ) THEN
-      ALTER TABLE ai_operations DROP CONSTRAINT ai_operations_conversation_id_fkey;
-      RAISE NOTICE '✅ Foreign key ai_operations removida';
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'ai_operations') THEN
+    SELECT constraint_name INTO fk_name
+    FROM information_schema.table_constraints tc
+    JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name
+    JOIN information_schema.constraint_column_usage ccu ON tc.constraint_name = ccu.constraint_name
+    WHERE tc.table_name = 'ai_operations'
+      AND tc.constraint_type = 'FOREIGN KEY'
+      AND ccu.table_name = 'conversations'
+      AND ccu.column_name = 'id'
+    LIMIT 1;
+
+    IF fk_name IS NOT NULL THEN
+      EXECUTE format('ALTER TABLE ai_operations DROP CONSTRAINT %I', fk_name);
+      RAISE NOTICE '✅ Foreign key ai_operations removida: %', fk_name;
     ELSE
       RAISE NOTICE '⏭️  Foreign key ai_operations já removida';
     END IF;
@@ -137,13 +151,21 @@ END $$;
 
 -- PASSO 4: Recriar foreign key constraints
 DO $$
+DECLARE
+  fk_exists BOOLEAN;
 BEGIN
-  -- Messages FK
-  IF NOT EXISTS (
-    SELECT 1 FROM information_schema.table_constraints
-    WHERE constraint_name = 'messages_conversation_id_fkey'
-    AND table_name = 'messages'
-  ) THEN
+  -- Messages FK - verificar se JÁ existe alguma FK para conversations
+  SELECT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints tc
+    JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name
+    JOIN information_schema.constraint_column_usage ccu ON tc.constraint_name = ccu.constraint_name
+    WHERE tc.table_name = 'messages'
+      AND tc.constraint_type = 'FOREIGN KEY'
+      AND ccu.table_name = 'conversations'
+      AND ccu.column_name = 'id'
+  ) INTO fk_exists;
+
+  IF NOT fk_exists THEN
     ALTER TABLE messages
       ADD CONSTRAINT messages_conversation_id_fkey
       FOREIGN KEY (conversation_id)
@@ -155,15 +177,18 @@ BEGIN
   END IF;
 
   -- Documents FK (se a tabela existir)
-  IF EXISTS (
-    SELECT 1 FROM information_schema.tables
-    WHERE table_name = 'documents'
-  ) THEN
-    IF NOT EXISTS (
-      SELECT 1 FROM information_schema.table_constraints
-      WHERE constraint_name = 'documents_conversation_id_fkey'
-      AND table_name = 'documents'
-    ) THEN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'documents') THEN
+    SELECT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints tc
+      JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name
+      JOIN information_schema.constraint_column_usage ccu ON tc.constraint_name = ccu.constraint_name
+      WHERE tc.table_name = 'documents'
+        AND tc.constraint_type = 'FOREIGN KEY'
+        AND ccu.table_name = 'conversations'
+        AND ccu.column_name = 'id'
+    ) INTO fk_exists;
+
+    IF NOT fk_exists THEN
       ALTER TABLE documents
         ADD CONSTRAINT documents_conversation_id_fkey
         FOREIGN KEY (conversation_id)
@@ -176,15 +201,18 @@ BEGIN
   END IF;
 
   -- AI Operations FK (se a tabela existir)
-  IF EXISTS (
-    SELECT 1 FROM information_schema.tables
-    WHERE table_name = 'ai_operations'
-  ) THEN
-    IF NOT EXISTS (
-      SELECT 1 FROM information_schema.table_constraints
-      WHERE constraint_name = 'ai_operations_conversation_id_fkey'
-      AND table_name = 'ai_operations'
-    ) THEN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'ai_operations') THEN
+    SELECT EXISTS (
+      SELECT 1 FROM information_schema.table_constraints tc
+      JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name
+      JOIN information_schema.constraint_column_usage ccu ON tc.constraint_name = ccu.constraint_name
+      WHERE tc.table_name = 'ai_operations'
+        AND tc.constraint_type = 'FOREIGN KEY'
+        AND ccu.table_name = 'conversations'
+        AND ccu.column_name = 'id'
+    ) INTO fk_exists;
+
+    IF NOT fk_exists THEN
       ALTER TABLE ai_operations
         ADD CONSTRAINT ai_operations_conversation_id_fkey
         FOREIGN KEY (conversation_id)
