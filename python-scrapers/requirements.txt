@@ -1,0 +1,38 @@
+# Dependências dos Scrapers Python
+# ROM Agent - Python Scrapers
+# Atualizado: 2026-01-12
+
+# Core
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# Async support
+aiohttp>=3.9.0
+asyncio>=3.4.3
+
+# Data validation
+pydantic>=2.5.0
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-cov>=4.1.0
+pytest-mock>=3.12.0
+
+# Utils
+python-dateutil>=2.8.0
+pytz>=2023.3
+
+# Certificado digital (para PJe)
+cryptography>=41.0.0
+pyOpenSSL>=23.3.0
+
+# Rate limiting
+ratelimit>=2.2.1
+
+# Cache
+diskcache>=5.6.0
+
+# Logging
+colorlog>=6.8.0

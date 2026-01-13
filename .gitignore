@@ -45,3 +45,6 @@ test-aws-credentials.sh
 # Test reports and temporary cookies
 test-*.json
 .jusbrasil-cookies.json
+__pycache__/
+*.pyc
+*.pyo
