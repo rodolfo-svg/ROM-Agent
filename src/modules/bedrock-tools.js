@@ -246,6 +246,12 @@ export async function executeTool(toolName, toolInput) {
         // ✅ ATUALIZADO: Formatar resultado do serviço novo
         let respostaFormatada = `\n📊 **Pesquisa de Jurisprudência: "${termo}"**\n\n`;
 
+        // ⚠️ INSTRUÇÃO CRÍTICA NO INÍCIO - LLM DEVE LER ANTES DE RESPONDER
+        respostaFormatada += '═══════════════════════════════════════════════════════════════════════\n';
+        respostaFormatada += '⚠️ ATENÇÃO: NÃO RESUMA! COPIE AS EMENTAS COMPLETAS FORNECIDAS ABAIXO!\n';
+        respostaFormatada += '⚠️ PROIBIDO escrever "Com base nas buscas, encontrei..." sem mostrar ementas\n';
+        respostaFormatada += '═══════════════════════════════════════════════════════════════════════\n\n';
+
         // Informações gerais
         respostaFormatada += `Total de resultados: ${resultado.totalResults || 0}\n`;
         respostaFormatada += `Fontes consultadas: ${Object.keys(resultado.sources || {}).length}\n`;
