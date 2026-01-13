@@ -368,34 +368,50 @@ class JurisprudenceScraperService {
    */
   async extractPdfText(url) {
     try {
-      // Lazy import do pdfjs-dist
-      const pdfjsLib = await import('pdfjs-dist/legacy/build/pdf.mjs');
+      // ✅ OTIMIZAÇÃO: Verificar tamanho antes de baixar
+      const headResponse = await axios.head(url, {
+        timeout: 5000,
+        headers: { 'User-Agent': this.userAgent }
+      }).catch(() => null);
 
-      // Download PDF
+      if (headResponse) {
+        const contentLength = parseInt(headResponse.headers['content-length'] || '0');
+        const sizeMB = contentLength / (1024 * 1024);
+
+        // Skip PDFs maiores que 5MB para economizar memória
+        if (sizeMB > 5) {
+          logger.warn(`[Scraper] PDF muito grande (${sizeMB.toFixed(1)}MB), pulando: ${url}`);
+          throw new Error(`PDF muito grande (${sizeMB.toFixed(1)}MB) - limite 5MB`);
+        }
+      }
+
+      // ✅ OTIMIZAÇÃO: Usar pdf-parse (mais leve que pdfjs-dist)
+      const pdfParse = (await import('pdf-parse')).default;
+
+      // Download PDF com limite menor
       const response = await axios.get(url, {
         responseType: 'arraybuffer',
         timeout: this.timeout,
         headers: { 'User-Agent': this.userAgent },
-        maxContentLength: 10 * 1024 * 1024 // Máximo 10MB
+        maxContentLength: 5 * 1024 * 1024 // Máximo 5MB (otimizado)
       });
 
-      const pdfData = new Uint8Array(response.data);
-      const loadingTask = pdfjsLib.getDocument({ data: pdfData });
-      const pdf = await loadingTask.promise;
+      const pdfBuffer = Buffer.from(response.data);
 
-      let fullText = '';
+      // ✅ OTIMIZAÇÃO: Extrair apenas primeiras 10 páginas
+      const options = {
+        max: 10  // Limite de páginas para economizar memória
+      };
 
-      // Extrair texto de todas as páginas (limite: primeiras 50)
-      const numPages = Math.min(pdf.numPages, 50);
+      const data = await pdfParse(pdfBuffer, options);
 
-      for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-        const page = await pdf.getPage(pageNum);
-        const textContent = await page.getTextContent();
-        const pageText = textContent.items.map(item => item.str).join(' ');
-        fullText += pageText + '\n';
-      }
+      // Limpar e retornar texto
+      const cleanedText = this.cleanText(data.text);
 
-      return this.cleanText(fullText);
+      // Limitar tamanho do texto final (máximo 50.000 chars)
+      return cleanedText.length > 50000
+        ? cleanedText.substring(0, 50000) + '...'
+        : cleanedText;
 
     } catch (error) {
       logger.error(`[Scraper] Erro ao extrair PDF: ${error.message}`);
