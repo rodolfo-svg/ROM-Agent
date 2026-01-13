@@ -383,13 +383,32 @@ export async function executeTool(toolName, toolInput) {
         respostaFormatada += '\n✅ **Pesquisa concluída**\n';
         respostaFormatada += `Timestamp: ${resultado.searchedAt || new Date().toISOString()}\n`;
 
-        // ✅ INSTRUÇÃO CRÍTICA PARA O LLM
-        respostaFormatada += '\n\n⚠️ **IMPORTANTE**: Ao responder ao usuário, você DEVE:\n';
-        respostaFormatada += '1. Mostrar a EMENTA COMPLETA de cada decisão (não resumir)\n';
-        respostaFormatada += '2. Incluir a ANÁLISE SEMÂNTICA completa (tese, fundamentos, súmulas)\n';
-        respostaFormatada += '3. Manter TODOS os detalhes fornecidos acima\n';
-        respostaFormatada += '4. Usar a formatação markdown fornecida\n';
-        respostaFormatada += '5. NÃO criar resumos genéricos - copiar o conteúdo completo\n';
+        // ✅ INSTRUÇÃO CRÍTICA PARA O LLM - VERSÃO REFORÇADA
+        respostaFormatada += '\n\n';
+        respostaFormatada += '═══════════════════════════════════════════════════════════════════════\n';
+        respostaFormatada += '⚠️ ⚠️ ⚠️  INSTRUÇÃO OBRIGATÓRIA - LEIA COM ATENÇÃO  ⚠️ ⚠️ ⚠️\n';
+        respostaFormatada += '═══════════════════════════════════════════════════════════════════════\n\n';
+
+        respostaFormatada += 'Ao responder ao usuário sobre estes resultados, você é OBRIGADO a:\n\n';
+
+        respostaFormatada += '✅ PERMITIDO (FAÇA ISSO):\n';
+        respostaFormatada += '- Copiar LITERALMENTE as ementas completas fornecidas acima\n';
+        respostaFormatada += '- Manter TODA a formatação markdown (📝, 🧠, 💡, etc)\n';
+        respostaFormatada += '- Incluir TODOS os detalhes: tribunal, relator, número do processo\n';
+        respostaFormatada += '- Mostrar a seção "📝 Ementa Completa (X caracteres)" INTEIRA\n';
+        respostaFormatada += '- Incluir a seção "🧠 Análise Semântica Automática" COMPLETA\n\n';
+
+        respostaFormatada += '❌ PROIBIDO (NÃO FAÇA ISSO):\n';
+        respostaFormatada += '- Criar "resumos consolidados" genéricos\n';
+        respostaFormatada += '- Parafrasear ou reformular as ementas\n';
+        respostaFormatada += '- Reduzir ementas de 10.000 chars para 500 chars\n';
+        respostaFormatada += '- Escrever "Com base nas buscas, encontrei..." sem mostrar as ementas\n';
+        respostaFormatada += '- Substituir conteúdo por análises próprias\n\n';
+
+        respostaFormatada += '🎯 DIFERENCIAL: O usuário quer ver EMENTAS COMPLETAS (não resumos).\n';
+        respostaFormatada += 'Se uma ementa tem 15.000 caracteres acima, mostre pelo menos 1.500 chars dela.\n\n';
+
+        respostaFormatada += '═══════════════════════════════════════════════════════════════════════\n';
 
         console.log(`✅ [Tool Use] pesquisar_jurisprudencia executada com sucesso`);
 
