@@ -1094,40 +1094,7 @@ export function buildSystemPrompt(options = {}) {
         });
       }
 
-      // ✅ INSTRUÇÃO CRÍTICA: Forçar exibição de ementas completas (não resumir)
-      const jurisprudenceInstructions = `
-
-═══════════════════════════════════════════════════════════════════════════════
-⚠️ INSTRUÇÃO CRÍTICA - JURISPRUDÊNCIA
-═══════════════════════════════════════════════════════════════════════════════
-
-Quando a ferramenta pesquisar_jurisprudencia retornar resultados, você DEVE:
-
-1. COPIAR A EMENTA COMPLETA fornecida pela ferramenta (NÃO resumir, NÃO parafrasear)
-2. COPIAR A ANÁLISE SEMÂNTICA completa (tese, fundamentos, súmulas, precedentes)
-3. MANTER TODOS os detalhes fornecidos (números de processo, datas, tribunais)
-4. USAR a formatação markdown fornecida pela ferramenta
-5. NÃO criar "análises consolidadas" genéricas
-6. NÃO substituir a ementa completa por resumos ou paráfrases
-
-EXEMPLO CORRETO:
-Ferramenta retorna: "📝 Ementa Completa (20000 chars): APELAÇÃO CRIMINAL..."
-Você responde: "📝 Ementa Completa (20000 chars): APELAÇÃO CRIMINAL..." [copia verbatim]
-
-EXEMPLO INCORRETO:
-Ferramenta retorna: "📝 Ementa Completa (20000 chars): APELAÇÃO CRIMINAL..."
-Você responde: "Resumo: O tribunal decidiu que..." [resumo genérico] ❌ PROIBIDO
-
-O DIFERENCIAL do ROM Agent é mostrar EMENTAS COMPLETAS (20.000+ caracteres) com
-ANÁLISE SEMÂNTICA AUTOMÁTICA. Usuários NÃO querem resumos - querem o texto completo.
-
-Se a ferramenta retornar ementas de 20.000 chars, você DEVE copiar pelo menos
-1.500 chars da ementa + toda a análise semântica (tese, fundamentos, súmulas).
-
-═══════════════════════════════════════════════════════════════════════════════
-`;
-
-      return result.prompt + jurisprudenceInstructions;
+      return result.prompt;
     } catch (error) {
       console.error(`[buildSystemPrompt] Erro ao usar PromptBuilder, fallback para legacy:`, error.message);
       // Fallback para versao legacy em caso de erro
@@ -1262,38 +1229,6 @@ function buildLegacySystemPrompt(forceReload = false) {
   prompt += `- Usar apenas topicos sem desenvolvimento textual\n`;
   prompt += `- Responder em menos de 500 palavras para perguntas juridicas complexas\n\n`;
   prompt += `**FORMATO ESPERADO:** Paragrafos bem desenvolvidos com fundamentacao completa, citacoes legais com explicacao, argumentacao juridica solida.\n\n`;
-
-  // ✅ INSTRUÇÃO CRÍTICA: Forçar exibição de ementas completas (não resumir)
-  prompt += `
-═══════════════════════════════════════════════════════════════════════════════
-⚠️ INSTRUÇÃO CRÍTICA - JURISPRUDÊNCIA
-═══════════════════════════════════════════════════════════════════════════════
-
-Quando a ferramenta pesquisar_jurisprudencia retornar resultados, você DEVE:
-
-1. COPIAR A EMENTA COMPLETA fornecida pela ferramenta (NÃO resumir, NÃO parafrasear)
-2. COPIAR A ANÁLISE SEMÂNTICA completa (tese, fundamentos, súmulas, precedentes)
-3. MANTER TODOS os detalhes fornecidos (números de processo, datas, tribunais)
-4. USAR a formatação markdown fornecida pela ferramenta
-5. NÃO criar "análises consolidadas" genéricas
-6. NÃO substituir a ementa completa por resumos ou paráfrases
-
-EXEMPLO CORRETO:
-Ferramenta retorna: "📝 Ementa Completa (20000 chars): APELAÇÃO CRIMINAL..."
-Você responde: "📝 Ementa Completa (20000 chars): APELAÇÃO CRIMINAL..." [copia verbatim]
-
-EXEMPLO INCORRETO:
-Ferramenta retorna: "📝 Ementa Completa (20000 chars): APELAÇÃO CRIMINAL..."
-Você responde: "Resumo: O tribunal decidiu que..." [resumo genérico] ❌ PROIBIDO
-
-O DIFERENCIAL do ROM Agent é mostrar EMENTAS COMPLETAS (20.000+ caracteres) com
-ANÁLISE SEMÂNTICA AUTOMÁTICA. Usuários NÃO querem resumos - querem o texto completo.
-
-Se a ferramenta retornar ementas de 20.000 chars, você DEVE copiar pelo menos
-1.500 chars da ementa + toda a análise semântica (tese, fundamentos, súmulas).
-
-═══════════════════════════════════════════════════════════════════════════════
-`;
 
   console.log(`[buildSystemPrompt] Prompt construido (legacy): ${prompt.length} caracteres`);
 
