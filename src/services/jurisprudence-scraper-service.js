@@ -380,14 +380,7 @@ class JurisprudenceScraperService {
       });
 
       const pdfData = new Uint8Array(response.data);
-
-      // ✅ FIX: Configurar pdfjs corretamente para evitar warnings
-      const loadingTask = pdfjsLib.getDocument({
-        data: pdfData,
-        standardFontDataUrl: null, // Desabilitar fontes padrão (não necessárias para extração de texto)
-        verbosity: 0 // Reduzir warnings
-      });
-
+      const loadingTask = pdfjsLib.getDocument({ data: pdfData });
       const pdf = await loadingTask.promise;
 
       let fullText = '';
