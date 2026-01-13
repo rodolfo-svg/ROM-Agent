@@ -2226,6 +2226,70 @@ class ESAJScraper:
         self.cache.clear()
         self.logger.info("Cache limpo")
 
+    def health_check(self, instancia: str = "1") -> Dict[str, Any]:
+        """
+        Verifica conectividade com o portal ESAJ.
+
+        Realiza requisição simples para testar disponibilidade.
+
+        Args:
+            instancia: "1" para 1ª instância, "2" para 2ª instância
+
+        Returns:
+            Dict com status e latência:
+            - status: 'ok' se conectou, 'error' se falhou
+            - latency_ms: Latência da requisição em milissegundos
+            - instancia: Instância testada
+            - url: URL testada
+            - message: Mensagem descritiva (se erro)
+
+        Example:
+            >>> scraper = ESAJScraper()
+            >>> health = scraper.health_check(instancia="1")
+            >>> print(health['status'])
+            'ok'
+        """
+        import time
+
+        url = BASE_URL_1G if instancia == "1" else BASE_URL_2G
+
+        try:
+            start_time = time.time()
+
+            # Requisição simples para página inicial
+            response = self._session.get(
+                url,
+                timeout=10.0
+            )
+
+            latency_ms = int((time.time() - start_time) * 1000)
+
+            if response.status_code == 200:
+                self.logger.info(f"Health check OK | instancia={instancia} | latencia={latency_ms}ms")
+                return {
+                    'status': 'ok',
+                    'latency_ms': latency_ms,
+                    'instancia': instancia,
+                    'url': url
+                }
+            else:
+                self.logger.warning(f"Health check falhou | instancia={instancia} | status={response.status_code}")
+                return {
+                    'status': 'error',
+                    'latency_ms': latency_ms,
+                    'instancia': instancia,
+                    'message': f'HTTP {response.status_code}'
+                }
+
+        except Exception as e:
+            self.logger.error(f"Health check erro | instancia={instancia}: {e}")
+            return {
+                'status': 'error',
+                'latency_ms': 0,
+                'instancia': instancia,
+                'message': str(e)
+            }
+
 
 # =============================================================================
 # FUNCAO PRINCIPAL PARA USO VIA API

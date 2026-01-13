@@ -2515,47 +2515,93 @@ class PJeScraper:
 
     def health_check(self, trf: Optional[str] = None) -> Dict[str, Any]:
         """
-        Verifica disponibilidade do PJe
+        Verifica disponibilidade do PJe.
+
+        Formato padronizado de resposta compatível com validador.
 
         Args:
-            trf: TRF especifico (None verifica todos)
+            trf: TRF específico para testar. Se None, testa todos.
 
         Returns:
-            Dict com status de cada TRF
+            Dict com status padronizado:
+            - Se trf específico: formato simples {status, latency_ms, trf}
+            - Se None: formato detalhado {status, trfs, overall}
+
+        Example:
+            >>> scraper = PJeScraper()
+            >>> health = scraper.health_check(trf="TRF1")
+            >>> print(health['status'])
+            'ok'
         """
+        # Se TRF específico, formato simples
+        if trf:
+            try:
+                base_url = TRF_URLS[trf]
+                start_time = time.time()
+                response = self._fazer_requisicao(trf, base_url)
+                latency_ms = int((time.time() - start_time) * 1000)
+
+                if response.status_code == 200:
+                    self.logger.info(f"Health check OK | trf={trf} | latencia={latency_ms}ms")
+                    return {
+                        'status': 'ok',
+                        'latency_ms': latency_ms,
+                        'trf': trf,
+                        'url': base_url
+                    }
+                else:
+                    self.logger.warning(f"Health check falhou | trf={trf} | status={response.status_code}")
+                    return {
+                        'status': 'error',
+                        'latency_ms': latency_ms,
+                        'trf': trf,
+                        'message': f'HTTP {response.status_code}'
+                    }
+
+            except Exception as e:
+                self.logger.error(f"Health check erro | trf={trf}: {e}")
+                return {
+                    'status': 'error',
+                    'latency_ms': 0,
+                    'trf': trf,
+                    'message': str(e)
+                }
+
+        # Se None, formato detalhado (todos os TRFs)
         status = {
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "trfs": {}
         }
 
-        trfs_para_verificar = [trf] if trf else list(TRF_URLS.keys())
-
-        for trf_atual in trfs_para_verificar:
+        for trf_atual in list(TRF_URLS.keys()):
             try:
                 base_url = TRF_URLS[trf_atual]
                 start_time = time.time()
                 response = self._fazer_requisicao(trf_atual, base_url)
-                latency_ms = (time.time() - start_time) * 1000
+                latency_ms = int((time.time() - start_time) * 1000)
 
                 status["trfs"][trf_atual] = {
-                    "status": "online" if response.status_code == 200 else "degraded",
+                    "status": "ok" if response.status_code == 200 else "error",
                     "status_code": response.status_code,
-                    "latency_ms": round(latency_ms, 2),
+                    "latency_ms": latency_ms,
                     "circuit_breaker": self.circuit_breakers[trf_atual].state.value,
                 }
 
             except Exception as e:
                 status["trfs"][trf_atual] = {
-                    "status": "offline",
+                    "status": "error",
                     "error": str(e),
                     "circuit_breaker": self.circuit_breakers[trf_atual].state.value,
                 }
 
         # Status geral
-        online_count = sum(1 for t in status["trfs"].values() if t.get("status") == "online")
-        status["overall"] = "healthy" if online_count == len(trfs_para_verificar) else (
-            "degraded" if online_count > 0 else "unhealthy"
+        online_count = sum(1 for t in status["trfs"].values() if t.get("status") == "ok")
+        total_count = len(status["trfs"])
+        status["status"] = "ok" if online_count == total_count else (
+            "degraded" if online_count > 0 else "error"
         )
+        status["online_count"] = online_count
+        status["total_count"] = total_count
 
         return status
 

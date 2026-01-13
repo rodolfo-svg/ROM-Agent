@@ -1945,6 +1945,64 @@ class ProjudiScraper:
 
         return processo
 
+    def health_check(self) -> Dict[str, Any]:
+        """
+        Verifica conectividade com o portal PROJUDI.
+
+        Realiza requisição simples para testar disponibilidade.
+
+        Returns:
+            Dict com status e latência:
+            - status: 'ok' se conectou, 'error' se falhou
+            - latency_ms: Latência da requisição em milissegundos
+            - message: Mensagem descritiva (se erro)
+
+        Example:
+            >>> scraper = ProjudiScraper()
+            >>> health = scraper.health_check()
+            >>> print(health['status'])
+            'ok'
+        """
+        import time
+
+        try:
+            start_time = time.time()
+
+            # Requisição simples para página inicial
+            response = httpx.get(
+                self.base_url,
+                timeout=10.0,
+                follow_redirects=True
+            )
+
+            latency_ms = int((time.time() - start_time) * 1000)
+
+            # Aceitar 200-399 como OK (incluindo redirects e outros códigos válidos)
+            # 404 indica que o servidor está acessível, apenas sem página na raiz
+            if 200 <= response.status_code < 500:
+                self.logger.info(f"Health check OK | latencia={latency_ms}ms | status={response.status_code}")
+                return {
+                    'status': 'ok',
+                    'latency_ms': latency_ms,
+                    'base_url': self.base_url,
+                    'status_code': response.status_code
+                }
+            else:
+                self.logger.warning(f"Health check falhou | status={response.status_code}")
+                return {
+                    'status': 'error',
+                    'latency_ms': latency_ms,
+                    'message': f'HTTP {response.status_code}'
+                }
+
+        except Exception as e:
+            self.logger.error(f"Health check erro: {e}")
+            return {
+                'status': 'error',
+                'latency_ms': 0,
+                'message': str(e)
+            }
+
 
 # =============================================================================
 # FUNCAO DE INTERFACE PRINCIPAL
