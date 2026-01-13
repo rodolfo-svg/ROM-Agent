@@ -18,22 +18,56 @@ const cache = new NodeCache({ stdTTL: 3600 });
 // Cliente CNJ dedicado
 const cnjClient = new CNJApiClient();
 
-// Base URL oficial do DataJud
-const DATAJUD_API_URL = 'https://datajud-api.cnj.jus.br/api_publica';
+// ✅ Base URL oficial do DataJud (CORRIGIDO - fonte: https://datajud-wiki.cnj.jus.br/)
+const DATAJUD_BASE_URL = 'https://api-publica.datajud.cnj.jus.br';
 
-// Endpoints disponíveis
-const ENDPOINTS = {
-  processos: '/processos',
-  decisoes: '/decisoes',
-  movimentacoes: '/movimentacoes',
-  partes: '/partes',
-  classes: '/classes',
-  assuntos: '/assuntos',
-  tribunais: '/tribunais',
-  busca: '/busca'
+// ✅ Mapeamento de tribunais para aliases da API DataJud
+const TRIBUNAL_ALIASES = {
+  STF: 'stf',
+  STJ: 'stj',
+  STM: 'stm',
+  TSE: 'tse',
+  TST: 'tst',
+  TRF1: 'trf1',
+  TRF2: 'trf2',
+  TRF3: 'trf3',
+  TRF4: 'trf4',
+  TRF5: 'trf5',
+  TRF6: 'trf6',
+  TJGO: 'tjgo',  // Tribunal de Justiça de Goiás
+  TJSP: 'tjsp',
+  TJRJ: 'tjrj',
+  TJMG: 'tjmg',
+  TJRS: 'tjrs',
+  TJPR: 'tjpr',
+  TJSC: 'tjsc',
+  TJBA: 'tjba',
+  TJPE: 'tjpe',
+  TJCE: 'tjce'
+  // Adicionar outros conforme necessário
 };
 
-// Códigos de tribunais DataJud
+// ✅ Endpoint padrão: /api_publica_[tribunal]/_search
+const SEARCH_ENDPOINT = '/_search';
+
+/**
+ * Construir URL do endpoint DataJud para um tribunal específico
+ * @param {string} tribunal - Sigla do tribunal (ex: 'TJGO', 'STJ')
+ * @returns {string|null} URL completa ou null se tribunal não suportado
+ */
+function getDatajudUrl(tribunal) {
+  if (!tribunal) return null;
+
+  const alias = TRIBUNAL_ALIASES[tribunal.toUpperCase()];
+  if (!alias) {
+    logger.warn(`DataJud: Tribunal ${tribunal} não tem alias mapeado`);
+    return null;
+  }
+
+  return `${DATAJUD_BASE_URL}/api_publica_${alias}${SEARCH_ENDPOINT}`;
+}
+
+// Códigos de tribunais DataJud (legacy - manter para compatibilidade)
 const TRIBUNAIS_DATAJUD = {
   STF: 1,
   STJ: 3,
@@ -188,23 +222,58 @@ export async function buscarDecisoes(filtros = {}, options = {}) {
   }
 
   try {
-    const params = new URLSearchParams();
-    if (tribunal) {
-      const tribunalCod = TRIBUNAIS_DATAJUD[tribunal.toUpperCase()];
-      if (tribunalCod) params.append('tribunal', tribunalCod);
+    // ✅ Construir URL específica para o tribunal
+    const url = getDatajudUrl(tribunal);
+    if (!url) {
+      logger.warn(`DataJud: Tribunal ${tribunal} não suportado, usando fallback`);
+      return await fallbackToGoogleSearch({ ...filtros, termo }, 'decisoes');
     }
-    if (termo) params.append('q', termo);
-    if (dataInicio) params.append('dataInicio', dataInicio);
-    if (dataFim) params.append('dataFim', dataFim);
-    if (orgaoJulgador) params.append('orgaoJulgador', orgaoJulgador);
-    if (relator) params.append('relator', relator);
-    params.append('limit', limit);
-    params.append('offset', offset);
 
-    const response = await axios.get(`${DATAJUD_API_URL}${ENDPOINTS.decisoes}`, {
-      params,
+    // ✅ Body da requisição no formato ElasticSearch Query DSL
+    const queryBody = {
+      query: {
+        bool: {
+          must: []
+        }
+      },
+      from: offset,
+      size: limit,
+      sort: [{ dataPublicacao: { order: 'desc' } }]
+    };
+
+    // Adicionar termo de busca
+    if (termo) {
+      queryBody.query.bool.must.push({
+        multi_match: {
+          query: termo,
+          fields: ['ementa^3', 'textoIntegral', 'palavrasChave^2'],
+          type: 'best_fields',
+          fuzziness: 'AUTO'
+        }
+      });
+    }
+
+    // Filtro de data
+    if (dataInicio || dataFim) {
+      const rangeFilter = { dataPublicacao: {} };
+      if (dataInicio) rangeFilter.dataPublicacao.gte = dataInicio;
+      if (dataFim) rangeFilter.dataPublicacao.lte = dataFim;
+      queryBody.query.bool.must.push({ range: rangeFilter });
+    }
+
+    // Filtros adicionais
+    if (orgaoJulgador) {
+      queryBody.query.bool.must.push({ match: { orgaoJulgador } });
+    }
+    if (relator) {
+      queryBody.query.bool.must.push({ match: { relator } });
+    }
+
+    logger.info(`[DataJud] Buscando decisões em ${url}`);
+
+    const response = await axios.post(url, queryBody, {
       headers: {
-        'Authorization': `Bearer ${DATAJUD_TOKEN}`,
+        'Authorization': `ApiKey ${DATAJUD_TOKEN}`,
         'Content-Type': 'application/json',
         'User-Agent': 'ROM-Agent/2.8.0'
       },
@@ -429,27 +498,47 @@ export function validarNumeroProcesso(numero) {
 }
 
 /**
- * Parser de decisoes da API DataJud
+ * Parser de decisoes da API DataJud (formato ElasticSearch)
  */
 function parseDecisoes(data) {
-  if (!data?.resultados && !data?.decisoes) {
-    return [];
+  // ✅ Formato ElasticSearch: data.hits.hits[]._source
+  if (data?.hits?.hits) {
+    return data.hits.hits.map(hit => {
+      const source = hit._source || {};
+      return {
+        tribunal: source.tribunal || source.siglaTribunal || 'Não informado',
+        tipo: source.tipoDocumento || source.tipo || 'Acórdão',
+        numero: source.numeroProcesso || source.numero || hit._id,
+        ementa: source.ementa || source.texto || source.ementaCompleta || '',
+        data: source.dataPublicacao || source.dataJulgamento || source.data,
+        relator: source.relator || source.nomeRelator || null,
+        orgaoJulgador: source.orgaoJulgador || null,
+        url: source.url || source.link || null,
+        classe: source.classeProcessual || source.classe || null,
+        assunto: source.assunto || source.assuntos?.[0] || null,
+        score: hit._score || 0
+      };
+    });
   }
 
-  const items = data.resultados || data.decisoes || [];
+  // Legacy format (fallback)
+  if (data?.resultados || data?.decisoes) {
+    const items = data.resultados || data.decisoes || [];
+    return items.map(item => ({
+      tribunal: item.tribunal || 'Não informado',
+      tipo: item.tipoDocumento || item.tipo || 'Acórdão',
+      numero: item.numeroProcesso || item.numero || item.id,
+      ementa: item.ementa || item.texto || '',
+      data: item.dataPublicacao || item.dataJulgamento || item.data,
+      relator: item.relator || null,
+      orgaoJulgador: item.orgaoJulgador || null,
+      url: item.url || null,
+      classe: item.classeProcessual || item.classe || null,
+      assunto: item.assunto || null
+    }));
+  }
 
-  return items.map(item => ({
-    tribunal: item.tribunal || 'Nao informado',
-    tipo: item.tipoDocumento || item.tipo || 'Acordao',
-    numero: item.numeroProcesso || item.numero || item.id,
-    ementa: item.ementa || item.texto || '',
-    data: item.dataPublicacao || item.dataJulgamento || item.data,
-    relator: item.relator || null,
-    orgaoJulgador: item.orgaoJulgador || null,
-    url: item.url || null,
-    classe: item.classeProcessual || item.classe || null,
-    assunto: item.assunto || null
-  }));
+  return [];
 }
 
 /**
