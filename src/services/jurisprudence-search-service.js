@@ -236,8 +236,15 @@ class JurisprudenceSearchService {
       consolidated.totalResults = consolidated.allResults.length;
 
       // ✅ DIFERENCIAL: Enriquecer com ementas completas + análise semântica
+      console.log(`[ENRICHMENT] Iniciando enriquecimento de ${consolidated.allResults?.length || 0} decisões...`);
+
       try {
         const enriched = await this.enrichWithCompleteEmentas(consolidated.allResults, tese);
+
+        console.log(`[ENRICHMENT] Enriquecidas ${enriched.length} decisões`);
+        const withEmentas = enriched.filter(r => r.ementaCompleta && r.ementaCompleta.length > 500).length;
+        console.log(`[ENRICHMENT] Com ementas completas (>500 chars): ${withEmentas}`);
+
         consolidated.allResults = enriched;
         consolidated.enriched = true;
 
@@ -254,10 +261,16 @@ class JurisprudenceSearchService {
             }
           }
         });
+
+        console.log(`[ENRICHMENT] Sincronização com sources concluída`);
       } catch (enrichError) {
-        console.error('[ENRIQUECIMENTO] Erro:', enrichError.message);
+        console.error('[ENRIQUECIMENTO] ERRO CRÍTICO:', enrichError.message);
+        console.error('[ENRIQUECIMENTO] Stack:', enrichError.stack);
         consolidated.enriched = false;
         consolidated.enrichError = enrichError.message;
+
+        // ⚠️ IMPORTANTE: Adicionar warning visível ao usuário
+        consolidated.enrichWarning = '⚠️ Atenção: O enriquecimento de ementas falhou. Mostrando apenas snippets.';
       }
 
       // Calcular tempo de busca
