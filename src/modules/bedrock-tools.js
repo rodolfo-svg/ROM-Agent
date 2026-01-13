@@ -383,6 +383,14 @@ export async function executeTool(toolName, toolInput) {
         respostaFormatada += '\n✅ **Pesquisa concluída**\n';
         respostaFormatada += `Timestamp: ${resultado.searchedAt || new Date().toISOString()}\n`;
 
+        // ✅ INSTRUÇÃO CRÍTICA PARA O LLM
+        respostaFormatada += '\n\n⚠️ **IMPORTANTE**: Ao responder ao usuário, você DEVE:\n';
+        respostaFormatada += '1. Mostrar a EMENTA COMPLETA de cada decisão (não resumir)\n';
+        respostaFormatada += '2. Incluir a ANÁLISE SEMÂNTICA completa (tese, fundamentos, súmulas)\n';
+        respostaFormatada += '3. Manter TODOS os detalhes fornecidos acima\n';
+        respostaFormatada += '4. Usar a formatação markdown fornecida\n';
+        respostaFormatada += '5. NÃO criar resumos genéricos - copiar o conteúdo completo\n';
+
         console.log(`✅ [Tool Use] pesquisar_jurisprudencia executada com sucesso`);
 
         return {
