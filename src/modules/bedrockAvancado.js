@@ -50,10 +50,10 @@ export const MODELOS_AVANCADOS = {
     'cohere-rerank': 'cohere.rerank-v3-5:0'
   },
   multimodal: {
-    'claude-sonnet-4': 'us.anthropic.claude-sonnet-4-20250514-v1:0',
-    'claude-sonnet-4.5': 'us.anthropic.claude-sonnet-4-5-20250929-v1:0',
+    'claude-sonnet-4': 'anthropic.claude-sonnet-4-20250514-v1:0',
+    'claude-sonnet-4.5': 'anthropic.claude-sonnet-4-5-20250929-v1:0',
     'nova-pro': 'amazon.nova-pro-v1:0',
-    'nova-premier': 'us.amazon.nova-premier-v1:0'
+    'nova-premier': 'amazon.nova-premier-v1:0'
   },
   imagem: {
     'stable-upscale': 'stability.stable-fast-upscale-v1:0',

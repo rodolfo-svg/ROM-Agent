@@ -78,12 +78,12 @@ function getDefaultModel() {
   // STAGING: Usar Opus 4.5 (máxima qualidade)
   if (env === 'staging' || process.env.RENDER_SERVICE_NAME?.includes('staging')) {
     console.log('🚀 STAGING detectado: usando Claude Opus 4.5 (máxima qualidade)');
-    return 'us.anthropic.claude-opus-4-5-20251101-v1:0';
+    return 'anthropic.claude-opus-4-5-20251101-v1:0';
   }
 
   // PRODUCTION e DEVELOPMENT: Usar Sonnet 4.5 (custo-benefício)
   console.log(`📊 ${env.toUpperCase()}: usando Claude Sonnet 4.5 (custo-benefício)`);
-  return 'us.anthropic.claude-sonnet-4-5-20250929-v1:0';
+  return 'anthropic.claude-sonnet-4-5-20250929-v1:0';
 }
 
 const CONFIG = {
