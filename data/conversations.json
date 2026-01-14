@@ -336,5 +336,28 @@
     "createdAt": "2026-01-08T11:03:10.389Z",
     "updatedAt": "2026-01-08T11:03:18.819Z",
     "messageCount": 2
+  },
+  "conv_1768329969580_8ulupi": {
+    "id": "conv_1768329969580_8ulupi",
+    "userId": "anonymous",
+    "sessionId": "8S93EtyHsk8YyHt8CaMy0M1Mgphjhv_2",
+    "projectId": null,
+    "title": "Teste rápido",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste rápido",
+        "timestamp": "2026-01-13T18:46:09.582Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Olá! Sistema operacional e pronto para atender.\n\nPode solicitar:\n\n- Elaboração de petições (iniciais, recursos, contestações)\n- Pesquisa de jurisprudência e súmulas\n- Consulta de doutrina especializada\n- Análise de documentos enviados\n- Pareceres jurídicos\n- Contratos e peças administrativas\n\nTodos os documentos são formatados para impressão direta (Calibri 12pt, espaçamento 1.5, margens ABNT).\n\nComo posso auxiliar?",
+        "timestamp": "2026-01-13T18:46:15.620Z"
+      }
+    ],
+    "createdAt": "2026-01-13T18:46:09.580Z",
+    "updatedAt": "2026-01-13T18:46:15.620Z",
+    "messageCount": 2
   }
 }

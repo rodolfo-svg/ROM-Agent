@@ -1,1 +1,0 @@
-{"data":{"sucesso":true,"resposta":"<thinking>O usuário fez uma solicitação simple","raciocinio":null,"modelo":"amazon.nova-premier-v1:0","uso":{"tokensEntrada":1733,"tokensSaida":10,"tokensTotal":1743},"latencia":852,"motivoParada":"max_tokens","guardrailStats":{"found":false,"conversationId":"conv_1767870141347_8589dxw3x"}},"expiry":1767873742675,"created":1767870142675}

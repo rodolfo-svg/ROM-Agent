@@ -1,1 +1,0 @@
-{"data":{"sucesso":true,"resposta":"OK","raciocinio":null,"modelo":"mistral.pixtral-large-2502-v1:0","uso":{"tokensEntrada":1315,"tokensSaida":2,"tokensTotal":1317},"latencia":328,"motivoParada":"end_turn","guardrailStats":{"found":false,"conversationId":"conv_1767870182462_ayeu17mc3"}},"expiry":1767873783336,"created":1767870183336}

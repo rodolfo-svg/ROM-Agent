@@ -70,6 +70,7 @@ import conversationsRoutes from './routes/conversations.js';
 import usersRoutes from './routes/users.js';
 import { requireAuth } from './middleware/auth.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
+import extractionService from './services/extraction-service.js';
 
 // ═══════════════════════════════════════════════════════════════════════
 // PROMPT OPTIMIZATION v3.0 - Modular prompt builder with 79% token reduction
@@ -2406,6 +2407,132 @@ app.delete('/api/upload/chunked/:uploadId', async (req, res) => {
 });
 
 logger.info('✅ Chunked Upload API endpoints configured');
+
+// ============================================================================
+// API - EXTRAÇÃO DE PROCESSOS JUDICIAIS
+// ============================================================================
+
+/**
+ * Extrai dados de processo judicial
+ * POST /api/extrair-processo
+ * Body: { numeroProcesso: string, baixarDocs?: boolean }
+ */
+app.post('/api/extrair-processo', async (req, res) => {
+  try {
+    const { numeroProcesso } = req.body;
+
+    if (!numeroProcesso) {
+      return res.status(400).json({
+        error: 'Número do processo é obrigatório',
+        exemplo: '1234567-89.2023.8.09.0000'
+      });
+    }
+
+    logger.info('📄 Requisição de extração de processo', {
+      numero: numeroProcesso,
+      ip: req.ip
+    });
+
+    // Verificar se já existe em cache
+    const cached = await extractionService.buscarProcesso(numeroProcesso);
+    if (cached && req.query.cache !== 'false') {
+      logger.info('✅ Processo encontrado em cache', { numero: numeroProcesso });
+      return res.json({
+        success: true,
+        cached: true,
+        processo: cached
+      });
+    }
+
+    // Extrair processo
+    const processo = await extractionService.extrairProcesso(numeroProcesso, {
+      baixarDocs: req.body.baixarDocs === true
+    });
+
+    res.json({
+      success: true,
+      cached: false,
+      processo
+    });
+
+  } catch (error) {
+    logger.error('Erro na extração', { error: error.message });
+    res.status(500).json({
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
+/**
+ * Lista processos extraídos
+ * GET /api/processos-extraidos
+ */
+app.get('/api/processos-extraidos', async (req, res) => {
+  try {
+    const processos = await extractionService.listarProcessos();
+
+    res.json({
+      success: true,
+      total: processos.length,
+      processos
+    });
+
+  } catch (error) {
+    logger.error('Erro ao listar processos', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Busca processo extraído
+ * GET /api/processos-extraidos/:numero
+ */
+app.get('/api/processos-extraidos/:numero', async (req, res) => {
+  try {
+    const processo = await extractionService.buscarProcesso(req.params.numero);
+
+    if (!processo) {
+      return res.status(404).json({
+        error: 'Processo não encontrado',
+        numero: req.params.numero
+      });
+    }
+
+    res.json({
+      success: true,
+      processo
+    });
+
+  } catch (error) {
+    logger.error('Erro ao buscar processo', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Health check dos scrapers
+ * GET /api/scrapers/health
+ */
+app.get('/api/scrapers/health', async (req, res) => {
+  try {
+    const health = await extractionService.healthCheck();
+
+    const allOk = Object.values(health).every(s => s.status === 'ok');
+
+    res.status(allOk ? 200 : 503).json({
+      status: allOk ? 'healthy' : 'degraded',
+      scrapers: health,
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    logger.error('Erro no health check', { error: error.message });
+    res.status(500).json({ error: error.message });
+  }
+});
+
+logger.info('✅ Extraction API endpoints configured');
 
 // ============================================================================
 
@@ -9663,9 +9790,48 @@ Acesse: https://iarom.com.br/kb-documents.html
 // ERROR HANDLERS v2.8.0 - Devem vir APÓS todas as rotas
 // ═══════════════════════════════════════════════════════════════════════
 
+// Multer Error Handler (captura erros de upload)
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    // Erro do Multer (file size, campo inválido, etc)
+    logger.error('Erro no upload (Multer):', {
+      code: err.code,
+      field: err.field,
+      message: err.message
+    });
+
+    return res.status(400).json({
+      error: 'Erro no upload',
+      code: err.code,
+      message: err.message
+    });
+  }
+
+  // Se não for erro do Multer, passar para o próximo handler
+  next(err);
+});
+
+// General Error Handler (captura erros não tratados)
+app.use((err, req, res, next) => {
+  // Log do erro
+  logger.error('Erro não tratado:', {
+    message: err.message,
+    stack: err.stack,
+    url: req.url,
+    method: req.method
+  });
+
+  // Retornar resposta JSON em vez de HTML
+  res.status(err.status || 500).json({
+    error: err.message || 'Internal Server Error',
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+  });
+});
+
 // CSRF Error Handler (captura erros de CSRF e retorna resposta formatada)
 app.use(csrfProtection.errorHandler);
 console.log('⚠️ [SECURITY] CSRF Error Handler configurado');
+console.log('⚠️ [ERROR] Multer & General Error Handlers configurados');
 
 // ============================================================================
 // GRACEFUL SHUTDOWN - Fechar conexões de banco ao encerrar
