@@ -31,10 +31,6 @@ async function registerServiceWorker(config?: ServiceWorkerConfig) {
     return
   }
 
-  // DESABILITADO: Service Worker causando loop infinito
-  console.log('[PWA] Service Worker DESABILITADO (loop infinito)')
-  return
-
   // Only register in production
   if (!import.meta.env.PROD) {
     console.log('[PWA] Service Worker desabilitado em desenvolvimento')
@@ -74,10 +70,10 @@ async function registerServiceWorker(config?: ServiceWorkerConfig) {
       }
     }
 
-    // Check for updates periodically
-    setInterval(() => {
-      registration.update().catch(console.error)
-    }, 60000) // Every minute
+    // Check for updates periodically (DESABILITADO: causava loop infinito)
+    // setInterval(() => {
+    //   registration.update().catch(console.error)
+    // }, 60000)
 
     // Listen for controller change (new SW activated)
     navigator.serviceWorker.addEventListener('controllerchange', () => {

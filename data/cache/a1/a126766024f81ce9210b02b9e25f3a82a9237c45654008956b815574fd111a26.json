@@ -1,0 +1,1 @@
+{"data":{"sucesso":true,"resposta":"The `ping` command is a network utility used","raciocinio":null,"modelo":"amazon.nova-lite-v1:0","uso":{"tokensEntrada":1,"tokensSaida":10,"tokensTotal":11},"latencia":339,"motivoParada":"max_tokens","guardrailStats":{"found":false,"conversationId":"conv_1768519861147_itkpern4k"}},"expiry":1768523462093,"created":1768519862093}
