@@ -1,0 +1,1 @@
+{"data":{"sucesso":true,"resposta":"OK. Se precisar de mais alguma coisa ou","raciocinio":null,"modelo":"amazon.nova-premier-v1:0","uso":{"tokensEntrada":39,"tokensSaida":10,"tokensTotal":49},"latencia":620,"motivoParada":"max_tokens","guardrailStats":{"found":false,"conversationId":"conv_1768366810756_xiudv9wty"}},"expiry":1768370411851,"created":1768366811851}

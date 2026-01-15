@@ -8370,7 +8370,7 @@ async function preloadModelos() {
   const modelos = [
     'amazon.nova-lite-v1:0',
     'amazon.nova-pro-v1:0',
-    'anthropic.claude-haiku-4-5-20251001-v1:0'
+    'us.anthropic.claude-haiku-4-5-20251001-v1:0'
   ];
 
   for (const modelo of modelos) {

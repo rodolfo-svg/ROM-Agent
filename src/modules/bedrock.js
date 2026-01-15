@@ -78,12 +78,12 @@ function getDefaultModel() {
   // STAGING: Usar Opus 4.5 (máxima qualidade)
   if (env === 'staging' || process.env.RENDER_SERVICE_NAME?.includes('staging')) {
     console.log('🚀 STAGING detectado: usando Claude Opus 4.5 (máxima qualidade)');
-    return 'anthropic.claude-opus-4-5-20251101-v1:0';
+    return 'us.anthropic.claude-opus-4-5-20251101-v1:0';
   }
 
   // PRODUCTION e DEVELOPMENT: Usar Sonnet 4.5 (custo-benefício)
   console.log(`📊 ${env.toUpperCase()}: usando Claude Sonnet 4.5 (custo-benefício)`);
-  return 'anthropic.claude-sonnet-4-5-20250929-v1:0';
+  return 'us.anthropic.claude-sonnet-4-5-20250929-v1:0';
 }
 
 const CONFIG = {
@@ -105,14 +105,15 @@ export const MODELOS_BEDROCK = {
     'titan-text': 'amazon.titan-text-express-v1'
   },
   anthropic: {
-    'claude-opus-4.5': 'anthropic.claude-opus-4-5-20251101-v1:0',
-    'claude-opus-4': 'anthropic.claude-opus-4-20250514-v1:0',
-    'claude-sonnet-4.5': 'anthropic.claude-sonnet-4-5-20250929-v1:0',
-    'claude-sonnet-4': 'anthropic.claude-sonnet-4-20250514-v1:0',
-    'claude-haiku-4.5': 'anthropic.claude-haiku-4-5-20251001-v1:0',
-    'claude-3.5-sonnet': 'anthropic.claude-3-5-sonnet-20241022-v2:0',
-    'claude-3.5-haiku': 'anthropic.claude-3-5-haiku-20241022-v1:0',
-    'claude-3-opus': 'anthropic.claude-3-opus-20240229-v1:0',
+    'claude-opus-4.5': 'us.anthropic.claude-opus-4-5-20251101-v1:0',
+    'claude-opus-4': 'us.anthropic.claude-opus-4-20250514-v1:0',
+    'claude-sonnet-4.5': 'us.anthropic.claude-sonnet-4-5-20250929-v1:0',
+    'claude-sonnet-4': 'us.anthropic.claude-sonnet-4-20250514-v1:0',
+    'claude-haiku-4.5': 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
+    'claude-3.7-sonnet': 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
+    'claude-3.5-sonnet': 'us.anthropic.claude-3-5-sonnet-20241022-v2:0',
+    'claude-3.5-haiku': 'us.anthropic.claude-3-5-haiku-20241022-v1:0',
+    'claude-3-opus': 'us.anthropic.claude-3-opus-20240229-v1:0',
     'claude-3-sonnet': 'anthropic.claude-3-sonnet-20240229-v1:0',
     'claude-3-haiku': 'anthropic.claude-3-haiku-20240307-v1:0'
   },

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-08T11:02:05.995Z",
+  "timestamp": "2026-01-14T05:00:21.283Z",
   "summary": {
     "total": 18,
     "passed": 10,
@@ -13,7 +13,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 34,
+      "duration": 20,
       "data": {
         "nome": "ROM",
         "versao": "2.8.0",
@@ -30,8 +30,8 @@
         ],
         "health": {
           "status": "healthy",
-          "uptime": "4h 24m",
-          "uptimeSeconds": 15899
+          "uptime": "9h 11m",
+          "uptimeSeconds": 33113
         },
         "bedrock": {
           "status": "connected",
@@ -50,13 +50,13 @@
           "nodeVersion": "v25.2.1",
           "platform": "darwin",
           "arch": "arm64",
-          "pid": 60223,
-          "gitCommit": "973daf81"
+          "pid": 25936,
+          "gitCommit": "633d8b1"
         },
         "memory": {
-          "rss": "97 MB",
-          "heapTotal": "158 MB",
-          "heapUsed": "155 MB",
+          "rss": "117 MB",
+          "heapTotal": "165 MB",
+          "heapUsed": "161 MB",
           "external": "23 MB"
         },
         "storage": {
@@ -118,17 +118,17 @@
           "distExists": true,
           "indexExists": true,
           "assetsExists": true,
-          "assetsCount": 45,
-          "jsFilesCount": 22,
+          "assetsCount": 47,
+          "jsFilesCount": 23,
           "sampleJsFiles": [
-            "CaseProcessorPage-imDYGrMr.js",
-            "CertidoesPage-BtOrkSbQ.js",
-            "ChatPage-B_sd5G5g.js",
-            "DashboardPage-DaWqHyog.js",
-            "LoginPage-DgEfIjUI.js"
+            "CaseProcessorPage-DKPZ0FR_.js",
+            "CertidoesPage-iiaNFJfU.js",
+            "ChatPage-631SIRfQ.js",
+            "DashboardPage-BRmqDACk.js",
+            "EmptyState-DMg97Ulc.js"
           ]
         },
-        "timestamp": "2026-01-08T11:02:03.641Z"
+        "timestamp": "2026-01-14T05:00:19.015Z"
       }
     },
     {
@@ -137,7 +137,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 1,
       "data": {
         "success": true,
         "conversations": {
@@ -155,7 +155,7 @@
           "averageResponseTime": 3,
           "unit": "seconds"
         },
-        "timestamp": "2026-01-08T11:02:03.648Z"
+        "timestamp": "2026-01-14T05:00:19.017Z"
       }
     },
     {
@@ -164,7 +164,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 1,
       "data": {
         "success": false,
         "error": "Banco de dados indisponível"
@@ -176,10 +176,10 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2308,
+      "duration": 2233,
       "data": {
         "response": "OK",
-        "conversationId": "conv_1767870123658_zd5a3h",
+        "conversationId": "conv_1768366819019_07iojb",
         "metadados": {},
         "recomendacoes": [],
         "verificacaoRealizada": false
@@ -187,11 +187,11 @@
     },
     {
       "name": "2.3 Obter Conversa Específica",
-      "url": "http://localhost:3000/api/conversations/conv_1767870123658_zd5a3h",
+      "url": "http://localhost:3000/api/conversations/conv_1768366819019_07iojb",
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 3,
       "data": {
         "success": false,
         "error": "Banco de dados indisponível"
@@ -199,7 +199,7 @@
     },
     {
       "name": "2.4 Renomear Conversa",
-      "url": "http://localhost:3000/api/conversations/conv_1767870123658_zd5a3h/rename",
+      "url": "http://localhost:3000/api/conversations/conv_1768366819019_07iojb/rename",
       "status": 200,
       "expected": 200,
       "passed": true,
@@ -226,7 +226,7 @@
       "status": 401,
       "expected": 200,
       "passed": false,
-      "duration": 3,
+      "duration": 2,
       "data": {
         "error": "Token não fornecido"
       }
@@ -237,14 +237,14 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 4,
+      "duration": 3,
       "data": {
         "success": true,
         "status": "active",
-        "totalDocuments": 3,
-        "totalSize": 304,
+        "totalDocuments": 5,
+        "totalSize": 432,
         "totalSizeFormatted": "0.00 MB",
-        "lastUpdate": "2025-12-15T23:03:37.286Z",
+        "lastUpdate": "2026-01-08T11:03:31.252Z",
         "kbPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/KB"
       }
     },
@@ -254,7 +254,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
+      "duration": 2,
       "data": {
         "authenticated": false,
         "username": null,
@@ -291,7 +291,7 @@
       "status": 403,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 1,
       "data": {
         "success": false,
         "error": "CSRF token inválido",
@@ -304,7 +304,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
+      "duration": 2,
       "data": []
     },
     {
@@ -313,42 +313,22 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 1,
       "data": [
         {
-          "filename": "backup-2025-12-14.zip",
-          "size": 117524,
-          "timestamp": "2026-01-08T08:58:38.526Z"
+          "filename": "backup-2026-01-13.zip",
+          "size": 285826,
+          "timestamp": "2026-01-13T06:00:00.748Z"
         },
         {
-          "filename": "backup-2026-01-07.zip",
-          "size": 270906,
-          "timestamp": "2026-01-08T07:07:24.875Z"
+          "filename": "backup-2026-01-12.zip",
+          "size": 293556,
+          "timestamp": "2026-01-12T20:36:42.614Z"
         },
         {
-          "filename": "backup-2026-01-06.zip",
-          "size": 269376,
-          "timestamp": "2026-01-07T19:13:01.518Z"
-        },
-        {
-          "filename": "backup-2026-01-05.zip",
-          "size": 268060,
-          "timestamp": "2026-01-05T19:34:47.333Z"
-        },
-        {
-          "filename": "backup-2025-12-31.zip",
-          "size": 247903,
-          "timestamp": "2026-01-05T19:34:47.328Z"
-        },
-        {
-          "filename": "backup-2025-12-30.zip",
-          "size": 248073,
-          "timestamp": "2026-01-05T19:34:47.316Z"
-        },
-        {
-          "filename": "backup-2025-12-18.zip",
-          "size": 214421,
-          "timestamp": "2025-12-23T18:37:20.979Z"
+          "filename": "backup-2026-01-11.zip",
+          "size": 293558,
+          "timestamp": "2026-01-11T20:33:03.363Z"
         }
       ]
     },
@@ -389,8 +369,8 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
-      "data": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, viewport-fit=cover\" />\n\n    <!-- PWA Meta Tags -->\n    <meta name=\"theme-color\" content=\"#D97706\" />\n    <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n    <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\" />\n    <meta name=\"apple-mobile-web-app-title\" content=\"IAROM\" />\n\n    <!-- Icons -->\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <link rel=\"apple-touch-icon\" href=\"/icons/icon-180x180.png\" />\n    <link rel=\"manifest\" href=\"/manifest.json\" />\n\n    <!-- SEO -->\n    <meta name=\"description\" content=\"Sistema Completo de Extração e Análise Processual com IA\" />\n\n    <title>IAROM - Sistema de Análise Processual</title>\n    <script type=\"module\" crossorigin src=\"/assets/index-B0pEQ3il.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-Cq1pa5bA.css\">\n  <link rel=\"manifest\" href=\"/manifest.webmanifest\"><script id=\"vite-plugin-pwa:register-sw\" src=\"/registerSW.js\"></script></head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
+      "duration": 1,
+      "data": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n  <head>\n    <meta charset=\"UTF-8\" />\n\n    <!-- Viewport with iOS notch support -->\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover\" />\n\n    <!-- PWA Meta Tags -->\n    <meta name=\"theme-color\" content=\"#D97706\" />\n    <meta name=\"theme-color\" media=\"(prefers-color-scheme: light)\" content=\"#D97706\" />\n    <meta name=\"theme-color\" media=\"(prefers-color-scheme: dark)\" content=\"#78716C\" />\n\n    <!-- iOS PWA Meta Tags -->\n    <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n    <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\" />\n    <meta name=\"apple-mobile-web-app-title\" content=\"ROM Agent\" />\n    <meta name=\"mobile-web-app-capable\" content=\"yes\" />\n\n    <!-- iOS Status Bar -->\n    <meta name=\"apple-touch-fullscreen\" content=\"yes\" />\n\n    <!-- Disable iOS phone number detection -->\n    <meta name=\"format-detection\" content=\"telephone=no\" />\n\n    <!-- Standard Icons -->\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.json\" />\n\n    <!-- Apple Touch Icons (iOS Home Screen) -->\n    <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/icons/icon-180x180.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"192x192\" href=\"/icons/icon-192x192.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"512x512\" href=\"/icons/icon-512x512.png\" />\n\n    <!-- iOS Splash Screens -->\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-14-pro-max-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-14-pro-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-13-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-x-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)\" href=\"/splash/iphone-11-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)\" href=\"/splash/iphone-8-portrait.png\" />\n\n    <!-- SEO -->\n    <meta name=\"description\" content=\"Assistente Jurídico Inteligente com IA - Análise Processual Completa\" />\n    <meta name=\"keywords\" content=\"assistente jurídico, IA, análise processual, direito, advocacia\" />\n\n    <title>ROM Agent - Assistente Jurídico Inteligente</title>\n    <script type=\"module\" crossorigin src=\"/assets/index-DkLq3QWC.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-BHDIR4AG.css\">\n  <link rel=\"manifest\" href=\"/manifest.webmanifest\"><script id=\"vite-plugin-pwa:register-sw\" src=\"/registerSW.js\"></script></head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
     }
   ]
 }

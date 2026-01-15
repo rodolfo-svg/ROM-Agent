@@ -1,0 +1,16 @@
+{
+  "timestamp": "2026-01-14T06:01:59.760Z",
+  "environment": {
+    "nodeVersion": "v25.2.1",
+    "platform": "darwin",
+    "arch": "arm64"
+  },
+  "configuration": {
+    "timeout": 120000,
+    "performanceTargetPerPage": 5000,
+    "minConfidence": 50,
+    "testImagesDir": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/tests/fixtures/images",
+    "testOutputDir": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/tests/output/ocr-tests"
+  },
+  "status": "completed"
+}

@@ -1,20 +1,20 @@
 {
   "summary": {
     "total": 41,
-    "passed": 30,
-    "failed": 11,
+    "passed": 31,
+    "failed": 10,
     "warnings": 0,
-    "successRate": 73.2,
-    "duration": 0.08,
-    "timestamp": "2026-01-08T11:02:03.559Z"
+    "successRate": 75.6,
+    "duration": 0.05,
+    "timestamp": "2026-01-14T05:00:18.950Z"
   },
   "tests": [
     {
       "name": "Health Check (/api/info)",
       "passed": {
         "status": "healthy",
-        "uptime": "4h 24m",
-        "uptimeSeconds": 15899
+        "uptime": "9h 11m",
+        "uptimeSeconds": 33113
       },
       "details": "Status: 200, Version: 2.8.0, Health: healthy, Bedrock: connected"
     },
@@ -46,7 +46,7 @@
     {
       "name": "Status do Knowledge Base (/api/kb/status)",
       "passed": true,
-      "details": "Status: 200, Documentos: 3"
+      "details": "Status: 200, Documentos: 5"
     },
     {
       "name": "Suporte a Export TXT",
@@ -110,8 +110,8 @@
     },
     {
       "name": "Touch Optimization (44px)",
-      "passed": false,
-      "details": "Ausente"
+      "passed": true,
+      "details": "Configurado"
     },
     {
       "name": "Safe Area (Notch iPhone)",
@@ -211,7 +211,7 @@
     {
       "name": "Status de Backups (/api/backup/status)",
       "passed": true,
-      "details": "Status: 200, Backups: 7"
+      "details": "Status: 200, Backups: 3"
     },
     {
       "name": "Estatísticas de Cache (/api/cache/statistics)",

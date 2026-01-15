@@ -1,0 +1,1 @@
+{"data":{"sucesso":true,"resposta":"OK","raciocinio":null,"modelo":"anthropic.claude-haiku-4-5-20251001-v1:0","uso":{"tokensEntrada":13,"tokensSaida":4,"tokensTotal":17},"latencia":670,"motivoParada":"end_turn","guardrailStats":{"found":false,"conversationId":"conv_1768366807606_yejraq2b0"}},"expiry":1768370408754,"created":1768366808754}
