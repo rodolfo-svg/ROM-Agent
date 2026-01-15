@@ -31,6 +31,10 @@ async function registerServiceWorker(config?: ServiceWorkerConfig) {
     return
   }
 
+  // DESABILITADO: Service Worker causando loop infinito
+  console.log('[PWA] Service Worker DESABILITADO (loop infinito)')
+  return
+
   // Only register in production
   if (!import.meta.env.PROD) {
     console.log('[PWA] Service Worker desabilitado em desenvolvimento')
