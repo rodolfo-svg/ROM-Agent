@@ -31,6 +31,10 @@ async function registerServiceWorker(config?: ServiceWorkerConfig) {
     return
   }
 
+  // TEMPORARIAMENTE DESABILITADO para forçar atualização
+  console.log('[PWA] Service Worker DESABILITADO temporariamente')
+  return
+
   // Only register in production
   if (!import.meta.env.PROD) {
     console.log('[PWA] Service Worker desabilitado em desenvolvimento')
