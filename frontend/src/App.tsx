@@ -65,7 +65,7 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     checkAuth()
-  }, [checkAuth])
+  }, []) // ✅ FIX: Rodar apenas UMA VEZ no mount
 
   if (isLoading) {
     return (
