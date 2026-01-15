@@ -79,6 +79,46 @@ export function ChatPage() {
 
   // Handle sending message
   const handleSend = async (content: string, files?: File[]) => {
+    // 📎 Handle file uploads first
+    if (files && files.length > 0) {
+      if (files.length > 1) {
+        console.warn(`⚠️ ${files.length} arquivos selecionados, mas apenas o primeiro será enviado`)
+      }
+      console.log(`📤 Uploading 1 file: ${files[0].name}...`)
+
+      try {
+        const formData = new FormData()
+        // Backend aceita apenas UM arquivo por vez com nome 'file' (singular)
+        formData.append('file', files[0])
+
+        const uploadResponse = await fetch('/api/upload', {
+          method: 'POST',
+          credentials: 'include',
+          body: formData
+        })
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json()
+          throw new Error(errorData.error || 'Erro no upload')
+        }
+
+        const uploadResult = await uploadResponse.json()
+        console.log('✅ Upload success:', uploadResult)
+
+        // Add file info to message content
+        const fileName = files[0].name
+        content = content ? `${content}\n\n📎 Arquivo: ${fileName}` : `📎 Arquivo: ${fileName}`
+
+      } catch (error: any) {
+        console.error('❌ Upload error:', error)
+        addMessage({
+          role: 'assistant',
+          content: `❌ Erro ao fazer upload: ${error.message}`
+        })
+        return // Stop here if upload fails
+      }
+    }
+
     // Create conversation if needed
     let convId = activeConversationId
     if (!convId) {
