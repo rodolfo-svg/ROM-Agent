@@ -4,7 +4,7 @@ import { useChatStore } from '@/stores/chatStore'
 import { useArtifactStore } from '@/stores/artifactStore'
 import { Sidebar } from '@/components/layout'
 import { ChatInput, MessageItem, EmptyState } from '@/components/chat'
-import { chatStream } from '@/services/api'
+import { chatStream, getCsrfToken } from '@/services/api'
 
 // Lazy load ArtifactPanel (682KB bundle reduction)
 const ArtifactPanel = lazy(() => import('@/components/artifacts').then(m => ({ default: m.ArtifactPanel })))
@@ -91,9 +91,17 @@ export function ChatPage() {
         // Backend aceita apenas UM arquivo por vez com nome 'file' (singular)
         formData.append('file', files[0])
 
+        // Obter CSRF token para autenticação
+        const csrfToken = await getCsrfToken()
+        const headers: HeadersInit = {}
+        if (csrfToken) {
+          headers['x-csrf-token'] = csrfToken
+        }
+
         const uploadResponse = await fetch('/api/upload', {
           method: 'POST',
           credentials: 'include',
+          headers,
           body: formData
         })
 

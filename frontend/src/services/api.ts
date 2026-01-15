@@ -34,7 +34,7 @@ let csrfToken: string | null = null
  * Busca CSRF token do backend
  * Token é armazenado em memória e reutilizado
  */
-async function getCsrfToken(): Promise<string | null> {
+export async function getCsrfToken(): Promise<string | null> {
   if (csrfToken) {
     return csrfToken
   }
