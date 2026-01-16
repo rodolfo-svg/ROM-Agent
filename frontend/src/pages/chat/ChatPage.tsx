@@ -143,7 +143,7 @@ export function ChatPage() {
   } = useFileUpload({
     endpoint: 'simple', // Use /api/upload for chat
     maxFiles: 5,
-    maxSizeBytes: 100 * 1024 * 1024, // 100MB (alinhado com servidor)
+    maxSizeBytes: 500 * 1024 * 1024, // 500MB para documentos jurídicos grandes
     onUploadComplete: (file, fileInfo) => {
       console.log(`[ChatPage] File uploaded: ${file.name}`, fileInfo)
     },

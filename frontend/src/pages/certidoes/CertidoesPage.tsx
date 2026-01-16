@@ -49,7 +49,7 @@ export function CertidoesPage() {
   } = useFileUpload({
     endpoint: 'kb', // Use KB endpoint with AI extraction
     maxFiles: 10,
-    maxSizeBytes: 100 * 1024 * 1024, // 100MB
+    maxSizeBytes: 500 * 1024 * 1024, // 500MB para documentos jurídicos grandes
     allowedTypes: ['application/pdf', 'image/png', 'image/jpeg'],
     onUploadComplete: (file, fileInfo) => {
       console.log(`Upload completo: ${file.name}`, fileInfo)

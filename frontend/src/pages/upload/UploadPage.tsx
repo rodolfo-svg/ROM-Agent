@@ -77,7 +77,7 @@ export function UploadPage() {
   } = useFileUpload({
     endpoint: 'kb',
     maxFiles: 20,
-    maxSizeBytes: 100 * 1024 * 1024, // 100MB
+    maxSizeBytes: 500 * 1024 * 1024, // 500MB para documentos jurídicos grandes
     allowedTypes: [], // Allow all types for KB
     onUploadComplete: (file, fileInfo) => {
       console.log(`[UploadPage] File uploaded: ${file.name}`, fileInfo)

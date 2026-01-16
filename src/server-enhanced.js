@@ -918,7 +918,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 100 * 1024 * 1024, // 100MB (4x maior que Claude.ai)
+    fileSize: 500 * 1024 * 1024, // 500MB para documentos jurídicos grandes
     files: 20 // 20 arquivos por vez
   },
   fileFilter: (req, file, cb) => {

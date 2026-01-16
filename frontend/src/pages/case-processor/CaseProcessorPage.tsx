@@ -100,7 +100,7 @@ export function CaseProcessorPage() {
   } = useFileUpload({
     endpoint: 'case-processor',
     maxFiles: 10,
-    maxSizeBytes: 50 * 1024 * 1024, // 50MB
+    maxSizeBytes: 500 * 1024 * 1024, // 500MB para documentos jurídicos grandes
     allowedTypes: ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
     onUploadComplete: async (file, fileInfo) => {
       console.log(`[CaseProcessor] File processed: ${file.name}`, fileInfo)
