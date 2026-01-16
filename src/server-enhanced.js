@@ -5132,15 +5132,17 @@ app.get('/api/kb/status', (req, res) => {
 // ROTAS DE API PARA KNOWLEDGE BASE (KB) COM AUTENTICAÇÃO
 // ====================================================================
 
-// Upload de documentos para o KB (requer autenticação)
-app.post('/api/kb/upload', authSystem.authMiddleware(), upload.array('files', 20), async (req, res) => {
+// Upload de documentos para o KB (autenticação opcional)
+// ✅ FIX: Remover authMiddleware() para consistência com /api/upload
+app.post('/api/kb/upload', upload.array('files', 20), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
     }
 
-    const userId = req.user.userId;
-    const userName = req.user.name || 'Unknown';
+    // Usuário autenticado (opcional) ou anônimo
+    const userId = req.user?.userId || req.session?.userId || 'anonymous';
+    const userName = req.user?.name || req.session?.user?.name || 'Anonymous';
     const uploadedDocs = [];
 
     // Processar cada arquivo COM DOCUMENTOS ESTRUTURADOS
