@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-01-14T07:07:20.703Z",
-  "duration": 7205.175,
+  "timestamp": "2026-01-16T20:59:13.184Z",
+  "duration": 7220,
   "stats": {
-    "totalRequests": 2616,
-    "successfulRequests": 1734,
-    "failedRequests": 882,
-    "errorRate": 0.33715596330275227,
-    "avgLatency": 389,
-    "memoryIncrease": 5
+    "totalRequests": 2633,
+    "successfulRequests": 1720,
+    "failedRequests": 913,
+    "errorRate": 0.3467527535131029,
+    "avgLatency": 378,
+    "memoryIncrease": 4
   },
   "criteria": {
     "errorRate": false,
@@ -21,5014 +21,5159 @@
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:07:16.772Z"
+      "time": "2026-01-16T19:03:15.835Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:07:16.994Z"
+      "time": "2026-01-16T19:03:16.057Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:07:17.214Z"
+      "time": "2026-01-16T19:03:16.286Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:07:17.440Z"
+      "time": "2026-01-16T19:03:16.535Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:07:17.670Z"
+      "time": "2026-01-16T19:03:16.779Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:07:17.910Z"
+      "time": "2026-01-16T19:03:17.048Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
-      "status": 429,
-      "time": "2026-01-14T05:07:17.970Z"
-    },
-    {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:07:17.977Z"
+      "time": "2026-01-16T19:03:17.089Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:07:17.978Z"
+      "time": "2026-01-16T19:03:17.090Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:07:17.989Z"
+      "time": "2026-01-16T19:03:17.097Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:07:17.990Z"
+      "time": "2026-01-16T19:03:17.101Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:07:17.990Z"
+      "time": "2026-01-16T19:03:17.104Z"
     },
     {
       "endpoint": "/api/conversations/list",
+      "status": 429,
+      "time": "2026-01-16T19:03:17.117Z"
+    },
+    {
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:07:18.000Z"
+      "time": "2026-01-16T19:03:17.126Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:07:49.316Z"
+      "time": "2026-01-16T19:03:48.429Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:07:49.639Z"
+      "time": "2026-01-16T19:03:48.681Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:07:49.918Z"
+      "time": "2026-01-16T19:03:48.926Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:07:50.149Z"
+      "time": "2026-01-16T19:03:49.153Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:07:50.459Z"
+      "time": "2026-01-16T19:03:49.390Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:08:21.818Z"
+      "time": "2026-01-16T19:04:21.241Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:08:22.098Z"
+      "time": "2026-01-16T19:04:21.477Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:08:22.368Z"
+      "time": "2026-01-16T19:04:21.709Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:08:22.669Z"
+      "time": "2026-01-16T19:04:21.946Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:08:22.898Z"
+      "time": "2026-01-16T19:04:22.202Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:08:23.137Z"
+      "time": "2026-01-16T19:04:22.494Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:08:23.189Z"
+      "time": "2026-01-16T19:04:22.533Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:08:23.204Z"
+      "time": "2026-01-16T19:04:22.534Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:08:23.204Z"
+      "time": "2026-01-16T19:04:22.552Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:08:23.206Z"
+      "time": "2026-01-16T19:04:22.557Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:08:23.209Z"
+      "time": "2026-01-16T19:04:22.596Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:08:23.216Z"
+      "time": "2026-01-16T19:04:26.388Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:08:23.695Z"
+      "time": "2026-01-16T19:04:26.407Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:08:54.967Z"
+      "time": "2026-01-16T19:04:57.728Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:08:55.218Z"
+      "time": "2026-01-16T19:04:57.982Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:08:55.467Z"
+      "time": "2026-01-16T19:04:58.217Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:08:55.697Z"
+      "time": "2026-01-16T19:04:58.476Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:08:55.947Z"
+      "time": "2026-01-16T19:04:58.790Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:09:27.416Z"
+      "time": "2026-01-16T19:05:30.102Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:09:27.656Z"
+      "time": "2026-01-16T19:05:30.343Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:09:27.936Z"
+      "time": "2026-01-16T19:05:30.566Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:09:28.217Z"
+      "time": "2026-01-16T19:05:30.887Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:09:28.466Z"
+      "time": "2026-01-16T19:05:31.105Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:09:28.706Z"
+      "time": "2026-01-16T19:05:31.330Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:09:28.764Z"
+      "time": "2026-01-16T19:05:31.404Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:09:28.775Z"
+      "time": "2026-01-16T19:05:31.411Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:09:28.775Z"
+      "time": "2026-01-16T19:05:31.423Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:09:28.782Z"
+      "time": "2026-01-16T19:05:31.423Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:09:28.786Z"
+      "time": "2026-01-16T19:05:31.429Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:09:28.792Z"
+      "time": "2026-01-16T19:05:31.440Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:09:28.793Z"
+      "time": "2026-01-16T19:05:31.451Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:10:00.053Z"
+      "time": "2026-01-16T19:06:02.859Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:10:00.295Z"
+      "time": "2026-01-16T19:06:03.101Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:10:00.535Z"
+      "time": "2026-01-16T19:06:03.351Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:10:00.782Z"
+      "time": "2026-01-16T19:06:03.571Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:10:01.005Z"
+      "time": "2026-01-16T19:06:03.805Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:10:32.334Z"
+      "time": "2026-01-16T19:06:35.017Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:10:32.564Z"
+      "time": "2026-01-16T19:06:35.241Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:10:32.804Z"
+      "time": "2026-01-16T19:06:35.478Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:10:33.057Z"
+      "time": "2026-01-16T19:06:35.720Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:10:33.304Z"
+      "time": "2026-01-16T19:06:35.981Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:10:33.544Z"
+      "time": "2026-01-16T19:06:36.202Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:10:33.624Z"
+      "time": "2026-01-16T19:06:36.273Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:10:33.624Z"
+      "time": "2026-01-16T19:06:36.285Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:10:33.632Z"
+      "time": "2026-01-16T19:06:36.293Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:10:33.633Z"
+      "time": "2026-01-16T19:06:36.312Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:10:33.639Z"
+      "time": "2026-01-16T19:06:36.315Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:10:33.661Z"
+      "time": "2026-01-16T19:06:36.317Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:10:33.661Z"
+      "time": "2026-01-16T19:06:36.320Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:11:04.908Z"
+      "time": "2026-01-16T19:07:07.600Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:11:05.135Z"
+      "time": "2026-01-16T19:07:07.859Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:11:05.403Z"
+      "time": "2026-01-16T19:07:08.091Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:11:05.633Z"
+      "time": "2026-01-16T19:07:08.340Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:11:05.873Z"
+      "time": "2026-01-16T19:07:08.559Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:11:37.563Z"
+      "time": "2026-01-16T19:07:39.839Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:11:37.823Z"
+      "time": "2026-01-16T19:07:40.061Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:11:38.072Z"
+      "time": "2026-01-16T19:07:40.303Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:11:38.325Z"
+      "time": "2026-01-16T19:07:40.585Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:11:38.574Z"
+      "time": "2026-01-16T19:07:40.830Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:11:38.843Z"
+      "time": "2026-01-16T19:07:41.076Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:11:38.871Z"
+      "time": "2026-01-16T19:07:41.118Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:11:38.874Z"
+      "time": "2026-01-16T19:07:41.130Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:11:38.875Z"
+      "time": "2026-01-16T19:07:41.156Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:11:38.887Z"
+      "time": "2026-01-16T19:07:41.156Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:11:38.896Z"
+      "time": "2026-01-16T19:07:41.160Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:11:38.900Z"
+      "time": "2026-01-16T19:07:41.162Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:11:38.902Z"
+      "time": "2026-01-16T19:07:41.165Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:12:10.291Z"
+      "time": "2026-01-16T19:08:12.473Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:12:10.521Z"
+      "time": "2026-01-16T19:08:12.700Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:12:10.762Z"
+      "time": "2026-01-16T19:08:12.951Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:12:11.052Z"
+      "time": "2026-01-16T19:08:13.198Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:12:11.383Z"
+      "time": "2026-01-16T19:08:13.451Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:12:42.682Z"
+      "time": "2026-01-16T19:08:44.736Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:12:42.928Z"
+      "time": "2026-01-16T19:08:44.966Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:12:43.150Z"
+      "time": "2026-01-16T19:08:45.214Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:12:43.396Z"
+      "time": "2026-01-16T19:08:45.460Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:12:43.647Z"
+      "time": "2026-01-16T19:08:45.762Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:12:43.902Z"
+      "time": "2026-01-16T19:08:46.012Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:12:43.947Z"
+      "time": "2026-01-16T19:08:46.051Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:12:43.952Z"
+      "time": "2026-01-16T19:08:46.065Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:12:43.954Z"
+      "time": "2026-01-16T19:08:46.084Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:12:43.961Z"
+      "time": "2026-01-16T19:08:46.087Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:12:43.966Z"
+      "time": "2026-01-16T19:08:46.095Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:12:43.967Z"
+      "time": "2026-01-16T19:08:46.099Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:12:43.988Z"
+      "time": "2026-01-16T19:08:46.108Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:13:15.290Z"
+      "time": "2026-01-16T19:09:17.471Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:13:15.533Z"
+      "time": "2026-01-16T19:09:17.717Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:13:15.754Z"
+      "time": "2026-01-16T19:09:17.958Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:13:16.000Z"
+      "time": "2026-01-16T19:09:18.201Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:13:16.245Z"
+      "time": "2026-01-16T19:09:18.454Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:13:47.629Z"
+      "time": "2026-01-16T19:09:49.629Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:13:47.879Z"
+      "time": "2026-01-16T19:09:49.956Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:13:48.119Z"
+      "time": "2026-01-16T19:09:50.196Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:13:48.379Z"
+      "time": "2026-01-16T19:09:50.438Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:13:48.629Z"
+      "time": "2026-01-16T19:09:50.710Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:13:48.889Z"
+      "time": "2026-01-16T19:09:50.927Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:13:48.915Z"
+      "time": "2026-01-16T19:09:51.011Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:13:48.926Z"
+      "time": "2026-01-16T19:09:51.015Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:13:48.933Z"
+      "time": "2026-01-16T19:09:51.016Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:13:48.937Z"
+      "time": "2026-01-16T19:09:51.029Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:13:48.948Z"
+      "time": "2026-01-16T19:09:51.029Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:13:48.950Z"
+      "time": "2026-01-16T19:09:51.036Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:13:48.958Z"
+      "time": "2026-01-16T19:09:51.061Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:14:20.258Z"
+      "time": "2026-01-16T19:10:22.961Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:14:20.508Z"
+      "time": "2026-01-16T19:10:23.236Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:14:20.759Z"
+      "time": "2026-01-16T19:10:23.456Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:14:20.998Z"
+      "time": "2026-01-16T19:10:23.679Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:14:21.268Z"
+      "time": "2026-01-16T19:10:23.922Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:14:52.537Z"
+      "time": "2026-01-16T19:10:55.148Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:14:52.807Z"
+      "time": "2026-01-16T19:10:55.492Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:14:53.048Z"
+      "time": "2026-01-16T19:10:55.799Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:14:53.307Z"
+      "time": "2026-01-16T19:10:56.021Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:14:53.537Z"
+      "time": "2026-01-16T19:10:56.270Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:14:53.797Z"
+      "time": "2026-01-16T19:10:56.519Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:14:53.826Z"
+      "time": "2026-01-16T19:10:56.564Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:14:53.837Z"
+      "time": "2026-01-16T19:10:56.582Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:14:53.840Z"
+      "time": "2026-01-16T19:10:56.588Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:14:53.853Z"
+      "time": "2026-01-16T19:10:56.597Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:14:53.861Z"
+      "time": "2026-01-16T19:10:56.601Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:14:53.868Z"
+      "time": "2026-01-16T19:10:56.603Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:14:53.963Z"
+      "time": "2026-01-16T19:10:56.626Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:15:25.285Z"
+      "time": "2026-01-16T19:11:27.952Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:15:25.536Z"
+      "time": "2026-01-16T19:11:28.196Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:15:25.806Z"
+      "time": "2026-01-16T19:11:28.416Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:15:26.086Z"
+      "time": "2026-01-16T19:11:28.683Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:15:26.336Z"
+      "time": "2026-01-16T19:11:28.931Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:15:58.056Z"
+      "time": "2026-01-16T19:12:00.247Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:15:58.317Z"
+      "time": "2026-01-16T19:12:00.489Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:15:58.577Z"
+      "time": "2026-01-16T19:12:00.715Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:15:58.836Z"
+      "time": "2026-01-16T19:12:00.958Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:15:59.105Z"
+      "time": "2026-01-16T19:12:01.181Z"
     },
     {
       "endpoint": "/api/info",
+      "status": 429,
+      "time": "2026-01-16T19:12:01.425Z"
+    },
+    {
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:15:59.365Z"
+      "time": "2026-01-16T19:12:01.475Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:15:59.397Z"
+      "time": "2026-01-16T19:12:01.484Z"
     },
     {
+      "endpoint": "/api/documents/supported-types",
+      "status": 429,
+      "time": "2026-01-16T19:12:01.498Z"
+    },
+    {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:15:59.401Z"
+      "time": "2026-01-16T19:12:01.502Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
+      "status": 429,
+      "time": "2026-01-16T19:12:01.508Z"
+    },
+    {
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:15:59.413Z"
+      "time": "2026-01-16T19:12:01.510Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:15:59.417Z"
+      "time": "2026-01-16T19:12:01.547Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:15:59.418Z"
+      "time": "2026-01-16T19:12:32.844Z"
     },
     {
       "endpoint": "/api/conversations/list",
+      "status": 429,
+      "time": "2026-01-16T19:12:33.088Z"
+    },
+    {
+      "endpoint": "/api/deploy/status",
+      "status": 429,
+      "time": "2026-01-16T19:12:33.332Z"
+    },
+    {
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:15:59.429Z"
+      "time": "2026-01-16T19:12:33.574Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:15:59.438Z"
+      "time": "2026-01-16T19:12:33.820Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:16:30.725Z"
+      "time": "2026-01-16T19:13:05.148Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:16:30.974Z"
+      "time": "2026-01-16T19:13:05.392Z"
     },
     {
       "endpoint": "/api/deploy/status",
+      "status": 429,
+      "time": "2026-01-16T19:13:05.619Z"
+    },
+    {
+      "endpoint": "/api/jurisprudencia/tribunais",
+      "status": 429,
+      "time": "2026-01-16T19:13:05.871Z"
+    },
+    {
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:16:31.195Z"
+      "time": "2026-01-16T19:13:06.118Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
+      "status": 429,
+      "time": "2026-01-16T19:13:06.415Z"
+    },
+    {
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:16:31.425Z"
+      "time": "2026-01-16T19:13:06.424Z"
     },
     {
+      "endpoint": "/api/conversations/list",
+      "status": 429,
+      "time": "2026-01-16T19:13:06.427Z"
+    },
+    {
+      "endpoint": "/api/conversations/list",
+      "status": 429,
+      "time": "2026-01-16T19:13:06.433Z"
+    },
+    {
+      "endpoint": "/api/info",
+      "status": 429,
+      "time": "2026-01-16T19:13:06.436Z"
+    },
+    {
       "endpoint": "/api/documents/supported-types",
+      "status": 429,
+      "time": "2026-01-16T19:13:06.438Z"
+    },
+    {
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:16:31.806Z"
+      "time": "2026-01-16T19:13:06.447Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:17:03.094Z"
+      "time": "2026-01-16T19:13:06.791Z"
     },
     {
+      "endpoint": "/api/info",
+      "status": 429,
+      "time": "2026-01-16T19:13:38.062Z"
+    },
+    {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:17:03.323Z"
+      "time": "2026-01-16T19:13:38.289Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:17:03.573Z"
+      "time": "2026-01-16T19:13:38.547Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:17:03.803Z"
+      "time": "2026-01-16T19:13:38.767Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:17:04.054Z"
+      "time": "2026-01-16T19:13:39.018Z"
     },
     {
       "endpoint": "/api/info",
+      "status": 429,
+      "time": "2026-01-16T19:14:10.303Z"
+    },
+    {
+      "endpoint": "/api/conversations/list",
+      "status": 429,
+      "time": "2026-01-16T19:14:10.575Z"
+    },
+    {
+      "endpoint": "/api/deploy/status",
+      "status": 429,
+      "time": "2026-01-16T19:14:10.820Z"
+    },
+    {
+      "endpoint": "/api/jurisprudencia/tribunais",
+      "status": 429,
+      "time": "2026-01-16T19:14:11.072Z"
+    },
+    {
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:17:04.284Z"
+      "time": "2026-01-16T19:14:11.336Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:17:04.356Z"
+      "time": "2026-01-16T19:14:11.563Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:17:04.361Z"
+      "time": "2026-01-16T19:14:11.652Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:17:04.370Z"
+      "time": "2026-01-16T19:14:11.664Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:17:04.377Z"
+      "time": "2026-01-16T19:14:11.667Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:17:04.379Z"
+      "time": "2026-01-16T19:14:11.668Z"
     },
     {
+      "endpoint": "/api/info",
+      "status": 429,
+      "time": "2026-01-16T19:14:11.678Z"
+    },
+    {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:17:04.383Z"
+      "time": "2026-01-16T19:14:11.679Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:17:04.384Z"
+      "time": "2026-01-16T19:14:11.690Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:17:35.723Z"
+      "time": "2026-01-16T19:14:42.943Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:17:35.972Z"
+      "time": "2026-01-16T19:14:43.183Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:17:36.272Z"
+      "time": "2026-01-16T19:14:43.402Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:17:36.502Z"
+      "time": "2026-01-16T19:14:43.642Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:17:36.732Z"
+      "time": "2026-01-16T19:14:43.864Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:18:08.212Z"
+      "time": "2026-01-16T19:15:15.138Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:18:08.524Z"
+      "time": "2026-01-16T19:15:15.380Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:18:08.832Z"
+      "time": "2026-01-16T19:15:15.631Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:18:09.092Z"
+      "time": "2026-01-16T19:15:15.913Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:18:09.322Z"
+      "time": "2026-01-16T19:15:16.159Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:18:09.582Z"
+      "time": "2026-01-16T19:15:16.408Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:18:09.612Z"
+      "time": "2026-01-16T19:15:16.459Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:18:09.639Z"
+      "time": "2026-01-16T19:15:16.462Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:18:09.639Z"
+      "time": "2026-01-16T19:15:16.464Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:18:09.646Z"
+      "time": "2026-01-16T19:15:16.472Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:18:09.646Z"
+      "time": "2026-01-16T19:15:16.489Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:18:09.646Z"
+      "time": "2026-01-16T19:15:16.490Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:18:09.646Z"
+      "time": "2026-01-16T19:15:16.491Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:18:40.991Z"
+      "time": "2026-01-16T19:15:47.834Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:18:41.221Z"
+      "time": "2026-01-16T19:15:48.085Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:18:41.494Z"
+      "time": "2026-01-16T19:15:48.341Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:18:41.771Z"
+      "time": "2026-01-16T19:15:48.667Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:18:42.021Z"
+      "time": "2026-01-16T19:15:48.921Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:19:13.438Z"
+      "time": "2026-01-16T19:16:20.195Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:19:13.658Z"
+      "time": "2026-01-16T19:16:20.446Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:19:13.878Z"
+      "time": "2026-01-16T19:16:20.691Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:19:14.121Z"
+      "time": "2026-01-16T19:16:20.916Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:19:14.362Z"
+      "time": "2026-01-16T19:16:21.162Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:19:14.614Z"
+      "time": "2026-01-16T19:16:21.388Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:19:14.663Z"
+      "time": "2026-01-16T19:16:21.449Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:19:14.666Z"
+      "time": "2026-01-16T19:16:21.451Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:19:14.670Z"
+      "time": "2026-01-16T19:16:21.454Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:19:14.673Z"
+      "time": "2026-01-16T19:16:21.467Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:19:14.674Z"
+      "time": "2026-01-16T19:16:21.478Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:19:14.680Z"
+      "time": "2026-01-16T19:16:21.488Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:19:14.747Z"
+      "time": "2026-01-16T19:16:21.501Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:19:46.042Z"
+      "time": "2026-01-16T19:16:52.733Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:19:46.271Z"
+      "time": "2026-01-16T19:16:52.955Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:19:46.499Z"
+      "time": "2026-01-16T19:16:53.646Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:19:46.727Z"
+      "time": "2026-01-16T19:16:53.892Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:19:46.974Z"
+      "time": "2026-01-16T19:16:54.150Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:20:18.308Z"
+      "time": "2026-01-16T19:17:25.440Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:20:18.558Z"
+      "time": "2026-01-16T19:17:25.661Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:20:18.788Z"
+      "time": "2026-01-16T19:17:25.904Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:20:19.038Z"
+      "time": "2026-01-16T19:17:26.150Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:20:19.308Z"
+      "time": "2026-01-16T19:17:26.396Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:20:19.578Z"
+      "time": "2026-01-16T19:17:26.678Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:20:19.600Z"
+      "time": "2026-01-16T19:17:26.703Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:20:19.629Z"
+      "time": "2026-01-16T19:17:26.704Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:20:19.630Z"
+      "time": "2026-01-16T19:17:26.707Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:20:19.633Z"
+      "time": "2026-01-16T19:17:26.716Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:20:19.634Z"
+      "time": "2026-01-16T19:17:26.722Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:20:19.637Z"
+      "time": "2026-01-16T19:17:26.729Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:20:19.641Z"
+      "time": "2026-01-16T19:17:26.771Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:20:50.928Z"
+      "time": "2026-01-16T19:17:58.016Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:20:51.227Z"
+      "time": "2026-01-16T19:17:58.267Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:20:51.497Z"
+      "time": "2026-01-16T19:17:58.487Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:20:51.747Z"
+      "time": "2026-01-16T19:17:58.726Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:20:52.007Z"
+      "time": "2026-01-16T19:17:58.960Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:21:23.316Z"
+      "time": "2026-01-16T19:18:30.213Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:21:23.576Z"
+      "time": "2026-01-16T19:18:30.439Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:21:23.836Z"
+      "time": "2026-01-16T19:18:30.717Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:21:24.087Z"
+      "time": "2026-01-16T19:18:30.946Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:21:24.316Z"
+      "time": "2026-01-16T19:18:31.167Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:21:24.546Z"
+      "time": "2026-01-16T19:18:31.418Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:21:24.606Z"
+      "time": "2026-01-16T19:18:31.449Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:21:24.609Z"
+      "time": "2026-01-16T19:18:31.452Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:21:24.612Z"
+      "time": "2026-01-16T19:18:31.484Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:21:24.637Z"
+      "time": "2026-01-16T19:18:31.499Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:21:24.642Z"
+      "time": "2026-01-16T19:18:31.505Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:21:24.654Z"
+      "time": "2026-01-16T19:18:31.507Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:21:24.667Z"
+      "time": "2026-01-16T19:18:31.511Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:21:56.076Z"
+      "time": "2026-01-16T19:19:02.765Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:21:56.305Z"
+      "time": "2026-01-16T19:19:03.015Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:21:56.556Z"
+      "time": "2026-01-16T19:19:03.266Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:21:56.815Z"
+      "time": "2026-01-16T19:19:03.511Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:21:57.047Z"
+      "time": "2026-01-16T19:19:03.732Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:22:28.314Z"
+      "time": "2026-01-16T19:19:34.964Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:22:28.545Z"
+      "time": "2026-01-16T19:19:35.213Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:22:28.774Z"
+      "time": "2026-01-16T19:19:35.455Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:22:29.014Z"
+      "time": "2026-01-16T19:19:35.673Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:22:29.345Z"
+      "time": "2026-01-16T19:19:35.894Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:22:29.594Z"
+      "time": "2026-01-16T19:19:36.127Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:22:29.653Z"
+      "time": "2026-01-16T19:19:36.194Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:22:29.658Z"
+      "time": "2026-01-16T19:19:36.210Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:22:29.658Z"
+      "time": "2026-01-16T19:19:36.210Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:22:29.662Z"
+      "time": "2026-01-16T19:19:36.216Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:22:29.663Z"
+      "time": "2026-01-16T19:19:36.218Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:22:29.679Z"
+      "time": "2026-01-16T19:19:36.219Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:22:29.680Z"
+      "time": "2026-01-16T19:19:36.227Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:23:00.944Z"
+      "time": "2026-01-16T19:20:07.934Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:23:01.184Z"
+      "time": "2026-01-16T19:20:08.160Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:23:01.434Z"
+      "time": "2026-01-16T19:20:08.409Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:23:01.673Z"
+      "time": "2026-01-16T19:20:08.634Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:23:01.923Z"
+      "time": "2026-01-16T19:20:08.857Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:23:33.213Z"
+      "time": "2026-01-16T19:20:40.116Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:23:33.484Z"
+      "time": "2026-01-16T19:20:40.338Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:23:33.733Z"
+      "time": "2026-01-16T19:20:40.581Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:23:33.953Z"
+      "time": "2026-01-16T19:20:40.840Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:23:34.203Z"
+      "time": "2026-01-16T19:20:41.085Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:23:34.463Z"
+      "time": "2026-01-16T19:20:41.310Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:23:34.495Z"
+      "time": "2026-01-16T19:20:41.374Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:23:34.496Z"
+      "time": "2026-01-16T19:20:41.385Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:23:34.523Z"
+      "time": "2026-01-16T19:20:41.412Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:23:34.526Z"
+      "time": "2026-01-16T19:20:41.415Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:23:34.527Z"
+      "time": "2026-01-16T19:20:41.418Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:23:34.531Z"
+      "time": "2026-01-16T19:20:41.426Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:23:34.554Z"
+      "time": "2026-01-16T19:20:41.427Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:24:05.881Z"
+      "time": "2026-01-16T19:21:12.648Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:24:06.132Z"
+      "time": "2026-01-16T19:21:12.903Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:24:06.362Z"
+      "time": "2026-01-16T19:21:13.147Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:24:06.612Z"
+      "time": "2026-01-16T19:21:13.386Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:24:06.872Z"
+      "time": "2026-01-16T19:21:13.616Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:24:38.282Z"
+      "time": "2026-01-16T19:21:44.884Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:24:38.531Z"
+      "time": "2026-01-16T19:21:45.126Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:24:38.783Z"
+      "time": "2026-01-16T19:21:45.372Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:24:39.030Z"
+      "time": "2026-01-16T19:21:45.590Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:24:39.292Z"
+      "time": "2026-01-16T19:21:45.835Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:24:39.561Z"
+      "time": "2026-01-16T19:21:46.084Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:24:39.590Z"
+      "time": "2026-01-16T19:21:46.143Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:24:39.600Z"
+      "time": "2026-01-16T19:21:46.144Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:24:39.602Z"
+      "time": "2026-01-16T19:21:46.159Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:24:39.611Z"
+      "time": "2026-01-16T19:21:46.159Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:24:39.615Z"
+      "time": "2026-01-16T19:21:46.159Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:24:39.618Z"
+      "time": "2026-01-16T19:21:46.166Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:24:39.626Z"
+      "time": "2026-01-16T19:21:46.661Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:25:10.950Z"
+      "time": "2026-01-16T19:22:17.890Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:25:11.191Z"
+      "time": "2026-01-16T19:22:18.111Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:25:11.451Z"
+      "time": "2026-01-16T19:22:18.352Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:25:11.700Z"
+      "time": "2026-01-16T19:22:18.590Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:25:11.950Z"
+      "time": "2026-01-16T19:22:18.846Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:25:43.190Z"
+      "time": "2026-01-16T19:22:50.255Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:25:43.409Z"
+      "time": "2026-01-16T19:22:50.489Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:25:43.659Z"
+      "time": "2026-01-16T19:22:50.737Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:25:43.909Z"
+      "time": "2026-01-16T19:22:50.979Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:25:44.160Z"
+      "time": "2026-01-16T19:22:51.233Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:25:44.419Z"
+      "time": "2026-01-16T19:22:51.476Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:25:44.526Z"
+      "time": "2026-01-16T19:22:51.516Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:25:44.528Z"
+      "time": "2026-01-16T19:22:51.532Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:25:44.533Z"
+      "time": "2026-01-16T19:22:51.555Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:25:44.661Z"
+      "time": "2026-01-16T19:22:51.556Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:25:44.724Z"
+      "time": "2026-01-16T19:22:51.556Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:25:44.822Z"
+      "time": "2026-01-16T19:22:51.556Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:25:44.827Z"
+      "time": "2026-01-16T19:22:51.562Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:26:16.179Z"
+      "time": "2026-01-16T19:23:22.793Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:26:16.408Z"
+      "time": "2026-01-16T19:23:23.033Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:26:16.648Z"
+      "time": "2026-01-16T19:23:23.258Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:26:16.899Z"
+      "time": "2026-01-16T19:23:23.514Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:26:17.148Z"
+      "time": "2026-01-16T19:23:23.762Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:26:48.430Z"
+      "time": "2026-01-16T19:23:55.096Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:26:48.670Z"
+      "time": "2026-01-16T19:23:55.350Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:26:48.890Z"
+      "time": "2026-01-16T19:23:55.647Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:26:49.121Z"
+      "time": "2026-01-16T19:23:55.892Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:26:49.378Z"
+      "time": "2026-01-16T19:23:56.170Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:26:49.637Z"
+      "time": "2026-01-16T19:23:56.425Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:26:49.669Z"
+      "time": "2026-01-16T19:23:56.448Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:26:49.702Z"
+      "time": "2026-01-16T19:23:56.451Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:26:49.715Z"
+      "time": "2026-01-16T19:23:56.456Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:26:49.725Z"
+      "time": "2026-01-16T19:23:56.459Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:26:49.726Z"
+      "time": "2026-01-16T19:23:56.480Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:26:49.746Z"
+      "time": "2026-01-16T19:23:56.481Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:26:49.992Z"
+      "time": "2026-01-16T19:23:56.511Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:27:21.248Z"
+      "time": "2026-01-16T19:24:27.761Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:27:21.486Z"
+      "time": "2026-01-16T19:24:28.033Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:27:21.716Z"
+      "time": "2026-01-16T19:24:28.277Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:27:21.967Z"
+      "time": "2026-01-16T19:24:28.531Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:27:22.196Z"
+      "time": "2026-01-16T19:24:28.774Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:27:53.516Z"
+      "time": "2026-01-16T19:25:00.057Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:27:53.767Z"
+      "time": "2026-01-16T19:25:00.309Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:27:54.035Z"
+      "time": "2026-01-16T19:25:00.534Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:27:54.306Z"
+      "time": "2026-01-16T19:25:00.785Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:27:54.566Z"
+      "time": "2026-01-16T19:25:01.033Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:27:54.826Z"
+      "time": "2026-01-16T19:25:01.259Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:27:54.869Z"
+      "time": "2026-01-16T19:25:01.321Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:27:54.869Z"
+      "time": "2026-01-16T19:25:01.336Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:27:54.881Z"
+      "time": "2026-01-16T19:25:01.342Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:27:54.883Z"
+      "time": "2026-01-16T19:25:01.350Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:27:54.887Z"
+      "time": "2026-01-16T19:25:01.352Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:27:54.891Z"
+      "time": "2026-01-16T19:25:01.352Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:27:55.251Z"
+      "time": "2026-01-16T19:25:01.361Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:28:26.565Z"
+      "time": "2026-01-16T19:25:32.590Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:28:26.825Z"
+      "time": "2026-01-16T19:25:32.835Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:28:27.074Z"
+      "time": "2026-01-16T19:25:33.080Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:28:27.295Z"
+      "time": "2026-01-16T19:25:33.316Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:28:27.525Z"
+      "time": "2026-01-16T19:25:33.554Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:28:58.730Z"
+      "time": "2026-01-16T19:26:04.788Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:28:58.977Z"
+      "time": "2026-01-16T19:26:05.031Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:28:59.304Z"
+      "time": "2026-01-16T19:26:05.256Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:28:59.544Z"
+      "time": "2026-01-16T19:26:05.504Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:28:59.794Z"
+      "time": "2026-01-16T19:26:05.753Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:29:00.063Z"
+      "time": "2026-01-16T19:26:06.008Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:29:00.088Z"
+      "time": "2026-01-16T19:26:06.049Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:29:00.094Z"
+      "time": "2026-01-16T19:26:06.053Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:29:00.116Z"
+      "time": "2026-01-16T19:26:06.055Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:29:00.120Z"
+      "time": "2026-01-16T19:26:06.056Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:29:00.121Z"
+      "time": "2026-01-16T19:26:06.057Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:29:00.132Z"
+      "time": "2026-01-16T19:26:06.075Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:29:00.134Z"
+      "time": "2026-01-16T19:26:06.094Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:29:31.443Z"
+      "time": "2026-01-16T19:26:37.321Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:29:31.693Z"
+      "time": "2026-01-16T19:26:37.562Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:29:31.923Z"
+      "time": "2026-01-16T19:26:37.781Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:29:32.143Z"
+      "time": "2026-01-16T19:26:37.999Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:29:32.403Z"
+      "time": "2026-01-16T19:26:38.226Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:30:03.670Z"
+      "time": "2026-01-16T19:27:09.507Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:30:03.912Z"
+      "time": "2026-01-16T19:27:09.751Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:30:04.132Z"
+      "time": "2026-01-16T19:27:09.995Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:30:04.383Z"
+      "time": "2026-01-16T19:27:10.243Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:30:04.652Z"
+      "time": "2026-01-16T19:27:10.494Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:30:04.903Z"
+      "time": "2026-01-16T19:27:10.740Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:30:04.943Z"
+      "time": "2026-01-16T19:27:10.790Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:30:04.948Z"
+      "time": "2026-01-16T19:27:10.797Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:30:04.966Z"
+      "time": "2026-01-16T19:27:10.803Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:30:04.967Z"
+      "time": "2026-01-16T19:27:10.820Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:30:04.973Z"
+      "time": "2026-01-16T19:27:10.821Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:30:04.978Z"
+      "time": "2026-01-16T19:27:10.826Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:30:04.997Z"
+      "time": "2026-01-16T19:27:10.837Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:30:36.651Z"
+      "time": "2026-01-16T19:27:42.145Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:30:36.892Z"
+      "time": "2026-01-16T19:27:42.386Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:30:37.131Z"
+      "time": "2026-01-16T19:27:42.632Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:30:37.391Z"
+      "time": "2026-01-16T19:27:42.948Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:30:37.641Z"
+      "time": "2026-01-16T19:27:43.171Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:31:08.840Z"
+      "time": "2026-01-16T19:28:14.523Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:31:09.080Z"
+      "time": "2026-01-16T19:28:14.774Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:31:09.350Z"
+      "time": "2026-01-16T19:28:15.006Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:31:09.590Z"
+      "time": "2026-01-16T19:28:15.224Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:31:09.831Z"
+      "time": "2026-01-16T19:28:15.460Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:31:10.090Z"
+      "time": "2026-01-16T19:28:15.719Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:31:10.118Z"
+      "time": "2026-01-16T19:28:15.745Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:31:10.131Z"
+      "time": "2026-01-16T19:28:15.752Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:31:10.140Z"
+      "time": "2026-01-16T19:28:15.755Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:31:10.142Z"
+      "time": "2026-01-16T19:28:15.757Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:31:10.155Z"
+      "time": "2026-01-16T19:28:15.774Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:31:10.169Z"
+      "time": "2026-01-16T19:28:15.783Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:31:10.169Z"
+      "time": "2026-01-16T19:28:15.791Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:31:41.540Z"
+      "time": "2026-01-16T19:28:47.109Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:31:41.799Z"
+      "time": "2026-01-16T19:28:47.333Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:31:42.029Z"
+      "time": "2026-01-16T19:28:47.572Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:31:42.279Z"
+      "time": "2026-01-16T19:28:47.828Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:31:42.539Z"
+      "time": "2026-01-16T19:28:48.086Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:32:13.861Z"
+      "time": "2026-01-16T19:29:19.426Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:32:14.084Z"
+      "time": "2026-01-16T19:29:19.666Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:32:14.304Z"
+      "time": "2026-01-16T19:29:19.910Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:32:14.548Z"
+      "time": "2026-01-16T19:29:20.193Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:32:14.803Z"
+      "time": "2026-01-16T19:29:20.435Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:32:15.048Z"
+      "time": "2026-01-16T19:29:20.673Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:32:15.097Z"
+      "time": "2026-01-16T19:29:20.733Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
+      "status": 429,
+      "time": "2026-01-16T19:29:20.744Z"
+    },
+    {
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:32:15.099Z"
+      "time": "2026-01-16T19:29:20.745Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:32:15.101Z"
+      "time": "2026-01-16T19:29:20.745Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:32:15.120Z"
+      "time": "2026-01-16T19:29:20.756Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:32:15.122Z"
+      "time": "2026-01-16T19:29:20.773Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:32:15.130Z"
+      "time": "2026-01-16T19:29:20.775Z"
     },
     {
+      "endpoint": "/api/info",
+      "status": 429,
+      "time": "2026-01-16T19:29:52.021Z"
+    },
+    {
+      "endpoint": "/api/conversations/list",
+      "status": 429,
+      "time": "2026-01-16T19:29:52.263Z"
+    },
+    {
+      "endpoint": "/api/deploy/status",
+      "status": 429,
+      "time": "2026-01-16T19:29:52.504Z"
+    },
+    {
       "endpoint": "/api/jurisprudencia/tribunais",
+      "status": 429,
+      "time": "2026-01-16T19:29:52.740Z"
+    },
+    {
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:32:15.142Z"
+      "time": "2026-01-16T19:29:52.969Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:32:46.529Z"
+      "time": "2026-01-16T19:30:24.285Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:32:46.798Z"
+      "time": "2026-01-16T19:30:24.511Z"
     },
     {
       "endpoint": "/api/deploy/status",
+      "status": 429,
+      "time": "2026-01-16T19:30:24.735Z"
+    },
+    {
+      "endpoint": "/api/jurisprudencia/tribunais",
+      "status": 429,
+      "time": "2026-01-16T19:30:24.961Z"
+    },
+    {
+      "endpoint": "/api/documents/supported-types",
+      "status": 429,
+      "time": "2026-01-16T19:30:25.190Z"
+    },
+    {
+      "endpoint": "/api/info",
+      "status": 429,
+      "time": "2026-01-16T19:30:25.412Z"
+    },
+    {
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:32:47.037Z"
+      "time": "2026-01-16T19:30:25.474Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
+      "status": 429,
+      "time": "2026-01-16T19:30:25.481Z"
+    },
+    {
+      "endpoint": "/api/conversations/list",
+      "status": 429,
+      "time": "2026-01-16T19:30:25.486Z"
+    },
+    {
+      "endpoint": "/api/documents/supported-types",
+      "status": 429,
+      "time": "2026-01-16T19:30:25.495Z"
+    },
+    {
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:32:47.288Z"
+      "time": "2026-01-16T19:30:25.514Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:32:47.509Z"
+      "time": "2026-01-16T19:30:25.515Z"
     },
     {
+      "endpoint": "/api/jurisprudencia/tribunais",
+      "status": 429,
+      "time": "2026-01-16T19:30:25.516Z"
+    },
+    {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:33:18.896Z"
+      "time": "2026-01-16T19:30:56.765Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:33:19.180Z"
+      "time": "2026-01-16T19:30:57.007Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:33:19.407Z"
+      "time": "2026-01-16T19:30:57.225Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:33:19.637Z"
+      "time": "2026-01-16T19:30:57.443Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:33:19.867Z"
+      "time": "2026-01-16T19:30:57.682Z"
     },
     {
       "endpoint": "/api/info",
+      "status": 429,
+      "time": "2026-01-16T19:31:28.931Z"
+    },
+    {
+      "endpoint": "/api/conversations/list",
+      "status": 429,
+      "time": "2026-01-16T19:31:29.168Z"
+    },
+    {
+      "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:33:20.097Z"
+      "time": "2026-01-16T19:31:29.397Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
+      "status": 429,
+      "time": "2026-01-16T19:31:30.076Z"
+    },
+    {
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:33:20.167Z"
+      "time": "2026-01-16T19:31:30.291Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:33:20.169Z"
+      "time": "2026-01-16T19:31:30.510Z"
     },
     {
       "endpoint": "/api/conversations/list",
+      "status": 429,
+      "time": "2026-01-16T19:31:30.587Z"
+    },
+    {
+      "endpoint": "/api/info",
+      "status": 429,
+      "time": "2026-01-16T19:31:30.592Z"
+    },
+    {
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:33:20.180Z"
+      "time": "2026-01-16T19:31:30.600Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:33:20.181Z"
+      "time": "2026-01-16T19:31:30.610Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:33:20.193Z"
+      "time": "2026-01-16T19:31:30.613Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:33:20.199Z"
+      "time": "2026-01-16T19:31:30.617Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:33:20.213Z"
+      "time": "2026-01-16T19:31:30.620Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:33:51.606Z"
+      "time": "2026-01-16T19:32:01.874Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:33:51.926Z"
+      "time": "2026-01-16T19:32:02.127Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:33:52.196Z"
+      "time": "2026-01-16T19:32:02.366Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:33:52.426Z"
+      "time": "2026-01-16T19:32:02.590Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:33:52.677Z"
+      "time": "2026-01-16T19:32:02.834Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:34:23.985Z"
+      "time": "2026-01-16T19:32:34.088Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:34:24.255Z"
+      "time": "2026-01-16T19:32:34.330Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:34:24.506Z"
+      "time": "2026-01-16T19:32:34.569Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:34:24.737Z"
+      "time": "2026-01-16T19:32:34.829Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
-      "status": 429,
-      "time": "2026-01-14T05:34:24.985Z"
-    },
-    {
-      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:34:25.265Z"
+      "time": "2026-01-16T19:32:35.191Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:34:25.275Z"
+      "time": "2026-01-16T19:32:35.429Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:34:25.278Z"
+      "time": "2026-01-16T19:32:35.488Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:34:25.293Z"
+      "time": "2026-01-16T19:32:35.488Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:34:25.309Z"
+      "time": "2026-01-16T19:32:35.494Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:34:25.313Z"
+      "time": "2026-01-16T19:32:35.502Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:34:25.323Z"
+      "time": "2026-01-16T19:32:35.514Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
+      "status": 429,
+      "time": "2026-01-16T19:32:35.515Z"
+    },
+    {
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:34:25.745Z"
+      "time": "2026-01-16T19:32:35.539Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:34:57.074Z"
+      "time": "2026-01-16T19:33:06.803Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:34:57.344Z"
+      "time": "2026-01-16T19:33:07.024Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:34:57.594Z"
+      "time": "2026-01-16T19:33:07.263Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:34:57.864Z"
+      "time": "2026-01-16T19:33:07.509Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:34:58.104Z"
+      "time": "2026-01-16T19:33:07.765Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:35:29.323Z"
+      "time": "2026-01-16T19:33:39.037Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:35:29.543Z"
+      "time": "2026-01-16T19:33:39.295Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:35:29.773Z"
+      "time": "2026-01-16T19:33:39.544Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:35:30.014Z"
+      "time": "2026-01-16T19:33:39.797Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:35:30.243Z"
+      "time": "2026-01-16T19:33:40.046Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:35:30.493Z"
+      "time": "2026-01-16T19:33:40.305Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:35:30.533Z"
+      "time": "2026-01-16T19:33:40.331Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:35:30.555Z"
+      "time": "2026-01-16T19:33:40.342Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:35:30.559Z"
+      "time": "2026-01-16T19:33:40.352Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:35:30.569Z"
+      "time": "2026-01-16T19:33:40.353Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:35:30.571Z"
+      "time": "2026-01-16T19:33:40.356Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:35:30.573Z"
+      "time": "2026-01-16T19:33:40.377Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:35:30.592Z"
+      "time": "2026-01-16T19:33:40.444Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:36:02.071Z"
+      "time": "2026-01-16T19:34:11.733Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:36:02.301Z"
+      "time": "2026-01-16T19:34:12.083Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:36:02.531Z"
+      "time": "2026-01-16T19:34:12.339Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:36:02.771Z"
+      "time": "2026-01-16T19:34:12.570Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:36:03.011Z"
+      "time": "2026-01-16T19:34:12.815Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:36:34.392Z"
+      "time": "2026-01-16T19:34:44.024Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:36:34.651Z"
+      "time": "2026-01-16T19:34:44.268Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:36:34.901Z"
+      "time": "2026-01-16T19:34:44.484Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:36:35.181Z"
+      "time": "2026-01-16T19:34:44.760Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:36:35.522Z"
+      "time": "2026-01-16T19:34:45.009Z"
     },
     {
       "endpoint": "/api/info",
+      "status": 429,
+      "time": "2026-01-16T19:34:45.254Z"
+    },
+    {
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:36:35.761Z"
+      "time": "2026-01-16T19:34:45.286Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:36:35.802Z"
+      "time": "2026-01-16T19:34:45.318Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:36:35.842Z"
+      "time": "2026-01-16T19:34:45.318Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:36:35.845Z"
+      "time": "2026-01-16T19:34:45.319Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:36:35.849Z"
+      "time": "2026-01-16T19:34:45.321Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:36:35.856Z"
+      "time": "2026-01-16T19:34:45.325Z"
     },
     {
       "endpoint": "/api/conversations/list",
-      "status": 429,
-      "time": "2026-01-14T05:36:35.865Z"
-    },
-    {
-      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:36:36.305Z"
+      "time": "2026-01-16T19:34:45.328Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:37:07.612Z"
+      "time": "2026-01-16T19:35:16.584Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:37:07.832Z"
+      "time": "2026-01-16T19:35:16.819Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:37:08.186Z"
+      "time": "2026-01-16T19:35:17.058Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:37:08.412Z"
+      "time": "2026-01-16T19:35:17.293Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:37:08.662Z"
+      "time": "2026-01-16T19:35:17.525Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:37:39.932Z"
+      "time": "2026-01-16T19:35:48.844Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:37:40.243Z"
+      "time": "2026-01-16T19:35:49.141Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:37:40.492Z"
+      "time": "2026-01-16T19:35:49.395Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:37:40.712Z"
+      "time": "2026-01-16T19:35:49.663Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:37:40.963Z"
+      "time": "2026-01-16T19:35:49.946Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:37:41.222Z"
+      "time": "2026-01-16T19:35:50.191Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:37:41.251Z"
+      "time": "2026-01-16T19:35:50.229Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:37:41.281Z"
+      "time": "2026-01-16T19:35:50.235Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:37:41.282Z"
+      "time": "2026-01-16T19:35:50.239Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:37:41.285Z"
+      "time": "2026-01-16T19:35:50.240Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:37:41.293Z"
+      "time": "2026-01-16T19:35:50.250Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:37:41.306Z"
+      "time": "2026-01-16T19:35:50.271Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:37:41.322Z"
+      "time": "2026-01-16T19:35:50.271Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:38:12.703Z"
+      "time": "2026-01-16T19:36:21.485Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:38:13.013Z"
+      "time": "2026-01-16T19:36:21.808Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:38:13.323Z"
+      "time": "2026-01-16T19:36:22.061Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:38:13.583Z"
+      "time": "2026-01-16T19:36:22.305Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:38:13.843Z"
+      "time": "2026-01-16T19:36:22.551Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:38:45.019Z"
+      "time": "2026-01-16T19:36:54.069Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:38:45.243Z"
+      "time": "2026-01-16T19:36:54.314Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:38:45.490Z"
+      "time": "2026-01-16T19:36:54.559Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:38:45.783Z"
+      "time": "2026-01-16T19:36:54.807Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:38:46.014Z"
+      "time": "2026-01-16T19:36:55.074Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:38:46.254Z"
+      "time": "2026-01-16T19:36:55.323Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:38:46.312Z"
+      "time": "2026-01-16T19:36:55.362Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:38:46.315Z"
+      "time": "2026-01-16T19:36:55.363Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:38:46.319Z"
+      "time": "2026-01-16T19:36:55.381Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:38:46.328Z"
+      "time": "2026-01-16T19:36:55.387Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:38:46.333Z"
+      "time": "2026-01-16T19:36:55.400Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:38:46.347Z"
+      "time": "2026-01-16T19:36:55.403Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:38:46.353Z"
+      "time": "2026-01-16T19:36:55.414Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:39:17.727Z"
+      "time": "2026-01-16T19:37:27.162Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:39:17.954Z"
+      "time": "2026-01-16T19:37:27.404Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:39:18.184Z"
+      "time": "2026-01-16T19:37:27.627Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:39:18.444Z"
+      "time": "2026-01-16T19:37:27.854Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:39:18.754Z"
+      "time": "2026-01-16T19:37:28.076Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:39:49.975Z"
+      "time": "2026-01-16T19:37:59.356Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:39:50.395Z"
+      "time": "2026-01-16T19:37:59.610Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:39:50.644Z"
+      "time": "2026-01-16T19:37:59.857Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:39:50.884Z"
+      "time": "2026-01-16T19:38:00.082Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:39:51.215Z"
+      "time": "2026-01-16T19:38:00.343Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:39:51.495Z"
+      "time": "2026-01-16T19:38:00.570Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:39:51.507Z"
+      "time": "2026-01-16T19:38:00.641Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:39:51.510Z"
+      "time": "2026-01-16T19:38:00.642Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:39:51.533Z"
+      "time": "2026-01-16T19:38:00.649Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:39:51.533Z"
+      "time": "2026-01-16T19:38:00.655Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:39:51.534Z"
+      "time": "2026-01-16T19:38:00.663Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:39:51.536Z"
+      "time": "2026-01-16T19:38:00.671Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:39:51.547Z"
+      "time": "2026-01-16T19:38:00.692Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:40:22.965Z"
+      "time": "2026-01-16T19:38:31.985Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:40:23.235Z"
+      "time": "2026-01-16T19:38:32.205Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:40:23.495Z"
+      "time": "2026-01-16T19:38:32.425Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:40:23.776Z"
+      "time": "2026-01-16T19:38:32.642Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:40:24.085Z"
+      "time": "2026-01-16T19:38:32.885Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:40:55.526Z"
+      "time": "2026-01-16T19:39:04.277Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:40:55.826Z"
+      "time": "2026-01-16T19:39:04.635Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:40:56.056Z"
+      "time": "2026-01-16T19:39:04.867Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:40:56.285Z"
+      "time": "2026-01-16T19:39:05.098Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:40:56.546Z"
+      "time": "2026-01-16T19:39:05.346Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:40:56.816Z"
+      "time": "2026-01-16T19:39:05.605Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:40:56.844Z"
+      "time": "2026-01-16T19:39:05.624Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:40:56.861Z"
+      "time": "2026-01-16T19:39:05.649Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:40:56.867Z"
+      "time": "2026-01-16T19:39:05.660Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:40:56.867Z"
+      "time": "2026-01-16T19:39:05.665Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:40:56.870Z"
+      "time": "2026-01-16T19:39:05.678Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:40:56.877Z"
+      "time": "2026-01-16T19:39:05.678Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:40:56.880Z"
+      "time": "2026-01-16T19:39:06.063Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:41:28.396Z"
+      "time": "2026-01-16T19:39:37.303Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:41:28.637Z"
+      "time": "2026-01-16T19:39:37.543Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:41:28.906Z"
+      "time": "2026-01-16T19:39:37.768Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:41:29.138Z"
+      "time": "2026-01-16T19:39:38.011Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:41:29.396Z"
+      "time": "2026-01-16T19:39:38.257Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:42:00.857Z"
+      "time": "2026-01-16T19:40:09.508Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:42:01.107Z"
+      "time": "2026-01-16T19:40:09.727Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:42:01.337Z"
+      "time": "2026-01-16T19:40:09.983Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:42:01.607Z"
+      "time": "2026-01-16T19:40:10.201Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:42:01.857Z"
+      "time": "2026-01-16T19:40:10.446Z"
     },
     {
       "endpoint": "/api/info",
-      "status": 429,
-      "time": "2026-01-14T05:42:02.117Z"
-    },
-    {
-      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:42:02.158Z"
+      "time": "2026-01-16T19:40:10.699Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:42:02.158Z"
+      "time": "2026-01-16T19:40:10.730Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:42:02.166Z"
+      "time": "2026-01-16T19:40:10.731Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:42:02.175Z"
+      "time": "2026-01-16T19:40:10.736Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:42:02.178Z"
+      "time": "2026-01-16T19:40:10.756Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:42:02.203Z"
+      "time": "2026-01-16T19:40:10.777Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
+      "status": 429,
+      "time": "2026-01-16T19:40:10.790Z"
+    },
+    {
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:42:02.206Z"
+      "time": "2026-01-16T19:40:10.821Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:42:33.727Z"
+      "time": "2026-01-16T19:40:42.029Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:42:33.948Z"
+      "time": "2026-01-16T19:40:42.271Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:42:34.207Z"
+      "time": "2026-01-16T19:40:42.489Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:42:34.547Z"
+      "time": "2026-01-16T19:40:42.737Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:42:34.848Z"
+      "time": "2026-01-16T19:40:43.032Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:43:06.258Z"
+      "time": "2026-01-16T19:41:14.352Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:43:06.508Z"
+      "time": "2026-01-16T19:41:14.611Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:43:06.738Z"
+      "time": "2026-01-16T19:41:14.884Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:43:07.008Z"
+      "time": "2026-01-16T19:41:15.125Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:43:07.397Z"
+      "time": "2026-01-16T19:41:15.373Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:43:07.648Z"
+      "time": "2026-01-16T19:41:15.603Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:43:07.702Z"
+      "time": "2026-01-16T19:41:15.672Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:43:07.709Z"
+      "time": "2026-01-16T19:41:15.672Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:43:07.712Z"
+      "time": "2026-01-16T19:41:15.675Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:43:07.719Z"
+      "time": "2026-01-16T19:41:15.687Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:43:07.719Z"
+      "time": "2026-01-16T19:41:15.693Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:43:07.746Z"
+      "time": "2026-01-16T19:41:15.702Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:43:07.925Z"
+      "time": "2026-01-16T19:41:15.707Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:43:39.239Z"
+      "time": "2026-01-16T19:41:47.013Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:43:39.568Z"
+      "time": "2026-01-16T19:41:47.226Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:43:39.878Z"
+      "time": "2026-01-16T19:41:47.583Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:43:40.108Z"
+      "time": "2026-01-16T19:41:47.825Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:43:40.348Z"
+      "time": "2026-01-16T19:41:48.058Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:44:11.929Z"
+      "time": "2026-01-16T19:42:19.277Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:44:12.239Z"
+      "time": "2026-01-16T19:42:19.523Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:44:12.519Z"
+      "time": "2026-01-16T19:42:19.911Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:44:12.769Z"
+      "time": "2026-01-16T19:42:20.176Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:44:13.049Z"
+      "time": "2026-01-16T19:42:20.404Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:44:13.309Z"
+      "time": "2026-01-16T19:42:20.657Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:44:13.351Z"
+      "time": "2026-01-16T19:42:20.681Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:44:13.365Z"
+      "time": "2026-01-16T19:42:20.705Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:44:13.369Z"
+      "time": "2026-01-16T19:42:20.715Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:44:13.372Z"
+      "time": "2026-01-16T19:42:20.731Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:44:13.384Z"
+      "time": "2026-01-16T19:42:20.734Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:44:13.393Z"
+      "time": "2026-01-16T19:42:20.741Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:44:13.472Z"
+      "time": "2026-01-16T19:42:20.741Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:44:44.899Z"
+      "time": "2026-01-16T19:42:51.910Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:44:45.159Z"
+      "time": "2026-01-16T19:42:52.130Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:44:45.390Z"
+      "time": "2026-01-16T19:42:52.377Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:44:45.649Z"
+      "time": "2026-01-16T19:42:52.594Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:44:45.899Z"
+      "time": "2026-01-16T19:42:52.828Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:45:17.234Z"
+      "time": "2026-01-16T19:43:24.174Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:45:17.471Z"
+      "time": "2026-01-16T19:43:24.431Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:45:17.720Z"
+      "time": "2026-01-16T19:43:24.652Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:45:17.971Z"
+      "time": "2026-01-16T19:43:24.871Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:45:18.230Z"
+      "time": "2026-01-16T19:43:25.116Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:45:18.460Z"
+      "time": "2026-01-16T19:43:25.384Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:45:18.511Z"
+      "time": "2026-01-16T19:43:25.401Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:45:18.534Z"
+      "time": "2026-01-16T19:43:25.414Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:45:18.539Z"
+      "time": "2026-01-16T19:43:25.438Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:45:18.542Z"
+      "time": "2026-01-16T19:43:25.439Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:45:18.546Z"
+      "time": "2026-01-16T19:43:25.443Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:45:18.549Z"
+      "time": "2026-01-16T19:43:25.461Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:45:18.561Z"
+      "time": "2026-01-16T19:43:25.901Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:45:49.840Z"
+      "time": "2026-01-16T19:43:57.144Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:45:50.091Z"
+      "time": "2026-01-16T19:43:57.366Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:45:50.350Z"
+      "time": "2026-01-16T19:43:57.604Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:45:50.601Z"
+      "time": "2026-01-16T19:43:57.877Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:45:50.860Z"
+      "time": "2026-01-16T19:43:58.116Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:46:22.261Z"
+      "time": "2026-01-16T19:44:29.418Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:46:22.510Z"
+      "time": "2026-01-16T19:44:29.654Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:46:22.771Z"
+      "time": "2026-01-16T19:44:29.911Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:46:23.031Z"
+      "time": "2026-01-16T19:44:30.163Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:46:23.271Z"
+      "time": "2026-01-16T19:44:30.389Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:46:23.501Z"
+      "time": "2026-01-16T19:44:30.654Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:46:23.580Z"
+      "time": "2026-01-16T19:44:30.695Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:46:23.584Z"
+      "time": "2026-01-16T19:44:30.698Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:46:23.585Z"
+      "time": "2026-01-16T19:44:30.706Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:46:23.585Z"
+      "time": "2026-01-16T19:44:30.712Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:46:23.587Z"
+      "time": "2026-01-16T19:44:30.719Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:46:23.600Z"
+      "time": "2026-01-16T19:44:30.720Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:46:24.040Z"
+      "time": "2026-01-16T19:44:30.747Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:46:55.283Z"
+      "time": "2026-01-16T19:45:02.013Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:46:55.512Z"
+      "time": "2026-01-16T19:45:02.261Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:46:55.761Z"
+      "time": "2026-01-16T19:45:02.517Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:46:56.001Z"
+      "time": "2026-01-16T19:45:02.765Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:46:56.251Z"
+      "time": "2026-01-16T19:45:02.998Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:47:27.528Z"
+      "time": "2026-01-16T19:45:34.284Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:47:27.779Z"
+      "time": "2026-01-16T19:45:34.523Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:47:28.025Z"
+      "time": "2026-01-16T19:45:34.767Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:47:28.264Z"
+      "time": "2026-01-16T19:45:35.029Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:47:28.502Z"
+      "time": "2026-01-16T19:45:35.255Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:47:28.751Z"
+      "time": "2026-01-16T19:45:35.478Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:47:28.806Z"
+      "time": "2026-01-16T19:45:35.547Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:47:28.808Z"
+      "time": "2026-01-16T19:45:35.547Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:47:28.817Z"
+      "time": "2026-01-16T19:45:35.562Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:47:28.819Z"
+      "time": "2026-01-16T19:45:35.571Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:47:28.834Z"
+      "time": "2026-01-16T19:45:35.578Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:47:28.846Z"
+      "time": "2026-01-16T19:45:35.579Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:47:28.865Z"
+      "time": "2026-01-16T19:45:35.585Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:48:00.223Z"
+      "time": "2026-01-16T19:46:06.877Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:48:00.453Z"
+      "time": "2026-01-16T19:46:07.235Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:48:00.714Z"
+      "time": "2026-01-16T19:46:07.478Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:48:00.975Z"
+      "time": "2026-01-16T19:46:07.712Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:48:01.243Z"
+      "time": "2026-01-16T19:46:07.956Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:48:32.595Z"
+      "time": "2026-01-16T19:46:39.192Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:48:32.831Z"
+      "time": "2026-01-16T19:46:39.438Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:48:33.103Z"
+      "time": "2026-01-16T19:46:39.682Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:48:33.353Z"
+      "time": "2026-01-16T19:46:39.900Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:48:33.593Z"
+      "time": "2026-01-16T19:46:40.223Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:48:33.878Z"
+      "time": "2026-01-16T19:46:40.471Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:48:33.879Z"
+      "time": "2026-01-16T19:46:40.517Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:48:33.896Z"
+      "time": "2026-01-16T19:46:40.523Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:48:33.914Z"
+      "time": "2026-01-16T19:46:40.526Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:48:33.915Z"
+      "time": "2026-01-16T19:46:40.533Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:48:33.921Z"
+      "time": "2026-01-16T19:46:40.536Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:48:33.921Z"
+      "time": "2026-01-16T19:46:40.542Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:48:33.937Z"
+      "time": "2026-01-16T19:46:40.549Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:49:05.254Z"
+      "time": "2026-01-16T19:47:11.831Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:49:05.495Z"
+      "time": "2026-01-16T19:47:12.076Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:49:05.730Z"
+      "time": "2026-01-16T19:47:12.333Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:49:05.969Z"
+      "time": "2026-01-16T19:47:12.562Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:49:06.213Z"
+      "time": "2026-01-16T19:47:12.810Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:49:37.576Z"
+      "time": "2026-01-16T19:47:44.091Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:49:37.825Z"
+      "time": "2026-01-16T19:47:44.334Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:49:38.074Z"
+      "time": "2026-01-16T19:47:44.575Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:49:38.354Z"
+      "time": "2026-01-16T19:47:44.816Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:49:38.595Z"
+      "time": "2026-01-16T19:47:45.055Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:49:38.856Z"
+      "time": "2026-01-16T19:47:45.303Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:49:38.901Z"
+      "time": "2026-01-16T19:47:45.338Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:49:38.907Z"
+      "time": "2026-01-16T19:47:45.341Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:49:38.912Z"
+      "time": "2026-01-16T19:47:45.347Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:49:38.914Z"
+      "time": "2026-01-16T19:47:45.354Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:49:38.919Z"
+      "time": "2026-01-16T19:47:45.361Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:49:38.930Z"
+      "time": "2026-01-16T19:47:45.376Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:49:38.945Z"
+      "time": "2026-01-16T19:47:45.377Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:50:10.245Z"
+      "time": "2026-01-16T19:48:16.691Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:50:10.484Z"
+      "time": "2026-01-16T19:48:16.936Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:50:10.745Z"
+      "time": "2026-01-16T19:48:17.183Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:50:11.015Z"
+      "time": "2026-01-16T19:48:17.425Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:50:11.275Z"
+      "time": "2026-01-16T19:48:17.681Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:50:42.587Z"
+      "time": "2026-01-16T19:48:48.991Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:50:42.816Z"
+      "time": "2026-01-16T19:48:49.213Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:50:43.055Z"
+      "time": "2026-01-16T19:48:49.463Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:50:43.295Z"
+      "time": "2026-01-16T19:48:49.708Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:50:43.525Z"
+      "time": "2026-01-16T19:48:50.019Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:50:43.787Z"
+      "time": "2026-01-16T19:48:50.282Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:50:43.818Z"
+      "time": "2026-01-16T19:48:50.334Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:50:43.818Z"
+      "time": "2026-01-16T19:48:50.344Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:50:43.822Z"
+      "time": "2026-01-16T19:48:50.366Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:50:43.842Z"
+      "time": "2026-01-16T19:48:50.368Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:50:43.853Z"
+      "time": "2026-01-16T19:48:50.383Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:50:43.867Z"
+      "time": "2026-01-16T19:48:50.384Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:50:44.206Z"
+      "time": "2026-01-16T19:48:50.453Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:51:15.457Z"
+      "time": "2026-01-16T19:49:21.716Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:51:15.707Z"
+      "time": "2026-01-16T19:49:21.940Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:51:15.956Z"
+      "time": "2026-01-16T19:49:22.182Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:51:16.196Z"
+      "time": "2026-01-16T19:49:22.434Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:51:16.436Z"
+      "time": "2026-01-16T19:49:22.675Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:51:47.709Z"
+      "time": "2026-01-16T19:49:54.040Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:51:47.952Z"
+      "time": "2026-01-16T19:49:54.309Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:51:48.198Z"
+      "time": "2026-01-16T19:49:54.545Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:51:48.447Z"
+      "time": "2026-01-16T19:49:54.790Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:51:48.699Z"
+      "time": "2026-01-16T19:49:55.043Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:51:48.963Z"
+      "time": "2026-01-16T19:49:55.308Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:51:48.979Z"
+      "time": "2026-01-16T19:49:55.387Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:51:48.989Z"
+      "time": "2026-01-16T19:49:55.398Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:51:48.992Z"
+      "time": "2026-01-16T19:49:55.399Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:51:49.009Z"
+      "time": "2026-01-16T19:49:55.407Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:51:49.009Z"
+      "time": "2026-01-16T19:49:55.413Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:51:49.014Z"
+      "time": "2026-01-16T19:49:55.414Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:51:49.046Z"
+      "time": "2026-01-16T19:49:55.425Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:52:20.377Z"
+      "time": "2026-01-16T19:50:26.706Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:52:20.627Z"
+      "time": "2026-01-16T19:50:26.954Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:52:20.866Z"
+      "time": "2026-01-16T19:50:27.197Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:52:21.117Z"
+      "time": "2026-01-16T19:50:27.421Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:52:21.348Z"
+      "time": "2026-01-16T19:50:27.640Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:52:52.657Z"
+      "time": "2026-01-16T19:50:58.957Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:52:52.908Z"
+      "time": "2026-01-16T19:50:59.184Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:52:53.177Z"
+      "time": "2026-01-16T19:50:59.427Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:52:53.407Z"
+      "time": "2026-01-16T19:50:59.658Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:52:53.670Z"
+      "time": "2026-01-16T19:50:59.884Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:52:53.925Z"
+      "time": "2026-01-16T19:51:00.118Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:52:53.961Z"
+      "time": "2026-01-16T19:51:00.164Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:52:53.971Z"
+      "time": "2026-01-16T19:51:00.168Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:52:53.986Z"
+      "time": "2026-01-16T19:51:00.196Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:52:53.992Z"
+      "time": "2026-01-16T19:51:00.206Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:52:54.001Z"
+      "time": "2026-01-16T19:51:00.216Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:52:54.003Z"
+      "time": "2026-01-16T19:51:00.225Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:52:54.023Z"
+      "time": "2026-01-16T19:51:00.255Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:53:25.338Z"
+      "time": "2026-01-16T19:51:31.664Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:53:25.588Z"
+      "time": "2026-01-16T19:51:31.884Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:53:25.809Z"
+      "time": "2026-01-16T19:51:32.120Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:53:26.078Z"
+      "time": "2026-01-16T19:51:32.389Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:53:26.348Z"
+      "time": "2026-01-16T19:51:32.655Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:53:57.628Z"
+      "time": "2026-01-16T19:52:04.001Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:53:57.869Z"
+      "time": "2026-01-16T19:52:04.250Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:53:58.119Z"
+      "time": "2026-01-16T19:52:04.504Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:53:58.368Z"
+      "time": "2026-01-16T19:52:04.768Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:53:58.629Z"
+      "time": "2026-01-16T19:52:05.006Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:53:58.878Z"
+      "time": "2026-01-16T19:52:05.260Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:53:58.913Z"
+      "time": "2026-01-16T19:52:05.291Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:53:58.923Z"
+      "time": "2026-01-16T19:52:05.293Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:53:58.933Z"
+      "time": "2026-01-16T19:52:05.304Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:53:58.947Z"
+      "time": "2026-01-16T19:52:05.322Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:53:58.951Z"
+      "time": "2026-01-16T19:52:05.324Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:53:58.953Z"
+      "time": "2026-01-16T19:52:05.324Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:53:58.957Z"
+      "time": "2026-01-16T19:52:05.328Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:54:30.709Z"
+      "time": "2026-01-16T19:52:36.612Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:54:30.959Z"
+      "time": "2026-01-16T19:52:36.856Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:54:31.219Z"
+      "time": "2026-01-16T19:52:37.102Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:54:31.479Z"
+      "time": "2026-01-16T19:52:37.331Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:54:31.739Z"
+      "time": "2026-01-16T19:52:37.581Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:55:03.200Z"
+      "time": "2026-01-16T19:53:08.857Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:55:03.449Z"
+      "time": "2026-01-16T19:53:09.078Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:55:03.677Z"
+      "time": "2026-01-16T19:53:09.322Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:55:03.917Z"
+      "time": "2026-01-16T19:53:09.580Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:55:04.168Z"
+      "time": "2026-01-16T19:53:09.820Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:55:04.423Z"
+      "time": "2026-01-16T19:53:10.075Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:55:04.464Z"
+      "time": "2026-01-16T19:53:10.103Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:55:04.467Z"
+      "time": "2026-01-16T19:53:10.105Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:55:04.467Z"
+      "time": "2026-01-16T19:53:10.122Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:55:04.479Z"
+      "time": "2026-01-16T19:53:10.136Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:55:04.482Z"
+      "time": "2026-01-16T19:53:10.139Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:55:04.493Z"
+      "time": "2026-01-16T19:53:10.147Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:55:04.494Z"
+      "time": "2026-01-16T19:53:10.165Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:55:35.687Z"
+      "time": "2026-01-16T19:53:41.791Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:55:35.926Z"
+      "time": "2026-01-16T19:53:42.031Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:55:36.145Z"
+      "time": "2026-01-16T19:53:42.264Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:55:36.386Z"
+      "time": "2026-01-16T19:53:42.524Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:55:36.629Z"
+      "time": "2026-01-16T19:53:42.768Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:56:07.986Z"
+      "time": "2026-01-16T19:54:14.034Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:56:08.210Z"
+      "time": "2026-01-16T19:54:14.255Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:56:08.491Z"
+      "time": "2026-01-16T19:54:14.525Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:56:08.740Z"
+      "time": "2026-01-16T19:54:14.784Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:56:08.991Z"
+      "time": "2026-01-16T19:54:15.033Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:56:09.242Z"
+      "time": "2026-01-16T19:54:15.313Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:56:09.276Z"
+      "time": "2026-01-16T19:54:15.316Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:56:09.285Z"
+      "time": "2026-01-16T19:54:15.322Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:56:09.302Z"
+      "time": "2026-01-16T19:54:15.331Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:56:09.303Z"
+      "time": "2026-01-16T19:54:15.333Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:56:09.304Z"
+      "time": "2026-01-16T19:54:15.353Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:56:09.306Z"
+      "time": "2026-01-16T19:54:15.357Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:56:09.325Z"
+      "time": "2026-01-16T19:54:15.394Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:56:40.621Z"
+      "time": "2026-01-16T19:54:46.726Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:56:40.871Z"
+      "time": "2026-01-16T19:54:46.968Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:56:41.121Z"
+      "time": "2026-01-16T19:54:47.220Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:56:41.361Z"
+      "time": "2026-01-16T19:54:47.483Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:56:41.591Z"
+      "time": "2026-01-16T19:54:47.706Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:57:12.832Z"
+      "time": "2026-01-16T19:55:19.003Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:57:13.052Z"
+      "time": "2026-01-16T19:55:19.243Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:57:13.292Z"
+      "time": "2026-01-16T19:55:19.574Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:57:13.552Z"
+      "time": "2026-01-16T19:55:19.826Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:57:13.812Z"
+      "time": "2026-01-16T19:55:20.065Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:57:14.041Z"
+      "time": "2026-01-16T19:55:20.308Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:57:14.101Z"
+      "time": "2026-01-16T19:55:20.364Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:57:14.102Z"
+      "time": "2026-01-16T19:55:20.372Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:57:14.103Z"
+      "time": "2026-01-16T19:55:20.380Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:57:14.110Z"
+      "time": "2026-01-16T19:55:20.380Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:57:14.127Z"
+      "time": "2026-01-16T19:55:20.381Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:57:14.138Z"
+      "time": "2026-01-16T19:55:20.392Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:57:14.157Z"
+      "time": "2026-01-16T19:55:20.777Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:57:45.451Z"
+      "time": "2026-01-16T19:55:52.071Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:57:45.722Z"
+      "time": "2026-01-16T19:55:52.324Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:57:45.972Z"
+      "time": "2026-01-16T19:55:52.585Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:57:46.192Z"
+      "time": "2026-01-16T19:55:52.850Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:57:46.412Z"
+      "time": "2026-01-16T19:55:53.118Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:58:17.756Z"
+      "time": "2026-01-16T19:56:24.376Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:58:18.001Z"
+      "time": "2026-01-16T19:56:24.623Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:58:18.237Z"
+      "time": "2026-01-16T19:56:24.849Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:58:18.482Z"
+      "time": "2026-01-16T19:56:25.093Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:58:18.735Z"
+      "time": "2026-01-16T19:56:25.339Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:58:18.985Z"
+      "time": "2026-01-16T19:56:25.564Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:58:19.036Z"
+      "time": "2026-01-16T19:56:25.620Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:58:19.039Z"
+      "time": "2026-01-16T19:56:25.636Z"
     },
     {
-      "endpoint": "/api/info",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:58:19.048Z"
+      "time": "2026-01-16T19:56:25.647Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:58:19.052Z"
+      "time": "2026-01-16T19:56:25.654Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:58:19.057Z"
+      "time": "2026-01-16T19:56:25.657Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:58:19.061Z"
+      "time": "2026-01-16T19:56:25.660Z"
     },
     {
-      "endpoint": "/api/documents/supported-types",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:58:19.065Z"
+      "time": "2026-01-16T19:56:25.685Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:58:50.473Z"
+      "time": "2026-01-16T19:56:56.984Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:58:50.724Z"
+      "time": "2026-01-16T19:56:57.226Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:58:50.963Z"
+      "time": "2026-01-16T19:56:57.475Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:58:51.233Z"
+      "time": "2026-01-16T19:56:57.714Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:58:51.483Z"
+      "time": "2026-01-16T19:56:57.932Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:59:22.745Z"
+      "time": "2026-01-16T19:57:29.280Z"
     },
     {
       "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:59:23.004Z"
+      "time": "2026-01-16T19:57:29.536Z"
     },
     {
       "endpoint": "/api/deploy/status",
       "status": 429,
-      "time": "2026-01-14T05:59:23.254Z"
+      "time": "2026-01-16T19:57:29.756Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:59:23.506Z"
+      "time": "2026-01-16T19:57:30.058Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:59:23.784Z"
+      "time": "2026-01-16T19:57:30.290Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:59:24.034Z"
+      "time": "2026-01-16T19:57:30.542Z"
     },
     {
-      "endpoint": "/api/conversations/list",
+      "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:59:24.064Z"
+      "time": "2026-01-16T19:57:30.577Z"
     },
     {
-      "endpoint": "/api/jurisprudencia/tribunais",
+      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:59:24.071Z"
+      "time": "2026-01-16T19:57:30.592Z"
     },
     {
       "endpoint": "/api/jurisprudencia/tribunais",
       "status": 429,
-      "time": "2026-01-14T05:59:24.082Z"
+      "time": "2026-01-16T19:57:30.601Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
-      "status": 429,
-      "time": "2026-01-14T05:59:24.092Z"
-    },
-    {
-      "endpoint": "/api/conversations/list",
       "status": 429,
-      "time": "2026-01-14T05:59:24.099Z"
+      "time": "2026-01-16T19:57:30.603Z"
     },
     {
       "endpoint": "/api/documents/supported-types",
-      "status": 429,
-      "time": "2026-01-14T05:59:24.100Z"
-    },
-    {
-      "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:59:24.100Z"
+      "time": "2026-01-16T19:57:30.606Z"
     },
     {
       "endpoint": "/api/info",
       "status": 429,
-      "time": "2026-01-14T05:59:55.484Z"
+      "time": "2026-01-16T19:57:30.621Z"
     },
     {
       "endpoint": "/api/conversations/list",
-      "status": 429,
-      "time": "2026-01-14T05:59:55.754Z"
-    },
-    {
-      "endpoint": "/api/deploy/status",
-      "status": 429,
-      "time": "2026-01-14T05:59:55.994Z"
-    },
-    {
-      "endpoint": "/api/jurisprudencia/tribunais",
-      "status": 429,
-      "time": "2026-01-14T05:59:56.238Z"
-    },
-    {
-      "endpoint": "/api/documents/supported-types",
       "status": 429,
-      "time": "2026-01-14T05:59:56.517Z"
+      "time": "2026-01-16T19:57:30.649Z"
     }
   ],
   "memorySnapshots": [
     {
-      "time": "2026-01-14T06:00:27.543Z",
-      "heapUsed": 150,
-      "rss": 279
+      "time": "2026-01-16T18:58:54.312Z",
+      "heapUsed": 147,
+      "rss": 322
     },
     {
-      "time": "2026-01-14T06:01:00.278Z",
-      "heapUsed": 151,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:01:33.056Z",
+      "time": "2026-01-16T18:59:26.984Z",
       "heapUsed": 146,
-      "rss": 279
+      "rss": 322
     },
     {
-      "time": "2026-01-14T06:02:05.814Z",
+      "time": "2026-01-16T18:59:59.730Z",
       "heapUsed": 146,
-      "rss": 279
+      "rss": 322
     },
     {
-      "time": "2026-01-14T06:02:38.999Z",
-      "heapUsed": 147,
-      "rss": 279
+      "time": "2026-01-16T19:00:33.293Z",
+      "heapUsed": 145,
+      "rss": 321
     },
     {
-      "time": "2026-01-14T06:03:12.580Z",
-      "heapUsed": 147,
-      "rss": 279
+      "time": "2026-01-16T19:01:05.601Z",
+      "heapUsed": 143,
+      "rss": 322
     },
     {
-      "time": "2026-01-14T06:03:46.169Z",
+      "time": "2026-01-16T19:01:38.269Z",
+      "heapUsed": 148,
+      "rss": 322
+    },
+    {
+      "time": "2026-01-16T19:02:10.595Z",
+      "heapUsed": 145,
+      "rss": 323
+    },
+    {
+      "time": "2026-01-16T19:02:43.219Z",
+      "heapUsed": 144,
+      "rss": 322
+    },
+    {
+      "time": "2026-01-16T19:58:02.009Z",
+      "heapUsed": 153,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T19:58:34.536Z",
+      "heapUsed": 154,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T19:59:07.774Z",
+      "heapUsed": 154,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T19:59:40.208Z",
+      "heapUsed": 154,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:00:14.209Z",
+      "heapUsed": 154,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:00:48.207Z",
+      "heapUsed": 154,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:01:22.102Z",
+      "heapUsed": 144,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:01:54.769Z",
+      "heapUsed": 143,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:02:28.197Z",
+      "heapUsed": 144,
+      "rss": 326
+    },
+    {
+      "time": "2026-01-16T20:03:01.295Z",
+      "heapUsed": 144,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:03:35.031Z",
+      "heapUsed": 144,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:04:07.688Z",
+      "heapUsed": 144,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:04:42.109Z",
+      "heapUsed": 145,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:05:15.272Z",
+      "heapUsed": 145,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:05:49.576Z",
+      "heapUsed": 145,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:06:22.244Z",
+      "heapUsed": 145,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:06:56.240Z",
       "heapUsed": 146,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:04:20.169Z",
-      "heapUsed": 147,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:04:53.550Z",
+      "time": "2026-01-16T20:07:29.023Z",
       "heapUsed": 146,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:05:27.651Z",
+      "time": "2026-01-16T20:08:03.826Z",
+      "heapUsed": 146,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:08:36.287Z",
       "heapUsed": 147,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:06:00.832Z",
+      "time": "2026-01-16T20:09:10.080Z",
       "heapUsed": 147,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:06:34.623Z",
+      "time": "2026-01-16T20:09:42.808Z",
       "heapUsed": 147,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:07:07.493Z",
+      "time": "2026-01-16T20:10:16.437Z",
       "heapUsed": 147,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:07:41.713Z",
+      "time": "2026-01-16T20:10:49.514Z",
+      "heapUsed": 148,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:11:23.308Z",
+      "heapUsed": 148,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:11:56.893Z",
+      "heapUsed": 148,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:12:30.583Z",
+      "heapUsed": 148,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:13:03.716Z",
+      "heapUsed": 148,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:13:37.964Z",
+      "heapUsed": 149,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:14:11.142Z",
+      "heapUsed": 149,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:14:44.712Z",
+      "heapUsed": 149,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:15:17.241Z",
+      "heapUsed": 149,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:15:51.602Z",
+      "heapUsed": 150,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:16:24.154Z",
+      "heapUsed": 150,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:16:58.164Z",
+      "heapUsed": 150,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:17:31.998Z",
+      "heapUsed": 151,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:18:05.901Z",
+      "heapUsed": 150,
+      "rss": 330
+    },
+    {
+      "time": "2026-01-16T20:18:38.847Z",
+      "heapUsed": 151,
+      "rss": 330
+    },
+    {
+      "time": "2026-01-16T20:19:13.024Z",
+      "heapUsed": 151,
+      "rss": 330
+    },
+    {
+      "time": "2026-01-16T20:19:46.219Z",
+      "heapUsed": 151,
+      "rss": 330
+    },
+    {
+      "time": "2026-01-16T20:20:19.424Z",
+      "heapUsed": 152,
+      "rss": 330
+    },
+    {
+      "time": "2026-01-16T20:20:52.546Z",
+      "heapUsed": 152,
+      "rss": 331
+    },
+    {
+      "time": "2026-01-16T20:21:26.450Z",
+      "heapUsed": 143,
+      "rss": 326
+    },
+    {
+      "time": "2026-01-16T20:21:58.866Z",
+      "heapUsed": 144,
+      "rss": 326
+    },
+    {
+      "time": "2026-01-16T20:22:32.654Z",
+      "heapUsed": 144,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:23:05.271Z",
+      "heapUsed": 144,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:23:39.579Z",
+      "heapUsed": 144,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:24:12.242Z",
+      "heapUsed": 145,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:24:46.344Z",
+      "heapUsed": 145,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:25:19.741Z",
+      "heapUsed": 145,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:25:53.621Z",
+      "heapUsed": 145,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:26:26.800Z",
+      "heapUsed": 146,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:27:00.627Z",
+      "heapUsed": 146,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:27:33.975Z",
+      "heapUsed": 146,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:28:07.563Z",
       "heapUsed": 147,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:08:15.384Z",
+      "time": "2026-01-16T20:28:40.053Z",
       "heapUsed": 147,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:08:49.074Z",
+      "time": "2026-01-16T20:29:13.405Z",
       "heapUsed": 147,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:09:22.353Z",
+      "time": "2026-01-16T20:29:46.791Z",
       "heapUsed": 147,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:09:56.355Z",
+      "time": "2026-01-16T20:30:20.276Z",
       "heapUsed": 147,
-      "rss": 280
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:10:29.486Z",
-      "heapUsed": 148,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:11:03.320Z",
+      "time": "2026-01-16T20:30:53.329Z",
       "heapUsed": 147,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:11:37.427Z",
+      "time": "2026-01-16T20:31:26.941Z",
+      "heapUsed": 148,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:32:00.004Z",
+      "heapUsed": 148,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:32:33.502Z",
+      "heapUsed": 148,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:33:06.782Z",
+      "heapUsed": 148,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:33:40.608Z",
+      "heapUsed": 149,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:34:13.566Z",
+      "heapUsed": 149,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:34:46.727Z",
+      "heapUsed": 149,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:35:19.496Z",
+      "heapUsed": 149,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:35:52.878Z",
+      "heapUsed": 150,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:36:26.057Z",
+      "heapUsed": 150,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:37:00.157Z",
+      "heapUsed": 150,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:37:33.233Z",
+      "heapUsed": 150,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:38:07.128Z",
+      "heapUsed": 151,
+      "rss": 330
+    },
+    {
+      "time": "2026-01-16T20:38:39.695Z",
+      "heapUsed": 151,
+      "rss": 330
+    },
+    {
+      "time": "2026-01-16T20:39:13.894Z",
+      "heapUsed": 151,
+      "rss": 330
+    },
+    {
+      "time": "2026-01-16T20:39:46.970Z",
+      "heapUsed": 151,
+      "rss": 330
+    },
+    {
+      "time": "2026-01-16T20:40:20.595Z",
+      "heapUsed": 143,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:40:53.979Z",
+      "heapUsed": 144,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:41:27.974Z",
+      "heapUsed": 144,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:42:00.828Z",
+      "heapUsed": 144,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:42:34.226Z",
+      "heapUsed": 145,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:43:07.238Z",
+      "heapUsed": 144,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:43:40.583Z",
+      "heapUsed": 144,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:44:13.655Z",
+      "heapUsed": 145,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:44:47.754Z",
+      "heapUsed": 146,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:45:20.571Z",
+      "heapUsed": 145,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:45:54.625Z",
+      "heapUsed": 146,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:46:27.029Z",
+      "heapUsed": 146,
+      "rss": 327
+    },
+    {
+      "time": "2026-01-16T20:47:00.324Z",
+      "heapUsed": 146,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:47:34.256Z",
+      "heapUsed": 146,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:48:07.943Z",
       "heapUsed": 147,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:12:11.217Z",
+      "time": "2026-01-16T20:48:41.394Z",
+      "heapUsed": 147,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:49:15.426Z",
+      "heapUsed": 147,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:49:48.043Z",
       "heapUsed": 148,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:12:44.288Z",
+      "time": "2026-01-16T20:50:21.470Z",
       "heapUsed": 148,
-      "rss": 279
+      "rss": 329
     },
     {
-      "time": "2026-01-14T06:13:18.289Z",
+      "time": "2026-01-16T20:50:53.828Z",
       "heapUsed": 148,
-      "rss": 279
+      "rss": 329
     },
     {
-      "time": "2026-01-14T06:13:50.959Z",
+      "time": "2026-01-16T20:51:27.167Z",
       "heapUsed": 148,
-      "rss": 279
+      "rss": 328
     },
     {
-      "time": "2026-01-14T06:14:25.158Z",
+      "time": "2026-01-16T20:52:00.387Z",
+      "heapUsed": 149,
+      "rss": 328
+    },
+    {
+      "time": "2026-01-16T20:52:34.436Z",
+      "heapUsed": 149,
+      "rss": 329
+    },
+    {
+      "time": "2026-01-16T20:53:07.356Z",
       "heapUsed": 148,
-      "rss": 279
+      "rss": 329
     },
     {
-      "time": "2026-01-14T06:14:58.440Z",
-      "heapUsed": 148,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:15:32.021Z",
-      "heapUsed": 148,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:16:05.512Z",
-      "heapUsed": 148,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:16:39.402Z",
-      "heapUsed": 148,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:17:12.583Z",
+      "time": "2026-01-16T20:53:42.273Z",
       "heapUsed": 149,
-      "rss": 279
+      "rss": 329
     },
     {
-      "time": "2026-01-14T06:17:46.783Z",
+      "time": "2026-01-16T20:54:14.674Z",
       "heapUsed": 149,
-      "rss": 279
+      "rss": 329
     },
     {
-      "time": "2026-01-14T06:18:20.683Z",
-      "heapUsed": 148,
-      "rss": 279
+      "time": "2026-01-16T20:54:48.035Z",
+      "heapUsed": 150,
+      "rss": 329
     },
     {
-      "time": "2026-01-14T06:18:54.876Z",
+      "time": "2026-01-16T20:55:20.829Z",
       "heapUsed": 149,
-      "rss": 279
+      "rss": 329
     },
     {
-      "time": "2026-01-14T06:19:27.440Z",
-      "heapUsed": 148,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:20:02.065Z",
-      "heapUsed": 149,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:20:35.135Z",
-      "heapUsed": 149,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:21:08.725Z",
-      "heapUsed": 148,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:21:41.895Z",
-      "heapUsed": 148,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:22:15.588Z",
-      "heapUsed": 149,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:22:48.866Z",
-      "heapUsed": 149,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:23:22.718Z",
-      "heapUsed": 149,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:23:55.530Z",
-      "heapUsed": 149,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:24:29.512Z",
-      "heapUsed": 149,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:25:02.500Z",
-      "heapUsed": 149,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:25:36.190Z",
-      "heapUsed": 149,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:26:09.371Z",
+      "time": "2026-01-16T20:55:54.940Z",
       "heapUsed": 150,
-      "rss": 279
+      "rss": 329
     },
     {
-      "time": "2026-01-14T06:26:43.161Z",
-      "heapUsed": 149,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:27:15.931Z",
+      "time": "2026-01-16T20:56:27.853Z",
       "heapUsed": 150,
-      "rss": 280
+      "rss": 329
     },
     {
-      "time": "2026-01-14T06:27:50.242Z",
+      "time": "2026-01-16T20:57:01.747Z",
       "heapUsed": 150,
-      "rss": 280
+      "rss": 329
     },
     {
-      "time": "2026-01-14T06:28:23.113Z",
-      "heapUsed": 150,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:28:57.313Z",
-      "heapUsed": 150,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:29:30.586Z",
-      "heapUsed": 149,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:30:04.584Z",
-      "heapUsed": 150,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:30:37.765Z",
-      "heapUsed": 150,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:31:10.845Z",
-      "heapUsed": 150,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:31:44.536Z",
-      "heapUsed": 150,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:32:18.636Z",
-      "heapUsed": 150,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:32:52.017Z",
-      "heapUsed": 150,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:33:25.598Z",
-      "heapUsed": 150,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:33:58.368Z",
-      "heapUsed": 150,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:34:31.851Z",
-      "heapUsed": 150,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:35:05.037Z",
-      "heapUsed": 150,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:35:38.519Z",
-      "heapUsed": 150,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:36:12.010Z",
+      "time": "2026-01-16T20:57:34.822Z",
       "heapUsed": 151,
-      "rss": 280
+      "rss": 330
     },
     {
-      "time": "2026-01-14T06:36:45.411Z",
+      "time": "2026-01-16T20:58:07.889Z",
       "heapUsed": 151,
-      "rss": 279
+      "rss": 330
     },
     {
-      "time": "2026-01-14T06:37:18.301Z",
+      "time": "2026-01-16T20:58:40.765Z",
       "heapUsed": 151,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:37:51.951Z",
-      "heapUsed": 151,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:38:25.132Z",
-      "heapUsed": 151,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:38:58.962Z",
-      "heapUsed": 151,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:39:31.723Z",
-      "heapUsed": 151,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:40:05.727Z",
-      "heapUsed": 151,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:40:39.067Z",
-      "heapUsed": 151,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:41:13.106Z",
-      "heapUsed": 151,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:41:45.865Z",
-      "heapUsed": 151,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:42:19.864Z",
-      "heapUsed": 151,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:42:52.944Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:43:26.932Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:43:59.912Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:44:33.391Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:45:06.771Z",
-      "heapUsed": 151,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:45:40.670Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:46:13.330Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:46:47.127Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:47:20.408Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:47:53.987Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:48:26.807Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:49:00.446Z",
-      "heapUsed": 153,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:49:33.216Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:50:07.205Z",
-      "heapUsed": 153,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:50:40.383Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:51:13.973Z",
-      "heapUsed": 152,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:51:47.152Z",
-      "heapUsed": 152,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:52:20.449Z",
-      "heapUsed": 153,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:52:52.990Z",
-      "heapUsed": 153,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:53:26.580Z",
-      "heapUsed": 153,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:53:59.240Z",
-      "heapUsed": 153,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:54:33.228Z",
-      "heapUsed": 153,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:55:06.317Z",
-      "heapUsed": 153,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:55:39.797Z",
-      "heapUsed": 153,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:56:12.726Z",
-      "heapUsed": 154,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:56:46.355Z",
-      "heapUsed": 153,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:57:19.635Z",
-      "heapUsed": 154,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:57:53.934Z",
-      "heapUsed": 154,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:58:26.523Z",
-      "heapUsed": 153,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T06:59:00.292Z",
-      "heapUsed": 154,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T06:59:32.851Z",
-      "heapUsed": 153,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T07:00:06.341Z",
-      "heapUsed": 154,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T07:00:39.410Z",
-      "heapUsed": 154,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T07:01:13.719Z",
-      "heapUsed": 154,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T07:01:46.998Z",
-      "heapUsed": 154,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T07:02:21.508Z",
-      "heapUsed": 154,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T07:02:54.167Z",
-      "heapUsed": 154,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T07:03:28.396Z",
-      "heapUsed": 154,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T07:04:00.936Z",
-      "heapUsed": 155,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T07:04:34.315Z",
-      "heapUsed": 155,
-      "rss": 279
-    },
-    {
-      "time": "2026-01-14T07:05:07.793Z",
-      "heapUsed": 154,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T07:05:41.993Z",
-      "heapUsed": 155,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T07:06:15.382Z",
-      "heapUsed": 154,
-      "rss": 280
-    },
-    {
-      "time": "2026-01-14T07:06:49.172Z",
-      "heapUsed": 155,
-      "rss": 280
+      "rss": 329
     }
   ]
 }
