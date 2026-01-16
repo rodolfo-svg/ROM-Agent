@@ -8,6 +8,7 @@
   },
   "type": "module",
   "scripts": {
+    "build": "bash scripts/build-production.sh",
     "start": "node scripts/start-with-migrations.js",
     "dev": "node --watch src/index.js",
     "cli": "node src/cli.js",

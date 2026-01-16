@@ -16,25 +16,7 @@ services:
     branch: main
 
     # ═══ BUILD ═══
-    buildCommand: |
-      echo "🔧 Instalando todas as dependências (sem --only=production)..."
-      npm ci
-      echo "🧹 Limpando build anterior do frontend..."
-      rm -rf frontend/dist
-      echo "🏗️ Buildando frontend React..."
-      cd frontend && npm ci && npm run build && cd ..
-      echo "📦 Verificando arquivos gerados..."
-      if [ ! -d "frontend/dist" ]; then
-        echo "❌ ERRO CRÍTICO: frontend/dist não foi criado!"
-        exit 1
-      fi
-      if [ ! -f "frontend/dist/index.html" ]; then
-        echo "❌ ERRO CRÍTICO: frontend/dist/index.html não existe!"
-        exit 1
-      fi
-      echo "✅ Build do frontend verificado com sucesso!"
-      ls -lah frontend/dist/ | head -20
-      echo "✅ Build completo!"
+    buildCommand: bash scripts/build-production.sh
 
     # ═══ START ═══
     # CRÍTICO: Iniciar servidor IMEDIATAMENTE para evitar port scan timeout
@@ -132,25 +114,7 @@ services:
     branch: staging
 
     # ═══ BUILD ═══
-    buildCommand: |
-      echo "🔧 Instalando todas as dependências (sem --only=production)..."
-      npm ci
-      echo "🧹 Limpando build anterior do frontend..."
-      rm -rf frontend/dist
-      echo "🏗️ Buildando frontend React..."
-      cd frontend && npm ci && npm run build && cd ..
-      echo "📦 Verificando arquivos gerados..."
-      if [ ! -d "frontend/dist" ]; then
-        echo "❌ ERRO CRÍTICO: frontend/dist não foi criado!"
-        exit 1
-      fi
-      if [ ! -f "frontend/dist/index.html" ]; then
-        echo "❌ ERRO CRÍTICO: frontend/dist/index.html não existe!"
-        exit 1
-      fi
-      echo "✅ Build do frontend verificado com sucesso!"
-      ls -lah frontend/dist/ | head -20
-      echo "✅ Build completo!"
+    buildCommand: bash scripts/build-production.sh
 
     # ═══ START ═══
     # CRÍTICO: Iniciar servidor IMEDIATAMENTE para evitar port scan timeout
