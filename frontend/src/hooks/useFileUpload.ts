@@ -1180,6 +1180,25 @@ export function useFileUpload<T = DefaultUploadResponse>(
   const executeUpload = useCallback(
     async (file: File, fileId: string, attempt: number = 1): Promise<T> => {
       return new Promise((resolve, reject) => {
+        console.log('🚀 [useFileUpload] Starting upload:', {
+          fileName: file.name,
+          fileSize: file.size,
+          fileType: file.type,
+          fileId,
+          attempt,
+          endpoint,
+          customEndpoint,
+        });
+
+        // Verificar Service Worker
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+          console.warn('⚠️ [useFileUpload] Service Worker ATIVO detectado!', {
+            scope: navigator.serviceWorker.controller.scriptURL
+          });
+        } else {
+          console.log('✅ [useFileUpload] Nenhum Service Worker ativo');
+        }
+
         // Criar XHR
         const xhr = new XMLHttpRequest();
         xhrRef.current = xhr;
@@ -1200,6 +1219,9 @@ export function useFileUpload<T = DefaultUploadResponse>(
 
         // Configurar XHR
         const uploadUrl = getEndpointUrl(endpoint, customEndpoint, projectId);
+        console.log('📡 [useFileUpload] Upload URL:', uploadUrl);
+        console.log('📦 [useFileUpload] FormData field name:', fieldName);
+
         xhr.open(method, uploadUrl);
 
         // Timeout
@@ -1215,9 +1237,19 @@ export function useFileUpload<T = DefaultUploadResponse>(
           xhr.setRequestHeader(key, value);
         });
 
+        // Início do upload
+        xhr.upload.onloadstart = (event) => {
+          console.log('🎬 [useFileUpload] Upload started (onloadstart)');
+        };
+
         // Progresso
         xhr.upload.onprogress = (event) => {
           if (event.lengthComputable) {
+            console.log('📊 [useFileUpload] Progress:', {
+              loaded: event.loaded,
+              total: event.total,
+              percentage: Math.round((event.loaded / event.total) * 100)
+            });
             const now = Date.now();
             const timeDiff = (now - lastTimeRef.current) / 1000;
             const bytesDiff = event.loaded - lastBytesRef.current;
@@ -1268,9 +1300,16 @@ export function useFileUpload<T = DefaultUploadResponse>(
 
         // Sucesso
         xhr.onload = () => {
+          console.log('📥 [useFileUpload] XHR onload triggered:', {
+            status: xhr.status,
+            statusText: xhr.statusText,
+            responseLength: xhr.responseText?.length || 0
+          });
+
           if (xhr.status >= 200 && xhr.status < 300) {
             try {
               let response = JSON.parse(xhr.responseText);
+              console.log('✅ [useFileUpload] Upload successful:', response);
 
               // Transformar resposta se necessario
               if (transformResponse) {
@@ -1279,6 +1318,7 @@ export function useFileUpload<T = DefaultUploadResponse>(
 
               resolve(response as T);
             } catch (parseError) {
+              console.error('❌ [useFileUpload] JSON parse error:', parseError);
               reject(
                 createUploadError(
                   'SERVER_ERROR',
@@ -1290,6 +1330,7 @@ export function useFileUpload<T = DefaultUploadResponse>(
               );
             }
           } else if (xhr.status === 401) {
+            console.error('❌ [useFileUpload] Auth error (401)');
             clearCsrfToken();
             if (
               typeof window !== 'undefined' &&
@@ -1299,9 +1340,11 @@ export function useFileUpload<T = DefaultUploadResponse>(
             }
             reject(createUploadError('AUTH_ERROR', file, undefined, 401, attempt));
           } else if (xhr.status === 403) {
+            console.error('❌ [useFileUpload] CSRF error (403)');
             clearCsrfToken();
             reject(createUploadError('CSRF_ERROR', file, undefined, 403, attempt));
           } else {
+            console.error('❌ [useFileUpload] Server error:', xhr.status, xhr.statusText);
             reject(
               createUploadError('SERVER_ERROR', file, undefined, xhr.status, attempt)
             );
@@ -1310,31 +1353,57 @@ export function useFileUpload<T = DefaultUploadResponse>(
 
         // Erro de rede
         xhr.onerror = () => {
+          console.error('❌ [useFileUpload] XHR onerror triggered (network error):', {
+            readyState: xhr.readyState,
+            status: xhr.status,
+            statusText: xhr.statusText
+          });
           reject(createUploadError('NETWORK_ERROR', file, undefined, undefined, attempt));
         };
 
         // Timeout
         xhr.ontimeout = () => {
+          console.error('❌ [useFileUpload] XHR ontimeout triggered:', {
+            timeout: `${timeout}ms`,
+            readyState: xhr.readyState,
+            status: xhr.status
+          });
           reject(createUploadError('TIMEOUT', file, undefined, undefined, attempt));
         };
 
         // Cancelamento
         xhr.onabort = () => {
+          console.warn('⚠️ [useFileUpload] XHR onabort triggered');
           reject(createUploadError('CANCELLED', file, undefined, undefined, attempt));
         };
 
         // Obter CSRF token e enviar
         const sendRequest = async () => {
           if (withCsrf) {
+            console.log('🔑 [useFileUpload] Getting CSRF token...');
             const csrfToken = await getCsrfToken();
             if (csrfToken) {
+              console.log('✅ [useFileUpload] CSRF token obtained');
               xhr.setRequestHeader('x-csrf-token', csrfToken);
+            } else {
+              console.warn('⚠️ [useFileUpload] No CSRF token returned');
             }
           }
+
+          console.log('📤 [useFileUpload] Sending XHR request...', {
+            method,
+            url: uploadUrl,
+            timeout: `${timeout}ms`,
+            withCredentials,
+            fileSize: file.size
+          });
+
           xhr.send(formData);
+          console.log('✅ [useFileUpload] XHR request sent (waiting for response...)');
         };
 
         sendRequest().catch((csrfError) => {
+          console.error('❌ [useFileUpload] CSRF error:', csrfError);
           reject(
             createUploadError('CSRF_ERROR', file, csrfError as Error, undefined, attempt)
           );
