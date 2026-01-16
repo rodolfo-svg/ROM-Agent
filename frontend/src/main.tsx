@@ -45,6 +45,13 @@ async function registerServiceWorker(config?: ServiceWorkerConfig) {
 
     console.log('[PWA] Service Worker registrado:', registration.scope)
 
+    // CRITICAL: Force immediate update check to get v7.3.0 (fixes upload blocking)
+    registration.update().then(() => {
+      console.log('[PWA] Verificação de atualização forçada')
+    }).catch((err) => {
+      console.warn('[PWA] Erro ao forçar atualização:', err)
+    })
+
     // Handle updates
     registration.onupdatefound = () => {
       const installingWorker = registration.installing

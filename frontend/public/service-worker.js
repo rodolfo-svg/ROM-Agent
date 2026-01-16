@@ -17,7 +17,7 @@
  * @version 7.0.0 - Complete Cache Strategies
  */
 
-const VERSION = 'v7.2.0'; // Fix: não interceptar POST/PUT (uploads)
+const VERSION = 'v7.3.0'; // CRITICAL: Force update - Fix upload blocking
 const STATIC_CACHE = `rom-agent-static-${VERSION}`;
 const RUNTIME_CACHE = `rom-agent-runtime-${VERSION}`;
 const OFFLINE_CACHE = `rom-agent-offline-${VERSION}`;
@@ -377,6 +377,9 @@ async function networkOnlyWithFallback(request) {
 self.addEventListener('install', (event) => {
   console.log(`[SW ${VERSION}] Installing... iOS: ${isIOS}`);
 
+  // CRITICAL: Force immediate activation to fix upload blocking
+  self.skipWaiting();
+
   event.waitUntil(
     Promise.all([
       // Precache critical assets
@@ -413,8 +416,6 @@ self.addEventListener('install', (event) => {
         );
       }),
     ])
-    // REMOVIDO: self.skipWaiting() automático causava loop infinito
-    // SW agora só ativa quando usuário clica "Atualizar" (via message handler)
   );
 });
 
