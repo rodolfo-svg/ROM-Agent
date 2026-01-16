@@ -2668,40 +2668,47 @@ app.post('/api/chat/stream', async (req, res) => {
 });
 
 // API - Upload de arquivo
+// API - Upload de arquivo simples (para chat/dashboard)
+// ✅ FIX: Não requer agent, apenas salva o arquivo
 app.post('/api/upload', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
     }
 
-    const agent = getAgent(req.session.id);
-    if (!agent) {
-      return res.status(500).json({ error: 'API Key não configurada' });
-    }
-
-    // Processar arquivo com o agente
+    // Informações do arquivo enviado
     const filePath = req.file.path;
     const fileInfo = {
+      id: req.file.filename, // ✅ Adicionar ID para compatibilidade com frontend
+      name: req.file.originalname,
       originalName: req.file.originalname,
       filename: req.file.filename,
       path: filePath,
       size: req.file.size,
+      type: req.file.mimetype,
       mimetype: req.file.mimetype
     };
 
-    // Adicionar ao histórico
-    const history = getHistory(req.session.id);
-    history.push({
-      role: 'user',
-      content: `Arquivo enviado: ${fileInfo.originalName}`,
-      file: fileInfo,
-      timestamp: new Date()
-    });
+    // ✅ FIX: Adicionar ao histórico apenas se houver sessão válida
+    if (req.session && req.session.id) {
+      try {
+        const history = getHistory(req.session.id);
+        history.push({
+          role: 'user',
+          content: `Arquivo enviado: ${fileInfo.originalName}`,
+          file: fileInfo,
+          timestamp: new Date()
+        });
+      } catch (historyError) {
+        // Ignorar erro de histórico - não é crítico
+        console.log('Aviso: Não foi possível adicionar ao histórico:', historyError.message);
+      }
+    }
 
     res.json({
       success: true,
-      file: fileInfo,
-      message: 'Arquivo enviado com sucesso! O que você gostaria que eu fizesse com ele?'
+      ...fileInfo, // ✅ Retornar todos os campos para compatibilidade
+      message: 'Arquivo enviado com sucesso!'
     });
   } catch (error) {
     console.error('Erro no upload:', error);
