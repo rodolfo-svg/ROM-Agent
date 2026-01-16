@@ -1175,6 +1175,23 @@ export function useFileUpload<T = DefaultUploadResponse>(
   // ============================================================
 
   /**
+   * Converte File para Base64
+   */
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const result = reader.result as string;
+        // Remove o prefixo "data:*/*;base64,"
+        const base64 = result.split(',')[1] || result;
+        resolve(base64);
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  /**
    * Executa upload de um arquivo (interno) - REFATORADO para fetch()
    */
   const executeUpload = useCallback(
@@ -1349,6 +1366,76 @@ export function useFileUpload<T = DefaultUploadResponse>(
         }
 
       } catch (error: any) {
+        // Se falhar na primeira tentativa com timeout/network error, tenta Base64
+        if (attempt === 1 && (error.name === 'AbortError' || error.code === 'ERR_NETWORK' || error.message?.includes('Failed to fetch'))) {
+          console.warn(`⚠️ [useFileUpload] FormData upload failed, trying Base64 fallback...`);
+
+          try {
+            // Converter arquivo para Base64
+            console.log('🔄 [useFileUpload] Converting file to Base64...');
+            const base64Data = await fileToBase64(file);
+            console.log('✅ [useFileUpload] Base64 conversion complete');
+
+            // Obter CSRF token
+            let csrfToken = '';
+            if (withCsrf) {
+              console.log('🔑 [useFileUpload] Getting CSRF token for Base64...');
+              csrfToken = await getCsrfToken() || '';
+            }
+
+            console.log('📤 [useFileUpload] Sending Base64 request...');
+
+            // Upload via Base64
+            const base64Response = await fetch('/api/upload/base64', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                ...(csrfToken ? { 'x-csrf-token': csrfToken } : {}),
+              },
+              credentials: withCredentials ? 'include' : 'same-origin',
+              body: JSON.stringify({
+                filename: file.name,
+                data: base64Data,
+                mimetype: file.type
+              }),
+            });
+
+            console.log('📥 [useFileUpload] Base64 response:', {
+              status: base64Response.status,
+              ok: base64Response.ok
+            });
+
+            if (base64Response.ok) {
+              const result = await base64Response.json();
+              console.log('✅ [useFileUpload] Base64 upload successful!', result);
+
+              // Progress 100%
+              setState((prev) => ({
+                ...prev,
+                progress: 100,
+                bytesUploaded: file.size,
+                bytesTotal: file.size,
+              }));
+
+              setAttachedFiles((prev) =>
+                prev.map((af) =>
+                  af.fileInfo.id === fileId
+                    ? { ...af, fileInfo: { ...af.fileInfo, progress: 100 } }
+                    : af
+                )
+              );
+
+              return result as T;
+            } else {
+              throw new Error(`Base64 upload failed: ${base64Response.status}`);
+            }
+          } catch (base64Error: any) {
+            console.error('❌ [useFileUpload] Base64 fallback also failed:', base64Error);
+            // Se Base64 também falhar, propagar erro original
+          }
+        }
+
+        // Tratamento de erros padrão
         if (error.name === 'AbortError') {
           console.warn('⚠️ [useFileUpload] Upload aborted/timeout');
           throw createUploadError('TIMEOUT', file, undefined, undefined, attempt);
