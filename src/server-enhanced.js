@@ -2671,15 +2671,26 @@ app.post('/api/chat/stream', async (req, res) => {
 // API - Upload de arquivo simples (para chat/dashboard)
 // ✅ FIX: Não requer agent, apenas salva o arquivo
 app.post('/api/upload', upload.single('file'), async (req, res) => {
+  const startTime = Date.now();
+  console.log('📤 [/api/upload] Request received');
+
   try {
+    console.log('📤 [/api/upload] Checking file...');
     if (!req.file) {
+      console.log('❌ [/api/upload] No file received');
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
     }
+
+    console.log('📤 [/api/upload] File received:', {
+      name: req.file.originalname,
+      size: req.file.size,
+      mimetype: req.file.mimetype
+    });
 
     // Informações do arquivo enviado
     const filePath = req.file.path;
     const fileInfo = {
-      id: req.file.filename, // ✅ Adicionar ID para compatibilidade com frontend
+      id: req.file.filename,
       name: req.file.originalname,
       originalName: req.file.originalname,
       filename: req.file.filename,
@@ -2689,29 +2700,17 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
       mimetype: req.file.mimetype
     };
 
-    // ✅ FIX: Adicionar ao histórico apenas se houver sessão válida
-    if (req.session && req.session.id) {
-      try {
-        const history = getHistory(req.session.id);
-        history.push({
-          role: 'user',
-          content: `Arquivo enviado: ${fileInfo.originalName}`,
-          file: fileInfo,
-          timestamp: new Date()
-        });
-      } catch (historyError) {
-        // Ignorar erro de histórico - não é crítico
-        console.log('Aviso: Não foi possível adicionar ao histórico:', historyError.message);
-      }
-    }
+    console.log('📤 [/api/upload] Sending response...', `(${Date.now() - startTime}ms)`);
 
     res.json({
       success: true,
-      ...fileInfo, // ✅ Retornar todos os campos para compatibilidade
+      ...fileInfo,
       message: 'Arquivo enviado com sucesso!'
     });
+
+    console.log('✅ [/api/upload] Response sent', `(${Date.now() - startTime}ms)`);
   } catch (error) {
-    console.error('Erro no upload:', error);
+    console.error('❌ [/api/upload] Error:', error);
     res.status(500).json({ error: error.message });
   }
 });
