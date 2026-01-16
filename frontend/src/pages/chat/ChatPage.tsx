@@ -297,8 +297,7 @@ export function ChatPage() {
         model: selectedModel,
         messages: conversationMessages,
         signal: abortControllerRef.current.signal,
-        // Note: attachedFiles would be sent here if backend supports it
-        // attachedFiles: attachedFilesForApi,
+        attachedFiles: attachedFilesForApi, // ✅ ATIVADO: Backend processa arquivos anexados
       })) {
         if (chunk.type === 'chunk' && chunk.content) {
           fullContent += chunk.content

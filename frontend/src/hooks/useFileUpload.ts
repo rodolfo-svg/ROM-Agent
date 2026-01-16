@@ -1830,6 +1830,7 @@ export function useFileUpload<T = DefaultUploadResponse>(
         id: af.fileInfo.id,
         name: af.fileInfo.name,
         type: af.fileInfo.type,
+        path: af.fileInfo.url, // ✅ CRÍTICO: Backend espera file.path
       }));
   }, [attachedFiles]);
 
