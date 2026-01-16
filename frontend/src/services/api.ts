@@ -106,7 +106,8 @@ export async function apiFetch<T>(
 
     if (!res.ok) {
       // Se 401 - não autenticado, redirecionar para login
-      if (res.status === 401) {
+      // EXCETO se for o próprio endpoint de login (para permitir mostrar erro de credenciais)
+      if (res.status === 401 && endpoint !== '/auth/login') {
         console.warn('⚠️ Sessão expirada ou não autenticado - redirecionando para login')
         clearCsrfToken()
         // Redirecionar para login se não estiver já na página de login
