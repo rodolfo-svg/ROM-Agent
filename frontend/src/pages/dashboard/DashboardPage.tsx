@@ -1,13 +1,111 @@
-import { useEffect, useRef, lazy, Suspense } from 'react'
+import { useEffect, useRef, useState, lazy, Suspense } from 'react'
 import { useParams } from 'react-router-dom'
 import { useChatStore } from '@/stores/chatStore'
 import { useArtifactStore } from '@/stores/artifactStore'
 import { Sidebar } from '@/components/layout'
 import { ChatInput, MessageItem, EmptyState } from '@/components/chat'
-import { chatStream, getCsrfToken } from '@/services/api'
+import { chatStream } from '@/services/api'
+import { useFileUpload, type FileInfo, type AttachedFile } from '@/hooks/useFileUpload'
+import { X, Paperclip, File, FileText, Image, Loader2 } from 'lucide-react'
 
 // Lazy load ArtifactPanel (682KB bundle reduction)
 const ArtifactPanel = lazy(() => import('@/components/artifacts').then(m => ({ default: m.ArtifactPanel })))
+
+// ============================================================
+// ATTACHED FILES UI COMPONENT
+// ============================================================
+
+interface AttachedFilesPreviewProps {
+  attachedFiles: AttachedFile[]
+  onRemove: (fileId: string) => void
+  isUploading: boolean
+  uploadProgress: number
+}
+
+function AttachedFilesPreview({ attachedFiles, onRemove, isUploading, uploadProgress }: AttachedFilesPreviewProps) {
+  if (attachedFiles.length === 0) return null
+
+  const getFileIcon = (type: string) => {
+    if (type.startsWith('image/')) return <Image className="w-4 h-4" />
+    if (type === 'application/pdf') return <FileText className="w-4 h-4" />
+    return <File className="w-4 h-4" />
+  }
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  }
+
+  return (
+    <div className="px-4 pb-2">
+      <div className="flex flex-wrap gap-2">
+        {attachedFiles.map((af) => (
+          <div
+            key={af.fileInfo.id}
+            className={`
+              relative flex items-center gap-2 px-3 py-2 rounded-lg border
+              ${af.fileInfo.status === 'error'
+                ? 'bg-red-50 border-red-200 text-red-700'
+                : af.fileInfo.status === 'uploading'
+                  ? 'bg-amber-50 border-amber-200'
+                  : 'bg-stone-100 border-stone-200'
+              }
+            `}
+          >
+            {/* File Icon */}
+            <span className="text-stone-500">
+              {af.fileInfo.status === 'uploading' ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                getFileIcon(af.fileInfo.type)
+              )}
+            </span>
+
+            {/* File Info */}
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-medium truncate max-w-[150px]">
+                {af.fileInfo.name}
+              </span>
+              <span className="text-xs text-stone-500">
+                {af.fileInfo.status === 'uploading'
+                  ? `${af.fileInfo.progress}%`
+                  : af.fileInfo.status === 'error'
+                    ? af.fileInfo.error
+                    : formatFileSize(af.fileInfo.size)
+                }
+              </span>
+            </div>
+
+            {/* Progress Bar (during upload) */}
+            {af.fileInfo.status === 'uploading' && (
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-stone-200 rounded-b-lg overflow-hidden">
+                <div
+                  className="h-full bg-amber-500 transition-all duration-300"
+                  style={{ width: `${af.fileInfo.progress}%` }}
+                />
+              </div>
+            )}
+
+            {/* Remove Button */}
+            <button
+              onClick={() => onRemove(af.fileInfo.id)}
+              className="ml-1 p-1 rounded-full hover:bg-stone-200 text-stone-400 hover:text-stone-600 transition-colors"
+              title="Remover arquivo"
+              disabled={af.fileInfo.status === 'uploading'}
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ============================================================
+// MAIN COMPONENT
+// ============================================================
 
 export function DashboardPage() {
   const { conversationId } = useParams()
@@ -28,6 +126,31 @@ export function DashboardPage() {
   } = useChatStore()
 
   const { artifacts, addArtifact } = useArtifactStore()
+
+  // File upload hook - uses simple endpoint for dashboard chat
+  const {
+    attachedFiles,
+    isUploading,
+    uploadProgress,
+    error: uploadError,
+    uploadFile,
+    removeFile,
+    clearFiles,
+    getAttachedFilesForChat,
+    getExtractedData,
+    inputRef,
+    openFilePicker,
+  } = useFileUpload({
+    endpoint: 'simple', // Use /api/upload for dashboard chat
+    maxFiles: 5,
+    maxSizeBytes: 50 * 1024 * 1024, // 50MB
+    onUploadComplete: (file, fileInfo) => {
+      console.log(`[DashboardPage] File uploaded: ${file.name}`, fileInfo)
+    },
+    onUploadError: (file, error) => {
+      console.error(`[DashboardPage] Upload error for ${file.name}:`, error)
+    },
+  })
 
   // Get active conversation
   const activeConversation = conversations.find(c => c.id === activeConversationId)
@@ -65,54 +188,45 @@ export function DashboardPage() {
     return artifacts.filter(a => a.messageId === messageId)
   }
 
-  // Handle sending message
+  // Handle file selection from input
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files || files.length === 0) return
+
+    for (const file of Array.from(files)) {
+      await uploadFile(file)
+    }
+
+    // Clear input for same file re-selection
+    if (inputRef.current) {
+      inputRef.current.value = ''
+    }
+  }
+
+  // Handle sending message with attachments
   const handleSend = async (content: string, files?: File[]) => {
-    // 📎 Handle file uploads first
+    // Handle new file uploads from ChatInput (drag & drop, paste, etc.)
     if (files && files.length > 0) {
-      if (files.length > 1) {
-        console.warn(`⚠️ ${files.length} arquivos selecionados, mas apenas o primeiro será enviado`)
+      for (const file of files) {
+        await uploadFile(file)
       }
-      console.log(`📤 Uploading 1 file: ${files[0].name}...`)
+    }
 
-      try {
-        const formData = new FormData()
-        // Backend aceita apenas UM arquivo por vez com nome 'file' (singular)
-        formData.append('file', files[0])
+    // Get completed attached files
+    const completedFiles = attachedFiles.filter(af => af.fileInfo.status === 'completed')
 
-        // Obter CSRF token para autenticação
-        const csrfToken = await getCsrfToken()
-        const headers: HeadersInit = {}
-        if (csrfToken) {
-          headers['x-csrf-token'] = csrfToken
-        }
+    // Build message content with file references
+    let messageContent = content
+    if (completedFiles.length > 0) {
+      const fileNames = completedFiles.map(af => af.fileInfo.name).join(', ')
+      messageContent = content
+        ? `${content}\n\n📎 Arquivos anexados: ${fileNames}`
+        : `📎 Arquivos anexados: ${fileNames}`
+    }
 
-        const uploadResponse = await fetch('/api/upload', {
-          method: 'POST',
-          credentials: 'include',
-          headers,
-          body: formData
-        })
-
-        if (!uploadResponse.ok) {
-          const errorData = await uploadResponse.json()
-          throw new Error(errorData.error || 'Erro no upload')
-        }
-
-        const uploadResult = await uploadResponse.json()
-        console.log('✅ Upload success:', uploadResult)
-
-        // Add file info to message content
-        const fileName = files[0].name
-        content = content ? `${content}\n\n📎 Arquivo: ${fileName}` : `📎 Arquivo: ${fileName}`
-
-      } catch (error: any) {
-        console.error('❌ Upload error:', error)
-        addMessage({
-          role: 'assistant',
-          content: `❌ Erro ao fazer upload: ${error.message}`
-        })
-        return // Stop here if upload fails
-      }
+    // Don't send empty messages without files
+    if (!messageContent.trim() && completedFiles.length === 0) {
+      return
     }
 
     // Create conversation if needed
@@ -122,21 +236,19 @@ export function DashboardPage() {
       convId = conv.id
     }
 
-    // 🔥 CRÍTICO: Carregar mensagens antes de enviar para incluir histórico
+    // Load messages before sending to include history
     let currentState = useChatStore.getState()
     let conversation = currentState.conversations.find(c => c.id === convId)
 
-    // Se a conversa existe mas não tem mensagens carregadas, carregar agora
+    // If conversation exists but messages aren't loaded, load now
     if (conversation && conversation.messages.length === 0) {
-      console.log('⏳ Mensagens não carregadas, carregando do backend...')
+      console.log('Loading messages from backend...')
       await selectConversation(convId)
-      // Atualizar referência após carregar
       currentState = useChatStore.getState()
       conversation = currentState.conversations.find(c => c.id === convId)
-      console.log('✅ Mensagens carregadas:', conversation?.messages?.length || 0)
     }
 
-    // Preparar histórico (mensagens existentes, excluindo vazias)
+    // Prepare history (existing messages, excluding empty ones)
     const conversationMessages = conversation?.messages
       .filter(m => m.content && m.content.trim() !== '')
       .map(m => ({
@@ -144,10 +256,11 @@ export function DashboardPage() {
         content: m.content
       })) || []
 
-    console.log('📤 Enviando para IA:', conversationMessages.length, 'mensagens de histórico')
+    // Prepare attached files for API
+    const attachedFilesForApi = getAttachedFilesForChat()
 
     // Add user message
-    addMessage({ role: 'user', content })
+    addMessage({ role: 'user', content: messageContent })
 
     // Add placeholder for assistant
     const assistantMsg = addMessage({
@@ -157,17 +270,22 @@ export function DashboardPage() {
       model: selectedModel,
     })
 
+    // Clear attached files after sending
+    clearFiles()
+
     setStreaming(true)
     let fullContent = ''
 
     try {
       abortControllerRef.current = new AbortController()
 
-      for await (const chunk of chatStream(content, {
+      for await (const chunk of chatStream(messageContent, {
         conversationId: convId ?? undefined,
         model: selectedModel,
-        messages: conversationMessages, // ✅ INCLUIR HISTÓRICO
+        messages: conversationMessages,
         signal: abortControllerRef.current.signal,
+        // Note: attachedFiles would be sent here if backend supports it
+        // attachedFiles: attachedFilesForApi,
       })) {
         if (chunk.type === 'chunk' && chunk.content) {
           fullContent += chunk.content
@@ -248,11 +366,40 @@ export function DashboardPage() {
           )}
         </div>
 
+        {/* Attached Files Preview */}
+        <AttachedFilesPreview
+          attachedFiles={attachedFiles}
+          onRemove={removeFile}
+          isUploading={isUploading}
+          uploadProgress={uploadProgress}
+        />
+
+        {/* Upload Error */}
+        {uploadError && (
+          <div className="px-4 pb-2">
+            <div className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">
+              {uploadError}
+            </div>
+          </div>
+        )}
+
+        {/* Hidden File Input */}
+        <input
+          ref={inputRef}
+          type="file"
+          multiple
+          className="hidden"
+          onChange={handleFileSelect}
+          accept=".pdf,.txt,.csv,.json,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,.webp"
+        />
+
         {/* Input */}
         <ChatInput
           onSend={handleSend}
-          isLoading={isStreaming}
+          isLoading={isStreaming || isUploading}
           onStop={handleStop}
+          onAttachClick={openFilePicker}
+          hasAttachments={attachedFiles.length > 0}
         />
       </div>
 

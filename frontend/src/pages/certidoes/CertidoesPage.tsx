@@ -1,8 +1,9 @@
 import { apiFetch } from '@/services/api'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Sidebar } from '@/components/layout'
-import { FileCheck, Search, Download, Eye, Calendar, CheckCircle, Clock } from 'lucide-react'
+import { FileCheck, Search, Download, Eye, Calendar, CheckCircle, Clock, Upload, FileText, X, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui'
+import { useFileUpload, type FileInfo } from '@/hooks'
 
 interface Certidao {
   id: string
@@ -13,6 +14,13 @@ interface Certidao {
   createdAt: string
   completedAt?: string
   document?: string
+  // Dados de upload com IA
+  uploadedFiles?: {
+    id: string
+    name: string
+    extractedData?: string
+    structuredDocs?: number
+  }[]
 }
 
 export function CertidoesPage() {
@@ -24,6 +32,34 @@ export function CertidoesPage() {
     type: 'criminal',
     personName: '',
     cpfCnpj: '',
+  })
+
+  // File upload with AI integration
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const {
+    attachedFiles,
+    isUploading,
+    uploadProgress,
+    error: uploadError,
+    uploadFile,
+    uploadFiles,
+    removeFile,
+    clearFiles,
+    getExtractedData,
+  } = useFileUpload({
+    endpoint: 'kb', // Use KB endpoint with AI extraction
+    maxFiles: 10,
+    maxSizeBytes: 100 * 1024 * 1024, // 100MB
+    allowedTypes: ['application/pdf', 'image/png', 'image/jpeg'],
+    onUploadComplete: (file, fileInfo) => {
+      console.log(`Upload completo: ${file.name}`, fileInfo)
+      if (fileInfo.structuredDocuments?.filesGenerated) {
+        console.log(`Documentos estruturados gerados: ${fileInfo.structuredDocuments.filesGenerated}`)
+      }
+    },
+    onUploadError: (file, error) => {
+      console.error(`Erro no upload de ${file.name}:`, error)
+    },
   })
 
   useEffect(() => {
@@ -50,17 +86,35 @@ export function CertidoesPage() {
     e.preventDefault()
 
     try {
+      // Incluir dados dos arquivos processados pela IA
+      const extractedData = getExtractedData()
+      const uploadedFilesData = attachedFiles
+        .filter(af => af.fileInfo.status === 'completed')
+        .map(af => ({
+          id: af.fileInfo.id,
+          name: af.fileInfo.name,
+          extractedData: af.fileInfo.extractedText?.substring(0, 1000), // Resumo
+          structuredDocs: af.fileInfo.structuredDocuments?.filesGenerated,
+          toolsUsed: af.fileInfo.toolsUsed,
+        }))
+
+      const requestData = {
+        ...formData,
+        uploadedFiles: uploadedFilesData,
+        hasDocuments: uploadedFilesData.length > 0,
+      }
+
       const response = await apiFetch('/certidoes/request', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify(formData),
+        body: JSON.stringify(requestData),
       })
 
-      const data = await response.json()
-      if (data.success) {
+      if (response.success) {
         setShowModal(false)
         setFormData({ type: 'criminal', personName: '', cpfCnpj: '' })
+        clearFiles() // Limpar arquivos anexados
         await fetchCertidoes()
       }
     } catch (error) {
@@ -218,6 +272,101 @@ export function CertidoesPage() {
                   className="w-full h-11 px-4 bg-stone-50 border border-stone-200 rounded-xl text-stone-700 focus:outline-none focus:ring-2 focus:ring-bronze-400/30"
                   required
                 />
+              </div>
+
+              {/* Upload de Documentos com IA */}
+              <div>
+                <label className="block text-sm font-medium text-stone-700 mb-2">
+                  Documentos (opcional)
+                </label>
+                <div
+                  className={`border-2 border-dashed rounded-xl p-4 text-center transition-colors cursor-pointer ${
+                    isUploading
+                      ? 'border-bronze-400 bg-bronze-50/50'
+                      : 'border-stone-300 hover:border-bronze-400 hover:bg-bronze-50/30'
+                  }`}
+                  onClick={() => !isUploading && fileInputRef.current?.click()}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    accept=".pdf,image/*"
+                    className="hidden"
+                    onChange={async (e) => {
+                      const files = Array.from(e.target.files || [])
+                      if (files.length > 0) {
+                        await uploadFiles(files)
+                      }
+                      e.target.value = ''
+                    }}
+                    disabled={isUploading}
+                  />
+                  {isUploading ? (
+                    <div className="py-2">
+                      <Loader2 className="w-8 h-8 text-bronze-500 mx-auto mb-2 animate-spin" />
+                      <p className="text-sm text-stone-600">Processando com IA... {uploadProgress}%</p>
+                      <div className="w-full h-2 bg-stone-200 rounded-full mt-2">
+                        <div
+                          className="h-2 bg-bronze-500 rounded-full transition-all"
+                          style={{ width: `${uploadProgress}%` }}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="py-2">
+                      <Upload className="w-8 h-8 text-stone-400 mx-auto mb-2" />
+                      <p className="text-sm text-stone-600">Clique para anexar documentos</p>
+                      <p className="text-xs text-stone-400 mt-1">PDF ou imagens - processado com IA</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Lista de arquivos anexados */}
+                {attachedFiles.length > 0 && (
+                  <div className="mt-3 space-y-2">
+                    {attachedFiles.map((af) => (
+                      <div
+                        key={af.fileInfo.id}
+                        className={`flex items-center gap-3 p-2 rounded-lg ${
+                          af.fileInfo.status === 'error'
+                            ? 'bg-red-50 border border-red-200'
+                            : af.fileInfo.status === 'completed'
+                            ? 'bg-green-50 border border-green-200'
+                            : 'bg-stone-50 border border-stone-200'
+                        }`}
+                      >
+                        <FileText className={`w-4 h-4 flex-shrink-0 ${
+                          af.fileInfo.status === 'error' ? 'text-red-500' :
+                          af.fileInfo.status === 'completed' ? 'text-green-500' :
+                          'text-stone-400'
+                        }`} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-stone-700 truncate">{af.fileInfo.name}</p>
+                          {af.fileInfo.status === 'completed' && af.fileInfo.structuredDocuments && (
+                            <p className="text-xs text-green-600">
+                              {af.fileInfo.structuredDocuments.filesGenerated} docs gerados
+                            </p>
+                          )}
+                          {af.fileInfo.status === 'error' && (
+                            <p className="text-xs text-red-600">{af.fileInfo.error}</p>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeFile(af.fileInfo.id)}
+                          className="p-1 hover:bg-stone-200 rounded"
+                        >
+                          <X className="w-4 h-4 text-stone-500" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {uploadError && (
+                  <p className="text-sm text-red-600 mt-2">{uploadError}</p>
+                )}
               </div>
 
               <div className="flex gap-3 pt-2">

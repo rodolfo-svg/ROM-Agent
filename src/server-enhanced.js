@@ -2126,95 +2126,534 @@ Sempre cite as fontes corretamente e formate as referências em ABNT.`,
   }
 });
 
-// API - Chat com Streaming Real-Time (SSE)
+// ============================================================================
+// API - Chat com Streaming Real-Time (SSE) v5.0
+// INTEGRAÇÃO COMPLETA: Extração de arquivos + SSE streaming + Persistência
+// ============================================================================
 
 // Alias para compatibilidade com frontend React V4
 app.post('/api/chat/stream', async (req, res) => {
+  // ═══════════════════════════════════════════════════════════════════════════
+  // MÉTRICAS DE PERFORMANCE
+  // ═══════════════════════════════════════════════════════════════════════════
+  const performanceMetrics = {
+    requestStart: Date.now(),
+    extractionStart: null,
+    extractionEnd: null,
+    streamStart: null,
+    streamEnd: null,
+    persistenceStart: null,
+    persistenceEnd: null,
+    totalFiles: 0,
+    filesExtracted: 0,
+    filesFailed: 0,
+    totalCharsExtracted: 0,
+    tokensInput: 0,
+    tokensOutput: 0
+  };
+
+  // Helper para enviar eventos SSE de forma segura
+  const sendSSE = (eventData) => {
+    try {
+      if (!res.writableEnded) {
+        res.write(`data: ${JSON.stringify(eventData)}\n\n`);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      logger.error('[SSE] Erro ao enviar evento:', err.message);
+      return false;
+    }
+  };
+
+  // Helper para log detalhado
+  const logMetric = (phase, data = {}) => {
+    const elapsed = Date.now() - performanceMetrics.requestStart;
+    logger.info(`📊 [Stream/${phase}] +${elapsed}ms`, {
+      ...data,
+      elapsedMs: elapsed
+    });
+  };
+
   try {
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 1. PARSING DO REQUEST
+    // ═══════════════════════════════════════════════════════════════════════════
     const {
       message,
       model = 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
       conversationId,
-      messages = [] // Histórico completo do frontend
+      messages = [],           // Histórico completo do frontend
+      attachedFiles = [],      // ✅ NOVO: Arquivos anexados [{id, name, path, type, size}]
+      projectId = null,        // ID do projeto (opcional)
+      systemPrompt = null,     // System prompt customizado
+      enableTools = true,      // Habilitar ferramentas (KB, jurisprudência)
+      temperature = 0.7,
+      maxTokens = 8192
     } = req.body;
 
-    const sessionId = conversationId || req.session.id;
+    const sessionId = conversationId || req.session?.id || `anon_${Date.now()}`;
+    const userId = req.user?.id || req.session?.userId || 'anonymous';
 
-    // PRIORIDADE: Usar histórico do frontend se fornecido, senão buscar do servidor
-    let history = [];
-    if (messages && messages.length > 0) {
-      // Frontend enviou histórico - USAR ESTE (fonte da verdade)
-      history = messages
-        .filter(m => m.role && m.content) // Validar estrutura
-        .map(m => ({
-          role: m.role,
-          content: m.content
-        }));
-      console.log(`📚 [Context] Usando ${history.length} mensagens do frontend`);
-    } else {
-      // Fallback: histórico do servidor (compatibilidade)
-      history = getHistory(sessionId);
-      console.log(`📚 [Context] Usando ${history.length} mensagens do servidor (fallback)`);
+    logMetric('init', {
+      sessionId,
+      userId,
+      model,
+      messageLength: message?.length || 0,
+      attachedFilesCount: attachedFiles?.length || 0,
+      historyLength: messages?.length || 0,
+      projectId
+    });
+
+    // Validação básica
+    if (!message || typeof message !== 'string' || message.trim().length === 0) {
+      return res.status(400).json({
+        error: 'Mensagem é obrigatória',
+        code: 'MISSING_MESSAGE'
+      });
     }
 
-    // Configurar SSE
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 2. CONFIGURAR SSE HEADERS
+    // ═══════════════════════════════════════════════════════════════════════════
     res.setHeader('Content-Type', 'text/event-stream');
-    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Cache-Control', 'no-cache, no-transform');
     res.setHeader('Connection', 'keep-alive');
-    res.setHeader('X-Accel-Buffering', 'no'); // Nginx
+    res.setHeader('X-Accel-Buffering', 'no'); // Nginx/Render
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.flushHeaders(); // Força envio imediato dos headers
 
-    console.log('🌊 [Stream] Iniciando streaming (V4)...', { model, contextSize: history.length });
+    // Enviar heartbeat inicial para confirmar conexão
+    sendSSE({ type: 'connected', timestamp: new Date().toISOString() });
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 3. PROCESSAR HISTÓRICO (Fonte da verdade: frontend)
+    // ═══════════════════════════════════════════════════════════════════════════
+    let history = [];
+    if (messages && Array.isArray(messages) && messages.length > 0) {
+      history = messages
+        .filter(m => m && m.role && m.content)
+        .map(m => ({
+          role: m.role,
+          content: m.content,
+          attachedFiles: m.attachedFiles || [],  // ✅ Preservar arquivos do histórico
+          timestamp: m.timestamp || new Date().toISOString()
+        }));
+      logMetric('history', { source: 'frontend', count: history.length });
+    } else {
+      // Fallback: histórico do servidor
+      const serverHistory = getHistory(sessionId);
+      history = serverHistory || [];
+      logMetric('history', { source: 'server', count: history.length });
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 4. EXTRAÇÃO ASSÍNCRONA DE ARQUIVOS ANEXADOS
+    // ═══════════════════════════════════════════════════════════════════════════
+    let extractedContext = '';
+    let extractionResults = [];
+
+    if (attachedFiles && Array.isArray(attachedFiles) && attachedFiles.length > 0) {
+      performanceMetrics.totalFiles = attachedFiles.length;
+      performanceMetrics.extractionStart = Date.now();
+
+      // Feedback imediato ao usuário
+      sendSSE({
+        type: 'status',
+        status: 'extracting',
+        message: `📄 Processando ${attachedFiles.length} arquivo(s) anexado(s)...`,
+        filesCount: attachedFiles.length
+      });
+
+      logMetric('extraction_start', { filesCount: attachedFiles.length });
+
+      // Processar arquivos em paralelo usando Promise.allSettled
+      const extractionPromises = attachedFiles.map(async (file, index) => {
+        const fileStart = Date.now();
+
+        try {
+          // Validar estrutura do arquivo
+          if (!file || (!file.path && !file.content)) {
+            throw new Error('Arquivo sem caminho ou conteúdo');
+          }
+
+          // Se já tem conteúdo extraído (cache), usar diretamente
+          if (file.extractedContent || file.content) {
+            const content = file.extractedContent || file.content;
+            return {
+              success: true,
+              fileId: file.id || `file_${index}`,
+              fileName: file.name || file.originalName || `arquivo_${index}`,
+              content: content,
+              method: 'cached',
+              charCount: content.length,
+              extractionTimeMs: Date.now() - fileStart
+            };
+          }
+
+          // Extrair documento usando pipeline local (custo zero)
+          const result = await extractDocument(file.path);
+
+          if (!result.success) {
+            throw new Error(result.error || 'Falha na extração');
+          }
+
+          return {
+            success: true,
+            fileId: file.id || `file_${index}`,
+            fileName: file.name || file.originalName || path.basename(file.path),
+            content: result.text,
+            method: result.method || 'unknown',
+            charCount: result.text?.length || 0,
+            pages: result.pages,
+            confidence: result.confidence,
+            extractionTimeMs: Date.now() - fileStart
+          };
+
+        } catch (error) {
+          logger.error(`❌ [Extraction] Falha em ${file.name || file.path}:`, error.message);
+
+          return {
+            success: false,
+            fileId: file.id || `file_${index}`,
+            fileName: file.name || file.originalName || 'unknown',
+            error: error.message,
+            extractionTimeMs: Date.now() - fileStart
+          };
+        }
+      });
+
+      // Aguardar todas as extrações (não bloqueia - usa Promise.allSettled)
+      const results = await Promise.allSettled(extractionPromises);
+
+      extractionResults = results.map(r => r.status === 'fulfilled' ? r.value : {
+        success: false,
+        error: r.reason?.message || 'Erro desconhecido'
+      });
+
+      performanceMetrics.extractionEnd = Date.now();
+
+      // Processar resultados e construir contexto
+      const successfulExtractions = extractionResults.filter(r => r.success);
+      const failedExtractions = extractionResults.filter(r => !r.success);
+
+      performanceMetrics.filesExtracted = successfulExtractions.length;
+      performanceMetrics.filesFailed = failedExtractions.length;
+
+      // Construir contexto dos arquivos extraídos
+      if (successfulExtractions.length > 0) {
+        const contextParts = successfulExtractions.map(ext => {
+          performanceMetrics.totalCharsExtracted += ext.charCount || 0;
+
+          // Truncar conteúdo muito grande (max 100k chars por arquivo)
+          const maxChars = 100000;
+          let content = ext.content;
+          if (content.length > maxChars) {
+            content = content.substring(0, maxChars) + '\n\n[... conteúdo truncado por limite de tamanho ...]';
+          }
+
+          return `\n\n---\n📄 **Arquivo: ${ext.fileName}**\nMétodo: ${ext.method} | Caracteres: ${ext.charCount.toLocaleString()}\n---\n\n${content}`;
+        });
+
+        extractedContext = '\n\n# DOCUMENTOS ANEXADOS\n' + contextParts.join('\n');
+      }
+
+      // Feedback de conclusão da extração
+      const extractionTime = performanceMetrics.extractionEnd - performanceMetrics.extractionStart;
+
+      sendSSE({
+        type: 'extraction_complete',
+        status: 'ready',
+        message: `✅ ${successfulExtractions.length}/${attachedFiles.length} arquivo(s) processado(s)`,
+        results: extractionResults.map(r => ({
+          fileName: r.fileName,
+          success: r.success,
+          charCount: r.charCount || 0,
+          method: r.method,
+          error: r.error
+        })),
+        metrics: {
+          totalFiles: attachedFiles.length,
+          extracted: successfulExtractions.length,
+          failed: failedExtractions.length,
+          totalChars: performanceMetrics.totalCharsExtracted,
+          timeMs: extractionTime
+        }
+      });
+
+      logMetric('extraction_complete', {
+        extracted: successfulExtractions.length,
+        failed: failedExtractions.length,
+        totalChars: performanceMetrics.totalCharsExtracted,
+        timeMs: extractionTime
+      });
+
+      // Log de arquivos que falharam
+      if (failedExtractions.length > 0) {
+        failedExtractions.forEach(f => {
+          logger.warn(`⚠️ [Extraction] Arquivo não extraído: ${f.fileName} - ${f.error}`);
+        });
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 5. CONSTRUIR PROMPT FINAL COM CONTEXTO DOS ARQUIVOS
+    // ═══════════════════════════════════════════════════════════════════════════
+    const finalMessage = extractedContext
+      ? message + extractedContext
+      : message;
+
+    logMetric('prompt_built', {
+      originalLength: message.length,
+      contextLength: extractedContext.length,
+      finalLength: finalMessage.length
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 6. STREAMING DA RESPOSTA VIA BEDROCK
+    // ═══════════════════════════════════════════════════════════════════════════
+    performanceMetrics.streamStart = Date.now();
+
+    sendSSE({
+      type: 'status',
+      status: 'generating',
+      message: '🤖 Gerando resposta...'
+    });
 
     const { conversarStream } = await import('./modules/bedrock.js');
 
     let textoCompleto = '';
-    const startTime = Date.now();
+    let chunkCount = 0;
+
+    // Limitar histórico para evitar excesso de tokens
+    const limitedHistory = history.slice(-30); // Últimas 30 mensagens (15 pares)
 
     await conversarStream(
-      message,
+      finalMessage,
       (chunk) => {
-        textoCompleto += chunk;
-        res.write(`data: ${JSON.stringify({ type: 'chunk', content: chunk })}\n\n`);
+        if (chunk && chunk.length > 0) {
+          textoCompleto += chunk;
+          chunkCount++;
+
+          // Enviar chunk via SSE
+          const sent = sendSSE({
+            type: 'chunk',
+            content: chunk,
+            chunkIndex: chunkCount
+          });
+
+          // Se falhou enviar, a conexão morreu
+          if (!sent) {
+            throw new Error('Conexão SSE perdida');
+          }
+        }
       },
       {
         modelo: model,
-        historico: history.slice(-30), // Últimas 30 mensagens (15 pares usuário/assistente)
-        maxTokens: 4096,
-        temperature: 0.7
+        historico: limitedHistory.map(m => ({
+          role: m.role,
+          content: m.content
+        })),
+        systemPrompt: systemPrompt,
+        maxTokens: maxTokens,
+        temperature: temperature,
+        enableTools: enableTools,
+        kbContext: ''  // KB context já incluído no extractedContext se necessário
       }
     );
 
-    const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
+    performanceMetrics.streamEnd = Date.now();
+    const streamDuration = performanceMetrics.streamEnd - performanceMetrics.streamStart;
 
-    // Enviar evento final
-    res.write(`data: ${JSON.stringify({
+    logMetric('stream_complete', {
+      chunks: chunkCount,
+      responseLength: textoCompleto.length,
+      streamTimeMs: streamDuration
+    });
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 7. PERSISTÊNCIA NO BANCO DE DADOS
+    // ═══════════════════════════════════════════════════════════════════════════
+    performanceMetrics.persistenceStart = Date.now();
+
+    // Preparar metadados da mensagem do usuário
+    const userMessageMetadata = {
+      attachedFiles: attachedFiles?.map(f => ({
+        id: f.id,
+        name: f.name || f.originalName,
+        type: f.type || f.mimetype,
+        size: f.size,
+        path: f.path
+      })) || [],
+      extractionResults: extractionResults.map(r => ({
+        fileName: r.fileName,
+        success: r.success,
+        charCount: r.charCount || 0,
+        method: r.method,
+        error: r.error
+      })),
+      projectId: projectId,
+      model: model
+    };
+
+    // Preparar metadados da resposta do assistente
+    const assistantMessageMetadata = {
+      model: model,
+      streaming: true,
+      chunks: chunkCount,
+      tokensInput: performanceMetrics.tokensInput,
+      tokensOutput: performanceMetrics.tokensOutput,
+      latencyMs: streamDuration,
+      extractedFilesCount: performanceMetrics.filesExtracted,
+      totalCharsFromFiles: performanceMetrics.totalCharsExtracted
+    };
+
+    // Tentar persistir no banco de dados (async, não bloqueia)
+    let persistenceSuccess = false;
+    let savedConversationId = conversationId;
+
+    try {
+      // Importar repositório de conversas
+      const conversationRepo = await import('./repositories/conversation-repository.js');
+
+      // Criar conversação se não existir
+      if (!savedConversationId || savedConversationId.startsWith('anon_')) {
+        const newConversation = await conversationRepo.createConversation({
+          userId: userId,
+          title: message.substring(0, 100) + (message.length > 100 ? '...' : ''),
+          mode: 'juridico',
+          model: model
+        });
+        savedConversationId = newConversation.id;
+        logMetric('conversation_created', { conversationId: savedConversationId });
+      }
+
+      // Salvar mensagem do usuário
+      await conversationRepo.addMessage({
+        conversationId: savedConversationId,
+        role: 'user',
+        content: message,
+        model: null,
+        tokensInput: null,
+        tokensOutput: null,
+        latencyMs: null,
+        stopReason: null,
+        metadata: userMessageMetadata
+      });
+
+      // Salvar resposta do assistente
+      await conversationRepo.addMessage({
+        conversationId: savedConversationId,
+        role: 'assistant',
+        content: textoCompleto,
+        model: model,
+        tokensInput: performanceMetrics.tokensInput,
+        tokensOutput: performanceMetrics.tokensOutput,
+        latencyMs: streamDuration,
+        stopReason: 'end_turn',
+        metadata: assistantMessageMetadata
+      });
+
+      persistenceSuccess = true;
+      logMetric('persistence_success', { conversationId: savedConversationId });
+
+    } catch (dbError) {
+      logger.error('⚠️ [Persistence] Erro ao salvar no banco:', dbError.message);
+      // Não falha a requisição - persistence é best-effort
+    }
+
+    // Adicionar ao histórico em memória (fallback)
+    const serverHistory = getHistory(sessionId);
+    if (serverHistory) {
+      serverHistory.push({
+        role: 'user',
+        content: message,
+        attachedFiles: attachedFiles,
+        timestamp: new Date().toISOString()
+      });
+
+      serverHistory.push({
+        role: 'assistant',
+        content: textoCompleto,
+        model: model,
+        streaming: true,
+        timestamp: new Date().toISOString()
+      });
+    }
+
+    performanceMetrics.persistenceEnd = Date.now();
+
+    // ═══════════════════════════════════════════════════════════════════════════
+    // 8. ENVIAR EVENTO FINAL COM MÉTRICAS COMPLETAS
+    // ═══════════════════════════════════════════════════════════════════════════
+    const totalDuration = Date.now() - performanceMetrics.requestStart;
+
+    sendSSE({
       type: 'done',
       content: textoCompleto,
-      elapsed: `${elapsed}s`,
-      model
-    })}\n\n`);
-    res.end();
-
-    // Adicionar ao histórico
-    history.push({
-      role: 'user',
-      content: message,
-      timestamp: new Date()
+      conversationId: savedConversationId,
+      model: model,
+      metrics: {
+        total: `${(totalDuration / 1000).toFixed(2)}s`,
+        extraction: performanceMetrics.extractionEnd
+          ? `${((performanceMetrics.extractionEnd - performanceMetrics.extractionStart) / 1000).toFixed(2)}s`
+          : null,
+        streaming: `${(streamDuration / 1000).toFixed(2)}s`,
+        persistence: `${((performanceMetrics.persistenceEnd - performanceMetrics.persistenceStart) / 1000).toFixed(2)}s`,
+        chunks: chunkCount,
+        responseLength: textoCompleto.length,
+        filesProcessed: performanceMetrics.filesExtracted,
+        charsFromFiles: performanceMetrics.totalCharsExtracted,
+        persisted: persistenceSuccess
+      }
     });
 
-    history.push({
-      role: 'assistant',
-      content: textoCompleto,
-      timestamp: new Date(),
+    res.end();
+
+    // Log final de performance
+    logger.info(`✅ [Stream] Concluído`, {
+      sessionId,
+      conversationId: savedConversationId,
       model,
-      streaming: true
+      totalMs: totalDuration,
+      streamMs: streamDuration,
+      filesExtracted: performanceMetrics.filesExtracted,
+      responseChars: textoCompleto.length,
+      chunks: chunkCount,
+      persisted: persistenceSuccess
     });
 
-    console.log(`✅ [Stream] Concluído em ${elapsed}s`);
   } catch (error) {
-    console.error('❌ [Stream] Erro:', error);
-    res.write(`data: ${JSON.stringify({ type: 'error', error: error.message })}\n\n`);
-    res.end();
+    // ═══════════════════════════════════════════════════════════════════════════
+    // ERROR HANDLING ROBUSTO
+    // ═══════════════════════════════════════════════════════════════════════════
+    const errorDuration = Date.now() - performanceMetrics.requestStart;
+
+    logger.error('❌ [Stream] Erro:', {
+      error: error.message,
+      stack: error.stack,
+      elapsedMs: errorDuration,
+      metrics: performanceMetrics
+    });
+
+    // Tentar enviar erro via SSE
+    const errorSent = sendSSE({
+      type: 'error',
+      error: error.message,
+      code: error.code || 'STREAM_ERROR',
+      recoverable: false,
+      elapsed: `${(errorDuration / 1000).toFixed(2)}s`
+    });
+
+    // Se não conseguiu enviar SSE, tentar JSON
+    if (!errorSent && !res.headersSent) {
+      res.status(500).json({
+        error: error.message,
+        code: error.code || 'STREAM_ERROR'
+      });
+    } else if (!res.writableEnded) {
+      res.end();
+    }
   }
 });
 

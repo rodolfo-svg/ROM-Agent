@@ -1,13 +1,111 @@
-import { useEffect, useRef, lazy, Suspense } from 'react'
+import { useEffect, useRef, useState, lazy, Suspense } from 'react'
 import { useParams } from 'react-router-dom'
 import { useChatStore } from '@/stores/chatStore'
 import { useArtifactStore } from '@/stores/artifactStore'
 import { Sidebar } from '@/components/layout'
 import { ChatInput, MessageItem, EmptyState } from '@/components/chat'
-import { chatStream, getCsrfToken } from '@/services/api'
+import { chatStream } from '@/services/api'
+import { useFileUpload, type FileInfo, type AttachedFile } from '@/hooks/useFileUpload'
+import { X, Paperclip, File, FileText, Image, Loader2 } from 'lucide-react'
 
 // Lazy load ArtifactPanel (682KB bundle reduction)
 const ArtifactPanel = lazy(() => import('@/components/artifacts').then(m => ({ default: m.ArtifactPanel })))
+
+// ============================================================
+// ATTACHED FILES UI COMPONENT
+// ============================================================
+
+interface AttachedFilesPreviewProps {
+  attachedFiles: AttachedFile[]
+  onRemove: (fileId: string) => void
+  isUploading: boolean
+  uploadProgress: number
+}
+
+function AttachedFilesPreview({ attachedFiles, onRemove, isUploading, uploadProgress }: AttachedFilesPreviewProps) {
+  if (attachedFiles.length === 0) return null
+
+  const getFileIcon = (type: string) => {
+    if (type.startsWith('image/')) return <Image className="w-4 h-4" />
+    if (type === 'application/pdf') return <FileText className="w-4 h-4" />
+    return <File className="w-4 h-4" />
+  }
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes < 1024) return `${bytes} B`
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+  }
+
+  return (
+    <div className="px-4 pb-2 max-md:px-3">
+      <div className="flex flex-wrap gap-2">
+        {attachedFiles.map((af) => (
+          <div
+            key={af.fileInfo.id}
+            className={`
+              relative flex items-center gap-2 px-3 py-2 rounded-lg border
+              ${af.fileInfo.status === 'error'
+                ? 'bg-red-50 border-red-200 text-red-700'
+                : af.fileInfo.status === 'uploading'
+                  ? 'bg-amber-50 border-amber-200'
+                  : 'bg-stone-100 border-stone-200'
+              }
+            `}
+          >
+            {/* File Icon */}
+            <span className="text-stone-500">
+              {af.fileInfo.status === 'uploading' ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                getFileIcon(af.fileInfo.type)
+              )}
+            </span>
+
+            {/* File Info */}
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-medium truncate max-w-[150px] max-md:max-w-[100px]">
+                {af.fileInfo.name}
+              </span>
+              <span className="text-xs text-stone-500">
+                {af.fileInfo.status === 'uploading'
+                  ? `${af.fileInfo.progress}%`
+                  : af.fileInfo.status === 'error'
+                    ? af.fileInfo.error
+                    : formatFileSize(af.fileInfo.size)
+                }
+              </span>
+            </div>
+
+            {/* Progress Bar (during upload) */}
+            {af.fileInfo.status === 'uploading' && (
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-stone-200 rounded-b-lg overflow-hidden">
+                <div
+                  className="h-full bg-amber-500 transition-all duration-300"
+                  style={{ width: `${af.fileInfo.progress}%` }}
+                />
+              </div>
+            )}
+
+            {/* Remove Button */}
+            <button
+              onClick={() => onRemove(af.fileInfo.id)}
+              className="ml-1 p-1 rounded-full hover:bg-stone-200 text-stone-400 hover:text-stone-600 transition-colors"
+              title="Remover arquivo"
+              disabled={af.fileInfo.status === 'uploading'}
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ============================================================
+// MAIN COMPONENT
+// ============================================================
 
 export function ChatPage() {
   const { conversationId } = useParams()
@@ -28,6 +126,31 @@ export function ChatPage() {
   } = useChatStore()
 
   const { artifacts, addArtifact } = useArtifactStore()
+
+  // File upload hook - uses simple endpoint for chat
+  const {
+    attachedFiles,
+    isUploading,
+    uploadProgress,
+    error: uploadError,
+    uploadFile,
+    removeFile,
+    clearFiles,
+    getAttachedFilesForChat,
+    getExtractedData,
+    inputRef,
+    openFilePicker,
+  } = useFileUpload({
+    endpoint: 'simple', // Use /api/upload for chat
+    maxFiles: 5,
+    maxSizeBytes: 50 * 1024 * 1024, // 50MB
+    onUploadComplete: (file, fileInfo) => {
+      console.log(`[ChatPage] File uploaded: ${file.name}`, fileInfo)
+    },
+    onUploadError: (file, error) => {
+      console.error(`[ChatPage] Upload error for ${file.name}:`, error)
+    },
+  })
 
   // Get active conversation
   const activeConversation = conversations.find(c => c.id === activeConversationId)
@@ -55,12 +178,12 @@ export function ChatPage() {
 
   // Load messages for active conversation (fix: ensure messages are loaded)
   useEffect(() => {
-    // Usar estado direto do Zustand para evitar stale closures
+    // Use direct Zustand state to avoid stale closures
     const state = useChatStore.getState()
     const conv = state.conversations.find(c => c.id === activeConversationId)
 
     if (activeConversationId && conv && conv.messages.length === 0) {
-      console.log('📌 useEffect: Carregando mensagens para conversa ativa:', activeConversationId)
+      console.log('Loading messages for active conversation:', activeConversationId)
       selectConversation(activeConversationId)
     }
   }, [activeConversationId, conversations.length])
@@ -77,54 +200,45 @@ export function ChatPage() {
     return artifacts.filter(a => a.messageId === messageId)
   }
 
-  // Handle sending message
+  // Handle file selection from input
+  const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files || files.length === 0) return
+
+    for (const file of Array.from(files)) {
+      await uploadFile(file)
+    }
+
+    // Clear input for same file re-selection
+    if (inputRef.current) {
+      inputRef.current.value = ''
+    }
+  }
+
+  // Handle sending message with attachments
   const handleSend = async (content: string, files?: File[]) => {
-    // 📎 Handle file uploads first
+    // Handle new file uploads from ChatInput (drag & drop, paste, etc.)
     if (files && files.length > 0) {
-      if (files.length > 1) {
-        console.warn(`⚠️ ${files.length} arquivos selecionados, mas apenas o primeiro será enviado`)
+      for (const file of files) {
+        await uploadFile(file)
       }
-      console.log(`📤 Uploading 1 file: ${files[0].name}...`)
+    }
 
-      try {
-        const formData = new FormData()
-        // Backend aceita apenas UM arquivo por vez com nome 'file' (singular)
-        formData.append('file', files[0])
+    // Get completed attached files
+    const completedFiles = attachedFiles.filter(af => af.fileInfo.status === 'completed')
 
-        // Obter CSRF token para autenticação
-        const csrfToken = await getCsrfToken()
-        const headers: HeadersInit = {}
-        if (csrfToken) {
-          headers['x-csrf-token'] = csrfToken
-        }
+    // Build message content with file references
+    let messageContent = content
+    if (completedFiles.length > 0) {
+      const fileNames = completedFiles.map(af => af.fileInfo.name).join(', ')
+      messageContent = content
+        ? `${content}\n\n📎 Arquivos anexados: ${fileNames}`
+        : `📎 Arquivos anexados: ${fileNames}`
+    }
 
-        const uploadResponse = await fetch('/api/upload', {
-          method: 'POST',
-          credentials: 'include',
-          headers,
-          body: formData
-        })
-
-        if (!uploadResponse.ok) {
-          const errorData = await uploadResponse.json()
-          throw new Error(errorData.error || 'Erro no upload')
-        }
-
-        const uploadResult = await uploadResponse.json()
-        console.log('✅ Upload success:', uploadResult)
-
-        // Add file info to message content
-        const fileName = files[0].name
-        content = content ? `${content}\n\n📎 Arquivo: ${fileName}` : `📎 Arquivo: ${fileName}`
-
-      } catch (error: any) {
-        console.error('❌ Upload error:', error)
-        addMessage({
-          role: 'assistant',
-          content: `❌ Erro ao fazer upload: ${error.message}`
-        })
-        return // Stop here if upload fails
-      }
+    // Don't send empty messages without files
+    if (!messageContent.trim() && completedFiles.length === 0) {
+      return
     }
 
     // Create conversation if needed
@@ -134,42 +248,32 @@ export function ChatPage() {
       convId = conv.id
     }
 
-    // 🔥 CRÍTICO: Garantir que as mensagens estejam carregadas antes de enviar
-    // Pegar estado inicial para verificar se precisa carregar
+    // Ensure messages are loaded before sending
     let currentState = useChatStore.getState()
     let conversation = currentState.conversations.find(c => c.id === convId)
 
-    // Se a conversa existe mas não tem mensagens carregadas, carregar agora
+    // If conversation exists but messages aren't loaded, load now
     if (conversation && conversation.messages.length === 0) {
-      console.log('⏳ Mensagens não carregadas, carregando do backend...')
+      console.log('Loading messages from backend...')
       await selectConversation(convId)
-      // Atualizar referência após carregar
       currentState = useChatStore.getState()
       conversation = currentState.conversations.find(c => c.id === convId)
-      console.log('✅ Mensagens carregadas:', conversation?.messages?.length || 0)
+      console.log('Messages loaded:', conversation?.messages?.length || 0)
     }
 
-    // ⚠️ DEBUG: Ver estado do histórico
-    console.log('🔍 FRONTEND DEBUG:')
-    console.log('   convId:', convId)
-    console.log('   conversation found:', !!conversation)
-    console.log('   conversation.messages length:', conversation?.messages?.length || 0)
-    console.log('   conversation.messages:', conversation?.messages)
-    console.log('   conversations array length:', currentState.conversations.length)
-    console.log('   activeConversationId from state:', currentState.activeConversationId)
-
+    // Prepare history (existing messages, excluding empty ones)
     const conversationMessages = conversation?.messages
-      .filter(m => m.content && m.content.trim() !== '') // Excluir mensagens vazias
+      .filter(m => m.content && m.content.trim() !== '')
       .map(m => ({
         role: m.role,
         content: m.content
       })) || []
 
-    console.log('   conversationMessages to send:', conversationMessages.length)
-    console.log('')
+    // Prepare attached files for API
+    const attachedFilesForApi = getAttachedFilesForChat()
 
     // Add user message
-    addMessage({ role: 'user', content })
+    addMessage({ role: 'user', content: messageContent })
 
     // Add placeholder for assistant
     const assistantMsg = addMessage({
@@ -179,24 +283,29 @@ export function ChatPage() {
       model: selectedModel,
     })
 
+    // Clear attached files after sending
+    clearFiles()
+
     setStreaming(true)
     let fullContent = ''
 
     try {
       abortControllerRef.current = new AbortController()
 
-      for await (const chunk of chatStream(content, {
+      for await (const chunk of chatStream(messageContent, {
         conversationId: convId,
         model: selectedModel,
-        messages: conversationMessages, // ✅ Histórico correto (sem mensagens atuais)
+        messages: conversationMessages,
         signal: abortControllerRef.current.signal,
+        // Note: attachedFiles would be sent here if backend supports it
+        // attachedFiles: attachedFilesForApi,
       })) {
         if (chunk.type === 'chunk' && chunk.content) {
           fullContent += chunk.content
           updateMessage(assistantMsg.id, fullContent)
-        } else if (chunk.type === 'tool_executing') {
-          // Typing indicator durante tool execution
-          const toolMessage = (chunk as any).message || '⏳ Processando...'
+        } else if ((chunk as any).type === 'tool_executing') {
+          // Typing indicator during tool execution
+          const toolMessage = (chunk as any).message || 'Processando...'
           updateMessage(assistantMsg.id, toolMessage)
         } else if (chunk.type === 'artifact' && chunk.artifact) {
           // Create artifact
@@ -207,7 +316,7 @@ export function ChatPage() {
             language: chunk.artifact.language,
             messageId: assistantMsg.id,
           })
-          
+
           // Link artifact to message
           useChatStore.getState().addArtifactToMessage(assistantMsg.id, artifact.id)
         } else if (chunk.type === 'error') {
@@ -235,12 +344,11 @@ export function ChatPage() {
   const handleRegenerate = async (messageId: string) => {
     const messages = activeConversation?.messages || []
     const messageIndex = messages.findIndex(m => m.id === messageId)
-    
+
     if (messageIndex > 0) {
       const userMessage = messages[messageIndex - 1]
       if (userMessage.role === 'user') {
-        // Remove the assistant message
-        // ... and regenerate
+        // Remove the assistant message and regenerate
         await handleSend(userMessage.content)
       }
     }
@@ -276,12 +384,41 @@ export function ChatPage() {
           )}
         </div>
 
+        {/* Attached Files Preview */}
+        <AttachedFilesPreview
+          attachedFiles={attachedFiles}
+          onRemove={removeFile}
+          isUploading={isUploading}
+          uploadProgress={uploadProgress}
+        />
+
+        {/* Upload Error */}
+        {uploadError && (
+          <div className="px-4 pb-2 max-md:px-3">
+            <div className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-lg">
+              {uploadError}
+            </div>
+          </div>
+        )}
+
+        {/* Hidden File Input */}
+        <input
+          ref={inputRef}
+          type="file"
+          multiple
+          className="hidden"
+          onChange={handleFileSelect}
+          accept=".pdf,.txt,.csv,.json,.doc,.docx,.xls,.xlsx,.png,.jpg,.jpeg,.gif,.webp"
+        />
+
         {/* Input - Sticky at bottom with safe-area */}
         <div className="flex-shrink-0 pb-safe">
           <ChatInput
             onSend={handleSend}
-            isLoading={isStreaming}
+            isLoading={isStreaming || isUploading}
             onStop={handleStop}
+            onAttachClick={openFilePicker}
+            hasAttachments={attachedFiles.length > 0}
           />
         </div>
       </div>

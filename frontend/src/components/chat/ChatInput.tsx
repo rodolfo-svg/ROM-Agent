@@ -8,9 +8,13 @@ interface ChatInputProps {
   onSend: (message: string, files?: File[]) => void
   isLoading?: boolean
   onStop?: () => void
+  /** Callback para abrir file picker externo (useFileUpload) */
+  onAttachClick?: () => void
+  /** Indica se ha arquivos anexados externamente */
+  hasAttachments?: boolean
 }
 
-export function ChatInput({ onSend, isLoading, onStop }: ChatInputProps) {
+export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachments }: ChatInputProps) {
   const [message, setMessage] = useState('')
   const [files, setFiles] = useState<File[]>([])
   const [showModelDropdown, setShowModelDropdown] = useState(false)
@@ -30,13 +34,23 @@ export function ChatInput({ onSend, isLoading, onStop }: ChatInputProps) {
   }, [message])
 
   const handleSubmit = () => {
-    if (message.trim() || files.length > 0) {
+    // Allow submit if has message, local files, or external attachments
+    if (message.trim() || files.length > 0 || hasAttachments) {
       onSend(message.trim(), files.length > 0 ? files : undefined)
       setMessage('')
       setFiles([])
       if (textareaRef.current) {
         textareaRef.current.style.height = 'auto'
       }
+    }
+  }
+
+  // Handle attach button click - use external handler if provided
+  const handleAttachClick = () => {
+    if (onAttachClick) {
+      onAttachClick()
+    } else {
+      fileInputRef.current?.click()
     }
   }
 
@@ -85,8 +99,14 @@ export function ChatInput({ onSend, isLoading, onStop }: ChatInputProps) {
         <div className="relative flex items-end gap-2 bg-stone-100 rounded-2xl border border-stone-200 focus-within:border-bronze-400 focus-within:ring-4 focus-within:ring-bronze-400/10 transition-all">
           {/* File upload button */}
           <button
-            onClick={() => fileInputRef.current?.click()}
-            className="p-3 text-stone-400 hover:text-stone-600 transition-colors"
+            onClick={handleAttachClick}
+            className={cn(
+              "p-3 transition-colors",
+              hasAttachments
+                ? "text-bronze-600 hover:text-bronze-700"
+                : "text-stone-400 hover:text-stone-600"
+            )}
+            title={hasAttachments ? "Arquivos anexados" : "Anexar arquivo"}
           >
             <Paperclip className="w-5 h-5" />
           </button>
@@ -163,10 +183,10 @@ export function ChatInput({ onSend, isLoading, onStop }: ChatInputProps) {
           ) : (
             <button
               onClick={handleSubmit}
-              disabled={!message.trim() && files.length === 0}
+              disabled={!message.trim() && files.length === 0 && !hasAttachments}
               className={cn(
                 'p-3 transition-colors',
-                message.trim() || files.length > 0
+                message.trim() || files.length > 0 || hasAttachments
                   ? 'text-stone-700 hover:text-stone-900'
                   : 'text-stone-300'
               )}
