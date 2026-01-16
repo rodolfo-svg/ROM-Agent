@@ -2176,6 +2176,12 @@ app.post('/api/chat/stream', async (req, res) => {
   };
 
   try {
+    // 🔍 DEBUG: Log raw request body to diagnose attachedFiles issue
+    console.log('🔍 DEBUG - Raw req.body keys:', Object.keys(req.body || {}));
+    console.log('🔍 DEBUG - req.body.attachedFiles:', req.body?.attachedFiles);
+    console.log('🔍 DEBUG - typeof attachedFiles:', typeof req.body?.attachedFiles);
+    console.log('🔍 DEBUG - Full req.body:', JSON.stringify(req.body, null, 2));
+
     // ═══════════════════════════════════════════════════════════════════════════
     // 1. PARSING DO REQUEST
     // ═══════════════════════════════════════════════════════════════════════════

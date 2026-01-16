@@ -271,13 +271,12 @@ export async function* chatStream(
       headers['x-csrf-token'] = token
     }
 
-    // Preparar dados de arquivos anexados para envio
-    const fileData = attachedFiles?.map(f => ({
-      fileId: f.fileId,
-      name: f.name,
-      size: f.size,
-      mimeType: f.mimeType,
-    }))
+    // ✅ FIX: Usar attachedFiles diretamente (já vem formatado de getAttachedFilesForChat)
+    // Não re-mapear aqui, pois já contém {id, name, type, path} do useFileUpload hook
+    console.log('🔍 DEBUG - Dados enviados:', {
+      attachedFilesCount: attachedFiles?.length || 0,
+      attachedFiles: attachedFiles
+    });
 
     const res = await fetch(`${API_BASE}/chat/stream`, {
       method: 'POST',
@@ -288,7 +287,7 @@ export async function* chatStream(
         conversationId,
         model,
         messages, // Enviar historico completo para manter contexto
-        attachedFiles: fileData, // Arquivos anexados
+        attachedFiles: attachedFiles || [], // ✅ Usar diretamente, já formatado corretamente
         stream: true,
       }),
       signal,
