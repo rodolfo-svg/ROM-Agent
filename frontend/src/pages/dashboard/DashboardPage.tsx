@@ -111,6 +111,7 @@ export function DashboardPage() {
   const { conversationId } = useParams()
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const abortControllerRef = useRef<AbortController | null>(null)
+  const hasCreatedInitialConversation = useRef(false) // ✅ Prevenir múltiplas criações
 
   const {
     conversations,
@@ -177,11 +178,14 @@ export function DashboardPage() {
   }, [conversationId])
 
   // Create initial conversation if none exists (after loading)
+  // ✅ FIX: Usar ref para garantir que só cria UMA VEZ
   useEffect(() => {
-    if (!activeConversation && conversations.length === 0) {
+    if (!activeConversation && conversations.length === 0 && !hasCreatedInitialConversation.current) {
+      console.log('🆕 [DashboardPage] Creating initial conversation (no conversations exist)')
+      hasCreatedInitialConversation.current = true
       createConversation()
     }
-  }, [conversations.length])
+  }, [conversations.length, activeConversation])
 
   // Get artifacts for a message
   const getArtifactsForMessage = (messageId: string) => {
