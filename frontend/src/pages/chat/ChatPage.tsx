@@ -191,6 +191,7 @@ export function ChatPage() {
   // Create initial conversation if none exists (after loading)
   useEffect(() => {
     if (!activeConversation && conversations.length === 0) {
+      console.log('🆕 [ChatPage] Creating initial conversation (no conversations exist)')
       createConversation()
     }
   }, [conversations.length])
@@ -244,8 +245,11 @@ export function ChatPage() {
     // Create conversation if needed
     let convId = activeConversationId
     if (!convId) {
+      console.log('🆕 [ChatPage.handleSend] Creating conversation (no active conversation)')
       const conv = await createConversation()
       convId = conv.id
+    } else {
+      console.log('✅ [ChatPage.handleSend] Using existing conversation:', convId)
     }
 
     // Ensure messages are loaded before sending
