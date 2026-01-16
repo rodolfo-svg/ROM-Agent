@@ -17,7 +17,7 @@
  * @version 7.0.0 - Complete Cache Strategies
  */
 
-const VERSION = 'v7.1.0'; // Fix: removido skipWaiting() automático
+const VERSION = 'v7.2.0'; // Fix: não interceptar POST/PUT (uploads)
 const STATIC_CACHE = `rom-agent-static-${VERSION}`;
 const RUNTIME_CACHE = `rom-agent-runtime-${VERSION}`;
 const OFFLINE_CACHE = `rom-agent-offline-${VERSION}`;
@@ -456,9 +456,10 @@ self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // Skip non-GET requests for caching (except API)
-  if (request.method !== 'GET' && !isApiRequest(url)) {
-    return;
+  // Skip non-GET requests for caching (uploads devem passar direto)
+  // ✅ FIX: POST/PUT não são interceptados pelo SW para evitar timeouts em uploads
+  if (request.method !== 'GET') {
+    return; // Deixa passar direto sem interceptar
   }
 
   // Skip streaming requests entirely
@@ -471,7 +472,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // API Requests - Network only with offline fallback
+  // API Requests - Network only with offline fallback (somente GET)
   if (isApiRequest(url)) {
     event.respondWith(networkOnlyWithFallback(request));
     return;
