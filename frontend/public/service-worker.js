@@ -17,7 +17,7 @@
  * @version 7.0.0 - Complete Cache Strategies
  */
 
-const VERSION = 'v7.0.0';
+const VERSION = 'v7.1.0'; // Fix: removido skipWaiting() automático
 const STATIC_CACHE = `rom-agent-static-${VERSION}`;
 const RUNTIME_CACHE = `rom-agent-runtime-${VERSION}`;
 const OFFLINE_CACHE = `rom-agent-offline-${VERSION}`;
@@ -413,7 +413,8 @@ self.addEventListener('install', (event) => {
         );
       }),
     ])
-    .then(() => self.skipWaiting())
+    // REMOVIDO: self.skipWaiting() automático causava loop infinito
+    // SW agora só ativa quando usuário clica "Atualizar" (via message handler)
   );
 });
 
