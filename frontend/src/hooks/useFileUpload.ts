@@ -1,3 +1,12 @@
+// ============================================================
+// 🚀 VERSION CHECK - NUCLEAR CACHE BYPASS
+// ============================================================
+console.log('%c🔥 useFileUpload.ts v2.0.0 LOADED - Base64 fallback + Flag reset fix ACTIVE 🔥', 'background: #ff0000; color: #fff; font-size: 16px; font-weight: bold; padding: 10px;');
+console.log('%c✅ Base64 fallback: ENABLED', 'color: #00ff00; font-weight: bold;');
+console.log('%c✅ Flag reset fix: ENABLED', 'color: #00ff00; font-weight: bold;');
+console.log('%cSe você NÃO ver esta mensagem em VERMELHO GRANDE, o cache ainda está antigo!', 'color: #ff9900; font-weight: bold;');
+// ============================================================
+
 /**
  * ROM Agent - useFileUpload Hook (DEFINITIVO)
  *
@@ -1493,10 +1502,17 @@ export function useFileUpload<T = DefaultUploadResponse>(
    */
   const uploadWithRetry = useCallback(
     async (file: File, fileId: string): Promise<T> => {
+      console.log('%c🔄 uploadWithRetry() STARTED', 'background: #4CAF50; color: white; font-weight: bold; padding: 5px;', {
+        fileName: file.name,
+        fileSize: file.size,
+        maxRetries: retryConfig.maxRetries + 1
+      });
+
       let lastError: UploadError | null = null;
       let delay = retryConfig.initialDelay;
 
       for (let attempt = 1; attempt <= retryConfig.maxRetries + 1; attempt++) {
+        console.log(`%c🔁 ATTEMPT ${attempt}/${retryConfig.maxRetries + 1}`, 'background: #2196F3; color: white; font-weight: bold; padding: 5px;');
         if (cancelledRef.current) {
           throw createUploadError('CANCELLED', file, undefined, undefined, attempt);
         }
