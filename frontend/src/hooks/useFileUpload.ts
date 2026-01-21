@@ -1369,6 +1369,15 @@ export function useFileUpload<T = DefaultUploadResponse>(
         }
 
       } catch (error: any) {
+        // DEBUG: Log do erro capturado
+        console.log('🔍 [useFileUpload] Error caught:', {
+          name: error.name,
+          code: error.code,
+          message: error.message,
+          triedBase64: triedBase64Ref.current,
+          attempt
+        });
+
         // Se falhar com timeout/network error, tenta Base64 (apenas UMA vez)
         if (!triedBase64Ref.current && (error.name === 'AbortError' || error.code === 'ERR_NETWORK' || error.message?.includes('Failed to fetch'))) {
           console.warn(`⚠️ [useFileUpload] FormData upload failed (attempt ${attempt}), trying Base64 fallback...`);
@@ -1437,6 +1446,8 @@ export function useFileUpload<T = DefaultUploadResponse>(
             console.error('❌ [useFileUpload] Base64 fallback also failed:', base64Error);
             // Se Base64 também falhar, propagar erro original
           }
+        } else if (error.name === 'AbortError' || error.code === 'ERR_NETWORK' || error.message?.includes('Failed to fetch')) {
+          console.warn(`⚠️ [useFileUpload] Base64 fallback SKIPPED (already tried: ${triedBase64Ref.current})`);
         }
 
         // Tratamento de erros padrão
@@ -1635,6 +1646,7 @@ export function useFileUpload<T = DefaultUploadResponse>(
       lastBytesRef.current = 0;
       lastTimeRef.current = Date.now();
       triedBase64Ref.current = false; // Reset flag Base64
+      console.log('🔄 [useFileUpload] Starting new upload - Base64 flag reset to false');
 
       setState((prev) => ({
         ...prev,
