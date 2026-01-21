@@ -480,4 +480,4 @@ declare global {
   }
   function gtag(...args: unknown[]): void
 }
-// Force rebuild qua 21 jan 2026 17:46:23 -03 (NUCLEAR cache bypass)
+// Force rebuild qua 21 jan 2026 19:57:00 -03 (GIANT colorful logs)
