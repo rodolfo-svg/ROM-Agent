@@ -1199,6 +1199,12 @@ export function useFileUpload<T = DefaultUploadResponse>(
    */
   const executeUpload = useCallback(
     async (file: File, fileId: string, attempt: number = 1): Promise<T> => {
+      // ✅ CRITICAL FIX: Reset Base64 flag no início de CADA ciclo de tentativas
+      if (attempt === 1) {
+        triedBase64Ref.current = false;
+        console.log('🔄 [useFileUpload] Starting new upload cycle - Base64 flag reset to false');
+      }
+
       console.log('🚀 [useFileUpload] Starting upload (fetch):', {
         fileName: file.name,
         fileSize: file.size,
@@ -1207,6 +1213,7 @@ export function useFileUpload<T = DefaultUploadResponse>(
         attempt,
         endpoint,
         customEndpoint,
+        triedBase64: triedBase64Ref.current, // ✅ Log flag status
       });
 
       // Verificar Service Worker
