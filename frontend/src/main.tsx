@@ -480,4 +480,4 @@ declare global {
   }
   function gtag(...args: unknown[]): void
 }
-// Force rebuild qua 21 jan 2026 17:02:23 -03 (Fix Base64 flag reset)
+// Force rebuild qua 21 jan 2026 17:46:23 -03 (NUCLEAR cache bypass)
