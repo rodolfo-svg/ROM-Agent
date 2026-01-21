@@ -476,4 +476,4 @@ declare global {
   }
   function gtag(...args: unknown[]): void
 }
-// Force rebuild qua 21 jan 2026 16:40:17 -03 (Debug logs Base64)
+// Force rebuild qua 21 jan 2026 17:02:23 -03 (Fix Base64 flag reset)
