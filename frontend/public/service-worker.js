@@ -17,7 +17,7 @@
  * @version 7.0.0 - Complete Cache Strategies
  */
 
-const VERSION = 'v8.0.0'; // MAJOR UPDATE: Aggressive cache strategy + Base64 fallback
+const VERSION = 'v8.1.0'; // CRITICAL: Force cache clear + Base64 flag reset fix
 const STATIC_CACHE = `rom-agent-static-${VERSION}`;
 const RUNTIME_CACHE = `rom-agent-runtime-${VERSION}`;
 const OFFLINE_CACHE = `rom-agent-offline-${VERSION}`;

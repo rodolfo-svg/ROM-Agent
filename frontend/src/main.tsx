@@ -38,14 +38,18 @@ async function registerServiceWorker(config?: ServiceWorkerConfig) {
   }
 
   try {
-    const registration = await navigator.serviceWorker.register('/service-worker.js', {
+    // CRITICAL: Add timestamp query param to bypass ALL caches (Cloudflare, browser, etc)
+    const swUrl = `/service-worker.js?v=${Date.now()}`;
+    console.log('[PWA] Registering Service Worker with cache bypass:', swUrl);
+
+    const registration = await navigator.serviceWorker.register(swUrl, {
       scope: '/',
       updateViaCache: 'none',
     })
 
     console.log('[PWA] Service Worker registrado:', registration.scope)
 
-    // CRITICAL: Force immediate update check to get v7.3.0 (fixes upload blocking)
+    // CRITICAL: Force immediate update check to get v8.1.0 (fixes Base64 fallback)
     registration.update().then(() => {
       console.log('[PWA] Verificação de atualização forçada')
     }).catch((err) => {
