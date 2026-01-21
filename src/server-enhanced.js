@@ -369,7 +369,30 @@ const frontendPath = path.join(__dirname, '../frontend/dist');
 const publicPath = path.join(__dirname, '../public');
 const staticPath = fs.existsSync(frontendPath) ? frontendPath : publicPath;
 console.log(`📁 Servindo frontend de: ${staticPath}`);
-app.use(express.static(staticPath));
+
+// Cache strategy: FORÇA revalidação de HTML/JS/SW, cacheia assets com hash
+app.use(express.static(staticPath, {
+  setHeaders: (res, path) => {
+    // Service Worker e HTML: SEMPRE revalidar (não cachear)
+    if (path.endsWith('service-worker.js') || path.endsWith('index.html') || path.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+    // JS/CSS com hash no nome: cachear forever (immutable)
+    else if (/\.(js|css)$/.test(path) && /-[a-f0-9]{8}\./.test(path)) {
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    }
+    // Assets (imagens, fonts): cachear 1 dia
+    else if (/\.(png|jpg|jpeg|gif|webp|svg|woff|woff2|ttf|eot|ico)$/i.test(path)) {
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+    }
+    // Resto: sem cache
+    else {
+      res.setHeader('Cache-Control', 'no-cache, must-revalidate');
+    }
+  }
+}));
 
 // Compression (Gzip/Brotli) - comprimir responses > 1KB
 app.use(compression({

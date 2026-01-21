@@ -17,7 +17,7 @@
  * @version 7.0.0 - Complete Cache Strategies
  */
 
-const VERSION = 'v7.3.0'; // CRITICAL: Force update - Fix upload blocking
+const VERSION = 'v8.0.0'; // MAJOR UPDATE: Aggressive cache strategy + Base64 fallback
 const STATIC_CACHE = `rom-agent-static-${VERSION}`;
 const RUNTIME_CACHE = `rom-agent-runtime-${VERSION}`;
 const OFFLINE_CACHE = `rom-agent-offline-${VERSION}`;
@@ -279,13 +279,22 @@ function isCacheExpired(response, maxAge) {
 /**
  * Network First - Try network, fallback to cache
  * Used for: App shell (HTML/JS/CSS)
+ * Respeita Cache-Control headers do servidor
  */
 async function networkFirst(request, cacheName = RUNTIME_CACHE) {
   try {
     const response = await fetch(request);
     if (response.ok && request.method === 'GET') {
-      const cache = await caches.open(cacheName);
-      cache.put(request, response.clone());
+      // NÃO cachear se servidor manda no-cache/no-store
+      const cacheControl = response.headers.get('Cache-Control') || '';
+      const shouldNotCache = cacheControl.includes('no-store') ||
+                             cacheControl.includes('no-cache') ||
+                             cacheControl.includes('must-revalidate');
+
+      if (!shouldNotCache) {
+        const cache = await caches.open(cacheName);
+        cache.put(request, response.clone());
+      }
     }
     return response;
   } catch (error) {
