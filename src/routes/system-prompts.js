@@ -58,9 +58,8 @@ router.get('/:type/:id', async (req, res) => {
     const { type, id } = req.params;
     const partnerId = req.user?.partnerId || 'global';
 
-    // Obter prompt usando PromptsManager
-    const promptId = `${type === 'global' ? 'global' : partnerId}:${id}`;
-    const content = PromptsManager.obterPrompt(promptId, partnerId);
+    // Obter prompt usando PromptsManager (apenas ID, sem prefixo)
+    const content = PromptsManager.obterPrompt(id, partnerId);
 
     if (!content) {
       return res.status(404).json({
