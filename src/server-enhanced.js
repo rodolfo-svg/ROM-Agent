@@ -129,7 +129,7 @@ integrador.inicializar().then(() => {
 });
 
 // Inicializar gerenciador de prompts multi-tenant
-const promptsManager = new PromptsManager();
+const promptsManager = PromptsManager; // Já é uma instância singleton
 const promptsVersioning = new PromptsVersioning();
 
 // Inicializar sistema de autenticação JWT
