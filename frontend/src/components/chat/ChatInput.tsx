@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, KeyboardEvent } from 'react'
+import { useState, useRef, useEffect, KeyboardEvent, useCallback } from 'react'
 import { Send, Square, Paperclip, ChevronDown, X } from 'lucide-react'
 import { useChatStore } from '@/stores/chatStore'
 import { cn } from '@/utils'
@@ -24,16 +24,23 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
   const { selectedModel, setModel } = useChatStore()
   const currentModel = AI_MODELS.find(m => m.id === selectedModel) || AI_MODELS[0]
 
-  // Auto-resize textarea
+  // Auto-resize textarea with debounce to prevent reflows
   useEffect(() => {
-    const textarea = textareaRef.current
-    if (textarea) {
-      textarea.style.height = 'auto'
-      textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px'
-    }
+    const timeoutId = setTimeout(() => {
+      const textarea = textareaRef.current
+      if (textarea) {
+        // Use requestAnimationFrame to batch DOM operations
+        requestAnimationFrame(() => {
+          textarea.style.height = 'auto'
+          textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px'
+        })
+      }
+    }, 50) // 50ms debounce
+
+    return () => clearTimeout(timeoutId)
   }, [message])
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     // Allow submit if has message, local files, or external attachments
     if (message.trim() || files.length > 0 || hasAttachments) {
       onSend(message.trim(), files.length > 0 ? files : undefined)
@@ -43,33 +50,33 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
         textareaRef.current.style.height = 'auto'
       }
     }
-  }
+  }, [message, files, hasAttachments, onSend])
 
   // Handle attach button click - use external handler if provided
-  const handleAttachClick = () => {
+  const handleAttachClick = useCallback(() => {
     if (onAttachClick) {
       onAttachClick()
     } else {
       fileInputRef.current?.click()
     }
-  }
+  }, [onAttachClick])
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       if (!isLoading) handleSubmit()
     }
-  }
+  }, [isLoading, handleSubmit])
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || [])
     setFiles(prev => [...prev, ...selectedFiles])
     e.target.value = ''
-  }
+  }, [])
 
-  const removeFile = (index: number) => {
+  const removeFile = useCallback((index: number) => {
     setFiles(prev => prev.filter((_, i) => i !== index))
-  }
+  }, [])
 
   return (
     <div className="border-t border-stone-200 bg-white p-4 max-md:p-3">
