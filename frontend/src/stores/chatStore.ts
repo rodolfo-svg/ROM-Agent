@@ -2,6 +2,9 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Message, Conversation } from '@/types'
 
+// Debounce map para updateMessage (evitar centenas de saves durante streaming)
+const updateMessageDebounceMap = new Map<string, NodeJS.Timeout>()
+
 interface ChatState {
   conversations: Conversation[]
   activeConversationId: string | null
@@ -407,10 +410,23 @@ export const useChatStore = create<ChatState>()(
           ),
         }))
 
-        // Atualizar no backend também (apenas quando não for mais streaming)
-        const message = get().activeConversation?.messages.find(m => m.id === id)
-        if (message && content && content.trim() !== '') {
-          get().saveMessageToAPI({ ...message, content })
+        // ⚡ OTIMIZAÇÃO: Só salvar no backend quando streaming terminar (isStreaming false)
+        // Durante streaming, evitar centenas de chamadas API desnecessárias
+        const isCurrentlyStreaming = get().isStreaming
+        if (!isCurrentlyStreaming) {
+          const message = get().activeConversation?.messages.find(m => m.id === id)
+          if (message && content && content.trim() !== '') {
+            // Debounce para evitar múltiplas chamadas rápidas
+            const existingTimeout = updateMessageDebounceMap.get(id)
+            if (existingTimeout) {
+              clearTimeout(existingTimeout)
+            }
+            const newTimeout = setTimeout(() => {
+              get().saveMessageToAPI({ ...message, content })
+              updateMessageDebounceMap.delete(id)
+            }, 1000) // Aguardar 1s após última atualização
+            updateMessageDebounceMap.set(id, newTimeout)
+          }
         }
       },
 

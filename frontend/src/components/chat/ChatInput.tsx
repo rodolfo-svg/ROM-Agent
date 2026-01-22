@@ -78,6 +78,11 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
     setFiles(prev => prev.filter((_, i) => i !== index))
   }, [])
 
+  // Optimize onChange handler to prevent recreation
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setMessage(e.target.value)
+  }, [])
+
   return (
     <div className="border-t border-stone-200 bg-white p-4 max-md:p-3">
       <div className="max-w-3xl mx-auto w-full">
@@ -130,7 +135,7 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
           <textarea
             ref={textareaRef}
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={handleChange}
             onKeyDown={handleKeyDown}
             placeholder="Escreva sua mensagem..."
             rows={1}
