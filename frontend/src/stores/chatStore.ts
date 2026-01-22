@@ -410,11 +410,8 @@ export const useChatStore = create<ChatState>()(
           ),
         }))
 
-        // ⚡ PERFORMANCE OPTIMIZATION v3.0 - Smart debounce during streaming
+        // Smart debounce during streaming
         const isCurrentlyStreaming = get().isStreaming
-
-        // DEBUG: Always log to verify deployment
-        console.log('[PERF-V3-DEPLOYED] updateMessage debounce, streaming:', isCurrentlyStreaming)
 
         if (!isCurrentlyStreaming) {
           const message = get().activeConversation?.messages.find(m => m.id === id)
