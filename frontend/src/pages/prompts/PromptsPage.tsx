@@ -45,14 +45,13 @@ export function PromptsPage() {
       const response = await apiFetch('/rom-prompts', {
         credentials: 'include',
       })
-      const data = await response.json()
 
-      if (data.success) {
+      if (response.success && response.data) {
         // Flatten all categories into single array
         const allPrompts = [
-          ...(data.prompts.gerais || []),
-          ...(data.prompts.judiciais || []),
-          ...(data.prompts.extrajudiciais || [])
+          ...(response.data.prompts.gerais || []),
+          ...(response.data.prompts.judiciais || []),
+          ...(response.data.prompts.extrajudiciais || [])
         ]
         setPrompts(allPrompts)
       }
@@ -119,7 +118,7 @@ export function PromptsPage() {
           body: JSON.stringify(promptData),
         })
 
-        if (response.ok) {
+        if (response.success) {
           setShowModal(false)
           await fetchPrompts()
         }
@@ -132,7 +131,7 @@ export function PromptsPage() {
           body: JSON.stringify(promptData),
         })
 
-        if (response.ok) {
+        if (response.success) {
           setShowModal(false)
           setFormData({ id: '', title: '', description: '', category: 'gerais', template: '', tags: [] })
           await fetchPrompts()
