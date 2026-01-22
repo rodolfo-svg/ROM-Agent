@@ -9,7 +9,8 @@
 
 import express from 'express';
 import path from 'path';
-import { fileURLToPath, createRequire } from 'url';
+import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 import fs from 'fs/promises';
 
 const router = express.Router();
