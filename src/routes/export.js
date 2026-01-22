@@ -117,10 +117,26 @@ router.post('/:format', validateExportRequest, async (req, res) => {
   } catch (error) {
     console.error(`[Export] Erro ao exportar ${format}:`, error);
 
-    res.status(500).json({
-      error: 'Erro ao gerar documento',
+    // Determinar código de status apropriado
+    let statusCode = 500;
+    let errorMessage = 'Erro ao gerar documento';
+
+    if (error.message.includes('não suportado')) {
+      statusCode = 400;
+      errorMessage = 'Formato não suportado';
+    } else if (error.message.includes('timeout')) {
+      statusCode = 504;
+      errorMessage = 'Tempo limite excedido ao gerar documento';
+    } else if (error.message.includes('memória') || error.message.includes('memory')) {
+      statusCode = 507;
+      errorMessage = 'Documento muito grande para processar';
+    }
+
+    res.status(statusCode).json({
+      error: errorMessage,
       details: error.message,
-      format
+      format,
+      timestamp: new Date().toISOString()
     });
   }
 });
@@ -128,20 +144,16 @@ router.post('/:format', validateExportRequest, async (req, res) => {
 /**
  * POST /api/export/docx
  * Atalho para exportação Word
+ * NOTA: Este endpoint foi removido. Use POST /api/export/docx diretamente
+ * através do endpoint genérico /:format acima.
  */
-router.post('/docx', validateExportRequest, async (req, res) => {
-  req.params.format = 'docx';
-  return router.handle(req, res);
-});
 
 /**
  * POST /api/export/pdf
  * Atalho para exportação PDF
+ * NOTA: Este endpoint foi removido. Use POST /api/export/pdf diretamente
+ * através do endpoint genérico /:format acima.
  */
-router.post('/pdf', validateExportRequest, async (req, res) => {
-  req.params.format = 'pdf';
-  return router.handle(req, res);
-});
 
 /**
  * GET /api/export/status

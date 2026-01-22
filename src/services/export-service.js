@@ -167,16 +167,31 @@ class ExportService {
    */
   async generateDOCX(formattedContent, metadata) {
     try {
+      // Mapear parâmetros para o formato esperado pelo docx-exporter.cjs
+      const docxOptions = {
+        titulo: metadata.title || 'DOCUMENTO JURÍDICO',
+        subtitulo: metadata.subtitle || '',
+        conteudo: formattedContent.content || '',
+        conteudoHTML: '', // Pode adicionar suporte HTML depois
+        citacoes: metadata.citations || [],
+        referencias: metadata.references || [],
+        timbrado: {
+          escritorio: metadata.letterhead?.firm || 'Rodolfo Otávio Mota Advogados Associados',
+          oab: metadata.letterhead?.oab || 'OAB/MG',
+          endereco: metadata.letterhead?.address || 'Belo Horizonte - MG',
+          email: metadata.letterhead?.email || 'contato@rom.adv.br',
+          telefone: metadata.letterhead?.phone || '',
+          site: metadata.letterhead?.website || ''
+        },
+        metadata: {
+          autor: metadata.author || 'ROM Agent',
+          assunto: metadata.subject || metadata.title || '',
+          palavrasChave: metadata.keywords || []
+        }
+      };
+
       // Use exportToDocx function from docx-exporter.cjs
-      const buffer = await this.docxExporter.exportToDocx({
-        content: formattedContent.content,
-        title: metadata.title,
-        author: metadata.author || 'ROM Agent',
-        date: metadata.date || new Date(),
-        template: formattedContent.template,
-        // Papel timbrado se for peça jurídica
-        letterhead: metadata.type === 'legal_brief'
-      });
+      const buffer = await this.docxExporter.exportToDocx(docxOptions);
 
       console.log(`[ExportService] DOCX gerado com sucesso: ${Buffer.byteLength(buffer)} bytes`);
       return buffer;
