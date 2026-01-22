@@ -52,6 +52,7 @@ import documentsRoutes from '../lib/api-routes-documents.js';
 import pipelineRoutes from '../lib/api-routes-pipeline.js';
 import romProjectService from './services/rom-project-service.js';
 import romProjectRouter from './routes/rom-project.js';
+import systemPromptsRouter from './routes/system-prompts.js';
 import romCaseProcessorService from './services/processors/rom-case-processor-service.js';
 import caseProcessorRouter from './routes/case-processor.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
@@ -107,6 +108,7 @@ const require = createRequire(import.meta.url);
 const IntegradorSistema = require('../lib/integrador-sistema.cjs');
 const autoUpdateSystem = require('../lib/auto-update-system.cjs');
 const PromptsManager = require('../lib/prompts-manager.cjs');
+import { detectDocumentType, getDocumentTypeName } from './lib/prompt-selector.js';
 const PromptsVersioning = require('../lib/prompts-versioning.cjs');
 const AuthSystem = require('../lib/auth-system.cjs');
 const UploadSync = require('../lib/upload-sync.cjs');
@@ -502,6 +504,7 @@ app.use('/api', jurisprudenciaRoutes);
 app.use('/api', documentsRoutes);
 app.use('/api', pipelineRoutes);
 app.use('/api/rom-project', romProjectRouter);
+app.use('/api/system-prompts', systemPromptsRouter);
 
 // Rotas de Autenticação (login/logout)
 app.use('/api/auth', authRoutes);
@@ -1090,8 +1093,23 @@ export function buildSystemPrompt(options = {}) {
   const userId = options.userId || null;
 
   // Verificar feature flag para versao dos prompts
-  const promptsVersion = process.env.PROMPTS_VERSION || 'optimized';
+  const promptsVersion = process.env.PROMPTS_VERSION || 'contextual'; // Default: contextual
   const trafficPercentage = parseFloat(process.env.TRAFFIC_PERCENTAGE || '100');
+  const partnerId = options.partnerId || 'global';
+
+  // NOVO: Sistema contextual com PromptsManager (PREFERENCIAL)
+  if (promptsVersion === 'contextual') {
+    try {
+      return buildContextualSystemPrompt({
+        userMessage,
+        partnerId,
+        ...options
+      });
+    } catch (error) {
+      console.error(`[buildSystemPrompt] Erro no sistema contextual, fallback para legacy:`, error.message);
+      return buildLegacySystemPrompt(forceReload);
+    }
+  }
 
   // Se versao for 'optimized' ou 'v3', usar novo sistema modular
   if (promptsVersion === 'optimized' || promptsVersion === 'v3') {
@@ -1141,6 +1159,37 @@ export function buildSystemPrompt(options = {}) {
 }
 
 /**
+ * Constroi system prompt usando PromptsManager contextual
+ * Tenta carregar prompt específico para o tipo de peça detectada
+ *
+ * @param {Object} options - Opções de construção
+ * @returns {string} System prompt
+ */
+function buildContextualSystemPrompt(options = {}) {
+  const userMessage = options.userMessage || '';
+  const partnerId = options.partnerId || 'global';
+
+  // 1. Detectar tipo de documento/peça
+  const documentType = detectDocumentType(userMessage);
+  console.log(`[buildSystemPrompt] Tipo detectado: ${getDocumentTypeName(documentType)}`);
+
+  // 2. Tentar carregar prompt do PromptsManager
+  try {
+    const promptResult = PromptsManager.obterPrompt(documentType, partnerId);
+
+    if (promptResult && promptResult.content) {
+      console.log(`[buildSystemPrompt] Usando prompt contextual: ${documentType} (${promptResult.type})`);
+      return promptResult.content;
+    }
+  } catch (error) {
+    console.log(`[buildSystemPrompt] Prompt contextual '${documentType}' não encontrado, usando fallback`);
+  }
+
+  // 3. Fallback para custom-instructions.json
+  return buildLegacySystemPrompt();
+}
+
+/**
  * Constroi system prompt na versao legacy (original)
  * Mantido para backward compatibility e rollback
  *
@@ -1148,7 +1197,7 @@ export function buildSystemPrompt(options = {}) {
  * @returns {string} System prompt
  */
 function buildLegacySystemPrompt(forceReload = false) {
-  console.log(`[buildSystemPrompt] Construindo prompt legacy...`);
+  console.log(`[buildSystemPrompt] Construindo prompt legacy (custom-instructions.json)...`);
 
   const customInstructions = loadCustomInstructions();
 

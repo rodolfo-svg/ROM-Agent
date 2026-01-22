@@ -18,7 +18,8 @@ import {
   FolderOpen,
   FileCheck,
   LayoutDashboard,
-  BarChart3
+  BarChart3,
+  Sliders
 } from 'lucide-react'
 import { useChatStore } from '@/stores/chatStore'
 import { useAuthStore } from '@/stores/authStore'
@@ -36,6 +37,7 @@ const navigationItems = [
   { path: '/reports', label: 'Relatórios', icon: BarChart3, adminOnly: true },
   { path: '/users', label: 'Usuários', icon: Users, adminOnly: true },
   { path: '/partners', label: 'Parceiros', icon: Building2, adminOnly: true },
+  { path: '/admin/system-prompts', label: 'System Prompts', icon: Sliders, adminOnly: true },
 ]
 
 export function Sidebar() {

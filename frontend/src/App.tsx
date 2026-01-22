@@ -15,6 +15,7 @@ const CertidoesPage = lazy(() => import('@/pages/certidoes/CertidoesPage').then(
 const UsersPage = lazy(() => import('@/pages/users/UsersPage').then(m => ({ default: m.UsersPage })))
 const PartnersPage = lazy(() => import('@/pages/partners/PartnersPage').then(m => ({ default: m.PartnersPage })))
 const ReportsPage = lazy(() => import('@/pages/reports/ReportsPage').then(m => ({ default: m.ReportsPage })))
+const SystemPromptsPage = lazy(() => import('@/pages/admin/SystemPromptsPage'))
 
 // Loading component
 function PageLoader() {
@@ -181,6 +182,16 @@ export default function App() {
           element={
             <ProtectedRoute>
               <ReportsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* System Prompts (Admin Only) */}
+        <Route
+          path="/admin/system-prompts"
+          element={
+            <ProtectedRoute>
+              <SystemPromptsPage />
             </ProtectedRoute>
           }
         />
