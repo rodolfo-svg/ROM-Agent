@@ -325,6 +325,9 @@ export function ChatPage() {
 
           // Link artifact to message
           useChatStore.getState().addArtifactToMessage(assistantMsg.id, artifact.id)
+
+          // Open artifact panel
+          openPanel(artifact)
         } else if (chunk.type === 'error') {
           fullContent = `❌ ${chunk.error}`
           updateMessage(assistantMsg.id, fullContent)
