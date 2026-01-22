@@ -80,6 +80,10 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
 
   // Optimize onChange handler to prevent recreation (v2.0 - force rebuild)
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    // DEBUG: Marker for version verification
+    if (window.location.search.includes('debug=perf')) {
+      console.log('[PERF-V2] handleChange optimized with useCallback')
+    }
     setMessage(e.target.value)
   }, [])
 
