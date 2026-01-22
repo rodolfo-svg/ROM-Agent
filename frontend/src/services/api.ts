@@ -259,8 +259,16 @@ export async function* chatStream(
   const { conversationId, model, messages = [], signal, attachedFiles } = options
 
   try {
+    console.log('%c🚀 [V7-SSE] chatStream STARTED', 'color: yellow; font-weight: bold;', {
+      messageLength: message.length,
+      conversationId,
+      model,
+      attachedFilesCount: attachedFiles?.length || 0
+    })
+
     // Buscar CSRF token (mesmo que /chat/stream esteja em exempt, boa prática incluir)
     const token = await getCsrfToken()
+    console.log('[V7-SSE] CSRF token obtained:', !!token)
 
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
@@ -278,6 +286,7 @@ export async function* chatStream(
       attachedFiles: attachedFiles
     });
 
+    console.log('[V7-SSE] Sending fetch to /api/chat/stream...')
     const res = await fetch(`${API_BASE}/chat/stream`, {
       method: 'POST',
       credentials: 'include',
@@ -292,6 +301,8 @@ export async function* chatStream(
       }),
       signal,
     })
+
+    console.log('[V7-SSE] Fetch completed. Status:', res.status, 'OK:', res.ok)
 
     if (!res.ok) {
       // Se 401 - não autenticado, redirecionar para login
@@ -309,51 +320,84 @@ export async function* chatStream(
     }
 
     const reader = res.body?.getReader()
+    console.log('[V7-SSE] Reader created:', !!reader)
+
     if (!reader) {
+      console.error('[V7-SSE] ❌ No reader - streaming not supported!')
       yield { type: 'error', error: 'Streaming não suportado' }
       return
     }
 
     const decoder = new TextDecoder()
     let buffer = ''
+    let chunkCount = 0
 
+    console.log('[V7-SSE] Starting read loop...')
     while (true) {
       const { done, value } = await reader.read()
-      if (done) break
+      chunkCount++
+
+      console.log(`[V7-SSE] Read chunk #${chunkCount}:`, {
+        done,
+        bytesReceived: value?.length || 0
+      })
+
+      if (done) {
+        console.log('[V7-SSE] Stream done (reader finished)')
+        break
+      }
 
       buffer += decoder.decode(value, { stream: true })
       const lines = buffer.split('\n')
       buffer = lines.pop() || ''
 
+      console.log(`[V7-SSE] Chunk #${chunkCount} produced ${lines.length} lines`)
+
       for (const line of lines) {
         if (line.startsWith('data: ')) {
           const data = line.slice(6).trim()
+          console.log('[V7-SSE] SSE line:', data.substring(0, 100))
+
           if (data === '[DONE]') {
+            console.log('[V7-SSE] Received [DONE] marker')
             yield { type: 'done' }
             return
           }
 
           try {
             const parsed = JSON.parse(data)
-            
+            console.log('[V7-SSE] Parsed JSON:', parsed.type || parsed)
+
             if (parsed.content) {
               yield { type: 'chunk', content: parsed.content }
             } else if (parsed.artifact) {
+              console.log('%c[V7-SSE] 🎨 ARTIFACT RECEIVED!', 'color: magenta; font-weight: bold;', parsed.artifact)
               yield { type: 'artifact', artifact: parsed.artifact }
             } else if (parsed.error) {
               yield { type: 'error', error: parsed.error }
             }
           } catch (e) {
+            console.warn('[V7-SSE] Non-JSON data, treating as content:', data.substring(0, 50))
             // Non-JSON data, treat as content
             yield { type: 'chunk', content: data }
           }
+        } else if (line.trim()) {
+          console.log('[V7-SSE] Non-data line:', line.substring(0, 100))
         }
       }
     }
 
+    console.log('[V7-SSE] Stream completed naturally')
     yield { type: 'done' }
   } catch (err: any) {
+    console.error('%c[V7-SSE] ❌ EXCEPTION CAUGHT', 'color: red; font-weight: bold;', {
+      name: err.name,
+      message: err.message,
+      stack: err.stack
+    })
+
     if (err.name === 'AbortError') {
+      console.log('[V7-SSE] AbortError - stream cancelled by user')
       return
     }
     yield { type: 'error', error: err.message || 'Erro de conexão' }
