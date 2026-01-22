@@ -9,14 +9,15 @@
 
 import express from 'express';
 import path from 'path';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, createRequire } from 'url';
 import fs from 'fs/promises';
 
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Importar PromptsManager
+// Importar PromptsManager (CommonJS module)
+const require = createRequire(import.meta.url);
 const PromptsManager = require('../../lib/prompts-manager.cjs');
 
 /**
