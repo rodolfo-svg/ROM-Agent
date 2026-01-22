@@ -5,16 +5,16 @@
     "failed": 10,
     "warnings": 0,
     "successRate": 75.6,
-    "duration": 0.05,
-    "timestamp": "2026-01-14T05:00:18.950Z"
+    "duration": 0.08,
+    "timestamp": "2026-01-22T05:00:29.431Z"
   },
   "tests": [
     {
       "name": "Health Check (/api/info)",
       "passed": {
         "status": "healthy",
-        "uptime": "9h 11m",
-        "uptimeSeconds": 33113
+        "uptime": "2h 18m",
+        "uptimeSeconds": 8313
       },
       "details": "Status: 200, Version: 2.8.0, Health: healthy, Bedrock: connected"
     },
@@ -211,7 +211,7 @@
     {
       "name": "Status de Backups (/api/backup/status)",
       "passed": true,
-      "details": "Status: 200, Backups: 3"
+      "details": "Status: 200, Backups: 7"
     },
     {
       "name": "Estatísticas de Cache (/api/cache/statistics)",

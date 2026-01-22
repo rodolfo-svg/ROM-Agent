@@ -6972,9 +6972,13 @@ app.post('/api/cache/clear', authSystem.authMiddleware(), authSystem.requireRole
 });
 
 // ====================================================================
-// ROTAS DE API PARA EXPORTAÇÃO DE DOCUMENTOS
+// ROTAS DE API PARA EXPORTAÇÃO DE DOCUMENTOS (LEGADO - COMENTADO)
+// ====================================================================
+// NOTA: Estas rotas antigas foram comentadas. Use as rotas modernas
+// em src/routes/export.js registradas com app.use('/api/export', exportRoutes)
 // ====================================================================
 
+/*
 // Exportar para DOCX
 app.post('/api/export/docx', async (req, res) => {
   try {
@@ -7188,6 +7192,7 @@ app.post('/api/export/html', (req, res) => {
     res.status(500).json({ error: error.message });
   }
 });
+*/
 
 // ====================================================================
 // ROTAS DE API PARA ESTRATÉGIAS MULTI-MODELO

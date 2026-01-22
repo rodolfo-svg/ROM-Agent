@@ -9,133 +9,596 @@
   },
   "approved": false,
   "stats": {
-    "startTime": 1768589866566,
+    "startTime": 1769058077058,
     "tests": {
       "burst": {
-        "total": 1500,
-        "success": 366,
-        "failed": 1134,
-        "avgLatency": 395.20066666666645
+        "total": 1100,
+        "success": 378,
+        "failed": 722,
+        "avgLatency": 1798.182727272728
       },
       "sustained": {
-        "total": 12362,
-        "success": 1247,
-        "failed": 11115,
-        "avgLatency": 250.18467885455397
+        "total": 8670,
+        "success": 2424,
+        "failed": 6246,
+        "avgLatency": 483.5381776239898
       },
       "concurrent": {
-        "total": 4380,
-        "success": 1339,
-        "failed": 3041,
-        "avgLatency": 326.45159817351635
+        "total": 3040,
+        "success": 1351,
+        "failed": 1689,
+        "avgLatency": 504.3184210526335
       },
       "apiStress": {
-        "total": 2409,
-        "success": 550,
-        "failed": 1859,
-        "avgLatency": 246.18098796180988
+        "total": 1672,
+        "success": 581,
+        "failed": 1091,
+        "avgLatency": 464.84988038277555
       },
       "database": {
-        "total": 219,
-        "success": 17,
-        "failed": 202,
-        "avgLatency": 244.76712328767124
+        "total": 152,
+        "success": 38,
+        "failed": 114,
+        "avgLatency": 427.29605263157885
       },
       "memory": {
-        "total": 219,
-        "success": 17,
-        "failed": 202,
-        "avgLatency": 244.82191780821918
+        "total": 152,
+        "success": 38,
+        "failed": 114,
+        "avgLatency": 433.9868421052632
       },
       "longOps": {
-        "total": 109,
-        "success": 6,
-        "failed": 103,
-        "avgLatency": 979.3577981651378
+        "total": 76,
+        "success": 18,
+        "failed": 58,
+        "avgLatency": 1215.842105263158
       },
       "pwa": {
-        "total": 219,
-        "success": 219,
-        "failed": 0,
-        "avgLatency": 243.97716894977168
+        "total": 152,
+        "success": 151,
+        "failed": 1,
+        "avgLatency": 228.22368421052633
       }
     },
-    "totalRequests": 21417,
-    "totalSuccess": 3761,
-    "totalFailed": 17656,
-    "totalLatency": 5975893,
-    "errors": [],
+    "totalRequests": 15014,
+    "totalSuccess": 4979,
+    "totalFailed": 10035,
+    "totalLatency": 8738643,
+    "errors": [
+      {
+        "type": "apiStress",
+        "endpoint": "/service-worker.js",
+        "error": "Timeout",
+        "time": "2026-01-22T05:07:40.507Z"
+      },
+      {
+        "type": "apiStress",
+        "endpoint": "/api/info",
+        "error": "read EADDRNOTAVAIL",
+        "time": "2026-01-22T05:17:16.828Z"
+      },
+      {
+        "type": "apiStress",
+        "endpoint": "/api/info",
+        "error": "read EADDRNOTAVAIL",
+        "time": "2026-01-22T05:20:23.248Z"
+      },
+      {
+        "type": "apiStress",
+        "endpoint": "/api/conversations/list",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:20:23.250Z"
+      },
+      {
+        "type": "apiStress",
+        "endpoint": "/api/deploy/status",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:20:23.253Z"
+      },
+      {
+        "type": "apiStress",
+        "endpoint": "/api/logs/files",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:20:23.255Z"
+      },
+      {
+        "type": "apiStress",
+        "endpoint": "/api/jurisprudencia/tribunais",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:20:23.256Z"
+      },
+      {
+        "type": "apiStress",
+        "endpoint": "/api/jurisprudencia/cache/stats",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:20:23.258Z"
+      },
+      {
+        "type": "apiStress",
+        "endpoint": "/api/documents/supported-types",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:20:23.259Z"
+      },
+      {
+        "type": "apiStress",
+        "endpoint": "/api/documents/desktop-path",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:20:23.260Z"
+      },
+      {
+        "type": "apiStress",
+        "endpoint": "/api/extraction/desktop-path",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:20:23.261Z"
+      },
+      {
+        "type": "apiStress",
+        "endpoint": "/manifest.json",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:20:23.262Z"
+      },
+      {
+        "type": "apiStress",
+        "endpoint": "/service-worker.js",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:20:23.263Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/documents/supported-types",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/jurisprudencia/tribunais",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/manifest.json",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/deploy/status",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/documents/supported-types",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/jurisprudencia/tribunais",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/deploy/status",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/manifest.json",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/jurisprudencia/tribunais",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/documents/supported-types",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.680Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/manifest.json",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.681Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/deploy/status",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.681Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.681Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.681Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/jurisprudencia/tribunais",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.681Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/documents/supported-types",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.682Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/manifest.json",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.682Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.683Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/deploy/status",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.683Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/jurisprudencia/tribunais",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.684Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.684Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/documents/supported-types",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.685Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/manifest.json",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.685Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.685Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/deploy/status",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.685Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.686Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/jurisprudencia/tribunais",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.687Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/documents/supported-types",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.687Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/deploy/status",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.688Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/manifest.json",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.688Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.689Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.690Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/jurisprudencia/tribunais",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.690Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/documents/supported-types",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.691Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/manifest.json",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.691Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/deploy/status",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.691Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.692Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.692Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/jurisprudencia/tribunais",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.692Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/manifest.json",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.693Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/documents/supported-types",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.693Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.694Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/deploy/status",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.694Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "getaddrinfo ENOTFOUND staging.iarom.com.br",
+        "time": "2026-01-22T05:36:17.694Z"
+      }
+    ],
     "memorySnapshots": [
       {
-        "time": "2026-01-16T18:57:55.860Z",
-        "heapUsed": 146
+        "time": "2026-01-22T05:01:26.122Z",
+        "heapUsed": 150
       },
       {
-        "time": "2026-01-16T18:58:12.137Z",
-        "heapUsed": 148
+        "time": "2026-01-22T05:01:42.195Z",
+        "heapUsed": 152
       },
       {
-        "time": "2026-01-16T18:58:43.320Z",
-        "heapUsed": 146
-      },
-      {
-        "time": "2026-01-16T18:58:59.154Z",
+        "time": "2026-01-22T05:02:02.461Z",
         "heapUsed": 149
       },
       {
-        "time": "2026-01-16T18:59:24.845Z",
-        "heapUsed": 145
+        "time": "2026-01-22T05:02:18.775Z",
+        "heapUsed": 151
       },
       {
-        "time": "2026-01-16T18:59:40.828Z",
-        "heapUsed": 147
+        "time": "2026-01-22T05:02:38.636Z",
+        "heapUsed": 149
       },
       {
-        "time": "2026-01-16T18:59:59.908Z",
-        "heapUsed": 146
+        "time": "2026-01-22T05:02:54.629Z",
+        "heapUsed": 151
       },
       {
-        "time": "2026-01-16T19:00:16.251Z",
-        "heapUsed": 148
+        "time": "2026-01-22T05:03:13.453Z",
+        "heapUsed": 149
       },
       {
-        "time": "2026-01-16T19:00:35.060Z",
-        "heapUsed": 145
+        "time": "2026-01-22T05:03:29.104Z",
+        "heapUsed": 151
       },
       {
-        "time": "2026-01-16T19:00:51.387Z",
-        "heapUsed": 147
+        "time": "2026-01-22T05:03:48.310Z",
+        "heapUsed": 149
       },
       {
-        "time": "2026-01-16T19:01:17.263Z",
-        "heapUsed": 146
+        "time": "2026-01-22T05:04:04.453Z",
+        "heapUsed": 151
       },
       {
-        "time": "2026-01-16T19:01:33.316Z",
-        "heapUsed": 148
+        "time": "2026-01-22T05:04:23.725Z",
+        "heapUsed": 149
       },
       {
-        "time": "2026-01-16T19:02:04.662Z",
-        "heapUsed": 145
+        "time": "2026-01-22T05:04:39.374Z",
+        "heapUsed": 150
       },
       {
-        "time": "2026-01-16T19:02:20.562Z",
-        "heapUsed": 147
+        "time": "2026-01-22T05:04:58.842Z",
+        "heapUsed": 149
       },
       {
-        "time": "2026-01-16T19:02:48.092Z",
-        "heapUsed": 145
+        "time": "2026-01-22T05:05:14.736Z",
+        "heapUsed": 151
       },
       {
-        "time": "2026-01-16T19:03:03.988Z",
-        "heapUsed": 148
+        "time": "2026-01-22T05:05:34.190Z",
+        "heapUsed": 149
       },
       {
-        "time": "2026-01-16T19:57:41.077Z",
+        "time": "2026-01-22T05:05:50.418Z",
+        "heapUsed": 151
+      },
+      {
+        "time": "2026-01-22T05:06:09.195Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-22T05:06:24.871Z",
+        "heapUsed": 151
+      },
+      {
+        "time": "2026-01-22T05:06:44.919Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-22T05:36:37.422Z",
+        "heapUsed": 159
+      },
+      {
+        "time": "2026-01-22T05:38:22.475Z",
+        "heapUsed": 150
+      },
+      {
+        "time": "2026-01-22T05:38:39.361Z",
         "heapUsed": 152
+      },
+      {
+        "time": "2026-01-22T05:38:59.660Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-22T05:39:15.668Z",
+        "heapUsed": 151
+      },
+      {
+        "time": "2026-01-22T05:39:35.038Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-22T05:39:50.977Z",
+        "heapUsed": 151
+      },
+      {
+        "time": "2026-01-22T05:40:09.981Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-22T05:40:25.648Z",
+        "heapUsed": 151
+      },
+      {
+        "time": "2026-01-22T05:40:44.431Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-22T05:41:00.107Z",
+        "heapUsed": 151
+      },
+      {
+        "time": "2026-01-22T05:41:20.078Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-22T05:41:35.736Z",
+        "heapUsed": 151
+      },
+      {
+        "time": "2026-01-22T05:41:54.795Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-22T05:42:10.878Z",
+        "heapUsed": 151
+      },
+      {
+        "time": "2026-01-22T05:42:29.717Z",
+        "heapUsed": 150
+      },
+      {
+        "time": "2026-01-22T05:42:45.586Z",
+        "heapUsed": 152
+      },
+      {
+        "time": "2026-01-22T05:43:04.631Z",
+        "heapUsed": 149
+      },
+      {
+        "time": "2026-01-22T05:43:20.776Z",
+        "heapUsed": 151
       }
     ],
-    "peakLatency": 15000,
-    "slowestEndpoint": "/chat/stream"
+    "peakLatency": 30000,
+    "slowestEndpoint": "/service-worker.js"
   }
 }

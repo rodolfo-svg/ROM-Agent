@@ -1,0 +1,132 @@
+{
+  "cacheKey": "jurisprudence-6c9d6a92cbd5ff474e2a278d3c858e68",
+  "casoId": "global",
+  "sourceHash": null,
+  "cachedAt": "2026-01-22T05:01:08.931Z",
+  "data": {
+    "tese": "teste sistema",
+    "searchedAt": "2026-01-22T05:01:01.424Z",
+    "sources": {
+      "websearch": {
+        "success": true,
+        "count": 1,
+        "results": [
+          {
+            "tribunal": "STF",
+            "tipo": "Jurisprudência",
+            "numero": "N/A",
+            "titulo": "STF conclui desenvolvimento e encaminha ao CNJ a Plataforma ...",
+            "ementa": "há 6 dias ... Caberá ao Conselho realizar testes de usabilidade e estruturar a governança do sistema ... decisão. Plataforma Nacional de Saúde. No mês ...",
+            "url": "https://noticias.stf.jus.br/postsnoticias/stf-conclui-desenvolvimento-e-encaminha-ao-cnj-a-plataforma-nacional-de-saude/",
+            "data": "2026-01-22T05:01:01.424Z",
+            "relator": null,
+            "displayLink": "noticias.stf.jus.br",
+            "cacheId": null,
+            "relevancia": "high",
+            "source": "websearch",
+            "verified": true,
+            "metadados": {
+              "formattedUrl": "https://noticias.stf.jus.br/.../stf-conclui-desenvolvimento-e-encaminha-ao-cn...",
+              "htmlTitle": "STF conclui desenvolvimento e encaminha ao CNJ a Plataforma ...",
+              "htmlSnippet": "há 6 dias <b>...</b> Caberá ao Conselho realizar <b>testes</b> de usabilidade e estruturar a governança do <b>sistema</b> ... <b>decisão</b>. Plataforma Nacional de Saúde. No mês&nbsp;..."
+            },
+            "ementaCompleta": "O sistema é integrado a diversas bases de dados do Ministério da Saúde e do Conselho Federal de Medicina. Ao registrar o medicamento solicitado, a plataforma informa a política pública vigente para sua aplicação. Caso o medicamento não esteja incluído, o sistema apresenta, por exemplo, o custo unitário e anual, além de indicar qual ente federativo será responsável pelo pagamento.",
+            "ementaLength": 382,
+            "scraped": true,
+            "scrapedAt": "2026-01-22T05:01:01.990Z",
+            "dataJulgamento": "16/01/2026",
+            "analise": {
+              "teseJuridica": "Sistema integrado de informações sobre medicamentos conecta bases de dados do Ministério da Saúde e Conselho Federal de Medicina para orientar sobre políticas públicas, custos e responsabilidade dos entes federativos no fornecimento de medicamentos.",
+              "resultado": "EXTINTO",
+              "fundamentosLegais": [],
+              "sumulas": [],
+              "precedentes": [],
+              "palavrasChave": [
+                "saúde pública",
+                "fornecimento de medicamentos",
+                "competência federativa",
+                "política pública",
+                "Ministério da Saúde",
+                "Conselho Federal de Medicina",
+                "plataforma digital",
+                "CNJ"
+              ],
+              "resumoExecutivo": "A ementa descreve uma plataforma tecnológica desenvolvida pelo STF e encaminhada ao CNJ para auxiliar na gestão de demandas judiciais relacionadas ao fornecimento de medicamentos. O sistema se integra às bases de dados do Ministério da Saúde e do Conselho Federal de Medicina, permitindo consulta sobre políticas públicas vigentes para cada medicamento solicitado. Quando o medicamento não está incluído nas políticas públicas, a plataforma fornece informações sobre custo unitário e anual, além de indicar qual ente federativo (União, Estado ou Município) é responsável pelo pagamento. Trata-se de ferramenta de gestão administrativa e orientação para decisões judiciais em saúde pública, não constituindo propriamente uma decisão judicial com mérito analisado.",
+              "relevanciaParaCaso": 15
+            },
+            "analyzedAt": "2026-01-22T05:01:08.928Z",
+            "analyzed": true
+          }
+        ]
+      }
+    },
+    "allResults": [
+      {
+        "tribunal": "STF",
+        "tipo": "Jurisprudência",
+        "numero": "N/A",
+        "titulo": "STF conclui desenvolvimento e encaminha ao CNJ a Plataforma ...",
+        "ementa": "há 6 dias ... Caberá ao Conselho realizar testes de usabilidade e estruturar a governança do sistema ... decisão. Plataforma Nacional de Saúde. No mês ...",
+        "url": "https://noticias.stf.jus.br/postsnoticias/stf-conclui-desenvolvimento-e-encaminha-ao-cnj-a-plataforma-nacional-de-saude/",
+        "data": "2026-01-22T05:01:01.424Z",
+        "relator": null,
+        "displayLink": "noticias.stf.jus.br",
+        "cacheId": null,
+        "relevancia": "high",
+        "source": "websearch",
+        "verified": true,
+        "metadados": {
+          "formattedUrl": "https://noticias.stf.jus.br/.../stf-conclui-desenvolvimento-e-encaminha-ao-cn...",
+          "htmlTitle": "STF conclui desenvolvimento e encaminha ao CNJ a Plataforma ...",
+          "htmlSnippet": "há 6 dias <b>...</b> Caberá ao Conselho realizar <b>testes</b> de usabilidade e estruturar a governança do <b>sistema</b> ... <b>decisão</b>. Plataforma Nacional de Saúde. No mês&nbsp;..."
+        },
+        "ementaCompleta": "O sistema é integrado a diversas bases de dados do Ministério da Saúde e do Conselho Federal de Medicina. Ao registrar o medicamento solicitado, a plataforma informa a política pública vigente para sua aplicação. Caso o medicamento não esteja incluído, o sistema apresenta, por exemplo, o custo unitário e anual, além de indicar qual ente federativo será responsável pelo pagamento.",
+        "ementaLength": 382,
+        "scraped": true,
+        "scrapedAt": "2026-01-22T05:01:01.990Z",
+        "dataJulgamento": "16/01/2026",
+        "analise": {
+          "teseJuridica": "Sistema integrado de informações sobre medicamentos conecta bases de dados do Ministério da Saúde e Conselho Federal de Medicina para orientar sobre políticas públicas, custos e responsabilidade dos entes federativos no fornecimento de medicamentos.",
+          "resultado": "EXTINTO",
+          "fundamentosLegais": [],
+          "sumulas": [],
+          "precedentes": [],
+          "palavrasChave": [
+            "saúde pública",
+            "fornecimento de medicamentos",
+            "competência federativa",
+            "política pública",
+            "Ministério da Saúde",
+            "Conselho Federal de Medicina",
+            "plataforma digital",
+            "CNJ"
+          ],
+          "resumoExecutivo": "A ementa descreve uma plataforma tecnológica desenvolvida pelo STF e encaminhada ao CNJ para auxiliar na gestão de demandas judiciais relacionadas ao fornecimento de medicamentos. O sistema se integra às bases de dados do Ministério da Saúde e do Conselho Federal de Medicina, permitindo consulta sobre políticas públicas vigentes para cada medicamento solicitado. Quando o medicamento não está incluído nas políticas públicas, a plataforma fornece informações sobre custo unitário e anual, além de indicar qual ente federativo (União, Estado ou Município) é responsável pelo pagamento. Trata-se de ferramenta de gestão administrativa e orientação para decisões judiciais em saúde pública, não constituindo propriamente uma decisão judicial com mérito analisado.",
+          "relevanciaParaCaso": 15
+        },
+        "analyzedAt": "2026-01-22T05:01:08.928Z",
+        "analyzed": true
+      }
+    ],
+    "totalResults": 1,
+    "summary": {
+      "tribunaisEncontrados": [
+        "STF"
+      ],
+      "tiposDecisao": [
+        "Jurisprudência"
+      ],
+      "relevancia": "medium"
+    },
+    "enriched": true,
+    "performance": {
+      "duration": 8163,
+      "sourcesUsed": 1,
+      "successfulSources": 1
+    }
+  },
+  "metadata": {
+    "searchedAt": "2026-01-22T05:01:08.929Z",
+    "tese": "teste sistema"
+  }
+}

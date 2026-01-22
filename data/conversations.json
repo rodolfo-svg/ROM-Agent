@@ -451,5 +451,28 @@
     "createdAt": "2026-01-14T06:01:21.328Z",
     "updatedAt": "2026-01-14T06:01:26.545Z",
     "messageCount": 2
+  },
+  "conv_1769061988757_5773ya": {
+    "id": "conv_1769061988757_5773ya",
+    "userId": "anonymous",
+    "sessionId": "mag1Jb0jGSFcPs2qhwxsS_3idtfzWpKd",
+    "projectId": null,
+    "title": "Teste rápido",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste rápido",
+        "timestamp": "2026-01-22T06:06:28.759Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Olá! Estou operacional e pronto para auxiliar.\n\nComo posso ajudar hoje? Posso elaborar peças processuais, realizar pesquisas jurisprudenciais, consultar súmulas, analisar documentos ou qualquer outra tarefa jurídica que precisar.",
+        "timestamp": "2026-01-22T06:06:32.315Z"
+      }
+    ],
+    "createdAt": "2026-01-22T06:06:28.757Z",
+    "updatedAt": "2026-01-22T06:06:32.315Z",
+    "messageCount": 2
   }
 }
