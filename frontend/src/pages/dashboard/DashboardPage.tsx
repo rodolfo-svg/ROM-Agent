@@ -157,12 +157,25 @@ export function DashboardPage() {
   const activeConversation = conversations.find(c => c.id === activeConversationId)
 
   // Scroll to bottom on new messages
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  const scrollToBottom = (smooth = false) => {
+    if (!messagesEndRef.current) return
+
+    // Use requestAnimationFrame to batch reflows
+    requestAnimationFrame(() => {
+      messagesEndRef.current?.scrollIntoView({
+        behavior: smooth ? 'smooth' : 'auto',
+        block: 'end'
+      })
+    })
   }
 
+  // Debounced scroll during streaming to prevent forced reflows
   useEffect(() => {
-    scrollToBottom()
+    const timeoutId = setTimeout(() => {
+      scrollToBottom(false) // Auto scroll during streaming (no animation)
+    }, 100) // Debounce 100ms
+
+    return () => clearTimeout(timeoutId)
   }, [activeConversation?.messages])
 
   // Load conversations from API on mount
