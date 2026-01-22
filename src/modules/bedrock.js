@@ -524,6 +524,23 @@ export async function conversarStream(prompt, onChunk, options = {}) {
     enableTools = true  // ✅ NOVO: Habilitar ferramentas por padrão (jurisprudência, KB, CNJ)
   } = options;
 
+  console.log('🚀 [conversarStream] STARTED with:', {
+    promptLength: prompt?.length || 0,
+    hasSystemPrompt: !!systemPrompt,
+    systemPromptLength: systemPrompt?.length || 0,
+    modelo,
+    historicoLength: historico?.length || 0,
+    kbContextLength: kbContext?.length || 0,
+    enableTools,
+    maxTokens,
+    temperature,
+    hasOnChunkCallback: typeof onChunk === 'function'
+  });
+
+  if (!systemPrompt) {
+    console.warn('⚠️ [conversarStream] WARNING: systemPrompt is NULL! Model may not respond correctly.');
+  }
+
   const client = getBedrockRuntimeClient();
 
   // 🔥 TRUNCAR HISTÓRICO PARA EVITAR "Input is too long"
@@ -642,19 +659,30 @@ export async function conversarStream(prompt, onChunk, options = {}) {
       let currentToolUse = null;
       let eventCount = 0;
 
+      console.log(`🔄 [Stream Loop ${loopCount}] Starting to process Bedrock stream...`);
+
       // Processar stream de eventos
       for await (const event of response.stream) {
         eventCount++;
+
+        // ✅ DEBUG: Log TODOS os eventos recebidos do Bedrock
+        if (eventCount <= 3 || eventCount % 10 === 0) {
+          console.log(`📦 [Stream Loop ${loopCount}] Event #${eventCount}:`, Object.keys(event));
+        }
+
         // Texto sendo gerado
         if (event.contentBlockDelta?.delta?.text) {
           const chunk = event.contentBlockDelta.delta.text;
           textoCompleto += chunk;
 
+          console.log(`📝 [Stream Loop ${loopCount}] Text chunk received (${chunk.length} chars)`);
+
           // ✅ CORREÇÃO: Try/catch para prevenir stream quebrado
           try {
             onChunk(chunk);
+            console.log(`   ✅ onChunk() called successfully`);
           } catch (err) {
-            logger.error('[Bedrock Stream] onChunk falhou:', err.message);
+            console.error('[Bedrock Stream] onChunk falhou:', err.message);
             // Abortar stream se callback falhou (conexão SSE morreu)
             break;
           }
@@ -693,8 +721,24 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         }
       }
 
+      console.log(`🏁 [Stream Loop ${loopCount}] Stream processing completed:`, {
+        eventCount,
+        textoCompletoLength: textoCompleto.length,
+        stopReason,
+        toolUseDataCount: toolUseData.length
+      });
+
       // Se não foi tool_use, retornar resposta final
       if (stopReason !== 'tool_use' || toolUseData.length === 0) {
+        console.log(`✅ [Stream] Returning final response (no tool use). Length: ${textoCompleto.length}`);
+
+        if (textoCompleto.length === 0) {
+          console.error(`⚠️ [Stream] WARNING: textoCompleto is EMPTY! This should not happen.`);
+          console.error(`   stopReason: ${stopReason}`);
+          console.error(`   eventCount: ${eventCount}`);
+          console.error(`   toolUseData: ${toolUseData.length}`);
+        }
+
         return {
           sucesso: true,
           resposta: textoCompleto,

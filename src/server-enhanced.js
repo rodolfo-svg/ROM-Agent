@@ -2517,6 +2517,16 @@ app.post('/api/chat/stream', async (req, res) => {
       message: '🤖 Gerando resposta...'
     });
 
+    // ✅ NOVO: Log de diagnóstico para detectar problemas
+    logger.info('🔧 [Stream] Configuração do streaming', {
+      model,
+      hasSystemPrompt: !!systemPrompt,
+      willBuildSystemPrompt: !systemPrompt,
+      enableTools,
+      historyLength: limitedHistory.length,
+      messageFinalLength: finalMessage.length
+    });
+
     const { conversarStream } = await import('./modules/bedrock.js');
 
     let textoCompleto = '';
@@ -2528,20 +2538,35 @@ app.post('/api/chat/stream', async (req, res) => {
     await conversarStream(
       finalMessage,
       (chunk) => {
-        if (chunk && chunk.length > 0) {
-          textoCompleto += chunk;
-          chunkCount++;
+        // ✅ CORREÇÃO: Aceitar chunks de texto (string) e objetos especiais (artifacts)
+        if (chunk) {
+          // Se for um objeto com __artifact, é um artefato especial
+          if (typeof chunk === 'object' && chunk.__artifact) {
+            // Enviar artifact como evento SSE especial
+            const sent = sendSSE({
+              type: 'artifact',
+              artifact: chunk.__artifact
+            });
 
-          // Enviar chunk via SSE
-          const sent = sendSSE({
-            type: 'chunk',
-            content: chunk,
-            chunkIndex: chunkCount
-          });
+            if (!sent) {
+              throw new Error('Conexão SSE perdida');
+            }
+          } else if (typeof chunk === 'string' && chunk.length > 0) {
+            // Chunk de texto normal
+            textoCompleto += chunk;
+            chunkCount++;
 
-          // Se falhou enviar, a conexão morreu
-          if (!sent) {
-            throw new Error('Conexão SSE perdida');
+            // Enviar chunk via SSE
+            const sent = sendSSE({
+              type: 'chunk',
+              content: chunk,
+              chunkIndex: chunkCount
+            });
+
+            // Se falhou enviar, a conexão morreu
+            if (!sent) {
+              throw new Error('Conexão SSE perdida');
+            }
           }
         }
       },
@@ -2551,7 +2576,12 @@ app.post('/api/chat/stream', async (req, res) => {
           role: m.role,
           content: m.content
         })),
-        systemPrompt: systemPrompt,
+        // ✅ CRÍTICO: Se systemPrompt não vier do frontend, construir um com buildSystemPrompt
+        systemPrompt: systemPrompt || buildSystemPrompt({
+          userMessage: finalMessage,
+          userId: userId,
+          partnerId: req.user?.partnerId
+        }),
         maxTokens: maxTokens,
         temperature: temperature,
         enableTools: enableTools,
