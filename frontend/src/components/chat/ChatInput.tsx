@@ -40,8 +40,15 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
     return () => clearTimeout(timeoutId)
   }, [message])
 
+  // Use ref to store latest values without causing re-creation
+  const latestValues = useRef({ message, files, hasAttachments, onSend })
+  useEffect(() => {
+    latestValues.current = { message, files, hasAttachments, onSend }
+  }, [message, files, hasAttachments, onSend])
+
   const handleSubmit = useCallback(() => {
     // Allow submit if has message, local files, or external attachments
+    const { message, files, hasAttachments, onSend } = latestValues.current
     if (message.trim() || files.length > 0 || hasAttachments) {
       onSend(message.trim(), files.length > 0 ? files : undefined)
       setMessage('')
@@ -50,7 +57,7 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
         textareaRef.current.style.height = 'auto'
       }
     }
-  }, [message, files, hasAttachments, onSend])
+  }, []) // No dependencies! Stable reference
 
   // Handle attach button click - use external handler if provided
   const handleAttachClick = useCallback(() => {
@@ -62,11 +69,12 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
   }, [onAttachClick])
 
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
+    console.log('[PERF-V4-FIX] handleKeyDown STABLE - no recreation')
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       if (!isLoading) handleSubmit()
     }
-  }, [isLoading, handleSubmit])
+  }, [isLoading, handleSubmit]) // handleSubmit now stable!
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || [])
