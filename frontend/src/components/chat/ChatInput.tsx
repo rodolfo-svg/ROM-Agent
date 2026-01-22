@@ -20,9 +20,14 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
   const [showModelDropdown, setShowModelDropdown] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  
+
   const { selectedModel, setModel } = useChatStore()
   const currentModel = AI_MODELS.find(m => m.id === selectedModel) || AI_MODELS[0]
+
+  // V6 MARKER - Identifica versão inequivocamente
+  useEffect(() => {
+    console.log('%c🚀 ChatInput V6 MOUNTED - handleKeyDown ZERO deps', 'color: #00ff00; font-size: 16px; font-weight: bold; background: black; padding: 5px;')
+  }, [])
 
   // Auto-resize textarea with debounce to prevent reflows
   useEffect(() => {
@@ -67,8 +72,7 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
     }
   }, [onAttachClick])
 
-  // CRITICAL FIX: handleKeyDown must NOT depend on handleSubmit
-  // Call submit logic directly from ref
+  // V6 FIX: handleKeyDown with ZERO dependencies
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
@@ -83,7 +87,18 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
         }
       }
     }
-  }, []) // NO DEPENDENCIES = NEVER RECREATED! V5 FINAL
+  }, []) // ZERO DEPENDENCIES = NEVER RECREATED
+
+  // Track handleKeyDown recreation
+  const handleKeyDownCreationCountRef = useRef(0)
+  useEffect(() => {
+    handleKeyDownCreationCountRef.current += 1
+    if (handleKeyDownCreationCountRef.current === 1) {
+      console.log('%c✅ V6: handleKeyDown created (count: 1)', 'color: #00ff00; font-weight: bold;')
+    } else {
+      console.error(`%c🔴 V6 BUG: handleKeyDown RECREATED ${handleKeyDownCreationCountRef.current} times!`, 'color: red; font-size: 14px; font-weight: bold;')
+    }
+  }, [handleKeyDown])
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || [])
