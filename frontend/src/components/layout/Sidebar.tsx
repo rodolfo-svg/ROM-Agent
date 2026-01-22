@@ -60,6 +60,9 @@ export function Sidebar() {
   const { user, logout } = useAuthStore()
   const { sidebarCollapsed, toggleSidebarCollapse } = useUIStore()
 
+  // Check if user is admin (master_admin, partner_admin, or admin)
+  const isAdmin = user?.role === 'admin' || user?.role === 'master_admin' || user?.role === 'partner_admin'
+
   // Admin toggle handler
   const handleToggleAllConversations = async () => {
     const newValue = !showAllConversations
@@ -176,7 +179,7 @@ export function Sidebar() {
       <nav className="px-2 py-3 border-b border-stone-100">
         <div className="space-y-0.5">
           {navigationItems
-            .filter(item => !item.adminOnly || user?.role === 'admin')
+            .filter(item => !item.adminOnly || isAdmin)
             .map((item) => {
               const Icon = item.icon
               const isActive = location.pathname === item.path
@@ -212,7 +215,7 @@ export function Sidebar() {
         </Button>
 
         {/* Admin Toggle - Show All Conversations */}
-        {user?.role === 'admin' && (
+        {isAdmin && (
           <button
             onClick={handleToggleAllConversations}
             className={cn(
