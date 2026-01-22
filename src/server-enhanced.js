@@ -2540,14 +2540,43 @@ app.post('/api/chat/stream', async (req, res) => {
       (chunk) => {
         // ✅ CORREÇÃO: Aceitar chunks de texto (string) e objetos especiais (artifacts)
         if (chunk) {
-          // Se for um objeto com __artifact, é um artefato especial
-          if (typeof chunk === 'object' && chunk.__artifact) {
-            // Enviar artifact como evento SSE especial
+          // 🎨 NOVO: Artifact streaming progressivo
+          if (typeof chunk === 'object' && chunk.__artifact_start) {
+            // Início de artifact - abrir painel imediatamente
+            logger.info(`🎨 [Artifact Start] ${chunk.__artifact_start.title}`);
+            const sent = sendSSE({
+              type: 'artifact_start',
+              artifact: chunk.__artifact_start
+            });
+            if (!sent) {
+              throw new Error('Conexão SSE perdida');
+            }
+          } else if (typeof chunk === 'object' && chunk.__artifact_chunk) {
+            // Chunk de artifact - enviar progressivamente
+            const sent = sendSSE({
+              type: 'artifact_chunk',
+              id: chunk.__artifact_chunk.id,
+              content: chunk.__artifact_chunk.content
+            });
+            if (!sent) {
+              throw new Error('Conexão SSE perdida');
+            }
+          } else if (typeof chunk === 'object' && chunk.__artifact_complete) {
+            // Artifact completo - salvar no store
+            logger.info(`🎨 [Artifact Complete] ${chunk.__artifact_complete.title} (${chunk.__artifact_complete.content?.length} chars)`);
+            const sent = sendSSE({
+              type: 'artifact_complete',
+              artifact: chunk.__artifact_complete
+            });
+            if (!sent) {
+              throw new Error('Conexão SSE perdida');
+            }
+          } else if (typeof chunk === 'object' && chunk.__artifact) {
+            // Artifact legado (via create_artifact tool)
             const sent = sendSSE({
               type: 'artifact',
               artifact: chunk.__artifact
             });
-
             if (!sent) {
               throw new Error('Conexão SSE perdida');
             }

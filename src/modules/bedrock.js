@@ -513,6 +513,47 @@ export async function conversar(prompt, options = {}) {
  * @param {function} onChunk - Callback para cada chunk
  * @param {object} options - Opções de configuração
  */
+/**
+ * Detecta se o texto parece ser início de um documento estruturado
+ * @param {string} text - Texto acumulado até agora
+ * @returns {object|null} - { type, title } se for documento, null caso contrário
+ */
+function detectDocumentStart(text) {
+  const trimmed = text.trim();
+
+  // Padrões de documentos estruturados
+  const patterns = [
+    { regex: /^#\s+([A-ZÀ-Ú][^\n]+)/m, type: 'document', titleGroup: 1 },
+    { regex: /^EXCELENTÍSSIM[OA]\s+SENHOR/im, type: 'document', title: 'Petição' },
+    { regex: /^MEMORIAL\s+DE\s+/im, type: 'document', title: 'Memorial' },
+    { regex: /^CONTRATO\s+DE\s+/im, type: 'document', title: 'Contrato' },
+    { regex: /^PARECER\s+(JURÍDICO|TÉCNICO)?/im, type: 'document', title: 'Parecer' },
+    { regex: /^SENTENÇA/im, type: 'document', title: 'Sentença' },
+    { regex: /^ACÓRDÃO/im, type: 'document', title: 'Acórdão' },
+    { regex: /^RECURSO\s+/im, type: 'document', title: 'Recurso' },
+    { regex: /^AGRAVO\s+/im, type: 'document', title: 'Agravo' },
+    { regex: /^APELAÇÃO/im, type: 'document', title: 'Apelação' },
+  ];
+
+  for (const pattern of patterns) {
+    const match = trimmed.match(pattern.regex);
+    if (match) {
+      const title = pattern.titleGroup ? match[pattern.titleGroup].trim() : pattern.title;
+      return { type: pattern.type, title };
+    }
+  }
+
+  // Detectar Markdown headers grandes (# Título)
+  if (/^#\s+.{10,}/.test(trimmed)) {
+    const titleMatch = trimmed.match(/^#\s+(.+)/m);
+    if (titleMatch) {
+      return { type: 'document', title: titleMatch[1].trim() };
+    }
+  }
+
+  return null;
+}
+
 export async function conversarStream(prompt, onChunk, options = {}) {
   const {
     modelo = CONFIG.defaultModel,
@@ -659,6 +700,12 @@ export async function conversarStream(prompt, onChunk, options = {}) {
       let currentToolUse = null;
       let eventCount = 0;
 
+      // 🎨 Estado para streaming progressivo de artifacts
+      let isStreamingArtifact = false;
+      let artifactMetadata = null;
+      let artifactContent = '';
+      let artifactId = null;
+
       console.log(`🔄 [Stream Loop ${loopCount}] Starting to process Bedrock stream...`);
 
       // Processar stream de eventos
@@ -677,10 +724,54 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
           console.log(`📝 [Stream Loop ${loopCount}] Text chunk received (${chunk.length} chars)`);
 
-          // ✅ CORREÇÃO: Try/catch para prevenir stream quebrado
+          // 🎨 DETECÇÃO: Verificar se está iniciando um documento estruturado
+          if (!isStreamingArtifact && textoCompleto.length >= 50 && textoCompleto.length <= 500) {
+            const detection = detectDocumentStart(textoCompleto);
+            if (detection) {
+              console.log(`🎨 [Artifact Detection] Documento detectado: "${detection.title}" (${detection.type})`);
+
+              isStreamingArtifact = true;
+              artifactId = `artifact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+              artifactMetadata = {
+                id: artifactId,
+                title: detection.title,
+                type: detection.type,
+                language: 'markdown',
+                createdAt: new Date().toISOString()
+              };
+              artifactContent = textoCompleto; // Incluir o que já foi gerado
+
+              // Enviar evento de início de artifact
+              try {
+                onChunk({
+                  __artifact_start: artifactMetadata
+                });
+                console.log(`   📤 artifact_start enviado: ${detection.title}`);
+              } catch (err) {
+                console.error('[Artifact Start] Erro ao enviar:', err.message);
+              }
+            }
+          }
+
+          // ✅ ROTEAMENTO: Enviar chunk para artifact ou chat normal
           try {
-            onChunk(chunk);
-            console.log(`   ✅ onChunk() called successfully`);
+            if (isStreamingArtifact) {
+              // Acumular conteúdo do artifact
+              artifactContent += chunk;
+
+              // Enviar chunk para artifact
+              onChunk({
+                __artifact_chunk: {
+                  id: artifactId,
+                  content: chunk
+                }
+              });
+              console.log(`   📤 artifact_chunk enviado (${chunk.length} chars)`);
+            } else {
+              // Enviar para chat normal
+              onChunk(chunk);
+              console.log(`   ✅ onChunk() called successfully`);
+            }
           } catch (err) {
             console.error('[Bedrock Stream] onChunk falhou:', err.message);
             // Abortar stream se callback falhou (conexão SSE morreu)
@@ -725,8 +816,26 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         eventCount,
         textoCompletoLength: textoCompleto.length,
         stopReason,
-        toolUseDataCount: toolUseData.length
+        toolUseDataCount: toolUseData.length,
+        isStreamingArtifact,
+        artifactContentLength: artifactContent?.length || 0
       });
+
+      // 🎨 ARTIFACT: Se estava fazendo streaming de artifact, enviar evento final
+      if (isStreamingArtifact && artifactMetadata) {
+        console.log(`🎨 [Artifact Complete] Enviando artifact completo: ${artifactMetadata.title}`);
+        try {
+          onChunk({
+            __artifact_complete: {
+              ...artifactMetadata,
+              content: artifactContent
+            }
+          });
+          console.log(`   ✅ artifact_complete enviado (${artifactContent.length} chars)`);
+        } catch (err) {
+          console.error('[Artifact Complete] Erro ao enviar:', err.message);
+        }
+      }
 
       // Se não foi tool_use, retornar resposta final
       if (stopReason !== 'tool_use' || toolUseData.length === 0) {

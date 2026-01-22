@@ -179,15 +179,19 @@ export interface Artifact {
  */
 export interface StreamChunk {
   /** Tipo do chunk */
-  type: 'chunk' | 'artifact' | 'done' | 'error' | 'tool_executing'
+  type: 'chunk' | 'artifact' | 'artifact_start' | 'artifact_chunk' | 'artifact_complete' | 'done' | 'error' | 'tool_executing'
   /** Conteudo de texto (para type='chunk') */
   content?: string
-  /** Dados do artefato (para type='artifact') */
+  /** ID do artifact (para type='artifact_chunk') */
+  id?: string
+  /** Dados do artefato (para type='artifact' ou 'artifact_start' ou 'artifact_complete') */
   artifact?: {
+    id?: string
     title: string
     type: ArtifactType
     content: string
     language?: string
+    createdAt?: string
   }
   /** Mensagem de erro (para type='error') */
   error?: string

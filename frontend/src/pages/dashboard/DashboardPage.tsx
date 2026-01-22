@@ -306,8 +306,55 @@ export function DashboardPage() {
         if (chunk.type === 'chunk' && chunk.content) {
           fullContent += chunk.content
           updateMessage(assistantMsg.id, fullContent)
+        } else if (chunk.type === 'artifact_start' && chunk.artifact) {
+          // 🎨 NOVO: Início de streaming de artifact
+          console.log('🎨 [DashboardPage] Artifact streaming STARTED:', chunk.artifact.title)
+
+          // Criar artifact vazio
+          const artifact = addArtifact({
+            title: chunk.artifact.title,
+            type: chunk.artifact.type,
+            content: '', // Inicialmente vazio
+            language: chunk.artifact.language || 'markdown',
+            messageId: assistantMsg.id,
+          })
+
+          console.log('   ✅ Empty artifact created with ID:', artifact.id)
+
+          // Link artifact to message
+          useChatStore.getState().addArtifactToMessage(assistantMsg.id, artifact.id)
+
+          // Abrir painel imediatamente
+          console.log('   🔓 Opening panel...')
+          openPanel(artifact)
+          console.log('   ✅ Panel opened for streaming')
+
+        } else if (chunk.type === 'artifact_chunk' && chunk.id && chunk.content) {
+          // 🎨 NOVO: Chunk progressivo de artifact
+          const { artifacts } = useArtifactStore.getState()
+          const artifact = artifacts.find(a => a.id === chunk.id)
+
+          if (artifact) {
+            // Atualizar conteúdo progressivamente
+            updateArtifact(artifact.id, artifact.content + chunk.content)
+          }
+
+        } else if (chunk.type === 'artifact_complete' && chunk.artifact) {
+          // 🎨 NOVO: Artifact completo
+          console.log('🎨 [DashboardPage] Artifact COMPLETE:', chunk.artifact.title, `(${chunk.artifact.content?.length} chars)`)
+
+          const { artifacts } = useArtifactStore.getState()
+          const artifact = artifacts.find(a => a.messageId === assistantMsg.id)
+
+          if (artifact) {
+            // Atualizar com conteúdo final
+            updateArtifact(artifact.id, chunk.artifact.content)
+            console.log('   ✅ Artifact finalized')
+          }
+
         } else if (chunk.type === 'artifact' && chunk.artifact) {
-          console.log('🎨 [DashboardPage] Artifact chunk received:', {
+          // Artifact legado (via create_artifact tool)
+          console.log('🎨 [DashboardPage] Artifact (legacy) received:', {
             title: chunk.artifact.title,
             type: chunk.artifact.type,
             hasContent: !!chunk.artifact.content

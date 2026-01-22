@@ -368,7 +368,16 @@ export async function* chatStream(
             const parsed = JSON.parse(data)
             console.log('[V7-SSE] Parsed JSON:', parsed.type || parsed)
 
-            if (parsed.content) {
+            // 🎨 NOVO: Streaming progressivo de artifacts
+            if (parsed.type === 'artifact_start') {
+              console.log('%c[V7-SSE] 🎨 ARTIFACT START!', 'color: magenta; font-weight: bold;', parsed.artifact)
+              yield { type: 'artifact_start', artifact: parsed.artifact }
+            } else if (parsed.type === 'artifact_chunk') {
+              yield { type: 'artifact_chunk', id: parsed.id, content: parsed.content }
+            } else if (parsed.type === 'artifact_complete') {
+              console.log('%c[V7-SSE] 🎨 ARTIFACT COMPLETE!', 'color: green; font-weight: bold;', parsed.artifact)
+              yield { type: 'artifact_complete', artifact: parsed.artifact }
+            } else if (parsed.content) {
               yield { type: 'chunk', content: parsed.content }
             } else if (parsed.artifact) {
               console.log('%c[V7-SSE] 🎨 ARTIFACT RECEIVED!', 'color: magenta; font-weight: bold;', parsed.artifact)
