@@ -48,9 +48,17 @@ export const useArtifactStore = create<ArtifactState>()(
           updatedAt: new Date().toISOString(),
         }
 
+        console.log('📦 [ArtifactStore] addArtifact called:', {
+          title: newArtifact.title,
+          type: newArtifact.type,
+          id: newArtifact.id
+        })
+
         set(state => ({
           artifacts: [...state.artifacts, newArtifact],
         }))
+
+        console.log('   ✅ Artifact added to store. Total artifacts:', get().artifacts.length)
 
         return newArtifact
       },
@@ -81,9 +89,21 @@ export const useArtifactStore = create<ArtifactState>()(
       },
 
       openPanel: (artifact?: Artifact) => {
+        console.log('🔓 [ArtifactStore] openPanel called:', {
+          artifactId: artifact?.id,
+          currentActiveId: get().activeArtifactId,
+          currentIsPanelOpen: get().isPanelOpen,
+          totalArtifacts: get().artifacts.length
+        })
+
         set({
           activeArtifactId: artifact?.id || get().activeArtifactId,
           isPanelOpen: true,
+        })
+
+        console.log('   ✅ Panel state updated:', {
+          activeArtifactId: get().activeArtifactId,
+          isPanelOpen: get().isPanelOpen
         })
       },
 

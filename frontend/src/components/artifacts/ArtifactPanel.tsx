@@ -46,7 +46,23 @@ export function ArtifactPanel() {
     }
   }, [activeArtifact?.id])
 
-  if (!isPanelOpen || !activeArtifact) return null
+  // Debug: Log render state
+  useEffect(() => {
+    console.log('🎨 [ArtifactPanel] Render state:', {
+      isPanelOpen,
+      hasActiveArtifact: !!activeArtifact,
+      activeArtifactId,
+      totalArtifacts: artifacts.length,
+      willRender: isPanelOpen && !!activeArtifact
+    })
+  }, [isPanelOpen, activeArtifact, activeArtifactId, artifacts.length])
+
+  if (!isPanelOpen || !activeArtifact) {
+    console.log('❌ [ArtifactPanel] Not rendering. isPanelOpen:', isPanelOpen, 'activeArtifact:', !!activeArtifact)
+    return null
+  }
+
+  console.log('✅ [ArtifactPanel] Rendering panel for artifact:', activeArtifact.title)
 
   const getIcon = () => {
     const icons = {

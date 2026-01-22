@@ -327,6 +327,12 @@ export function ChatPage() {
           const toolMessage = (chunk as any).message || 'Processando...'
           updateMessage(assistantMsg.id, toolMessage)
         } else if (chunk.type === 'artifact' && chunk.artifact) {
+          console.log('🎨 [ChatPage] Artifact chunk received:', {
+            title: chunk.artifact.title,
+            type: chunk.artifact.type,
+            hasContent: !!chunk.artifact.content
+          })
+
           // Create artifact
           const artifact = addArtifact({
             title: chunk.artifact.title,
@@ -336,11 +342,17 @@ export function ChatPage() {
             messageId: assistantMsg.id,
           })
 
+          console.log('   ✅ Artifact created with ID:', artifact.id)
+
           // Link artifact to message
           useChatStore.getState().addArtifactToMessage(assistantMsg.id, artifact.id)
 
+          console.log('   ✅ Artifact linked to message:', assistantMsg.id)
+
           // Open artifact panel
+          console.log('   🔓 Calling openPanel...')
           openPanel(artifact)
+          console.log('   ✅ openPanel called')
         } else if (chunk.type === 'error') {
           fullContent = `❌ ${chunk.error}`
           updateMessage(assistantMsg.id, fullContent)
