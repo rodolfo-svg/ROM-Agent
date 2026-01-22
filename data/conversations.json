@@ -452,27 +452,27 @@
     "updatedAt": "2026-01-14T06:01:26.545Z",
     "messageCount": 2
   },
-  "conv_1769061988757_5773ya": {
-    "id": "conv_1769061988757_5773ya",
+  "conv_1769069254085_ixeu9e": {
+    "id": "conv_1769069254085_ixeu9e",
     "userId": "anonymous",
-    "sessionId": "mag1Jb0jGSFcPs2qhwxsS_3idtfzWpKd",
-    "projectId": null,
-    "title": "Teste rápido",
+    "sessionId": "5hyRdoPFv-NdrOZ1sH-TCP_vktP1oOyf",
+    "projectId": "rom-agent",
+    "title": "Teste de conexão",
     "titleGenerated": true,
     "messages": [
       {
         "role": "user",
-        "content": "Teste rápido",
-        "timestamp": "2026-01-22T06:06:28.759Z"
+        "content": "Teste de conexão",
+        "timestamp": "2026-01-22T08:07:34.087Z"
       },
       {
         "role": "assistant",
-        "content": "Olá! Estou operacional e pronto para auxiliar.\n\nComo posso ajudar hoje? Posso elaborar peças processuais, realizar pesquisas jurisprudenciais, consultar súmulas, analisar documentos ou qualquer outra tarefa jurídica que precisar.",
-        "timestamp": "2026-01-22T06:06:32.315Z"
+        "content": "Conexão estabelecida com sucesso.\n\nSistema ROM Agent v3.0 operacional e pronto para atender.\n\nTodos os módulos funcionando:\n- Pesquisa de jurisprudência (STF, STJ, TST, TSE)\n- Consulta CNJ DataJud\n- Pesquisa de súmulas e teses\n- Consulta à base de conhecimento\n- Pesquisa doutrinária\n\nAguardando instruções para elaboração de peças processuais, pareceres, consultas jurídicas ou pesquisas jurisprudenciais.\n\nComo posso auxiliar?",
+        "timestamp": "2026-01-22T08:07:38.921Z"
       }
     ],
-    "createdAt": "2026-01-22T06:06:28.757Z",
-    "updatedAt": "2026-01-22T06:06:32.315Z",
+    "createdAt": "2026-01-22T08:07:34.085Z",
+    "updatedAt": "2026-01-22T08:07:38.921Z",
     "messageCount": 2
   }
 }

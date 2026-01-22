@@ -78,7 +78,7 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
     setFiles(prev => prev.filter((_, i) => i !== index))
   }, [])
 
-  // Optimize onChange handler to prevent recreation
+  // Optimize onChange handler to prevent recreation (v2.0 - force rebuild)
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMessage(e.target.value)
   }, [])
