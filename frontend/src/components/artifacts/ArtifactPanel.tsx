@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
-import { 
-  X, 
-  Copy, 
-  Download, 
-  Edit3, 
-  Save, 
+import {
+  X,
+  Copy,
+  Download,
+  Edit3,
+  Save,
   FileText,
   Code,
+  FileCode,
   Table,
   BarChart3,
   Check,
@@ -83,25 +84,143 @@ export function ArtifactPanel() {
 
   const handleDownloadDocx = async () => {
     try {
-      const doc = new Document({
-        sections: [{
-          properties: {},
-          children: activeArtifact.content.split('\n').map(line => 
-            new Paragraph({
-              children: [new TextRun({ text: line, size: 24 })],
-              spacing: { after: 200 },
-            })
-          ),
-        }],
+      const response = await fetch('/api/export/docx', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: activeArtifact.content,
+          title: activeArtifact.title,
+          type: 'artifact',
+          metadata: {
+            type: activeArtifact.type,
+            language: activeArtifact.language,
+            createdAt: activeArtifact.createdAt,
+            author: 'ROM Agent'
+          },
+          template: 'oab' // Formatação OAB/ABNT
+        })
       })
 
-      const blob = await Packer.toBlob(doc)
+      if (!response.ok) throw new Error('Erro ao gerar DOCX')
+
+      const blob = await response.blob()
       saveAs(blob, `${activeArtifact.title}.docx`)
       setShowDownloadMenu(false)
     } catch (err) {
       console.error('Error creating DOCX:', err)
-      // Fallback to TXT
-      handleDownloadTxt()
+
+      // Fallback para geração cliente
+      try {
+        const doc = new Document({
+          sections: [{
+            properties: {},
+            children: activeArtifact.content.split('\n').map(line =>
+              new Paragraph({
+                children: [new TextRun({ text: line, size: 24 })],
+                spacing: { after: 200 },
+              })
+            ),
+          }],
+        })
+
+        const blob = await Packer.toBlob(doc)
+        saveAs(blob, `${activeArtifact.title}.docx`)
+        setShowDownloadMenu(false)
+      } catch (fallbackErr) {
+        console.error('Fallback DOCX also failed:', fallbackErr)
+        handleDownloadTxt()
+      }
+    }
+  }
+
+  const handleDownloadPDF = async () => {
+    try {
+      const response = await fetch('/api/export/pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: activeArtifact.content,
+          title: activeArtifact.title,
+          type: 'artifact',
+          metadata: {
+            type: activeArtifact.type,
+            language: activeArtifact.language,
+            createdAt: activeArtifact.createdAt,
+            author: 'ROM Agent'
+          },
+          template: 'oab'
+        })
+      })
+
+      if (!response.ok) throw new Error('Erro ao gerar PDF')
+
+      const blob = await response.blob()
+      saveAs(blob, `${activeArtifact.title}.pdf`)
+      setShowDownloadMenu(false)
+    } catch (err) {
+      console.error('Error creating PDF:', err)
+      alert('Erro ao gerar PDF. Tente outro formato.')
+    }
+  }
+
+  const handleDownloadHTML = async () => {
+    try {
+      const response = await fetch('/api/export/html', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: activeArtifact.content,
+          title: activeArtifact.title,
+          type: 'artifact',
+          metadata: {
+            type: activeArtifact.type,
+            language: activeArtifact.language,
+            createdAt: activeArtifact.createdAt,
+            author: 'ROM Agent'
+          },
+          template: 'oab'
+        })
+      })
+
+      if (!response.ok) throw new Error('Erro ao gerar HTML')
+
+      const html = await response.text()
+      const blob = new Blob([html], { type: 'text/html' })
+      saveAs(blob, `${activeArtifact.title}.html`)
+      setShowDownloadMenu(false)
+    } catch (err) {
+      console.error('Error creating HTML:', err)
+      alert('Erro ao gerar HTML. Tente outro formato.')
+    }
+  }
+
+  const handleDownloadMarkdown = async () => {
+    try {
+      const response = await fetch('/api/export/markdown', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          content: activeArtifact.content,
+          title: activeArtifact.title,
+          type: 'artifact',
+          metadata: {
+            type: activeArtifact.type,
+            language: activeArtifact.language,
+            createdAt: activeArtifact.createdAt,
+            author: 'ROM Agent'
+          }
+        })
+      })
+
+      if (!response.ok) throw new Error('Erro ao gerar Markdown')
+
+      const markdown = await response.text()
+      const blob = new Blob([markdown], { type: 'text/markdown' })
+      saveAs(blob, `${activeArtifact.title}.md`)
+      setShowDownloadMenu(false)
+    } catch (err) {
+      console.error('Error creating Markdown:', err)
+      alert('Erro ao gerar Markdown. Tente outro formato.')
     }
   }
 
@@ -185,23 +304,51 @@ export function ArtifactPanel() {
 
               {showDownloadMenu && (
                 <>
-                  <div 
-                    className="fixed inset-0 z-10" 
-                    onClick={() => setShowDownloadMenu(false)} 
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setShowDownloadMenu(false)}
                   />
-                  <div className="absolute right-0 mt-1 w-40 bg-white rounded-lg border border-stone-200 shadow-lg z-20 py-1">
-                    <button
-                      onClick={handleDownloadTxt}
-                      className="w-full px-4 py-2 text-left text-sm text-stone-700 hover:bg-stone-50"
-                    >
-                      Texto (.txt)
-                    </button>
+                  <div className="absolute right-0 mt-1 w-56 bg-white rounded-lg border border-stone-200 shadow-lg z-20 py-1">
                     <button
                       onClick={handleDownloadDocx}
-                      className="w-full px-4 py-2 text-left text-sm text-stone-700 hover:bg-stone-50"
+                      className="w-full px-4 py-2 text-left text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
                     >
+                      <FileText className="w-4 h-4" />
                       Word (.docx)
                     </button>
+                    <button
+                      onClick={handleDownloadPDF}
+                      className="w-full px-4 py-2 text-left text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
+                    >
+                      <FileText className="w-4 h-4" />
+                      PDF (.pdf)
+                    </button>
+                    <button
+                      onClick={handleDownloadHTML}
+                      className="w-full px-4 py-2 text-left text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
+                    >
+                      <Code className="w-4 h-4" />
+                      HTML (.html)
+                    </button>
+                    <button
+                      onClick={handleDownloadMarkdown}
+                      className="w-full px-4 py-2 text-left text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
+                    >
+                      <FileCode className="w-4 h-4" />
+                      Markdown (.md)
+                    </button>
+                    <div className="border-t border-stone-200 my-1" />
+                    <button
+                      onClick={handleDownloadTxt}
+                      className="w-full px-4 py-2 text-left text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
+                    >
+                      <FileText className="w-4 h-4" />
+                      Texto (.txt)
+                    </button>
+                    <div className="border-t border-stone-200 my-1" />
+                    <div className="px-4 py-2 text-xs text-stone-500">
+                      Formatação: ABNT/OAB
+                    </div>
                   </div>
                 </>
               )}

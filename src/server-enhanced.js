@@ -57,6 +57,7 @@ import caseProcessorRouter from './routes/case-processor.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
 import chatStreamRoutes from './routes/chat-stream.js';
 import diagnosticBedrockRoutes from './routes/diagnostic-bedrock.js';
+import exportRoutes from './routes/export.js';
 import certidoesDJEService from './services/certidoes-dje-service.js';
 import multiAgentPipelineService from './services/multi-agent-pipeline-service.js';
 // Import bedrock-helper to initialize Prometheus counters (bedrock_requests_total, bedrock_errors_total)
@@ -477,7 +478,12 @@ app.use('/api', csrfProtection.protection({
     // FEEDBACK & MISC
     // ═══════════════════════════════════════════════════════════════
     '/feedback',                // ✅ ADICIONADO: Feedback de usuários
-    '/deploy/execute'           // ✅ ADICIONADO: Execução de deploy
+    '/deploy/execute',          // ✅ ADICIONADO: Execução de deploy
+
+    // ═══════════════════════════════════════════════════════════════
+    // EXPORT SERVICES
+    // ═══════════════════════════════════════════════════════════════
+    '/export*'                  // ✅ ADICIONADO: Exportação de documentos (wildcard)
   ]
 }));
 console.log('🔐 [SECURITY] CSRF validation aplicada em rotas de mutação');
@@ -517,6 +523,9 @@ app.use('/api/case-processor', caseProcessorSSE);
 
 // Rota de Diagnóstico Bedrock (para debug)
 app.use('/api/diagnostic/bedrock', diagnosticBedrockRoutes);
+
+// Rotas de Exportação (DOCX, PDF, HTML, Markdown, TXT)
+app.use('/api/export', exportRoutes);
 
 // ====================================================================
 // 📄 API DE CERTIDÕES DJe/DJEN (CNJ)
