@@ -319,6 +319,9 @@ export function ChatPage() {
         signal: abortControllerRef.current.signal,
         attachedFiles: attachedFilesForApi, // ✅ ATIVADO: Backend processa arquivos anexados
       })) {
+        // V6 DEBUG: Log EVERY chunk to diagnose artifact issue
+        console.log('📦 [V6-CHUNK]', chunk.type, chunk)
+
         if (chunk.type === 'chunk' && chunk.content) {
           fullContent += chunk.content
           updateMessage(assistantMsg.id, fullContent)

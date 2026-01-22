@@ -72,19 +72,38 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
     }
   }, [onAttachClick])
 
-  // V6 FIX: handleKeyDown with ZERO dependencies
+  // V6 FIX: handleKeyDown with ZERO dependencies + performance tracking
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
+    const t0 = performance.now()
+
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
+
+      const t1 = performance.now()
       // Get values directly from ref - no function dependency!
       const { message, files, hasAttachments, onSend, isLoading } = latestValuesRef.current
+
+      const t2 = performance.now()
       if (!isLoading && (message.trim() || files.length > 0 || hasAttachments)) {
+        const t3 = performance.now()
         onSend(message.trim(), files.length > 0 ? files : undefined)
+        const t4 = performance.now()
+
         setMessage('')
         setFiles([])
         if (textareaRef.current) {
           textareaRef.current.style.height = 'auto'
         }
+
+        const t5 = performance.now()
+
+        console.log('%c⏱️ V6 handleKeyDown timing breakdown:', 'color: cyan; font-weight: bold;')
+        console.log(`  preventDefault: ${(t1-t0).toFixed(2)}ms`)
+        console.log(`  Read from ref: ${(t2-t1).toFixed(2)}ms`)
+        console.log(`  Validation: ${(t3-t2).toFixed(2)}ms`)
+        console.log(`  onSend(): ${(t4-t3).toFixed(2)}ms ← CRITICAL`)
+        console.log(`  State updates: ${(t5-t4).toFixed(2)}ms`)
+        console.log(`  TOTAL: ${(t5-t0).toFixed(2)}ms`)
       }
     }
   }, []) // ZERO DEPENDENCIES = NEVER RECREATED
