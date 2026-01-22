@@ -78,12 +78,10 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
     setFiles(prev => prev.filter((_, i) => i !== index))
   }, [])
 
-  // Optimize onChange handler to prevent recreation (v2.0 - force rebuild)
+  // ⚡ PERFORMANCE OPTIMIZATION v3.0 - Memoized onChange handler
   const handleChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    // DEBUG: Marker for version verification
-    if (window.location.search.includes('debug=perf')) {
-      console.log('[PERF-V2] handleChange optimized with useCallback')
-    }
+    // DEBUG: Always log to verify deployment
+    console.log('[PERF-V3-DEPLOYED] handleChange with useCallback active')
     setMessage(e.target.value)
   }, [])
 

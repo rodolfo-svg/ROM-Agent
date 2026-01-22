@@ -410,14 +410,11 @@ export const useChatStore = create<ChatState>()(
           ),
         }))
 
-        // ⚡ OTIMIZAÇÃO: Só salvar no backend quando streaming terminar (isStreaming false)
-        // Durante streaming, evitar centenas de chamadas API desnecessárias
+        // ⚡ PERFORMANCE OPTIMIZATION v3.0 - Smart debounce during streaming
         const isCurrentlyStreaming = get().isStreaming
 
-        // DEBUG: Marker for version verification
-        if (window.location.search.includes('debug=perf')) {
-          console.log('[PERF-V2] updateMessage debounce active, isStreaming:', isCurrentlyStreaming)
-        }
+        // DEBUG: Always log to verify deployment
+        console.log('[PERF-V3-DEPLOYED] updateMessage debounce, streaming:', isCurrentlyStreaming)
 
         if (!isCurrentlyStreaming) {
           const message = get().activeConversation?.messages.find(m => m.id === id)
