@@ -2517,6 +2517,14 @@ app.post('/api/chat/stream', async (req, res) => {
       message: '🤖 Gerando resposta...'
     });
 
+    const { conversarStream } = await import('./modules/bedrock.js');
+
+    let textoCompleto = '';
+    let chunkCount = 0;
+
+    // Limitar histórico para evitar excesso de tokens
+    const limitedHistory = history.slice(-30); // Últimas 30 mensagens (15 pares)
+
     // ✅ NOVO: Log de diagnóstico para detectar problemas
     logger.info('🔧 [Stream] Configuração do streaming', {
       model,
@@ -2526,14 +2534,6 @@ app.post('/api/chat/stream', async (req, res) => {
       historyLength: limitedHistory.length,
       messageFinalLength: finalMessage.length
     });
-
-    const { conversarStream } = await import('./modules/bedrock.js');
-
-    let textoCompleto = '';
-    let chunkCount = 0;
-
-    // Limitar histórico para evitar excesso de tokens
-    const limitedHistory = history.slice(-30); // Últimas 30 mensagens (15 pares)
 
     await conversarStream(
       finalMessage,
