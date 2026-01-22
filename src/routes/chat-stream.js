@@ -222,6 +222,22 @@ router.post('/stream', async (req, res) => {
 
     // Callback para cada chunk
     const onChunk = (chunk) => {
+      // 🎨 ESPECIAL: Detectar artifact object
+      if (typeof chunk === 'object' && chunk.__artifact) {
+        logger.info(`[${requestId}] Artifact detected:`, chunk.__artifact.title);
+
+        // Enviar artifact como evento SSE especial
+        safeWrite(`data: ${JSON.stringify({
+          type: 'artifact',
+          artifact: chunk.__artifact
+        })}\n\n`).catch(err => {
+          logger.error(`[${requestId}] Artifact write failed:`, err.message);
+        });
+
+        return; // Não processar como chunk normal
+      }
+
+      // Chunk normal (string)
       if (!firstTokenTime) {
         firstTokenTime = Date.now();
         const ttft = firstTokenTime - startTime; // Time To First Token
@@ -250,7 +266,7 @@ router.post('/stream', async (req, res) => {
       safeWrite(`data: ${JSON.stringify({
         type: 'chunk',
         content: chunk,
-        chunkNumber: chunkCount
+        chunkIndex: chunkCount
       })}\n\n`).catch(err => {
         logger.error(`[${requestId}] Chunk write failed:`, err.message);
       });

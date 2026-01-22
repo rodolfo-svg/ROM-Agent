@@ -204,6 +204,39 @@ export const BEDROCK_TOOLS = [
         }
       }
     }
+  },
+  {
+    toolSpec: {
+      name: 'create_artifact',
+      description: 'Cria um artifact (documento estruturado) que aparece em painel lateral para download. Use SEMPRE que o usuário pedir para "gerar documento", "exportar para Word", "criar peça", "fazer arquivo", etc. O artifact permite download em DOCX, PDF, HTML e Markdown.',
+      inputSchema: {
+        json: {
+          type: 'object',
+          properties: {
+            title: {
+              type: 'string',
+              description: 'Título do documento (ex: "Petição Inicial", "Análise do Caso", "Resumo da Audiência")'
+            },
+            content: {
+              type: 'string',
+              description: 'Conteúdo COMPLETO do documento em formato Markdown. Inclua TODO o texto que deve aparecer no arquivo final.'
+            },
+            type: {
+              type: 'string',
+              description: 'Tipo do artifact',
+              enum: ['document', 'code', 'table', 'chart'],
+              default: 'document'
+            },
+            language: {
+              type: 'string',
+              description: 'Linguagem (para type=code)',
+              default: 'markdown'
+            }
+          },
+          required: ['title', 'content']
+        }
+      }
+    }
   }
 ];
 
@@ -701,6 +734,25 @@ export async function executeTool(toolName, toolInput) {
             content: `Erro ao buscar doutrina: ${error.message}`
           };
         }
+      }
+
+      case 'create_artifact': {
+        const { title, content, type = 'document', language = 'markdown' } = toolInput;
+
+        console.log(`📄 [Artifact] Criando: "${title}" (${type})`);
+
+        // Retorna objeto artifact que será enviado ao frontend
+        return {
+          success: true,
+          artifact: {
+            title,
+            content,
+            type,
+            language,
+            createdAt: new Date().toISOString()
+          },
+          message: `✅ Artifact "${title}" criado com sucesso. O documento aparecerá no painel lateral para download em DOCX, PDF, HTML e Markdown.`
+        };
       }
 
       default:

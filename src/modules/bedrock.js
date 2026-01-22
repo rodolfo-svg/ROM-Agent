@@ -750,6 +750,19 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         try {
           const result = await executeTool(tool.name, tool.input);
 
+          // 🎨 ESPECIAL: Se for create_artifact, enviar evento especial para o frontend
+          if (tool.name === 'create_artifact' && result.success && result.artifact) {
+            console.log(`📄 [Stream] Artifact detectado: "${result.artifact.title}"`);
+
+            // Enviar artifact como objeto especial (não string)
+            // O chat-stream.js vai detectar e enviar como evento SSE tipo "artifact"
+            try {
+              onChunk({ __artifact: result.artifact });
+            } catch (err) {
+              console.error('[Bedrock Stream] Erro ao enviar artifact:', err.message);
+            }
+          }
+
           // ⚡ FEEDBACK: Informar resultado da ferramenta
           const successMsg = result.success ? ' ✓\n' : ' ✗\n';
           onChunk(successMsg);
