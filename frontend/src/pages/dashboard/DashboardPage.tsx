@@ -126,7 +126,7 @@ export function DashboardPage() {
     selectedModel,
   } = useChatStore()
 
-  const { artifacts, addArtifact } = useArtifactStore()
+  const { artifacts, addArtifact, openPanel } = useArtifactStore()
 
   // File upload hook - uses simple endpoint for dashboard chat
   const {
