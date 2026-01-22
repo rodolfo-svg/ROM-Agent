@@ -81,8 +81,8 @@ import {
   PromptBuilder,
   buildSystemPrompt as buildOptimizedSystemPrompt,
   shouldIncludeTools,
-  shouldIncludeABNT,
-  detectDocumentType
+  shouldIncludeABNT
+  // detectDocumentType removido - usando versão de prompt-selector.js (linha 111)
 } from './lib/prompt-builder.js';
 
 // ═══════════════════════════════════════════════════════════════════════
