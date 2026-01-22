@@ -83,7 +83,7 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
         }
       }
     }
-  }, []) // NO DEPENDENCIES = NEVER RECREATED!
+  }, []) // NO DEPENDENCIES = NEVER RECREATED! V5 FINAL
 
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(e.target.files || [])
