@@ -59,18 +59,19 @@ router.get('/:type/:id', async (req, res) => {
     const partnerId = req.user?.partnerId || 'global';
 
     // Obter prompt usando PromptsManager (apenas ID, sem prefixo)
-    const content = PromptsManager.obterPrompt(id, partnerId);
+    const promptData = PromptsManager.obterPrompt(id, partnerId);
 
-    if (!content) {
+    if (!promptData) {
       return res.status(404).json({
         success: false,
         error: 'Prompt não encontrado'
       });
     }
 
+    // Retornar apenas o conteúdo de texto (string), não o objeto completo
     res.json({
       success: true,
-      content
+      content: promptData.content
     });
   } catch (error) {
     console.error('Erro ao obter system prompt:', error);
