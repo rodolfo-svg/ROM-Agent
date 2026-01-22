@@ -16,7 +16,7 @@ interface Prompt {
 
 export function PromptsPage() {
   const { user } = useAuthStore()
-  const isAdmin = user?.role === 'admin'
+  const isAdmin = user?.role === 'admin' || user?.role === 'master_admin' || user?.role === 'partner_admin'
 
   const [prompts, setPrompts] = useState<Prompt[]>([])
   const [loading, setLoading] = useState(true)

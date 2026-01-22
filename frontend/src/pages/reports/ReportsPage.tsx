@@ -49,7 +49,7 @@ interface Billing {
 export function ReportsPage() {
   const { user } = useAuthStore()
   const navigate = useNavigate()
-  const isAdmin = user?.role === 'admin'
+  const isAdmin = user?.role === 'admin' || user?.role === 'master_admin' || user?.role === 'partner_admin'
 
   // Redirect if not admin
   useEffect(() => {
