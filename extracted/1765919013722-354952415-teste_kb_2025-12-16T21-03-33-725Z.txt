@@ -1,2 +1,0 @@
-Teste de upload para KB
-Este é um arquivo de teste simples para validar a cópia para o KB.

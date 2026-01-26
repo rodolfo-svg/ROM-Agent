@@ -48,3 +48,6 @@ test-*.json
 __pycache__/
 *.pyc
 *.pyo
+
+# Archived old files
+archive/
