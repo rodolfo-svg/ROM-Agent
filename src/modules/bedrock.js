@@ -521,18 +521,38 @@ export async function conversar(prompt, options = {}) {
 function detectDocumentStart(text) {
   const trimmed = text.trim();
 
-  // Padrões de documentos estruturados
+  // ⚡ DETECÇÃO INSTANTÂNEA: Detectar "# " no início (Markdown heading)
+  // Isso permite abrir o painel IMEDIATAMENTE quando começar a escrever
+  if (trimmed.startsWith('#')) {
+    // Se tiver pelo menos "# X" (3 chars), já detecta
+    if (trimmed.length >= 3) {
+      const titleMatch = trimmed.match(/^#\s+(.+)/m);
+      if (titleMatch) {
+        const title = titleMatch[1].trim();
+        // Se título tem pelo menos 5 caracteres, é válido
+        if (title.length >= 5) {
+          return { type: 'document', title };
+        }
+        // Senão, usar título parcial com "..."
+        return { type: 'document', title: title + '...' };
+      }
+    }
+  }
+
+  // Padrões de documentos estruturados (detectam mais cedo agora)
   const patterns = [
-    { regex: /^#\s+([A-ZÀ-Ú][^\n]+)/m, type: 'document', titleGroup: 1 },
-    { regex: /^EXCELENTÍSSIM[OA]\s+SENHOR/im, type: 'document', title: 'Petição' },
-    { regex: /^MEMORIAL\s+DE\s+/im, type: 'document', title: 'Memorial' },
-    { regex: /^CONTRATO\s+DE\s+/im, type: 'document', title: 'Contrato' },
-    { regex: /^PARECER\s+(JURÍDICO|TÉCNICO)?/im, type: 'document', title: 'Parecer' },
-    { regex: /^SENTENÇA/im, type: 'document', title: 'Sentença' },
-    { regex: /^ACÓRDÃO/im, type: 'document', title: 'Acórdão' },
-    { regex: /^RECURSO\s+/im, type: 'document', title: 'Recurso' },
-    { regex: /^AGRAVO\s+/im, type: 'document', title: 'Agravo' },
-    { regex: /^APELAÇÃO/im, type: 'document', title: 'Apelação' },
+    { regex: /^#\s+([A-ZÀ-Ú][^\n]*)/m, type: 'document', titleGroup: 1 }, // Sem exigir +, aceita qualquer tamanho
+    { regex: /^EXCELENTÍSSIM[OA]/i, type: 'document', title: 'Petição' }, // Detecta logo que vê EXCELENTÍSSIMO
+    { regex: /^MEMORIAL/i, type: 'document', title: 'Memorial' }, // Detecta logo "MEMORIAL"
+    { regex: /^CONTRATO/i, type: 'document', title: 'Contrato' },
+    { regex: /^PARECER/i, type: 'document', title: 'Parecer' },
+    { regex: /^SENTENÇA/i, type: 'document', title: 'Sentença' },
+    { regex: /^ACÓRDÃO/i, type: 'document', title: 'Acórdão' },
+    { regex: /^RECURSO/i, type: 'document', title: 'Recurso' },
+    { regex: /^AGRAVO/i, type: 'document', title: 'Agravo' },
+    { regex: /^APELAÇÃO/i, type: 'document', title: 'Apelação' },
+    { regex: /^ANÁLISE/i, type: 'document', title: 'Análise' }, // NOVO: Detectar análises
+    { regex: /^RELATÓRIO/i, type: 'document', title: 'Relatório' }, // NOVO: Detectar relatórios
   ];
 
   for (const pattern of patterns) {
@@ -540,14 +560,6 @@ function detectDocumentStart(text) {
     if (match) {
       const title = pattern.titleGroup ? match[pattern.titleGroup].trim() : pattern.title;
       return { type: pattern.type, title };
-    }
-  }
-
-  // Detectar Markdown headers grandes (# Título)
-  if (/^#\s+.{10,}/.test(trimmed)) {
-    const titleMatch = trimmed.match(/^#\s+(.+)/m);
-    if (titleMatch) {
-      return { type: 'document', title: titleMatch[1].trim() };
     }
   }
 
@@ -724,11 +736,13 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
           console.log(`📝 [Stream Loop ${loopCount}] Text chunk received (${chunk.length} chars)`);
 
-          // 🎨 DETECÇÃO: Verificar se está iniciando um documento estruturado
-          if (!isStreamingArtifact && textoCompleto.length >= 50 && textoCompleto.length <= 500) {
+          // 🎨 DETECÇÃO INSTANTÂNEA: Verificar se está iniciando um documento estruturado
+          // ✅ OTIMIZAÇÃO: Detectar a partir de 5 chars (ex: "# REL") para abrir painel imediatamente
+          // Janela de detecção: 5-800 chars (aumentada para capturar títulos longos)
+          if (!isStreamingArtifact && textoCompleto.length >= 5 && textoCompleto.length <= 800) {
             const detection = detectDocumentStart(textoCompleto);
             if (detection) {
-              console.log(`🎨 [Artifact Detection] Documento detectado: "${detection.title}" (${detection.type})`);
+              console.log(`🎨 [Artifact Detection] Documento detectado IMEDIATAMENTE: "${detection.title}" (${detection.type}) em ${textoCompleto.length} chars`);
 
               isStreamingArtifact = true;
               artifactId = `artifact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -741,12 +755,12 @@ export async function conversarStream(prompt, onChunk, options = {}) {
               };
               artifactContent = textoCompleto; // Incluir o que já foi gerado
 
-              // Enviar evento de início de artifact
+              // Enviar evento de início de artifact IMEDIATAMENTE
               try {
                 onChunk({
                   __artifact_start: artifactMetadata
                 });
-                console.log(`   📤 artifact_start enviado: ${detection.title}`);
+                console.log(`   📤 artifact_start enviado INSTANTANEAMENTE: ${detection.title}`);
               } catch (err) {
                 console.error('[Artifact Start] Erro ao enviar:', err.message);
               }
