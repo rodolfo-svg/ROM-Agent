@@ -1202,6 +1202,14 @@ function buildContextualSystemPrompt(options = {}) {
   return buildLegacySystemPrompt();
 }
 
+// ============================================================
+// CACHE DO SYSTEM PROMPT
+// ============================================================
+
+let cachedLegacyPrompt = null;
+let cacheTimestamp = 0;
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutos
+
 /**
  * Constroi system prompt na versao legacy (original)
  * Mantido para backward compatibility e rollback
@@ -1210,6 +1218,12 @@ function buildContextualSystemPrompt(options = {}) {
  * @returns {string} System prompt
  */
 function buildLegacySystemPrompt(forceReload = false) {
+  // Check cache first (unless forced reload)
+  if (!forceReload && cachedLegacyPrompt && (Date.now() - cacheTimestamp < CACHE_TTL)) {
+    console.log(`[buildSystemPrompt] Usando cache (${((Date.now() - cacheTimestamp) / 1000).toFixed(1)}s de idade)`);
+    return cachedLegacyPrompt;
+  }
+
   const customInstructions = loadCustomInstructions();
 
   if (!customInstructions) {
@@ -1219,7 +1233,7 @@ function buildLegacySystemPrompt(forceReload = false) {
     return fallbackPrompt;
   }
 
-  console.log(`[buildSystemPrompt] Usando custom-instructions.json`);
+  console.log(`[buildSystemPrompt] Construindo novo prompt (cache miss ou expirado)`);
 
   // Construir prompt detalhado
   let prompt = `# ${customInstructions.role}\n\n`;
@@ -1394,7 +1408,12 @@ function buildLegacySystemPrompt(forceReload = false) {
   prompt += `- Responder em menos de 500 palavras para perguntas juridicas complexas\n\n`;
   prompt += `**FORMATO ESPERADO:** Paragrafos bem desenvolvidos com fundamentacao completa, citacoes legais com explicacao, argumentacao juridica solida.\n\n`;
 
-  console.log(`[buildSystemPrompt] Prompt construido (legacy): ${prompt.length} caracteres`);
+  console.log(`[buildSystemPrompt] Prompt construído (legacy): ${prompt.length} caracteres`);
+
+  // Cache the prompt
+  cachedLegacyPrompt = prompt;
+  cacheTimestamp = Date.now();
+  console.log(`[buildSystemPrompt] Prompt cached (TTL: ${CACHE_TTL / 1000}s)`);
 
   return prompt;
 }
