@@ -126,7 +126,7 @@ export function DashboardPage() {
     selectedModel,
   } = useChatStore()
 
-  const { artifacts, addArtifact, openPanel, updateArtifact } = useArtifactStore()
+  const { artifacts, addArtifact, addArtifactAndOpen, openPanel, updateArtifact } = useArtifactStore()
 
   // File upload hook - uses simple endpoint for dashboard chat
   const {
@@ -310,8 +310,8 @@ export function DashboardPage() {
           // 🎨 NOVO: Início de streaming de artifact
           console.log('🎨 [DashboardPage] Artifact streaming STARTED:', chunk.artifact.title)
 
-          // Criar artifact vazio
-          const artifact = addArtifact({
+          // Criar artifact vazio E abrir painel atomicamente
+          const artifact = addArtifactAndOpen({
             title: chunk.artifact.title,
             type: chunk.artifact.type,
             content: '', // Inicialmente vazio
@@ -323,11 +323,6 @@ export function DashboardPage() {
 
           // Link artifact to message
           useChatStore.getState().addArtifactToMessage(assistantMsg.id, artifact.id)
-
-          // Abrir painel imediatamente
-          console.log('   🔓 Opening panel...')
-          openPanel(artifact)
-          console.log('   ✅ Panel opened for streaming')
 
         } else if (chunk.type === 'artifact_chunk' && chunk.id && chunk.content) {
           // 🎨 NOVO: Chunk progressivo de artifact
@@ -360,8 +355,8 @@ export function DashboardPage() {
             hasContent: !!chunk.artifact.content
           })
 
-          // Create artifact
-          const artifact = addArtifact({
+          // Create artifact E abrir painel atomicamente
+          const artifact = addArtifactAndOpen({
             title: chunk.artifact.title,
             type: chunk.artifact.type,
             content: chunk.artifact.content,
@@ -375,11 +370,6 @@ export function DashboardPage() {
           useChatStore.getState().addArtifactToMessage(assistantMsg.id, artifact.id)
 
           console.log('   ✅ Artifact linked to message:', assistantMsg.id)
-
-          // Open artifact panel
-          console.log('   🔓 Calling openPanel...')
-          openPanel(artifact)
-          console.log('   ✅ openPanel called')
         } else if (chunk.type === 'error') {
           fullContent = `❌ ${chunk.error}`
           updateMessage(assistantMsg.id, fullContent)

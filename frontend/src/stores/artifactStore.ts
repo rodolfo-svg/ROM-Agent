@@ -13,9 +13,10 @@ interface ArtifactState {
   
   // Actions
   addArtifact: (artifact: Omit<Artifact, 'id' | 'createdAt' | 'updatedAt'>) => Artifact
+  addArtifactAndOpen: (artifact: Omit<Artifact, 'id' | 'createdAt' | 'updatedAt'>) => Artifact
   updateArtifact: (id: string, content: string) => void
   deleteArtifact: (id: string) => void
-  
+
   setActiveArtifact: (artifact: Artifact | null) => void
   openPanel: (artifact?: Artifact) => void
   closePanel: () => void
@@ -59,6 +60,36 @@ export const useArtifactStore = create<ArtifactState>()(
         }))
 
         console.log('   ✅ Artifact added to store. Total artifacts:', get().artifacts.length)
+
+        return newArtifact
+      },
+
+      addArtifactAndOpen: (artifact) => {
+        const newArtifact: Artifact = {
+          ...artifact,
+          id: generateId(),
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        }
+
+        console.log('📦🔓 [ArtifactStore] addArtifactAndOpen called:', {
+          title: newArtifact.title,
+          type: newArtifact.type,
+          id: newArtifact.id
+        })
+
+        // ATOMIC: Add artifact AND open panel in single state update
+        set(state => ({
+          artifacts: [...state.artifacts, newArtifact],
+          activeArtifactId: newArtifact.id,
+          isPanelOpen: true,
+        }))
+
+        console.log('   ✅ Artifact added AND panel opened. Total artifacts:', get().artifacts.length)
+        console.log('   ✅ Panel state:', {
+          activeArtifactId: get().activeArtifactId,
+          isPanelOpen: get().isPanelOpen
+        })
 
         return newArtifact
       },
