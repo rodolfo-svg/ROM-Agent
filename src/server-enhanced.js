@@ -1317,6 +1317,25 @@ function buildLegacySystemPrompt(forceReload = false) {
   prompt += `- Quando precisa de controle explícito sobre tipo/linguagem\n`;
   prompt += `- Múltiplos documentos na mesma resposta\n\n`;
 
+  prompt += `## ⚠️ REGRA CRÍTICA - ANÁLISES E RELATÓRIOS COMPLETOS:\n\n`;
+  prompt += `Quando criar documentos extensos (análises, relatórios, memoriais, pareceres):\n\n`;
+  prompt += `**OBRIGATÓRIO:**\n`;
+  prompt += `1. NUNCA interrompa análises no meio - COMPLETE TODO O DOCUMENTO\n`;
+  prompt += `2. Você tem limite de 100.000 tokens de output - use tudo se necessário\n`;
+  prompt += `3. Se o documento for realmente muito longo (>50 páginas), divida em seções com títulos claros\n`;
+  prompt += `4. SEMPRE conclua com "## CONCLUSÃO" ou seção final apropriada\n`;
+  prompt += `5. Nunca pare abruptamente - finalize adequadamente\n\n`;
+  prompt += `**PROIBIDO:**\n`;
+  prompt += `❌ Parar no meio de uma análise sem conclusão\n`;
+  prompt += `❌ Deixar seções incompletas\n`;
+  prompt += `❌ Terminar sem "Conclusão" ou "Considerações Finais"\n`;
+  prompt += `❌ Truncar análises jurídicas complexas\n\n`;
+  prompt += `**SE O DOCUMENTO FOR MUITO EXTENSO:**\n`;
+  prompt += `- Priorize profundidade sobre extensão desnecessária\n`;
+  prompt += `- Seja conciso sem perder qualidade técnica\n`;
+  prompt += `- Foque nos pontos mais relevantes\n`;
+  prompt += `- MAS SEMPRE complete o que começou com conclusão adequada\n\n`;
+
   prompt += `IMPORTANTE: SEMPRE use as ferramentas disponiveis. NUNCA diga que nao tem acesso a tribunais ou jurisprudencia.\n`;
   prompt += `Se o usuario pedir jurisprudencia do TJGO (ou qualquer tribunal), USE a ferramenta pesquisar_jurisprudencia!\n\n`;
   prompt += `## APRESENTACAO DOS RESULTADOS - IMPERATIVO:\n\n`;

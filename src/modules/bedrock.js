@@ -89,7 +89,7 @@ function getDefaultModel() {
 const CONFIG = {
   region: process.env.AWS_REGION || 'us-west-2',
   defaultModel: getDefaultModel(),
-  maxTokens: 64000,  // 64K tokens output (limite do Bedrock para Sonnet/Opus 4.5)
+  maxTokens: 100000,  // ⚡ AUMENTADO: 100K tokens output (máximo absoluto - era 64K)
   temperature: 0.7,
   autoModelSelection: true,  // Habilitar seleção automática de modelo
   maxContextTokens: 200000  // Limite de contexto de entrada (200k tokens - Sonnet/Opus 4.5)
@@ -835,14 +835,42 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         artifactContentLength: artifactContent?.length || 0
       });
 
+      // 📊 LOG DETALHADO: Por que o modelo parou?
+      if (stopReason === 'end_turn') {
+        console.log(`✅ [Stream] Modelo completou resposta naturalmente (end_turn)`);
+      } else if (stopReason === 'max_tokens') {
+        console.warn(`⚠️ [Stream] LIMITE DE TOKENS ATINGIDO! Resposta truncada.`);
+        console.warn(`   Texto gerado: ${textoCompleto.length} chars (~${Math.round(textoCompleto.length / 4)} tokens)`);
+        console.warn(`   maxTokens configurado: ${maxTokens}`);
+      } else if (stopReason === 'tool_use') {
+        console.log(`🔧 [Stream] Modelo solicitou uso de ferramenta`);
+      } else if (stopReason === 'stop_sequence') {
+        console.log(`🛑 [Stream] Modelo encontrou stop sequence`);
+      } else {
+        console.warn(`❓ [Stream] Motivo de parada desconhecido: ${stopReason}`);
+      }
+
       // 🎨 ARTIFACT: Se estava fazendo streaming de artifact, enviar evento final
       if (isStreamingArtifact && artifactMetadata) {
         console.log(`🎨 [Artifact Complete] Enviando artifact completo: ${artifactMetadata.title}`);
+        console.log(`   📊 Estatísticas do artifact:`);
+        console.log(`      - Conteúdo: ${artifactContent.length} chars (~${Math.round(artifactContent.length / 4)} tokens)`);
+        console.log(`      - Linhas: ${artifactContent.split('\n').length}`);
+        console.log(`      - Stop Reason: ${stopReason}`);
+
+        // ⚠️ AVISO: Se conteúdo foi truncado
+        if (stopReason === 'max_tokens') {
+          console.warn(`   ⚠️ ATENÇÃO: Artifact pode estar INCOMPLETO (limite de tokens atingido)`);
+          // Adicionar aviso no final do conteúdo
+          artifactContent += '\n\n---\n\n⚠️ **AVISO:** Este documento pode estar incompleto devido ao limite de tokens. Para documentos muito extensos, considere dividir em múltiplas análises.';
+        }
+
         try {
           onChunk({
             __artifact_complete: {
               ...artifactMetadata,
-              content: artifactContent
+              content: artifactContent,
+              stopReason // Incluir stopReason para debugging
             }
           });
           console.log(`   ✅ artifact_complete enviado (${artifactContent.length} chars)`);
