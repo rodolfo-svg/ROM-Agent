@@ -1097,6 +1097,13 @@ export function buildSystemPrompt(options = {}) {
   const trafficPercentage = parseFloat(process.env.TRAFFIC_PERCENTAGE || '100');
   const partnerId = options.partnerId || 'global';
 
+  console.log(`\n${'='.repeat(80)}`);
+  console.log(`[buildSystemPrompt] 🚀 INICIANDO CONSTRUÇÃO DO SYSTEM PROMPT`);
+  console.log(`[buildSystemPrompt] PROMPTS_VERSION: "${promptsVersion}" (env: ${process.env.PROMPTS_VERSION || 'não definido - usando default'})`);
+  console.log(`[buildSystemPrompt] partnerId: "${partnerId}"`);
+  console.log(`[buildSystemPrompt] userMessage (preview): "${userMessage.substring(0, 100)}..."`);
+  console.log(`${'='.repeat(80)}\n`);
+
   // NOVO: Sistema contextual com PromptsManager (PREFERENCIAL)
   if (promptsVersion === 'contextual') {
     try {
@@ -1169,23 +1176,38 @@ function buildContextualSystemPrompt(options = {}) {
   const userMessage = options.userMessage || '';
   const partnerId = options.partnerId || 'global';
 
+  console.log(`[buildSystemPrompt] 🔍 CONTEXTUAL MODE ATIVADO`);
+  console.log(`[buildSystemPrompt]   - userMessage: "${userMessage.substring(0, 100)}..."`);
+  console.log(`[buildSystemPrompt]   - partnerId: "${partnerId}"`);
+
   // 1. Detectar tipo de documento/peça
   const documentType = detectDocumentType(userMessage);
-  console.log(`[buildSystemPrompt] Tipo detectado: ${getDocumentTypeName(documentType)}`);
+  const documentName = getDocumentTypeName(documentType);
+  console.log(`[buildSystemPrompt] ✅ Tipo detectado: "${documentName}" (ID: ${documentType})`);
 
   // 2. Tentar carregar prompt do PromptsManager
+  console.log(`[buildSystemPrompt] 🔎 Buscando prompt no PromptsManager...`);
   try {
     const promptResult = PromptsManager.obterPrompt(documentType, partnerId);
 
     if (promptResult && promptResult.content) {
-      console.log(`[buildSystemPrompt] Usando prompt contextual: ${documentType} (${promptResult.type})`);
+      console.log(`[buildSystemPrompt] ✅ USANDO PROMPT CONTEXTUAL:`);
+      console.log(`[buildSystemPrompt]   - ID: ${documentType}`);
+      console.log(`[buildSystemPrompt]   - Tipo: ${promptResult.type} (${promptResult.isOverride ? 'override' : 'original'})`);
+      console.log(`[buildSystemPrompt]   - Path: ${promptResult.path}`);
+      console.log(`[buildSystemPrompt]   - Tamanho: ${promptResult.content.length} chars`);
       return promptResult.content;
+    } else {
+      console.warn(`[buildSystemPrompt] ⚠️ PromptsManager retornou resultado vazio`);
     }
   } catch (error) {
-    console.log(`[buildSystemPrompt] Prompt contextual '${documentType}' não encontrado, usando fallback`);
+    console.log(`[buildSystemPrompt] ⚠️ Prompt contextual '${documentType}' NÃO ENCONTRADO`);
+    console.log(`[buildSystemPrompt]   - Erro: ${error.message}`);
+    console.log(`[buildSystemPrompt]   - Fazendo fallback para buildLegacySystemPrompt()...`);
   }
 
   // 3. Fallback para custom-instructions.json
+  console.log(`[buildSystemPrompt] 🔄 FALLBACK: Usando buildLegacySystemPrompt()`);
   return buildLegacySystemPrompt();
 }
 
@@ -1197,16 +1219,19 @@ function buildContextualSystemPrompt(options = {}) {
  * @returns {string} System prompt
  */
 function buildLegacySystemPrompt(forceReload = false) {
-  console.log(`[buildSystemPrompt] Construindo prompt legacy (custom-instructions.json)...`);
+  console.log(`[buildSystemPrompt] 📜 LEGACY MODE ATIVADO`);
+  console.log(`[buildSystemPrompt]   - forceReload: ${forceReload}`);
 
   const customInstructions = loadCustomInstructions();
 
   if (!customInstructions) {
     // Fallback: prompt basico
     const fallbackPrompt = 'Voce e o ROM Agent, um assistente juridico especializado em Direito brasileiro.';
-    console.log(`[buildSystemPrompt] Usando FALLBACK prompt (custom instructions nao carregadas)`);
+    console.log(`[buildSystemPrompt] ⚠️ FALLBACK BÁSICO - custom-instructions.json não carregadas`);
     return fallbackPrompt;
   }
+
+  console.log(`[buildSystemPrompt] ✅ custom-instructions.json carregadas com sucesso`);
 
   // Construir prompt detalhado
   let prompt = `# ${customInstructions.role}\n\n`;
