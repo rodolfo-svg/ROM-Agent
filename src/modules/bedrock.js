@@ -515,35 +515,67 @@ export async function conversar(prompt, options = {}) {
  */
 /**
  * Detecta se o texto parece ser início de um documento estruturado
+ * VERSÃO INTELIGENTE - Detecta múltiplos padrões de documentos
+ *
  * @param {string} text - Texto acumulado até agora
+ * @param {object} context - Contexto adicional (usouFerramentas, etc.)
  * @returns {object|null} - { type, title } se for documento, null caso contrário
  */
-function detectDocumentStart(text) {
+function detectDocumentStart(text, context = {}) {
   const trimmed = text.trim();
+  const { usouFerramentas = false } = context;
 
   // ⚡ DETECÇÃO INSTANTÂNEA: Detectar "# " no início (Markdown heading)
-  // Isso permite abrir o painel IMEDIATAMENTE quando começar a escrever
   if (trimmed.startsWith('#')) {
-    // Se tiver pelo menos "# X" (3 chars), já detecta
     if (trimmed.length >= 3) {
       const titleMatch = trimmed.match(/^#\s+(.+)/m);
       if (titleMatch) {
         const title = titleMatch[1].trim();
-        // Se título tem pelo menos 5 caracteres, é válido
         if (title.length >= 5) {
           return { type: 'document', title };
         }
-        // Senão, usar título parcial com "..."
         return { type: 'document', title: title + '...' };
       }
     }
   }
 
-  // Padrões de documentos estruturados (detectam mais cedo agora)
+  // 🎯 DETECÇÃO INTELIGENTE #1: Múltiplos headings (documento estruturado)
+  // Se tem 2+ headings markdown (##, ###, etc.) = documento
+  const headingCount = (trimmed.match(/^#{1,6}\s+/gm) || []).length;
+  if (headingCount >= 2) {
+    const firstHeading = trimmed.match(/^#\s+(.+)/m);
+    const title = firstHeading ? firstHeading[1].trim() : 'Documento Estruturado';
+    console.log(`🎯 [Smart Detection] Múltiplos headings (${headingCount}) = Documento`);
+    return { type: 'document', title };
+  }
+
+  // 🎯 DETECÇÃO INTELIGENTE #2: Resposta longa estruturada (>800 chars com parágrafos)
+  // Se passou de 800 chars E tem estrutura (3+ parágrafos separados) = documento
+  if (trimmed.length > 800) {
+    const paragraphs = trimmed.split(/\n\n+/).filter(p => p.trim().length > 50);
+    if (paragraphs.length >= 3) {
+      // Tentar extrair título do primeiro parágrafo ou linha
+      const firstLine = trimmed.split('\n')[0].trim();
+      const title = firstLine.length > 10 && firstLine.length < 100
+        ? firstLine.replace(/^[#*_]+\s*/, '')
+        : 'Análise Estruturada';
+      console.log(`🎯 [Smart Detection] Resposta longa estruturada (${trimmed.length} chars, ${paragraphs.length} §) = Documento`);
+      return { type: 'document', title };
+    }
+  }
+
+  // 🎯 DETECÇÃO INTELIGENTE #3: Usou ferramentas de pesquisa = análise estruturada
+  // Se usou pesquisa de jurisprudência e está gerando resposta longa = análise
+  if (usouFerramentas && trimmed.length > 500) {
+    console.log(`🎯 [Smart Detection] Usou ferramentas + resposta longa (${trimmed.length} chars) = Análise`);
+    return { type: 'document', title: 'Análise com Jurisprudência' };
+  }
+
+  // 📋 PADRÕES CLÁSSICOS: Palavras-chave específicas
   const patterns = [
-    { regex: /^#\s+([A-ZÀ-Ú][^\n]*)/m, type: 'document', titleGroup: 1 }, // Sem exigir +, aceita qualquer tamanho
-    { regex: /^EXCELENTÍSSIM[OA]/i, type: 'document', title: 'Petição' }, // Detecta logo que vê EXCELENTÍSSIMO
-    { regex: /^MEMORIAL/i, type: 'document', title: 'Memorial' }, // Detecta logo "MEMORIAL"
+    { regex: /^#\s+([A-ZÀ-Ú][^\n]*)/m, type: 'document', titleGroup: 1 },
+    { regex: /^EXCELENTÍSSIM[OA]/i, type: 'document', title: 'Petição' },
+    { regex: /^MEMORIAL/i, type: 'document', title: 'Memorial' },
     { regex: /^CONTRATO/i, type: 'document', title: 'Contrato' },
     { regex: /^PARECER/i, type: 'document', title: 'Parecer' },
     { regex: /^SENTENÇA/i, type: 'document', title: 'Sentença' },
@@ -551,8 +583,10 @@ function detectDocumentStart(text) {
     { regex: /^RECURSO/i, type: 'document', title: 'Recurso' },
     { regex: /^AGRAVO/i, type: 'document', title: 'Agravo' },
     { regex: /^APELAÇÃO/i, type: 'document', title: 'Apelação' },
-    { regex: /^ANÁLISE/i, type: 'document', title: 'Análise' }, // NOVO: Detectar análises
-    { regex: /^RELATÓRIO/i, type: 'document', title: 'Relatório' }, // NOVO: Detectar relatórios
+    { regex: /^ANÁLISE/i, type: 'document', title: 'Análise' },
+    { regex: /^RELATÓRIO/i, type: 'document', title: 'Relatório' },
+    { regex: /^RESUMO/i, type: 'document', title: 'Resumo' },
+    { regex: /^PESQUISA/i, type: 'document', title: 'Pesquisa' },
   ];
 
   for (const pattern of patterns) {
@@ -717,6 +751,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
       let artifactMetadata = null;
       let artifactContent = '';
       let artifactId = null;
+      let usouFerramentas = toolUseData.length > 0; // Rastrear se usou ferramentas neste loop
 
       console.log(`🔄 [Stream Loop ${loopCount}] Starting to process Bedrock stream...`);
 
@@ -736,13 +771,14 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
           console.log(`📝 [Stream Loop ${loopCount}] Text chunk received (${chunk.length} chars)`);
 
-          // 🎨 DETECÇÃO INSTANTÂNEA: Verificar se está iniciando um documento estruturado
-          // ✅ OTIMIZAÇÃO: Detectar a partir de 5 chars (ex: "# REL") para abrir painel imediatamente
-          // Janela de detecção: 5-800 chars (aumentada para capturar títulos longos)
-          if (!isStreamingArtifact && textoCompleto.length >= 5 && textoCompleto.length <= 800) {
-            const detection = detectDocumentStart(textoCompleto);
+          // 🎨 DETECÇÃO INTELIGENTE: Verificar se está iniciando um documento estruturado
+          // ✅ OTIMIZAÇÃO: Detectar a partir de 5 chars para abrir painel imediatamente
+          // ✅ SMART: Detecta também respostas longas estruturadas e uso de ferramentas
+          // Janela de detecção: 5-1500 chars (expandida para detecção inteligente)
+          if (!isStreamingArtifact && textoCompleto.length >= 5 && textoCompleto.length <= 1500) {
+            const detection = detectDocumentStart(textoCompleto, { usouFerramentas });
             if (detection) {
-              console.log(`🎨 [Artifact Detection] Documento detectado IMEDIATAMENTE: "${detection.title}" (${detection.type}) em ${textoCompleto.length} chars`);
+              console.log(`🎨 [Smart Artifact Detection] Documento detectado: "${detection.title}" (${detection.type}) em ${textoCompleto.length} chars`);
 
               isStreamingArtifact = true;
               artifactId = `artifact_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -760,7 +796,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
                 onChunk({
                   __artifact_start: artifactMetadata
                 });
-                console.log(`   📤 artifact_start enviado INSTANTANEAMENTE: ${detection.title}`);
+                console.log(`   📤 artifact_start enviado: ${detection.title}`);
               } catch (err) {
                 console.error('[Artifact Start] Erro ao enviar:', err.message);
               }
