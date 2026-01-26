@@ -282,27 +282,34 @@ function showUpdateNotification(registration: ServiceWorkerRegistration) {
   const updateBtn = document.getElementById('pwa-update-btn')
   const updateText = document.getElementById('pwa-update-text')
 
-  updateBtn?.addEventListener('click', () => {
+  updateBtn?.addEventListener('click', async () => {
     console.log('[PWA] 🔄 Botão de atualizar clicado!')
     console.log('[PWA] registration:', registration)
     console.log('[PWA] registration.waiting:', registration.waiting)
     console.log('[PWA] registration.active:', registration.active)
     console.log('[PWA] registration.installing:', registration.installing)
+    console.log('[PWA] navigator.serviceWorker.controller:', navigator.serviceWorker.controller)
 
-    const waiting = registration.waiting
+    // Show loading state immediately
+    notification.classList.add('pwa-updating')
+    if (updateText) {
+      updateText.textContent = 'Atualizando...'
+    }
+    if (updateBtn) {
+      updateBtn.disabled = true
+      updateBtn.style.opacity = '0.7'
+      updateBtn.style.cursor = 'not-allowed'
+    }
 
+    let waiting = registration.waiting
+
+    // ESTRATÉGIA 1: Se existe waiting SW, ativar
     if (waiting) {
       console.log('[PWA] ✅ Service Worker waiting encontrado!')
 
-      // Show loading state
-      notification.classList.add('pwa-updating')
-      if (updateText) {
-        updateText.textContent = 'Atualizando...'
-      }
-
       // Listen for controller change (new SW activated)
       let refreshing = false
-      navigator.serviceWorker.addEventListener('controllerchange', () => {
+      const controllerChangeHandler = () => {
         if (!refreshing) {
           refreshing = true
           console.log('[PWA] 🎉 Novo Service Worker ativo - recarregando...')
@@ -312,13 +319,12 @@ function showUpdateNotification(registration: ServiceWorkerRegistration) {
             updateText.textContent = 'Recarregando...'
           }
 
-          // Small delay to show feedback
-          setTimeout(() => {
-            console.log('[PWA] 🔄 Executando reload...')
-            window.location.reload()
-          }, 300)
+          // Reload immediately
+          window.location.reload()
         }
-      })
+      }
+
+      navigator.serviceWorker.addEventListener('controllerchange', controllerChangeHandler)
 
       // Send message to activate new SW
       console.log('[PWA] 📤 Enviando SKIP_WAITING para SW...')
@@ -326,57 +332,102 @@ function showUpdateNotification(registration: ServiceWorkerRegistration) {
         waiting.postMessage({ type: 'SKIP_WAITING' })
         console.log('[PWA] ✅ SKIP_WAITING enviado com sucesso')
 
-        // ⚠️ SAFETY: Forçar reload após 5 segundos se controllerchange não disparar
-        setTimeout(() => {
+        // TIMEOUT 1: Se controllerchange não disparar em 3s, tentar forçar
+        setTimeout(async () => {
           if (!refreshing) {
-            console.warn('[PWA] ⚠️ Timeout: controllerchange não disparou, forçando reload...')
+            console.warn('[PWA] ⚠️ Timeout 1 (3s): controllerchange não disparou')
+            console.log('[PWA] 🔄 Tentando unregister + reload...')
+
+            try {
+              // Unregister all service workers
+              const registrations = await navigator.serviceWorker.getRegistrations()
+              console.log(`[PWA] Encontrados ${registrations.length} service workers`)
+              for (const reg of registrations) {
+                await reg.unregister()
+                console.log('[PWA] ✅ Service worker unregistered')
+              }
+            } catch (err) {
+              console.error('[PWA] ❌ Erro ao unregister:', err)
+            }
+
+            // Force reload
             window.location.reload()
           }
-        }, 5000)
+        }, 3000)
+
+        // TIMEOUT 2: Força bruta após 6s (última tentativa)
+        setTimeout(() => {
+          if (!refreshing) {
+            console.error('[PWA] ❌ TIMEOUT FINAL (6s): Forçando hard reload...')
+            window.location.href = window.location.href
+          }
+        }, 6000)
       } catch (err) {
         console.error('[PWA] ❌ Erro ao enviar SKIP_WAITING:', err)
         // Fallback: reload direto
         console.log('[PWA] 🔄 Fallback: recarregando diretamente...')
         window.location.reload()
       }
-    } else {
+    }
+    // ESTRATÉGIA 2: Sem waiting SW - Limpar tudo e forçar reload
+    else {
       console.warn('[PWA] ⚠️ Nenhum service worker waiting encontrado')
-      console.log('[PWA] Tentando atualizar registration manualmente...')
+      console.log('[PWA] 🔄 Estratégia 2: HARD RESET - Limpar tudo e forçar reload')
 
-      // Show loading state
-      notification.classList.add('pwa-updating')
       if (updateText) {
-        updateText.textContent = 'Verificando...'
+        updateText.textContent = 'Limpando cache...'
       }
 
-      // Try to update registration
-      registration.update()
-        .then(() => {
-          console.log('[PWA] ✅ Update() chamado com sucesso')
+      try {
+        // 1. Unregister ALL service workers
+        console.log('[PWA] 🗑️ Passo 1: Unregister todos os service workers...')
+        const registrations = await navigator.serviceWorker.getRegistrations()
+        console.log(`[PWA] Encontrados ${registrations.length} service workers`)
 
-          // Check again after update
-          setTimeout(() => {
-            if (registration.waiting) {
-              console.log('[PWA] ✅ Agora temos waiting SW, enviando SKIP_WAITING...')
-              registration.waiting.postMessage({ type: 'SKIP_WAITING' })
+        for (const reg of registrations) {
+          await reg.unregister()
+          console.log('[PWA] ✅ Service worker unregistered:', reg.scope)
+        }
 
-              // Forçar reload após 2 segundos
-              setTimeout(() => {
-                console.log('[PWA] 🔄 Recarregando após update...')
-                window.location.reload()
-              }, 2000)
-            } else {
-              console.log('[PWA] 🔄 Ainda sem waiting SW, recarregando diretamente...')
-              window.location.reload()
-            }
-          }, 1000)
-        })
-        .catch((err) => {
-          console.error('[PWA] ❌ Erro ao atualizar registration:', err)
-          // Fallback: just reload
-          console.log('[PWA] 🔄 Fallback final: recarregando...')
-          window.location.reload()
-        })
+        // 2. Clear ALL caches
+        console.log('[PWA] 🗑️ Passo 2: Limpar TODOS os caches...')
+        const cacheNames = await caches.keys()
+        console.log(`[PWA] Encontrados ${cacheNames.length} caches`)
+
+        await Promise.all(
+          cacheNames.map(async (cacheName) => {
+            await caches.delete(cacheName)
+            console.log('[PWA] ✅ Cache deletado:', cacheName)
+          })
+        )
+
+        // 3. Clear local/session storage (opcional - mais agressivo)
+        console.log('[PWA] 🗑️ Passo 3: Limpar storage...')
+        try {
+          localStorage.removeItem('pwa-update-dismissed')
+          sessionStorage.clear()
+        } catch (err) {
+          console.warn('[PWA] ⚠️ Erro ao limpar storage:', err)
+        }
+
+        // 4. Update UI
+        if (updateText) {
+          updateText.textContent = 'Recarregando...'
+        }
+
+        console.log('[PWA] ✅ Limpeza completa!')
+        console.log('[PWA] 🔄 Forçando HARD RELOAD...')
+
+        // 5. HARD RELOAD (força servidor, ignora cache)
+        setTimeout(() => {
+          window.location.href = window.location.href + '?nocache=' + Date.now()
+        }, 500)
+      } catch (err) {
+        console.error('[PWA] ❌ Erro na limpeza:', err)
+        // Fallback final: simples reload
+        console.log('[PWA] 🔄 Fallback: reload simples...')
+        window.location.reload()
+      }
     }
   })
 
