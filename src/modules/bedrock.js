@@ -89,7 +89,7 @@ function getDefaultModel() {
 const CONFIG = {
   region: process.env.AWS_REGION || 'us-west-2',
   defaultModel: getDefaultModel(),
-  maxTokens: 100000,  // ⚡ AUMENTADO: 100K tokens output (máximo absoluto - era 64K)
+  maxTokens: 200000,  // 🚀 MÁXIMO ABSOLUTO: 200K tokens output (igual ao contexto input)
   temperature: 0.7,
   autoModelSelection: true,  // Habilitar seleção automática de modelo
   maxContextTokens: 200000  // Limite de contexto de entrada (200k tokens - Sonnet/Opus 4.5)
