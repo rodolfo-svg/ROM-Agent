@@ -1275,6 +1275,48 @@ function buildLegacySystemPrompt(forceReload = false) {
   prompt += `   - OBRIGATORIO: Passe TODO o conteúdo do documento no parâmetro 'content' (use Markdown)\n`;
   prompt += `   - Exemplo: Se usuario pedir "crie uma petição inicial", gere o texto COMPLETO da petição e use create_artifact\n`;
   prompt += `   - NUNCA diga "vou criar o documento" sem usar esta ferramenta!\n\n`;
+
+  prompt += `## 🎨 SISTEMA DE STREAMING PROGRESSIVO DE DOCUMENTOS:\n\n`;
+  prompt += `O sistema detecta AUTOMATICAMENTE quando você está criando documentos estruturados e:\n`;
+  prompt += `1. Abre um painel lateral IMEDIATAMENTE (antes de terminar o documento)\n`;
+  prompt += `2. Mostra o conteúdo sendo gerado EM TEMPO REAL (streaming progressivo)\n`;
+  prompt += `3. Permite download em DOCX/PDF/HTML/Markdown quando completo\n\n`;
+
+  prompt += `**COMO USAR (Modo Preferencial - Streaming Automático):**\n`;
+  prompt += `- Para peças processuais (petições, memoriais, recursos, agravos, apelações):\n`;
+  prompt += `  * Inicie com "# TÍTULO DO DOCUMENTO" ou "EXCELENTÍSSIMO SENHOR..." ou "MEMORIAL DE..."\n`;
+  prompt += `  * O sistema detecta automaticamente e ativa streaming progressivo\n`;
+  prompt += `  * O painel lateral abre IMEDIATAMENTE e mostra conteúdo em tempo real\n`;
+  prompt += `  * Continue escrevendo normalmente - cada palavra aparece instantaneamente no painel\n\n`;
+
+  prompt += `**PADRÕES DETECTADOS AUTOMATICAMENTE:**\n`;
+  prompt += `- Petições: "EXCELENTÍSSIMO SENHOR..." ou "EXCELENTÍSSIMA SENHORA..."\n`;
+  prompt += `- Memoriais: "MEMORIAL DE..." ou "MEMORIAIS..."\n`;
+  prompt += `- Contratos: "CONTRATO DE..."\n`;
+  prompt += `- Pareceres: "PARECER JURÍDICO" ou "PARECER TÉCNICO"\n`;
+  prompt += `- Recursos: "RECURSO...", "AGRAVO...", "APELAÇÃO..."\n`;
+  prompt += `- Documentos gerais: Iniciar com "# Título Grande" (Markdown heading)\n\n`;
+
+  prompt += `**EXEMPLO DE USO CORRETO:**\n`;
+  prompt += `Usuário: "Faça uma análise crítica do agravo de instrumento"\n`;
+  prompt += `Você:\n`;
+  prompt += `# ANÁLISE CRÍTICA DO AGRAVO DE INSTRUMENTO\n\n`;
+  prompt += `[O painel lateral abre IMEDIATAMENTE aqui - usuário já vê o título]\n\n`;
+  prompt += `## 1. FUNDAMENTAÇÃO JURÍDICA\n\n`;
+  prompt += `O agravo de instrumento, previsto no art. 1.015 do CPC/2015...\n`;
+  prompt += `[Continua escrevendo - cada palavra aparece em tempo real no painel]\n\n`;
+
+  prompt += `**VANTAGENS DO STREAMING PROGRESSIVO:**\n`;
+  prompt += `✅ Usuário vê resultado instantaneamente (não precisa esperar documento completo)\n`;
+  prompt += `✅ Experiência mais fluida e profissional\n`;
+  prompt += `✅ Botões de download (DOCX/PDF/HTML) disponíveis automaticamente\n`;
+  prompt += `✅ Não precisa usar create_artifact explicitamente para peças\n\n`;
+
+  prompt += `**QUANDO USAR create_artifact (Modo Legado):**\n`;
+  prompt += `- Documentos que NÃO seguem padrões detectáveis (ex: tabelas, planilhas)\n`;
+  prompt += `- Quando precisa de controle explícito sobre tipo/linguagem\n`;
+  prompt += `- Múltiplos documentos na mesma resposta\n\n`;
+
   prompt += `IMPORTANTE: SEMPRE use as ferramentas disponiveis. NUNCA diga que nao tem acesso a tribunais ou jurisprudencia.\n`;
   prompt += `Se o usuario pedir jurisprudencia do TJGO (ou qualquer tribunal), USE a ferramenta pesquisar_jurisprudencia!\n\n`;
   prompt += `## APRESENTACAO DOS RESULTADOS - IMPERATIVO:\n\n`;

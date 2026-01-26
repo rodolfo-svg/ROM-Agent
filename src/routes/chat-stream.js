@@ -222,19 +222,62 @@ router.post('/stream', async (req, res) => {
 
     // Callback para cada chunk
     const onChunk = (chunk) => {
-      // 🎨 ESPECIAL: Detectar artifact object
-      if (typeof chunk === 'object' && chunk.__artifact) {
-        logger.info(`[${requestId}] Artifact detected:`, chunk.__artifact.title);
+      // 🎨 STREAMING PROGRESSIVO: Detectar eventos de artifact
+      if (typeof chunk === 'object') {
+        // 🎨 INÍCIO: Artifact começou a ser gerado
+        if (chunk.__artifact_start) {
+          logger.info(`[${requestId}] Artifact START:`, chunk.__artifact_start.title);
 
-        // Enviar artifact como evento SSE especial
-        safeWrite(`data: ${JSON.stringify({
-          type: 'artifact',
-          artifact: chunk.__artifact
-        })}\n\n`).catch(err => {
-          logger.error(`[${requestId}] Artifact write failed:`, err.message);
-        });
+          safeWrite(`data: ${JSON.stringify({
+            type: 'artifact_start',
+            artifact: chunk.__artifact_start
+          })}\n\n`).catch(err => {
+            logger.error(`[${requestId}] Artifact start write failed:`, err.message);
+          });
 
-        return; // Não processar como chunk normal
+          return;
+        }
+
+        // 🎨 CHUNK: Conteúdo progressivo do artifact
+        if (chunk.__artifact_chunk) {
+          safeWrite(`data: ${JSON.stringify({
+            type: 'artifact_chunk',
+            id: chunk.__artifact_chunk.id,
+            content: chunk.__artifact_chunk.content
+          })}\n\n`).catch(err => {
+            logger.error(`[${requestId}] Artifact chunk write failed:`, err.message);
+          });
+
+          return;
+        }
+
+        // 🎨 COMPLETO: Artifact finalizado
+        if (chunk.__artifact_complete) {
+          logger.info(`[${requestId}] Artifact COMPLETE:`, chunk.__artifact_complete.title, `(${chunk.__artifact_complete.content?.length || 0} chars)`);
+
+          safeWrite(`data: ${JSON.stringify({
+            type: 'artifact_complete',
+            artifact: chunk.__artifact_complete
+          })}\n\n`).catch(err => {
+            logger.error(`[${requestId}] Artifact complete write failed:`, err.message);
+          });
+
+          return;
+        }
+
+        // 🎨 LEGADO: Artifact completo (via create_artifact tool - modo antigo)
+        if (chunk.__artifact) {
+          logger.info(`[${requestId}] Artifact detected (legacy):`, chunk.__artifact.title);
+
+          safeWrite(`data: ${JSON.stringify({
+            type: 'artifact',
+            artifact: chunk.__artifact
+          })}\n\n`).catch(err => {
+            logger.error(`[${requestId}] Artifact write failed:`, err.message);
+          });
+
+          return;
+        }
       }
 
       // Chunk normal (string)

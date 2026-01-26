@@ -348,15 +348,25 @@ export async function* chatStream(
       }
 
       buffer += decoder.decode(value, { stream: true })
-      const lines = buffer.split('\n')
-      buffer = lines.pop() || ''
 
-      console.log(`[V7-SSE] Chunk #${chunkCount} produced ${lines.length} lines`)
+      // ✅ FIX: Processar eventos SSE completos (terminam com \n\n)
+      // Isso evita chunks vazios quando JSONs grandes são enviados
+      let doubleNewlineIndex = buffer.indexOf('\n\n')
 
-      for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const data = line.slice(6).trim()
-          console.log('[V7-SSE] SSE line:', data.substring(0, 100))
+      while (doubleNewlineIndex !== -1) {
+        // Extrair evento completo
+        const event = buffer.slice(0, doubleNewlineIndex)
+        buffer = buffer.slice(doubleNewlineIndex + 2)
+
+        // Processar linhas do evento
+        const lines = event.split('\n').filter(l => l.trim())
+
+        console.log(`[V7-SSE] Processing event with ${lines.length} lines`)
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const data = line.slice(6).trim()
+            console.log('[V7-SSE] SSE line:', data.substring(0, 100))
 
           if (data === '[DONE]') {
             console.log('[V7-SSE] Received [DONE] marker')
@@ -390,11 +400,16 @@ export async function* chatStream(
             // Non-JSON data, treat as content
             yield { type: 'chunk', content: data }
           }
-        } else if (line.trim()) {
+        } else if (line.trim() && !line.startsWith(':')) {
+          // Ignore heartbeat comments (: heartbeat)
           console.log('[V7-SSE] Non-data line:', line.substring(0, 100))
         }
       }
+
+      // Procurar próximo evento completo
+      doubleNewlineIndex = buffer.indexOf('\n\n')
     }
+  }
 
     console.log('[V7-SSE] Stream completed naturally')
     yield { type: 'done' }
