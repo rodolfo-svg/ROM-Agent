@@ -636,9 +636,23 @@ self.addEventListener('notificationclick', (event) => {
 self.addEventListener('message', (event) => {
   const { type, data } = event.data || {};
 
+  console.log(`[SW ${VERSION}] 📨 Mensagem recebida:`, { type, data });
+
   switch (type) {
     case 'SKIP_WAITING':
-      self.skipWaiting();
+      console.log(`[SW ${VERSION}] 🚀 SKIP_WAITING recebido - ativando novo SW...`);
+      self.skipWaiting()
+        .then(() => {
+          console.log(`[SW ${VERSION}] ✅ skipWaiting() completado`);
+          // Claim clients imediatamente
+          return self.clients.claim();
+        })
+        .then(() => {
+          console.log(`[SW ${VERSION}] ✅ clients.claim() completado`);
+        })
+        .catch((err) => {
+          console.error(`[SW ${VERSION}] ❌ Erro em skipWaiting/claim:`, err);
+        });
       break;
 
     case 'GET_VERSION':
