@@ -1087,6 +1087,8 @@ function loadCustomInstructions() {
  * @returns {string} System prompt
  */
 export function buildSystemPrompt(options = {}) {
+  const startTime = Date.now();
+
   // Suporte para chamadas legadas com boolean
   const forceReload = typeof options === 'boolean' ? options : (options.forceReload || false);
   const userMessage = options.userMessage || '';
@@ -1097,20 +1099,25 @@ export function buildSystemPrompt(options = {}) {
   const trafficPercentage = parseFloat(process.env.TRAFFIC_PERCENTAGE || '100');
   const partnerId = options.partnerId || 'global';
 
-  // Logs mais compactos para não poluir console
-  console.log(`[buildSystemPrompt] PROMPTS_VERSION: ${promptsVersion}, partnerId: ${partnerId}`);
+  console.log(`[buildSystemPrompt] START - version: ${promptsVersion}`);
 
   // NOVO: Sistema contextual com PromptsManager (PREFERENCIAL)
   if (promptsVersion === 'contextual') {
     try {
-      return buildContextualSystemPrompt({
+      const prompt = buildContextualSystemPrompt({
         userMessage,
         partnerId,
         ...options
       });
+      const elapsed = Date.now() - startTime;
+      console.log(`[buildSystemPrompt] DONE in ${elapsed}ms (contextual, ${prompt.length} chars)`);
+      return prompt;
     } catch (error) {
       console.error(`[buildSystemPrompt] Erro no sistema contextual, fallback para legacy:`, error.message);
-      return buildLegacySystemPrompt(forceReload);
+      const prompt = buildLegacySystemPrompt(forceReload);
+      const elapsed = Date.now() - startTime;
+      console.log(`[buildSystemPrompt] DONE in ${elapsed}ms (legacy fallback, ${prompt.length} chars)`);
+      return prompt;
     }
   }
 
@@ -1158,7 +1165,10 @@ export function buildSystemPrompt(options = {}) {
   }
 
   // Versao original/legacy
-  return buildLegacySystemPrompt(forceReload);
+  const prompt = buildLegacySystemPrompt(forceReload);
+  const elapsed = Date.now() - startTime;
+  console.log(`[buildSystemPrompt] DONE in ${elapsed}ms (legacy, ${prompt.length} chars)`);
+  return prompt;
 }
 
 /**
