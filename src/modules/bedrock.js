@@ -808,18 +808,25 @@ export async function conversarStream(prompt, onChunk, options = {}) {
       console.log(`🔄 [Stream Loop ${loopCount}] Starting to process Bedrock stream...`);
 
       // Processar stream de eventos
+      let lastLogTime = Date.now();
       for await (const event of response.stream) {
         eventCount++;
 
-        // ✅ DEBUG: Log TODOS os eventos recebidos do Bedrock
-        // Log primeiros 5 eventos E eventos periódicos para diagnosticar por que não chega texto
-        if (eventCount <= 5 || eventCount % 20 === 0) {
-          console.log(`📦 [Stream Loop ${loopCount}] Event #${eventCount}:`, {
+        // 🕐 Log periódico de progresso (a cada 5 segundos OU evento importante)
+        const now = Date.now();
+        const shouldLogProgress = (now - lastLogTime) > 5000;
+        const isImportantEvent = eventCount <= 5 || eventCount % 100 === 0;
+
+        if (shouldLogProgress || isImportantEvent) {
+          console.log(`📦 [Stream Loop ${loopCount}] Event #${eventCount} (${Math.round((now - lastLogTime) / 1000)}s since last log):`, {
             keys: Object.keys(event),
             hasText: !!event.contentBlockDelta?.delta?.text,
             hasToolUse: !!event.contentBlockStart?.start?.toolUse || !!event.contentBlockDelta?.delta?.toolUse,
-            stopReason: event.messageStop?.stopReason
+            stopReason: event.messageStop?.stopReason,
+            textoCompletoLength: textoCompleto.length,
+            toolInputLength: currentToolUse?.input?.length || 0
           });
+          lastLogTime = now;
         }
 
         // Texto sendo gerado
@@ -931,6 +938,22 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         if (event.contentBlockDelta?.delta?.toolUse) {
           if (currentToolUse) {
             currentToolUse.input += event.contentBlockDelta.delta.toolUse.input || '';
+
+            // 📊 Progresso de tool use grande: avisar usuário a cada 10KB
+            const inputLength = currentToolUse.input.length;
+            if (inputLength > 0 && inputLength % 10000 < 100) {
+              const sizeKB = Math.round(inputLength / 1024);
+              console.log(`⏳ [Tool Use Progress] ${currentToolUse.name}: ${sizeKB}KB gerados...`);
+
+              // Enviar aviso ao usuário se > 20KB (documento grande)
+              if (inputLength > 20000 && inputLength < 20100) {
+                try {
+                  onChunk(`\n\n📄 **Gerando documento grande...** (${sizeKB}KB)\n\n`);
+                } catch (err) {
+                  console.error('[Tool Progress] Erro ao enviar aviso:', err.message);
+                }
+              }
+            }
           }
         }
 
