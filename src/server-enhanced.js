@@ -5440,17 +5440,17 @@ app.get('/api/kb/status', (req, res) => {
 // ROTAS DE API PARA KNOWLEDGE BASE (KB) COM AUTENTICAÇÃO
 // ====================================================================
 
-// Upload de documentos para o KB (autenticação opcional)
-// ✅ FIX: Remover authMiddleware() para consistência com /api/upload
-app.post('/api/kb/upload', upload.array('files', 20), async (req, res) => {
+// Upload de documentos para o KB (requer autenticação)
+// ✅ FIX: Adicionar requireAuth para consistência
+app.post('/api/kb/upload', requireAuth, upload.array('files', 20), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
     }
 
-    // Usuário autenticado (opcional) ou anônimo
-    const userId = req.user?.userId || req.session?.userId || 'anonymous';
-    const userName = req.user?.name || req.session?.user?.name || 'Anonymous';
+    // Usuário autenticado via session
+    const userId = req.session.user.id;
+    const userName = req.session.user.name || req.session.user.email;
     const uploadedDocs = [];
 
     // Processar cada arquivo COM DOCUMENTOS ESTRUTURADOS
@@ -5595,9 +5595,9 @@ app.post('/api/kb/upload', upload.array('files', 20), async (req, res) => {
 });
 
 // Listar documentos do KB do usuário (requer autenticação)
-app.get('/api/kb/documents', authSystem.authMiddleware(), (req, res) => {
+app.get('/api/kb/documents', requireAuth, (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.session.user.id; // ✅ Usar session auth
     const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
 
     if (!fs.existsSync(kbDocsPath)) {
@@ -5629,10 +5629,11 @@ app.get('/api/kb/documents', authSystem.authMiddleware(), (req, res) => {
 });
 
 // Download de documento do KB (requer autenticação e ownership)
-app.get('/api/kb/documents/:id/download', authSystem.authMiddleware(), (req, res) => {
+app.get('/api/kb/documents/:id/download', requireAuth, (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const userId = req.session.user.id; // ✅ Usar session auth
+    const userRole = req.session.user.role; // ✅ Usar session auth
     const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
 
     if (!fs.existsSync(kbDocsPath)) {
@@ -5648,7 +5649,7 @@ app.get('/api/kb/documents/:id/download', authSystem.authMiddleware(), (req, res
     }
 
     // Verificar ownership
-    if (doc.userId !== userId && req.user.role !== 'master_admin') {
+    if (doc.userId !== userId && userRole !== 'master_admin') {
       return res.status(403).json({ error: 'Acesso negado' });
     }
 
