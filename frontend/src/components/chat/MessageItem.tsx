@@ -148,8 +148,8 @@ export const MessageItem = memo(function MessageItem({
                 </div>
                 <div className="artifact-preview">
                   <pre className="text-xs text-stone-600 font-mono leading-relaxed whitespace-pre-wrap">
-                    {artifact.content.slice(0, 400)}
-                    {artifact.content.length > 400 && '...'}
+                    {artifact.content ? artifact.content.slice(0, 400) : '(conteúdo vazio)'}
+                    {artifact.content && artifact.content.length > 400 && '...'}
                   </pre>
                   <div className="artifact-fade" />
                 </div>
