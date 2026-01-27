@@ -142,67 +142,6 @@ export function ArtifactPanel() {
   const handleDownloadHTML = () => handleDownloadFormat('html')
   const handleDownloadMarkdown = () => handleDownloadFormat('md')
 
-  const handleDownloadHTML = async () => {
-    try {
-      const response = await fetch('/api/export/html', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: activeArtifact.content,
-          title: activeArtifact.title,
-          type: 'artifact',
-          metadata: {
-            type: activeArtifact.type,
-            language: activeArtifact.language,
-            createdAt: activeArtifact.createdAt,
-            author: 'ROM Agent'
-          },
-          template: 'oab'
-        })
-      })
-
-      if (!response.ok) throw new Error('Erro ao gerar HTML')
-
-      const html = await response.text()
-      const blob = new Blob([html], { type: 'text/html' })
-      saveAs(blob, `${activeArtifact.title}.html`)
-      setShowDownloadMenu(false)
-    } catch (err) {
-      console.error('Error creating HTML:', err)
-      alert('Erro ao gerar HTML. Tente outro formato.')
-    }
-  }
-
-  const handleDownloadMarkdown = async () => {
-    try {
-      const response = await fetch('/api/export/markdown', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: activeArtifact.content,
-          title: activeArtifact.title,
-          type: 'artifact',
-          metadata: {
-            type: activeArtifact.type,
-            language: activeArtifact.language,
-            createdAt: activeArtifact.createdAt,
-            author: 'ROM Agent'
-          }
-        })
-      })
-
-      if (!response.ok) throw new Error('Erro ao gerar Markdown')
-
-      const markdown = await response.text()
-      const blob = new Blob([markdown], { type: 'text/markdown' })
-      saveAs(blob, `${activeArtifact.title}.md`)
-      setShowDownloadMenu(false)
-    } catch (err) {
-      console.error('Error creating Markdown:', err)
-      alert('Erro ao gerar Markdown. Tente outro formato.')
-    }
-  }
-
   // Mobile sempre fullscreen, desktop respeitando isFullscreen
   const panelWidth = isFullscreen ? 'w-[70%] max-md:w-full' : 'w-[50%] max-w-[700px] max-md:w-full'
 
