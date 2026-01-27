@@ -30,7 +30,6 @@ import { Button, Avatar } from '@/components/ui'
 const navigationItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, adminOnly: false },
   { path: '/upload', label: 'Upload & KB', icon: Upload, adminOnly: false },
-  { path: '/prompts', label: 'Prompts Jurídicos', icon: FileText, adminOnly: false },
   { path: '/multi-agent', label: 'Multi-Agent', icon: Workflow, adminOnly: false },
   { path: '/case-processor', label: 'Processos', icon: FolderOpen, adminOnly: false },
   { path: '/certidoes', label: 'Certidões', icon: FileCheck, adminOnly: false },
