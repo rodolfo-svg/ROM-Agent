@@ -893,9 +893,45 @@ export async function conversarStream(prompt, onChunk, options = {}) {
           try {
             currentToolUse.input = JSON.parse(currentToolUse.input);
           } catch (e) {
-            // Input já está parseado ou não é JSON
+            console.error(`❌ [Tool Parse] Falha ao parsear JSON do tool "${currentToolUse.name}"`);
+            console.error(`   Input recebido (primeiros 500 chars): ${currentToolUse.input?.substring(0, 500)}`);
+            console.error(`   Erro: ${e.message}`);
+
+            // 🆘 FALLBACK: Se for create_artifact com JSON truncado, tentar completar
+            if (currentToolUse.name === 'create_artifact' && typeof currentToolUse.input === 'string') {
+              console.warn(`⚠️ [Tool Parse] Tentando recuperar create_artifact truncado...`);
+
+              try {
+                // Contar chaves abertas vs fechadas
+                const openBraces = (currentToolUse.input.match(/{/g) || []).length;
+                const closeBraces = (currentToolUse.input.match(/}/g) || []).length;
+                const missingBraces = openBraces - closeBraces;
+
+                // Se falta fechar, adicionar }}} no final
+                if (missingBraces > 0) {
+                  const completed = currentToolUse.input + '}'.repeat(missingBraces);
+                  currentToolUse.input = JSON.parse(completed);
+                  console.log(`   ✅ JSON completado com ${missingBraces} chave(s) faltante(s)`);
+                } else {
+                  throw new Error('JSON malformado - não é apenas chaves faltantes');
+                }
+              } catch (e2) {
+                console.error(`   ❌ Não foi possível recuperar: ${e2.message}`);
+                console.error(`   🚫 Tool será IGNORADA para evitar ValidationException`);
+                currentToolUse = null; // Não adicionar tool inválida
+                return; // Sair sem adicionar aos toolUseData
+              }
+            } else {
+              // Se não for create_artifact ou não for string, ignorar tool
+              console.error(`   🚫 Tool será IGNORADA (não é create_artifact recuperável)`);
+              currentToolUse = null;
+              return;
+            }
           }
-          toolUseData.push(currentToolUse);
+
+          if (currentToolUse) {
+            toolUseData.push(currentToolUse);
+          }
           currentToolUse = null;
         }
 

@@ -2379,7 +2379,7 @@ app.post('/api/chat/stream', async (req, res) => {
       systemPrompt = null,     // System prompt customizado
       enableTools = true,      // Habilitar ferramentas (KB, jurisprudência)
       temperature = 0.7,
-      maxTokens = 8192
+      maxTokens = 16384        // ✅ AUMENTADO: 8192 → 16384 para artifacts grandes
     } = req.body;
 
     const sessionId = conversationId || req.session?.id || `anon_${Date.now()}`;
