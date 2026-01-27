@@ -424,6 +424,19 @@ export async function* chatStream(
       console.log('[V7-SSE] AbortError - stream cancelled by user')
       return
     }
+
+    // 🛡️ TRATAMENTO ESPECÍFICO: ERR_QUIC_PROTOCOL_ERROR ou network error
+    // Geralmente causado por respostas muito longas ou timeout do servidor
+    if (err.message?.includes('network error') || err.message?.includes('QUIC')) {
+      console.error('[V7-SSE] QUIC Protocol Error - likely caused by large response or timeout')
+      yield {
+        type: 'error',
+        error: '⚠️ A geração foi muito longa e excedeu o limite de tempo. O documento pode ter sido gerado parcialmente. Por favor, tente:\n\n1. Seja mais específico na sua solicitação\n2. Solicite um resumo em vez de análise completa\n3. Divida em múltiplas perguntas menores'
+      }
+      return
+    }
+
+    // Outros erros
     yield { type: 'error', error: err.message || 'Erro de conexão' }
   }
 }

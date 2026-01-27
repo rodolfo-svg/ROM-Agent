@@ -318,7 +318,7 @@ router.post('/stream', async (req, res) => {
     // ✅ CRÍTICO: Usar systemPrompt com instruções de ferramentas se não vier do frontend
     const finalSystemPrompt = systemPrompt || buildSystemPrompt();
 
-    // Executar streaming
+    // Executar streaming (sem timeout - permitir documentos grandes)
     const resultado = await conversarStream(message, onChunk, {
       modelo: selectedModel,
       systemPrompt: finalSystemPrompt,  // ✅ Sempre usar systemPrompt (com instruções de ferramentas)

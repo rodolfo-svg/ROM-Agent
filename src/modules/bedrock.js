@@ -89,10 +89,14 @@ function getDefaultModel() {
 const CONFIG = {
   region: process.env.AWS_REGION || 'us-west-2',
   defaultModel: getDefaultModel(),
-  maxTokens: 200000,  // 🚀 MÁXIMO ABSOLUTO: 200K tokens output (igual ao contexto input)
+  maxTokens: 32000,  // 🎯 LIMITE PADRÃO: 32K tokens (~96K chars) - documentos completos
+  maxTokensLongForm: 64000,  // 📄 LIMITE DOCUMENTOS GRANDES: 64K tokens (~192K chars)
+  maxTokensAbsolute: 200000,  // 🚀 MÁXIMO ABSOLUTO: 200K tokens (raramente usado)
   temperature: 0.7,
   autoModelSelection: true,  // Habilitar seleção automática de modelo
-  maxContextTokens: 200000  // Limite de contexto de entrada (200k tokens - Sonnet/Opus 4.5)
+  maxContextTokens: 200000,  // Limite de contexto de entrada (200k tokens - Sonnet/Opus 4.5)
+  artifactStreamingThreshold: 8192,  // 📦 THRESHOLD: >8KB = acumular e enviar de uma vez (evita QUIC error)
+  artifactProgressiveMaxSize: 32768  // 📦 Se <32KB = streaming progressivo OK
 };
 
 // Modelos disponíveis organizados por provedor
@@ -605,11 +609,20 @@ export async function conversarStream(prompt, onChunk, options = {}) {
     modelo = CONFIG.defaultModel,
     systemPrompt = null,
     historico = [],
-    maxTokens = CONFIG.maxTokens,
+    maxTokens: requestedMaxTokens = CONFIG.maxTokens,
     temperature = CONFIG.temperature,
     kbContext = '',  // ← NOVO: contexto do KB para cálculo de tokens
     enableTools = true  // ✅ NOVO: Habilitar ferramentas por padrão (jurisprudência, KB, CNJ)
   } = options;
+
+  // 🛡️ SEGURANÇA: Limitar maxTokens ao máximo absoluto
+  // Se não especificado explicitamente, usar limite padrão (16K)
+  // Se especificado, respeitar mas não ultrapassar limite absoluto (200K)
+  const maxTokens = Math.min(requestedMaxTokens, CONFIG.maxTokensAbsolute);
+
+  if (requestedMaxTokens > CONFIG.maxTokensAbsolute) {
+    console.warn(`⚠️ [conversarStream] maxTokens requested (${requestedMaxTokens}) exceeds absolute limit, capping at ${CONFIG.maxTokensAbsolute}`);
+  }
 
   console.log('🚀 [conversarStream] STARTED with:', {
     promptLength: prompt?.length || 0,
@@ -621,7 +634,8 @@ export async function conversarStream(prompt, onChunk, options = {}) {
     historicoLength: historico?.length || 0,
     kbContextLength: kbContext?.length || 0,
     enableTools,
-    maxTokens,
+    maxTokensRequested: requestedMaxTokens,
+    maxTokensUsed: maxTokens,
     temperature,
     hasOnChunkCallback: typeof onChunk === 'function'
   });
@@ -785,6 +799,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
       // 🎨 Estado para streaming progressivo de artifacts
       let isStreamingArtifact = false;
+      let artifactWillStreamProgressively = false; // false = acumular e enviar de uma vez
       let artifactMetadata = null;
       let artifactContent = '';
       let artifactId = null;
@@ -815,8 +830,8 @@ export async function conversarStream(prompt, onChunk, options = {}) {
           console.log(`📝 [Stream Loop ${loopCount}] Text chunk received (${chunk.length} chars)`);
 
           // 🎨 DETECÇÃO INTELIGENTE: Verificar se está iniciando um documento estruturado
-          // ✅ OTIMIZAÇÃO: Detectar a partir de 5 chars para abrir painel imediatamente
-          // ✅ SMART: Detecta também respostas longas estruturadas e uso de ferramentas
+          // ✅ OTIMIZAÇÃO: Detectar a partir de 5 chars
+          // ✅ SMART: Detecta respostas longas estruturadas e uso de ferramentas
           // Janela de detecção: 5-1500 chars (expandida para detecção inteligente)
           if (!isStreamingArtifact && textoCompleto.length >= 5 && textoCompleto.length <= 1500) {
             const detection = detectDocumentStart(textoCompleto, { usouFerramentas });
@@ -834,14 +849,27 @@ export async function conversarStream(prompt, onChunk, options = {}) {
               };
               artifactContent = textoCompleto; // Incluir o que já foi gerado
 
-              // Enviar evento de início de artifact IMEDIATAMENTE
-              try {
-                onChunk({
-                  __artifact_start: artifactMetadata
-                });
-                console.log(`   📤 artifact_start enviado: ${detection.title}`);
-              } catch (err) {
-                console.error('[Artifact Start] Erro ao enviar:', err.message);
+              // 🚀 DECISÃO: Streaming progressivo ou acumulação?
+              // Se título indica documento grande (análise, memorial, parecer) = acumular
+              const isLargeDocument = /análise|memorial|parecer|petição|acórdão|sentença|completa|pormenorizada|detalhada/i.test(detection.title);
+
+              if (isLargeDocument) {
+                console.log(`   📄 Documento GRANDE detectado: acumulando para envio único (evita QUIC error)`);
+                // NÃO enviar artifact_start - vai enviar artifact_complete no final
+                artifactWillStreamProgressively = false;
+              } else {
+                console.log(`   ⚡ Documento pequeno: streaming progressivo habilitado`);
+                artifactWillStreamProgressively = true;
+
+                // Enviar evento de início de artifact IMEDIATAMENTE
+                try {
+                  onChunk({
+                    __artifact_start: artifactMetadata
+                  });
+                  console.log(`   📤 artifact_start enviado: ${detection.title}`);
+                } catch (err) {
+                  console.error('[Artifact Start] Erro ao enviar:', err.message);
+                }
               }
             }
           }
@@ -852,14 +880,32 @@ export async function conversarStream(prompt, onChunk, options = {}) {
               // Acumular conteúdo do artifact
               artifactContent += chunk;
 
-              // Enviar chunk para artifact
-              onChunk({
-                __artifact_chunk: {
-                  id: artifactId,
-                  content: chunk
+              // 🚀 DECISÃO: Streaming progressivo ou acumulação?
+              if (artifactWillStreamProgressively) {
+                // 📡 STREAMING PROGRESSIVO: Enviar chunks em tempo real (documentos pequenos)
+                onChunk({
+                  __artifact_chunk: {
+                    id: artifactId,
+                    content: chunk
+                  }
+                });
+                console.log(`   📤 artifact_chunk enviado (${chunk.length} chars, total: ${artifactContent.length})`);
+
+                // 🛡️ PROTEÇÃO: Se crescer muito, desabilitar streaming progressivo
+                if (artifactContent.length > CONFIG.artifactProgressiveMaxSize) {
+                  console.warn(`⚠️ [Artifact] Cresceu muito (${artifactContent.length}), desabilitando streaming progressivo`);
+                  artifactWillStreamProgressively = false;
+
+                  // Avisar usuário
+                  onChunk(`\n\n📄 **Documento grande em geração... (${Math.round(artifactContent.length / 1024)}KB)**\n\n`);
                 }
-              });
-              console.log(`   📤 artifact_chunk enviado (${chunk.length} chars)`);
+              } else {
+                // 📦 MODO ACUMULAÇÃO: Não enviar chunks, acumular tudo e enviar no final
+                // Apenas log silencioso
+                if (artifactContent.length % 5000 === 0) {
+                  console.log(`   📦 Acumulando artifact: ${Math.round(artifactContent.length / 1024)}KB`);
+                }
+              }
             } else {
               // Enviar para chat normal
               onChunk(chunk);
