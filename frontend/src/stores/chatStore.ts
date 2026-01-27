@@ -10,6 +10,7 @@ interface ChatState {
   activeConversationId: string | null
   isStreaming: boolean
   selectedModel: string
+  outputFormat: string // Fase 2: Formato de saída de documentos (docx, pdf, html, txt, md)
   isLoading: boolean
 
   // Getters
@@ -31,6 +32,7 @@ interface ChatState {
 
   setStreaming: (value: boolean) => void
   setModel: (model: string) => void
+  setOutputFormat: (format: string) => void // Fase 2
 
   clearAll: () => void
 }
@@ -44,6 +46,7 @@ export const useChatStore = create<ChatState>()(
       activeConversationId: null,
       isStreaming: false,
       selectedModel: 'claude-sonnet-4-5',
+      outputFormat: 'docx', // Fase 2: Word por padrão
       isLoading: false,
 
       get activeConversation() {
@@ -466,6 +469,8 @@ export const useChatStore = create<ChatState>()(
 
       setModel: (model: string) => set({ selectedModel: model }),
 
+      setOutputFormat: (format: string) => set({ outputFormat: format }), // Fase 2
+
       clearAll: () => set({ conversations: [], activeConversationId: null }),
     }),
     {
@@ -474,6 +479,7 @@ export const useChatStore = create<ChatState>()(
         // Manter cache local mas não substituir dados da API
         activeConversationId: state.activeConversationId,
         selectedModel: state.selectedModel,
+        outputFormat: state.outputFormat, // Fase 2: Persistir formato escolhido
       }),
     }
   )

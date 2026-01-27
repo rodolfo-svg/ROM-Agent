@@ -18,11 +18,23 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
   const [message, setMessage] = useState('')
   const [files, setFiles] = useState<File[]>([])
   const [showModelDropdown, setShowModelDropdown] = useState(false)
+  const [showFormatDropdown, setShowFormatDropdown] = useState(false)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  const { selectedModel, setModel } = useChatStore()
+  const { selectedModel, setModel, outputFormat, setOutputFormat } = useChatStore()
   const currentModel = AI_MODELS.find(m => m.id === selectedModel) || AI_MODELS[0]
+
+  // Formatos disponíveis (Fase 2)
+  const documentFormats = [
+    { id: 'docx', name: 'Word (.docx)', icon: '📄' },
+    { id: 'pdf', name: 'PDF (.pdf)', icon: '📕' },
+    { id: 'html', name: 'HTML (.html)', icon: '🌐' },
+    { id: 'txt', name: 'Texto (.txt)', icon: '📝' },
+    { id: 'md', name: 'Markdown (.md)', icon: '✍️' }
+  ]
+
+  const currentFormat = documentFormats.find(f => f.id === outputFormat) || documentFormats[0]
 
   // V6 MARKER - Identifica versão inequivocamente
   useEffect(() => {
@@ -46,10 +58,10 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
   }, [message])
 
   // Store latest values in ref to avoid recreation
-  const latestValuesRef = useRef({ message, files, hasAttachments, onSend, isLoading })
+  const latestValuesRef = useRef({ message, files, hasAttachments, onSend, isLoading, outputFormat })
   useEffect(() => {
-    latestValuesRef.current = { message, files, hasAttachments, onSend, isLoading }
-  }, [message, files, hasAttachments, onSend, isLoading])
+    latestValuesRef.current = { message, files, hasAttachments, onSend, isLoading, outputFormat }
+  }, [message, files, hasAttachments, onSend, isLoading, outputFormat])
 
   // STABLE handlers - never recreated
   const handleSubmit = useCallback(() => {
@@ -181,6 +193,53 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
             className="hidden"
             accept=".pdf,.doc,.docx,.txt,.md,.json,.csv"
           />
+
+          {/* Format selector (Fase 2) */}
+          <div className="relative pb-2">
+            <button
+              onClick={() => setShowFormatDropdown(!showFormatDropdown)}
+              className="flex items-center gap-1 px-2 py-1 text-xs text-stone-500 hover:text-stone-700 hover:bg-stone-200 rounded transition-colors"
+              title="Formato do documento"
+            >
+              <span className="text-sm">{currentFormat.icon}</span>
+              <span className="hidden sm:inline">{currentFormat.id.toUpperCase()}</span>
+              <ChevronDown className="w-3 h-3" />
+            </button>
+
+            {showFormatDropdown && (
+              <>
+                <div
+                  className="fixed inset-0 z-10"
+                  onClick={() => setShowFormatDropdown(false)}
+                />
+                <div className="absolute bottom-full left-0 mb-2 w-48 bg-white rounded-xl border border-stone-200 shadow-lg z-20 py-1">
+                  {documentFormats.map(format => (
+                    <button
+                      key={format.id}
+                      onClick={() => {
+                        setOutputFormat(format.id)
+                        setShowFormatDropdown(false)
+                      }}
+                      className={cn(
+                        'w-full px-4 py-2.5 text-left hover:bg-stone-50 transition-colors flex items-center gap-2',
+                        outputFormat === format.id && 'bg-stone-50'
+                      )}
+                    >
+                      <span className="text-lg">{format.icon}</span>
+                      <div className="flex-1">
+                        <div className="text-sm font-medium text-stone-800">
+                          {format.name}
+                        </div>
+                      </div>
+                      {outputFormat === format.id && (
+                        <div className="w-2 h-2 rounded-full bg-bronze-600" />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
 
           {/* Textarea */}
           <textarea

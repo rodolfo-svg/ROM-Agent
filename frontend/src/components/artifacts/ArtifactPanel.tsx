@@ -92,92 +92,55 @@ export function ArtifactPanel() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleDownloadTxt = () => {
-    const ext = getArtifactExtension(activeArtifact.type, activeArtifact.language)
-    downloadFile(activeArtifact.content, `${activeArtifact.title}.${ext}`, 'text/plain')
-    setShowDownloadMenu(false)
-  }
+  const handleDownloadTxt = () => handleDownloadFormat('txt')
 
-  const handleDownloadDocx = async () => {
+  // Fase 2: Download em qualquer formato usando novo conversor
+  const handleDownloadFormat = async (format: 'docx' | 'pdf' | 'html' | 'txt' | 'md') => {
     try {
-      const response = await fetch('/api/export/docx', {
+      console.log(`[ArtifactPanel] Downloading as ${format.toUpperCase()}`)
+
+      const response = await fetch('/api/documents/convert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           content: activeArtifact.content,
+          format: format,
           title: activeArtifact.title,
-          type: 'artifact',
-          metadata: {
-            type: activeArtifact.type,
-            language: activeArtifact.language,
-            createdAt: activeArtifact.createdAt,
-            author: 'ROM Agent'
-          },
-          template: 'oab' // Formatação OAB/ABNT
+          filename: activeArtifact.title.replace(/[^a-z0-9]/gi, '_').toLowerCase(),
+          author: 'ROM Agent'
         })
       })
 
-      if (!response.ok) throw new Error('Erro ao gerar DOCX')
-
-      const blob = await response.blob()
-      saveAs(blob, `${activeArtifact.title}.docx`)
-      setShowDownloadMenu(false)
-    } catch (err) {
-      console.error('Error creating DOCX:', err)
-
-      // Fallback para geração cliente
-      try {
-        const doc = new Document({
-          sections: [{
-            properties: {},
-            children: activeArtifact.content.split('\n').map(line =>
-              new Paragraph({
-                children: [new TextRun({ text: line, size: 24 })],
-                spacing: { after: 200 },
-              })
-            ),
-          }],
-        })
-
-        const blob = await Packer.toBlob(doc)
-        saveAs(blob, `${activeArtifact.title}.docx`)
-        setShowDownloadMenu(false)
-      } catch (fallbackErr) {
-        console.error('Fallback DOCX also failed:', fallbackErr)
-        handleDownloadTxt()
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Erro desconhecido' }))
+        throw new Error(errorData.error || `Erro ao gerar ${format.toUpperCase()}`)
       }
-    }
-  }
-
-  const handleDownloadPDF = async () => {
-    try {
-      const response = await fetch('/api/export/pdf', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          content: activeArtifact.content,
-          title: activeArtifact.title,
-          type: 'artifact',
-          metadata: {
-            type: activeArtifact.type,
-            language: activeArtifact.language,
-            createdAt: activeArtifact.createdAt,
-            author: 'ROM Agent'
-          },
-          template: 'oab'
-        })
-      })
-
-      if (!response.ok) throw new Error('Erro ao gerar PDF')
 
       const blob = await response.blob()
-      saveAs(blob, `${activeArtifact.title}.pdf`)
+      const fileExtensions: Record<string, string> = {
+        docx: '.docx',
+        pdf: '.pdf',
+        html: '.html',
+        txt: '.txt',
+        md: '.md'
+      }
+
+      const filename = `${activeArtifact.title}${fileExtensions[format]}`
+      saveAs(blob, filename)
       setShowDownloadMenu(false)
-    } catch (err) {
-      console.error('Error creating PDF:', err)
-      alert('Erro ao gerar PDF. Tente outro formato.')
+
+      console.log(`[ArtifactPanel] ✅ Downloaded as ${format.toUpperCase()}: ${filename}`)
+    } catch (err: any) {
+      console.error(`[ArtifactPanel] ❌ Error downloading ${format}:`, err)
+      alert(`Erro ao gerar ${format.toUpperCase()}: ${err.message}`)
     }
   }
+
+  const handleDownloadDocx = () => handleDownloadFormat('docx')
+
+  const handleDownloadPDF = () => handleDownloadFormat('pdf')
+  const handleDownloadHTML = () => handleDownloadFormat('html')
+  const handleDownloadMarkdown = () => handleDownloadFormat('md')
 
   const handleDownloadHTML = async () => {
     try {
