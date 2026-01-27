@@ -1043,6 +1043,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
       for (const tool of toolUseData) {
         console.log(`🔧 Executando ferramenta: ${tool.name}`);
+        console.log(`   📋 Tool Input:`, JSON.stringify(tool.input, null, 2)); // 🆕 LOG DO INPUT
 
         // ⚡ FEEDBACK: Informar ao usuário que a ferramenta está sendo executada
         const toolStartMsg = tool.name === 'pesquisar_jurisprudencia' ? '⏳ Consultando tribunais...' :

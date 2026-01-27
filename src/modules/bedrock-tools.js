@@ -740,6 +740,8 @@ export async function executeTool(toolName, toolInput) {
         const { title, content, type = 'document', language = 'markdown' } = toolInput;
 
         console.log(`📄 [Artifact] Criando: "${title}" (${type})`);
+        console.log(`   📋 toolInput recebido:`, JSON.stringify(toolInput, null, 2)); // 🆕 LOG COMPLETO
+        console.log(`   📊 Parâmetros extraídos:`, { title, type, language, contentLength: content?.length || 0 }); // 🆕 LOG DOS PARAMS
 
         // Retorna objeto artifact que será enviado ao frontend
         return {
