@@ -1192,7 +1192,58 @@ function buildContextualSystemPrompt(options = {}) {
 
     if (promptResult && promptResult.content) {
       console.log(`[buildSystemPrompt] Usando prompt: ${documentType} (${promptResult.type}, ${promptResult.content.length} chars)`);
-      return promptResult.content;
+
+      // 🎯 SOLUÇÃO 1: Adicionar instruções universais para documentos grandes
+      // Aplica-se a TODOS os prompts específicos automaticamente
+      const promptWithInstructions = promptResult.content + `
+
+---
+
+## 📄 INSTRUÇÕES PARA GERAÇÃO DE DOCUMENTOS EXTENSOS
+
+**IMPORTANTE - EVITAR TIMEOUT:**
+
+Para documentos grandes (análises, memoriais, pareceres, petições >5 páginas):
+
+1. **NÃO USE create_artifact** durante a geração
+2. **GERE O CONTEÚDO COMPLETO** como texto formatado em Markdown
+3. **O SISTEMA CRIARÁ AUTOMATICAMENTE** um artifact para download em Word
+
+**Estrutura da resposta:**
+\`\`\`
+[Breve introdução opcional]
+
+# TÍTULO DO DOCUMENTO
+
+## Seção 1
+[conteúdo completo...]
+
+## Seção 2
+[conteúdo completo...]
+
+[... todo o documento ...]
+
+## Seção Final
+[conteúdo completo...]
+\`\`\`
+
+**Use create_artifact APENAS para:**
+- ✅ Códigos de programação
+- ✅ Tabelas de dados (>20 linhas)
+- ✅ Gráficos/diagramas
+- ✅ Documentos curtos (<3 páginas)
+
+**Formato do Word:**
+- O documento será automaticamente convertido para Word (.docx)
+- Formatação profissional será aplicada automaticamente
+- Templates e timbrados serão incluídos conforme configuração
+
+**Se o usuário solicitar formato específico:**
+- Mencione no início: "Documento será gerado em [formato solicitado]"
+- Exemplo: PDF, TXT, DOCX formatado customizado
+`;
+
+      return promptWithInstructions;
     }
   } catch (error) {
     console.log(`[buildSystemPrompt] Prompt '${documentType}' não encontrado, fallback para legacy`);
