@@ -5,7 +5,7 @@ import progressEmitter from '../utils/progress-emitter.js';
 const router = express.Router();
 
 /**
- * GET /api/upload/:uploadId/progress
+ * GET /api/upload-progress/:uploadId/progress
  *
  * Stream SSE de progresso para acompanhamento de upload e extração
  *

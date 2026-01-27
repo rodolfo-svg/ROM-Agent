@@ -33,7 +33,7 @@ export function useUploadProgress(uploadId: string | null) {
 
     // Conectar ao SSE de progresso
     const eventSource = new EventSource(
-      `/api/upload/${uploadId}/progress`,
+      `/api/upload-progress/${uploadId}/progress`,
       { withCredentials: true }
     );
 

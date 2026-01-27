@@ -532,8 +532,8 @@ app.use('/api/diagnostic/bedrock', diagnosticBedrockRoutes);
 // Rotas de Exportação (DOCX, PDF, HTML, Markdown, TXT)
 app.use('/api/export', exportRoutes);
 
-// Rotas de Progresso de Upload (SSE)
-app.use('/api/upload', uploadProgressRoutes);
+// Rotas de Progresso de Upload (SSE) - path específico para evitar conflito
+app.use('/api/upload-progress', uploadProgressRoutes);
 
 // ====================================================================
 // 📄 API DE CERTIDÕES DJe/DJEN (CNJ)

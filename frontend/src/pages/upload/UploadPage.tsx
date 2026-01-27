@@ -70,6 +70,21 @@ export function UploadPage() {
   // SSE Progress tracking (progresso em tempo real via Server-Sent Events)
   const sseProgress = useUploadProgress(currentUploadId)
 
+  // File upload hook - APENAS para gerenciar estado de arquivos anexados
+  // Upload real é feito via handleFileUpload customizado
+  const {
+    attachedFiles,
+    removeFile,
+    clearFiles,
+  } = useFileUpload({
+    endpoint: 'kb',
+    maxFiles: 20,
+    maxSizeBytes: 500 * 1024 * 1024,
+    allowedTypes: [],
+    onUploadComplete: () => {}, // Não usado (upload customizado)
+    onUploadError: () => {}, // Não usado (upload customizado)
+  })
+
   // ============================================================
   // FETCH DOCUMENTS
   // ============================================================
