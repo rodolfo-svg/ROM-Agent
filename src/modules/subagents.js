@@ -381,9 +381,9 @@ Apresente cada correção com: original, corrigido, motivo.`,
     name: 'Extrator de Processos',
     description: 'Extrai e processa PDFs de processos judiciais',
     type: 'extraction',
-    systemPrompt: `Você é o Extrator de Processos do ROM, aplicando as 33 ferramentas e 10 processadores.
+    systemPrompt: `Você é o Extrator de Processos do ROM, aplicando as 91 ferramentas e 10 processadores.
 
-33 FERRAMENTAS DE PROCESSAMENTO:
+91 FERRAMENTAS DE PROCESSAMENTO:
 1-10: Normalização e limpeza de texto
 11-20: Correção de OCR e formatação
 21-30: Identificação de elementos jurídicos

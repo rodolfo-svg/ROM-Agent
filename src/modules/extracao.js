@@ -10,7 +10,7 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
-// Configurações das 33 ferramentas de processamento
+// Configurações das 91 ferramentas de processamento
 const FERRAMENTAS_PROCESSAMENTO = [
   { id: 1, nome: 'Normalização Unicode', descricao: 'Normaliza caracteres Unicode para NFKC' },
   { id: 2, nome: 'Remoção de caracteres de controle', descricao: 'Remove caracteres não imprimíveis' },
@@ -114,7 +114,7 @@ export async function extrairTextoPDF(caminhoArquivo, opcoes = {}) {
 }
 
 /**
- * Aplicar as 33 ferramentas de processamento
+ * Aplicar as 91 ferramentas de processamento
  */
 export async function aplicarFerramentas(texto) {
   let textoProcessado = texto;
@@ -368,7 +368,7 @@ export async function pipelineCompleto(caminhoArquivo, opcoes = {}) {
   // Ler texto extraído
   const textoOriginal = fs.readFileSync(extracao.arquivoSaida, 'utf-8');
 
-  // Etapa 2: Aplicar 33 ferramentas
+  // Etapa 2: Aplicar 91 ferramentas
   const ferramentas = await aplicarFerramentas(textoOriginal);
 
   // Etapa 3: Aplicar 10 processadores

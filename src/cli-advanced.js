@@ -137,7 +137,7 @@ ${CORES.cyan}${CORES.bright}COMANDOS:${CORES.reset}
   ${CORES.green}resumo${CORES.reset}       Gerar resumo executivo (Camada 1, 2 ou 3)
   ${CORES.green}redigir${CORES.reset}      Redigir peça jurídica
   ${CORES.green}pesquisar${CORES.reset}    Pesquisar jurisprudência
-  ${CORES.green}extrair${CORES.reset}      Extrair texto de PDF (33 ferramentas + 10 processadores)
+  ${CORES.green}extrair${CORES.reset}      Extrair texto de PDF (91 ferramentas + 10 processadores)
   ${CORES.green}revisar${CORES.reset}      Revisar português jurídico
   ${CORES.green}contrato${CORES.reset}     Elaborar contrato
   ${CORES.green}agents${CORES.reset}       Gerenciar subagentes

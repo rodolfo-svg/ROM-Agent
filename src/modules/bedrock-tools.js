@@ -156,7 +156,7 @@ export const BEDROCK_TOOLS = [
   {
     toolSpec: {
       name: 'consultar_kb',
-      description: 'Consulta documentos já processados na Knowledge Base do usuário. Use quando o usuário mencionar "o documento que enviei", "o contrato", "a petição anterior" ou qualquer referência a arquivos enviados. Os documentos foram extraídos automaticamente (33 ferramentas, $0.00) e estão prontos para consulta.',
+      description: 'Consulta documentos já processados na Knowledge Base do usuário. Use quando o usuário mencionar "o documento que enviei", "o contrato", "a petição anterior" ou qualquer referência a arquivos enviados. Os documentos foram extraídos automaticamente (91 ferramentas, $0.00) e estão prontos para consulta.',
       inputSchema: {
         json: {
           type: 'object',

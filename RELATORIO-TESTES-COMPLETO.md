@@ -62,7 +62,7 @@ Taxa de sucesso: 100% ✅
 
 | Endpoint | Método | Status | Auth | Observação |
 |----------|--------|--------|------|------------|
-| `/api/kb/upload` | POST | ✅ OK | Sim | 33 ferramentas de IA + docs estruturados |
+| `/api/kb/upload` | POST | ✅ OK | Sim | 91 ferramentas de IA + docs estruturados |
 | `/api/kb/documents` | GET | ✅ OK | Sim | Lista todos os documentos |
 | `/api/kb/documents/:id/download` | GET | ✅ OK | Sim | Download de documento |
 | `/api/kb/documents/:id/preview` | GET | ✅ OK | Sim | Preview de documento |
@@ -88,7 +88,7 @@ Status: ✅ Autenticação funcionando corretamente
    - Formatos: PDF, DOCX, TXT, imagens e mais
 
 2. **Processamento Inteligente**
-   - 33 ferramentas de extração por IA
+   - 91 ferramentas de extração por IA
    - Geração automática de 7 documentos estruturados:
      - `01_resumo_executivo.md`
      - `02_identificacao_partes.md`

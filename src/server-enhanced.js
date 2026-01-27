@@ -3344,7 +3344,7 @@ logger.info('✅ Extraction API endpoints configured');
 
 // ============================================================================
 
-// API - Upload múltiplos documentos com extração automática (33 ferramentas)
+// API - Upload múltiplos documentos com extração automática (91 ferramentas)
 app.post('/api/upload-documents', upload.array('files', 20), async (req, res) => {
   try {
     // Estender timeout para 10 minutos (arquivos grandes podem demorar)
@@ -3361,11 +3361,11 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
 
     for (const file of req.files) {
       try {
-        console.log(`🔍 Processando: ${file.originalname} com 33 ferramentas + documentos estruturados...`);
+        console.log(`🔍 Processando: ${file.originalname} com 91 ferramentas + documentos estruturados...`);
 
         // 🚀 PROCESSAMENTO COMPLETO: Extração + Documentos Estruturados
         // Usa processFile() que gera automaticamente:
-        // - Texto extraído (33 ferramentas)
+        // - Texto extraído (91 ferramentas)
         // - 7 documentos estruturados (fichamento, índices, análises)
         // - Chunks para RAG
         // - Metadados completos
@@ -5508,7 +5508,7 @@ app.post('/api/kb/upload', requireAuth, upload.array('files', 20), async (req, r
     for (const file of req.files) {
       try {
         console.log(`📤 KB Upload: ${file.originalname} por ${userName}`);
-        console.log(`🔍 Processando com 33 ferramentas + documentos estruturados...`);
+        console.log(`🔍 Processando com 91 ferramentas + documentos estruturados...`);
 
         // 🚀 USAR processFile() PARA GERAR DOCUMENTOS ESTRUTURADOS
         const processResult = await processFile(file.path);
@@ -10188,7 +10188,7 @@ app.listen(PORT, async () => {
 1. Arraste e solte arquivos PDF ou DOCX nesta pasta
 2. O sistema detectará automaticamente e iniciará o processamento
 3. Os arquivos serão:
-   ✅ Extraídos com 33 ferramentas de limpeza
+   ✅ Extraídos com 91 ferramentas de limpeza
    ✅ Salvos no Knowledge Base (KB)
    ✅ Indexados e analisados
    ✅ Disponibilizados para o chat
@@ -10250,7 +10250,7 @@ app.listen(PORT, async () => {
 
       try {
         // 🚀 PROCESSAR ARQUIVO COMPLETO (extração + documentos estruturados)
-        logger.info(`📄 Processando ${fileName} com 33 ferramentas + documentos estruturados...`);
+        logger.info(`📄 Processando ${fileName} com 91 ferramentas + documentos estruturados...`);
         const result = await processFile(filePath);
 
         if (result.success) {
@@ -10334,7 +10334,7 @@ Processado em: ${new Date().toLocaleString('pt-BR')}
 📁 CONTEÚDO DESTA PASTA:
 
 1. documento_extraido.txt
-   → Texto completo extraído com 33 ferramentas
+   → Texto completo extraído com 91 ferramentas
    → ${result.extraction.charCount.toLocaleString()} caracteres
    → ${result.toolsUsed?.length || 0} ferramentas utilizadas
 

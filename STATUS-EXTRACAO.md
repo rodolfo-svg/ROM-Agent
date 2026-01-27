@@ -126,7 +126,7 @@ $ grep -r "extraction" frontend/src/ | wc -l
 
 **Funcionalidades:**
 - Upload de múltiplos arquivos (até 20)
-- Processamento com 33 ferramentas de extração por IA
+- Processamento com 91 ferramentas de extração por IA
 - Geração de 7 documentos estruturados:
   - `01_resumo_executivo.md`
   - `02_identificacao_partes.md`
@@ -222,7 +222,7 @@ files: [arquivo1.pdf, arquivo2.docx]
 
 **Vantagens:**
 - ✅ Já funciona em produção
-- ✅ 33 ferramentas de IA
+- ✅ 91 ferramentas de IA
 - ✅ Gera documentos estruturados
 - ✅ Interface web disponível
 
@@ -238,7 +238,7 @@ files: [arquivo1.pdf, arquivo2.docx]
 
 1. **Usar KB Upload** (`/upload` no sidebar)
    - Funcional e testado
-   - 33 ferramentas de IA
+   - 91 ferramentas de IA
    - Interface completa
 
 2. **Não usar endpoints `/api/extraction/*`**

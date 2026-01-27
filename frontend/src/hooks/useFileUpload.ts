@@ -18,7 +18,7 @@ console.log('%cSe você NÃO ver esta mensagem em VERMELHO GRANDE, o cache ainda
  * - Validacao completa de tipo e tamanho
  * - Suporte a cancelamento
  * - TypeScript completo com generics
- * - Integracao com IA (33 ferramentas de extracao)
+ * - Integracao com IA (91 ferramentas de extracao)
  * - Documentos estruturados (7 tipos)
  *
  * Endpoints suportados:
@@ -142,7 +142,7 @@ export interface DefaultUploadResponse {
   size?: number;
   type?: string;
   url?: string;
-  // Dados de extracao IA (33 ferramentas)
+  // Dados de extracao IA (91 ferramentas)
   extractedText?: string;
   textLength?: number;
   wordCount?: number;
@@ -175,7 +175,7 @@ export interface FileInfo {
   status: UploadStatus;
   progress: number;
   error?: string;
-  // Dados de extracao IA (33 ferramentas)
+  // Dados de extracao IA (91 ferramentas)
   extractedText?: string;
   textLength?: number;
   wordCount?: number;
@@ -317,7 +317,7 @@ export interface UseFileUploadOptions<T = DefaultUploadResponse> {
   projectId?: string;
 
   /**
-   * Processar com extracao IA (33 ferramentas)
+   * Processar com extracao IA (91 ferramentas)
    * @default true
    */
   processWithAI?: boolean;

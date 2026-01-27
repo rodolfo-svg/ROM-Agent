@@ -310,7 +310,7 @@ const TOOLS = [
   },
   {
     name: 'listar_ferramentas_extracao',
-    description: 'Lista as 33 ferramentas de processamento e 10 processadores de otimização',
+    description: 'Lista as 91 ferramentas de processamento e 10 processadores de otimização',
     input_schema: {
       type: 'object',
       properties: {}

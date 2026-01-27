@@ -3,7 +3,7 @@
  *
  * Pagina para upload de documentos para a Knowledge Base com:
  * - Progress tracking em tempo real
- * - Integracao com IA (33 ferramentas de extracao)
+ * - Integracao com IA (91 ferramentas de extracao)
  * - Geracao de documentos estruturados
  * - Listagem e busca de documentos
  * - Integracao com backend /api/kb/upload
@@ -353,7 +353,7 @@ export function UploadPage() {
                       </p>
                       <p className="text-xs text-bronze-600 mt-2">
                         <Brain className="w-3 h-3 inline mr-1" />
-                        Extracao automatica com 33 ferramentas de IA
+                        Extracao automatica com 91 ferramentas de IA
                       </p>
                     </>
                   )}
