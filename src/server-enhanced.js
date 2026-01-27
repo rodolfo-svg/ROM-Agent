@@ -59,6 +59,8 @@ import caseProcessorSSE from './routes/case-processor-sse.js';
 import chatStreamRoutes from './routes/chat-stream.js';
 import diagnosticBedrockRoutes from './routes/diagnostic-bedrock.js';
 import exportRoutes from './routes/export.js';
+import uploadProgressRoutes from './routes/upload-progress.js';
+import progressEmitter from './utils/progress-emitter.js';
 import certidoesDJEService from './services/certidoes-dje-service.js';
 import multiAgentPipelineService from './services/multi-agent-pipeline-service.js';
 // Import bedrock-helper to initialize Prometheus counters (bedrock_requests_total, bedrock_errors_total)
@@ -529,6 +531,9 @@ app.use('/api/diagnostic/bedrock', diagnosticBedrockRoutes);
 
 // Rotas de Exportação (DOCX, PDF, HTML, Markdown, TXT)
 app.use('/api/export', exportRoutes);
+
+// Rotas de Progresso de Upload (SSE)
+app.use('/api/upload', uploadProgressRoutes);
 
 // ====================================================================
 // 📄 API DE CERTIDÕES DJe/DJEN (CNJ)
@@ -5493,25 +5498,92 @@ app.get('/api/kb/status', (req, res) => {
 
 // Upload de documentos para o KB (requer autenticação)
 // ✅ FIX: Adicionar requireAuth para consistência
+// ✅ v2.0: Processamento assíncrono com progresso via SSE
 app.post('/api/kb/upload', requireAuth, upload.array('files', 20), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
     }
 
+    // Gerar uploadId único
+    const uploadId = `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
     // Usuário autenticado via session
     const userId = req.session.user.id;
     const userName = req.session.user.name || req.session.user.email;
-    const uploadedDocs = [];
 
+    console.log(`📤 KB Upload iniciado: ${uploadId} por ${userName} (${req.files.length} arquivos)`);
+
+    // Responder imediatamente com uploadId
+    res.json({
+      success: true,
+      uploadId,
+      fileCount: req.files.length,
+      message: 'Upload iniciado. Conecte-se ao SSE para acompanhar progresso.'
+    });
+
+    // Processar em background com emissão de progresso
+    processUploadWithProgress(uploadId, req.files, userId, userName).catch(err => {
+      console.error(`❌ Erro no processamento ${uploadId}:`, err);
+      progressEmitter.failSession(uploadId, err);
+    });
+  } catch (error) {
+    console.error('❌ Erro no upload KB:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Processar upload em background com emissão de progresso via SSE
+ * @param {string} uploadId - ID único do upload
+ * @param {Array} files - Arquivos enviados
+ * @param {string} userId - ID do usuário
+ * @param {string} userName - Nome do usuário
+ */
+async function processUploadWithProgress(uploadId, files, userId, userName) {
+  // Iniciar sessão de progresso
+  progressEmitter.startSession(uploadId, {
+    fileCount: files.length,
+    user: userName,
+    startedAt: new Date().toISOString()
+  });
+
+  const uploadedDocs = [];
+
+  try {
     // Processar cada arquivo COM DOCUMENTOS ESTRUTURADOS
-    for (const file of req.files) {
-      try {
-        console.log(`📤 KB Upload: ${file.originalname} por ${userName}`);
-        console.log(`🔍 Processando com 91 ferramentas + documentos estruturados...`);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      const filePercent = (i / files.length) * 100;
 
-        // 🚀 USAR processFile() PARA GERAR DOCUMENTOS ESTRUTURADOS
-        const processResult = await processFile(file.path);
+      try {
+        // Emitir progresso: iniciando arquivo
+        progressEmitter.addUpdate(uploadId, 'info', `Processando ${file.originalname}...`, {
+          percent: Math.round(filePercent),
+          currentFile: i + 1,
+          totalFiles: files.length,
+          fileName: file.originalname,
+          stage: 'Iniciando extração'
+        });
+
+        console.log(`🔍 [${uploadId}] Arquivo ${i + 1}/${files.length}: ${file.originalname}`);
+
+        // 🚀 PROCESSAR arquivo com callbacks de progresso
+        const processResult = await processFileWithProgress(
+          file.path,
+          (stage, stagePercent) => {
+            // Calcular percentual total: progresso do arquivo atual + progresso interno
+            const totalPercent = filePercent + (stagePercent / files.length);
+
+            progressEmitter.addUpdate(uploadId, 'info', stage, {
+              percent: Math.round(totalPercent),
+              currentFile: i + 1,
+              totalFiles: files.length,
+              fileName: file.originalname,
+              stage
+            });
+          }
+        );
 
         if (!processResult.success) {
           throw new Error(processResult.error || 'Falha na extração');
@@ -5624,6 +5696,17 @@ app.post('/api/kb/upload', requireAuth, upload.array('files', 20), async (req, r
         });
 
         console.log(`✅ KB: ${file.originalname} + ${structuredDocs.length} docs estruturados salvos`);
+
+        // Emitir progresso: arquivo completo
+        const completedPercent = Math.round(((i + 1) / files.length) * 100);
+        progressEmitter.addUpdate(uploadId, 'success', `${file.originalname} processado com sucesso`, {
+          percent: completedPercent,
+          currentFile: i + 1,
+          totalFiles: files.length,
+          fileName: file.originalname,
+          stage: 'Concluído'
+        });
+
       } catch (fileError) {
         console.error(`❌ Erro ao processar ${file.originalname}:`, fileError);
         uploadedDocs.push({
@@ -5631,19 +5714,44 @@ app.post('/api/kb/upload', requireAuth, upload.array('files', 20), async (req, r
           status: 'error',
           error: fileError.message
         });
+
+        // Emitir erro mas continuar processando outros arquivos
+        progressEmitter.addUpdate(uploadId, 'error', `Erro ao processar ${file.originalname}: ${fileError.message}`, {
+          percent: Math.round(((i + 1) / files.length) * 100),
+          currentFile: i + 1,
+          totalFiles: files.length,
+          fileName: file.originalname,
+          stage: 'Erro'
+        });
       }
     }
 
-    res.json({
-      success: true,
-      message: `${uploadedDocs.length} documento(s) processado(s)`,
+    // Finalizar sessão com sucesso
+    progressEmitter.completeSession(uploadId, {
+      totalFiles: files.length,
+      successCount: uploadedDocs.filter(d => d.status === 'success').length,
+      errorCount: uploadedDocs.filter(d => d.status === 'error').length,
       documents: uploadedDocs
     });
+
+    console.log(`✅ Upload ${uploadId} concluído: ${uploadedDocs.length} documentos`);
+
   } catch (error) {
-    console.error('❌ Erro no upload KB:', error);
-    res.status(500).json({ error: error.message });
+    console.error(`❌ Erro crítico no upload ${uploadId}:`, error);
+    progressEmitter.failSession(uploadId, error);
+    throw error;
   }
-});
+}
+
+/**
+ * Wrapper para processFile() com callbacks de progresso
+ * @param {string} filePath - Caminho do arquivo
+ * @param {Function} onProgress - Callback (stage, percent)
+ */
+async function processFileWithProgress(filePath, onProgress = null) {
+  // Passar callback diretamente para processFile (suporta 7 etapas de progresso)
+  return await processFile(filePath, onProgress);
+}
 
 // Listar documentos do KB do usuário (requer autenticação)
 app.get('/api/kb/documents', requireAuth, (req, res) => {

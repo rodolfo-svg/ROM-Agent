@@ -28,8 +28,9 @@ import {
   Database
 } from 'lucide-react'
 import { Button } from '@/components/ui'
-import { apiFetch } from '@/services/api'
+import { apiFetch, getCsrfToken } from '@/services/api'
 import { useFileUpload, type FileInfo } from '@/hooks'
+import { useUploadProgress } from '@/hooks/useUploadProgress'
 
 // ============================================================
 // TYPES
@@ -64,30 +65,10 @@ export function UploadPage() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showStructured, setShowStructured] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null)
+  const [currentUploadId, setCurrentUploadId] = useState<string | null>(null)
 
-  // File upload hook - configured for KB endpoint
-  const {
-    attachedFiles,
-    isUploading,
-    uploadProgress,
-    error: uploadError,
-    uploadFiles,
-    removeFile,
-    clearFiles,
-  } = useFileUpload({
-    endpoint: 'kb',
-    maxFiles: 20,
-    maxSizeBytes: 500 * 1024 * 1024, // 500MB para documentos jurídicos grandes
-    allowedTypes: [], // Allow all types for KB
-    onUploadComplete: (file, fileInfo) => {
-      console.log(`[UploadPage] File uploaded: ${file.name}`, fileInfo)
-      // Refresh documents list after upload
-      fetchDocuments()
-    },
-    onUploadError: (file, error) => {
-      console.error(`[UploadPage] Upload error for ${file.name}:`, error)
-    },
-  })
+  // SSE Progress tracking (progresso em tempo real via Server-Sent Events)
+  const sseProgress = useUploadProgress(currentUploadId)
 
   // ============================================================
   // FETCH DOCUMENTS
@@ -111,6 +92,18 @@ export function UploadPage() {
     fetchDocuments()
   }, [fetchDocuments])
 
+  // Detectar conclusão do upload via SSE e atualizar lista
+  useEffect(() => {
+    if (sseProgress.completed && !sseProgress.error) {
+      console.log('[UploadPage] Upload concluído via SSE, atualizando lista...')
+      fetchDocuments()
+      // Reset uploadId após 2 segundos para permitir visualização do 100%
+      setTimeout(() => {
+        setCurrentUploadId(null)
+      }, 2000)
+    }
+  }, [sseProgress.completed, sseProgress.error, fetchDocuments])
+
   // ============================================================
   // HANDLERS
   // ============================================================
@@ -119,11 +112,50 @@ export function UploadPage() {
     const selectedFiles = Array.from(e.target.files || [])
     if (selectedFiles.length === 0) return
 
-    await uploadFiles(selectedFiles)
+    try {
+      // Criar FormData com arquivos
+      const formData = new FormData()
+      selectedFiles.forEach(file => {
+        formData.append('files', file)
+      })
 
-    // Reset input
-    if (e.target) {
-      e.target.value = ''
+      // Obter CSRF token
+      const csrfToken = getCsrfToken()
+
+      console.log(`[UploadPage] Enviando ${selectedFiles.length} arquivo(s) para /api/kb/upload`)
+
+      // POST para /api/kb/upload (retorna uploadId imediatamente)
+      const response = await fetch('/api/kb/upload', {
+        method: 'POST',
+        body: formData,
+        credentials: 'include',
+        headers: {
+          'x-csrf-token': csrfToken
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      const data = await response.json()
+
+      if (data.success && data.uploadId) {
+        console.log(`[UploadPage] Upload iniciado: ${data.uploadId}`)
+        // Definir uploadId para iniciar tracking via SSE
+        setCurrentUploadId(data.uploadId)
+      } else {
+        console.error('[UploadPage] Resposta sem uploadId:', data)
+        throw new Error(data.error || 'Falha ao iniciar upload')
+      }
+    } catch (error) {
+      console.error('[UploadPage] Erro no upload:', error)
+      alert(`Erro no upload: ${error instanceof Error ? error.message : 'Erro desconhecido'}`)
+    } finally {
+      // Reset input
+      if (e.target) {
+        e.target.value = ''
+      }
     }
   }
 
@@ -312,7 +344,7 @@ export function UploadPage() {
             <div className="bg-white rounded-xl shadow-soft p-8 mb-6">
               <div
                 className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors ${
-                  isUploading
+                  currentUploadId && !sseProgress.completed
                     ? 'border-bronze-400 bg-bronze-50/50'
                     : 'border-stone-300 hover:border-bronze-400 hover:bg-bronze-50/50'
                 }`}
@@ -323,24 +355,63 @@ export function UploadPage() {
                   onChange={handleFileUpload}
                   className="hidden"
                   id="file-upload"
-                  disabled={isUploading}
+                  disabled={currentUploadId !== null && !sseProgress.completed}
                 />
                 <label htmlFor="file-upload" className="cursor-pointer">
-                  {isUploading ? (
+                  {currentUploadId && !sseProgress.completed ? (
                     <>
-                      <Loader2 className="w-12 h-12 text-bronze-500 mx-auto mb-4 animate-spin" />
-                      <p className="text-lg font-medium text-stone-700 mb-2">
-                        Enviando e processando com IA...
-                      </p>
-                      <div className="w-64 mx-auto bg-stone-200 rounded-full h-2 mb-2">
-                        <div
-                          className="bg-bronze-500 h-2 rounded-full transition-all duration-300"
-                          style={{ width: `${uploadProgress}%` }}
-                        />
-                      </div>
-                      <p className="text-sm text-stone-500">
-                        {uploadProgress}% concluido
-                      </p>
+                      {sseProgress.error ? (
+                        <>
+                          <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                          <p className="text-lg font-medium text-red-700 mb-2">
+                            Erro no processamento
+                          </p>
+                          <p className="text-sm text-stone-600 mb-4">
+                            {sseProgress.error}
+                          </p>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setCurrentUploadId(null)
+                              fetchDocuments()
+                            }}
+                          >
+                            Tentar novamente
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Loader2 className="w-12 h-12 text-bronze-500 mx-auto mb-4 animate-spin" />
+                          <p className="text-lg font-medium text-stone-700 mb-2">
+                            {sseProgress.stage}
+                          </p>
+
+                          {/* Barra de Progresso com Percentual */}
+                          <div className="w-full max-w-md mx-auto mb-3">
+                            <div className="w-full bg-stone-200 rounded-full h-3 overflow-hidden">
+                              <div
+                                className="bg-bronze-500 h-3 rounded-full transition-all duration-300 ease-out"
+                                style={{ width: `${Math.min(sseProgress.percent, 100)}%` }}
+                              />
+                            </div>
+
+                            {/* Percentual e Informações */}
+                            <div className="flex justify-between items-center mt-2 text-sm text-stone-600">
+                              <span className="truncate">{sseProgress.stage}</span>
+                              <span className="font-semibold ml-2">{sseProgress.percent}%</span>
+                            </div>
+                          </div>
+
+                          {/* Informação de Arquivo Atual (se múltiplos) */}
+                          {sseProgress.totalFiles > 1 && (
+                            <p className="text-xs text-stone-500 mt-2">
+                              Arquivo {sseProgress.currentFile} de {sseProgress.totalFiles}
+                              {sseProgress.fileName && `: ${sseProgress.fileName}`}
+                            </p>
+                          )}
+                        </>
+                      )}
                     </>
                   ) : (
                     <>
@@ -349,7 +420,7 @@ export function UploadPage() {
                         Clique ou arraste arquivos aqui
                       </p>
                       <p className="text-sm text-stone-500">
-                        PDF, DOCX, TXT, imagens e outros formatos - Ate 100MB por arquivo
+                        PDF, DOCX, TXT, imagens e outros formatos - Ate 500MB por arquivo
                       </p>
                       <p className="text-xs text-bronze-600 mt-2">
                         <Brain className="w-3 h-3 inline mr-1" />
