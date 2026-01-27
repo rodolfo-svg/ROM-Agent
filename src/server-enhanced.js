@@ -504,7 +504,7 @@ app.use('/api', jurisprudenciaRoutes);
 app.use('/api', documentsRoutes);
 app.use('/api', pipelineRoutes);
 app.use('/api/rom-project', romProjectRouter);
-app.use('/api/system-prompts', systemPromptsRouter);
+app.use('/api/system-prompts', requireAuth, systemPromptsRouter); // ✅ Adicionar auth
 
 // Rotas de Autenticação (login/logout)
 app.use('/api/auth', authRoutes);

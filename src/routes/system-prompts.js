@@ -27,9 +27,9 @@ const PromptsManager = require('../../lib/prompts-manager.cjs');
  */
 router.get('/', async (req, res) => {
   try {
-    const userId = req.user?.id;
-    const partnerId = req.user?.partnerId || 'global';
-    const userRole = req.user?.role || 'user';
+    const userId = req.session?.user?.id;
+    const partnerId = req.session?.user?.partnerId || 'global';
+    const userRole = req.session?.user?.role || 'user';
 
     // Listar prompts usando PromptsManager
     const prompts = PromptsManager.listarPrompts(partnerId, userRole);
@@ -56,7 +56,7 @@ router.get('/', async (req, res) => {
 router.get('/:type/:id', async (req, res) => {
   try {
     const { type, id } = req.params;
-    const partnerId = req.user?.partnerId || 'global';
+    const partnerId = req.session?.user?.partnerId || 'global';
 
     // Obter prompt usando PromptsManager (apenas ID, sem prefixo)
     const promptData = PromptsManager.obterPrompt(id, partnerId);
@@ -90,8 +90,8 @@ router.put('/:type/:id', async (req, res) => {
   try {
     const { type, id } = req.params;
     const { content } = req.body;
-    const partnerId = req.user?.partnerId || 'global';
-    const userRole = req.user?.role || 'user';
+    const partnerId = req.session?.user?.partnerId || 'global';
+    const userRole = req.session?.user?.role || 'user';
 
     // Validar permissões
     if (type === 'global' && userRole !== 'master_admin') {
@@ -146,8 +146,8 @@ router.put('/:type/:id', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const { name, type, content } = req.body;
-    const partnerId = req.user?.partnerId || 'global';
-    const userRole = req.user?.role || 'user';
+    const partnerId = req.session?.user?.partnerId || 'global';
+    const userRole = req.session?.user?.role || 'user';
 
     // Validar permissões
     if (type === 'global' && userRole !== 'master_admin') {
@@ -210,8 +210,8 @@ router.post('/', async (req, res) => {
 router.delete('/:type/:id', async (req, res) => {
   try {
     const { type, id } = req.params;
-    const partnerId = req.user?.partnerId || 'global';
-    const userRole = req.user?.role || 'user';
+    const partnerId = req.session?.user?.partnerId || 'global';
+    const userRole = req.session?.user?.role || 'user';
 
     // Validar permissões
     if (type === 'global' && userRole !== 'master_admin') {
