@@ -329,8 +329,68 @@ export function ChatPage() {
           // Typing indicator during tool execution
           const toolMessage = (chunk as any).message || 'Processando...'
           updateMessage(assistantMsg.id, toolMessage)
+        } else if (chunk.type === 'artifact_start' && chunk.artifact) {
+          // 🎨 SOLUÇÃO 1: Artifact começou a ser gerado
+          console.log('🎨 [ChatPage] Artifact START:', {
+            title: chunk.artifact.title,
+            type: chunk.artifact.type
+          })
+
+          // Mostrar indicador de que artifact está sendo gerado
+          const startMessage = `\n\n📄 **Gerando: ${chunk.artifact.title}...**\n\n`
+          updateMessage(assistantMsg.id, fullContent + startMessage)
+
+        } else if (chunk.type === 'artifact_chunk' && chunk.id && chunk.content) {
+          // 🎨 SOLUÇÃO 1: Chunk progressivo do artifact (opcional - pode acumular)
+          // Por enquanto, não fazer nada (backend acumula e envia completo)
+          console.log('🎨 [ChatPage] Artifact CHUNK:', {
+            id: chunk.id,
+            contentLength: chunk.content.length
+          })
+
+        } else if (chunk.type === 'artifact_complete' && chunk.artifact) {
+          // 🎨 SOLUÇÃO 1: Artifact finalizado - CRIAR E ABRIR PAINEL
+          console.log('🎨 [ChatPage] Artifact COMPLETE:', {
+            title: chunk.artifact.title,
+            type: chunk.artifact.type,
+            contentLength: chunk.artifact.content?.length || 0
+          })
+
+          // ✅ Validar artifact antes de criar
+          if (!chunk.artifact.title || !chunk.artifact.content) {
+            console.warn('⚠️ [ChatPage] Artifact inválido (sem título ou conteúdo), ignorando:', chunk.artifact)
+          } else {
+            // Create artifact
+            const artifact = addArtifact({
+              title: chunk.artifact.title,
+              type: chunk.artifact.type,
+              content: chunk.artifact.content,
+              language: chunk.artifact.language,
+              messageId: assistantMsg.id,
+            })
+
+            console.log('   ✅ Artifact created with ID:', artifact.id)
+
+            // Link artifact to message
+            useChatStore.getState().addArtifactToMessage(assistantMsg.id, artifact.id)
+
+            console.log('   ✅ Artifact linked to message:', assistantMsg.id)
+
+            // Open artifact panel
+            console.log('   🔓 Calling openPanel...')
+            openPanel(artifact)
+            console.log('   ✅ openPanel called for artifact_complete')
+
+            // Remover indicador de geração da mensagem
+            if (fullContent.includes('📄 **Gerando:')) {
+              const cleanedContent = fullContent.replace(/\n\n📄 \*\*Gerando:.*?\.\.\.\*\*\n\n/g, '')
+              updateMessage(assistantMsg.id, cleanedContent)
+            }
+          }
+
         } else if (chunk.type === 'artifact' && chunk.artifact) {
-          console.log('🎨 [ChatPage] Artifact chunk received:', {
+          // 🎨 MODO LEGADO: Artifact via create_artifact tool (compatibilidade)
+          console.log('🎨 [ChatPage] Artifact chunk received (legacy):', {
             title: chunk.artifact.title,
             type: chunk.artifact.type,
             hasContent: !!chunk.artifact.content
@@ -359,7 +419,7 @@ export function ChatPage() {
             // Open artifact panel
             console.log('   🔓 Calling openPanel...')
             openPanel(artifact)
-            console.log('   ✅ openPanel called')
+            console.log('   ✅ openPanel called for legacy artifact')
           }
         } else if (chunk.type === 'error') {
           fullContent = `❌ ${chunk.error}`
