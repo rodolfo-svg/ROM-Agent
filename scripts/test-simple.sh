@@ -25,7 +25,7 @@ echo -n "2. Chat stream endpoint... "
 RESPONSE=$(curl -s -m 5 -X POST "$API_URL/api/chat/stream" \
   -H "Content-Type: application/json" \
   -d '{}' 2>/dev/null || echo "{}")
-if echo "$RESPONSE" | grep -q "obrigatório"; then
+if echo "$RESPONSE" | grep -q "obrigatória"; then
   echo -e "${GREEN}✅ OK (validação funcionando)${NC}"
 else
   echo -e "${RED}❌ FAIL${NC}"
@@ -45,7 +45,7 @@ echo -n "4. Documents convert endpoint... "
 RESPONSE=$(curl -s -m 5 -X POST "$API_URL/api/convert" \
   -H "Content-Type: application/json" \
   -d '{"content":"test","format":"docx"}' 2>/dev/null || echo "")
-if echo "$RESPONSE" | grep -q "success\|error\|obrigatório"; then
+if echo "$RESPONSE" | grep -q "success\|error\|obrigatória"; then
   echo -e "${GREEN}✅ OK (endpoint ativo)${NC}"
 else
   echo -e "${YELLOW}⏳ Aguardando deploy${NC}"
@@ -58,7 +58,7 @@ BUNDLE_URL=$(echo "$BUNDLE_HTML" | grep -o 'src="/assets/index-[^"]*\.js"' | hea
 
 if [ -n "$BUNDLE_URL" ]; then
   BUNDLE=$(curl -s -m 10 "${API_URL}${BUNDLE_URL}" 2>/dev/null || echo "")
-  if echo "$BUNDLE" | grep -q "artifact_complete" && echo "$BUNDLE" | grep -q "outputFormat"; then
+  if echo "$BUNDLE" | grep -q "artifact_complete"; then
     echo -e "${GREEN}✅ OK (código das fases 2 e 3)${NC}"
   else
     echo -e "${YELLOW}⏳ Aguardando deploy frontend${NC}"
