@@ -488,7 +488,8 @@ app.use('/api', csrfProtection.protection({
     // ═══════════════════════════════════════════════════════════════
     // EXPORT SERVICES
     // ═══════════════════════════════════════════════════════════════
-    '/export*'                  // ✅ ADICIONADO: Exportação de documentos (wildcard)
+    '/export*',                 // ✅ ADICIONADO: Exportação de documentos (wildcard)
+    '/documents*'               // ✅ ADICIONADO: Conversão e download de documentos (wildcard)
   ]
 }));
 console.log('🔐 [SECURITY] CSRF validation aplicada em rotas de mutação');
