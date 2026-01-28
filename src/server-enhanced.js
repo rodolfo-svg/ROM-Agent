@@ -5520,6 +5520,14 @@ app.post('/api/kb/upload', requireAuth, upload.array('files', 20), async (req, r
 
     console.log(`📤 KB Upload iniciado: ${uploadId} por ${userName} (${req.files.length} arquivos)`);
 
+    // ✨ FIX: Iniciar sessão de progresso ANTES de responder ao frontend
+    // Isso garante que o SSE encontre a sessão ao conectar
+    progressEmitter.startSession(uploadId, {
+      fileCount: req.files.length,
+      user: userName,
+      startedAt: new Date().toISOString()
+    });
+
     // Responder imediatamente com uploadId
     res.json({
       success: true,
@@ -5529,7 +5537,7 @@ app.post('/api/kb/upload', requireAuth, upload.array('files', 20), async (req, r
     });
 
     // Processar em background com emissão de progresso
-    processUploadWithProgress(uploadId, req.files, userId, userName).catch(err => {
+    processUploadInBackground(uploadId, req.files, userId, userName).catch(err => {
       console.error(`❌ Erro no processamento ${uploadId}:`, err);
       progressEmitter.failSession(uploadId, err);
     });
@@ -5541,18 +5549,14 @@ app.post('/api/kb/upload', requireAuth, upload.array('files', 20), async (req, r
 
 /**
  * Processar upload em background com emissão de progresso via SSE
+ * NOTA: Sessão já foi iniciada em /api/kb/upload antes de responder ao frontend
  * @param {string} uploadId - ID único do upload
  * @param {Array} files - Arquivos enviados
  * @param {string} userId - ID do usuário
  * @param {string} userName - Nome do usuário
  */
-async function processUploadWithProgress(uploadId, files, userId, userName) {
-  // Iniciar sessão de progresso
-  progressEmitter.startSession(uploadId, {
-    fileCount: files.length,
-    user: userName,
-    startedAt: new Date().toISOString()
-  });
+async function processUploadInBackground(uploadId, files, userId, userName) {
+  // Sessão já iniciada - apenas processar arquivos
 
   const uploadedDocs = [];
 

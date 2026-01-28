@@ -19,6 +19,8 @@ router.get('/:uploadId/progress', (req, res) => {
   const connectionId = `upload_${uploadId}`;
   const sseManager = getSSEConnectionManager();
 
+  console.log(`📡 [SSE] Cliente conectou: ${uploadId}`);
+
   // Configurar headers SSE
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
@@ -30,6 +32,7 @@ router.get('/:uploadId/progress', (req, res) => {
 
   // Enviar histórico de updates já processados (se existir)
   const updates = progressEmitter.getSessionUpdates(uploadId);
+  console.log(`📡 [SSE] Enviando ${updates.length} updates históricos para ${uploadId}`);
   for (const update of updates) {
     sseManager.writeEvent(connectionId, null, update);
   }
