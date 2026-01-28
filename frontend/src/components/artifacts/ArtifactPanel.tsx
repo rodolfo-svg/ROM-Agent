@@ -99,7 +99,7 @@ export function ArtifactPanel() {
     try {
       console.log(`[ArtifactPanel] Downloading as ${format.toUpperCase()}`)
 
-      const response = await fetch('/api/documents/convert', {
+      const response = await fetch('/api/convert', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
