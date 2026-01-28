@@ -21,11 +21,16 @@ router.get('/:uploadId/progress', (req, res) => {
 
   console.log(`📡 [SSE] Cliente conectou: ${uploadId}`);
 
-  // Configurar headers SSE
+  // Configurar headers SSE + CORS
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
   res.setHeader('X-Accel-Buffering', 'no'); // Render/Nginx
+
+  // ✨ FIX: Headers CORS necessários para EventSource com withCredentials
+  const origin = req.headers.origin || 'https://iarom.com.br';
+  res.setHeader('Access-Control-Allow-Origin', origin);
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
 
   // Adicionar conexão ao gerenciador
   sseManager.addConnection(connectionId, res, { uploadId });
