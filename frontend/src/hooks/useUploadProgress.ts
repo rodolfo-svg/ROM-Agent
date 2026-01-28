@@ -31,11 +31,18 @@ export function useUploadProgress(uploadId: string | null) {
   useEffect(() => {
     if (!uploadId) return;
 
-    // Conectar ao SSE de progresso
-    const eventSource = new EventSource(
-      `/api/upload-progress/${uploadId}/progress`,
-      { withCredentials: true }
-    );
+    console.log(`[SSE] Conectando ao progresso: ${uploadId}`);
+
+    // Aguardar 500ms antes de conectar (dar tempo para sessão ser criada)
+    const connectTimeout = setTimeout(() => {
+      // Conectar ao SSE de progresso
+      const eventSource = new EventSource(
+        `/api/upload-progress/${uploadId}/progress`,
+        { withCredentials: true }
+      );
+
+      // Armazenar para cleanup
+      (window as any).__activeEventSource = eventSource;
 
     // Eventos de progresso (info, success, error)
     eventSource.onmessage = (event) => {
@@ -96,15 +103,33 @@ export function useUploadProgress(uploadId: string | null) {
       }
     });
 
-    // Erro de conexão
-    eventSource.onerror = (err) => {
-      console.error('Erro na conexão SSE:', err);
-      eventSource.close();
-    };
+      // Erro de conexão
+      eventSource.onerror = (err) => {
+        console.error('[SSE] Erro na conexão:', err);
+        console.error('[SSE] ReadyState:', eventSource.readyState);
+        console.error('[SSE] URL:', eventSource.url);
+
+        // Não fechar imediatamente - EventSource tenta reconectar automaticamente
+        // Só fechar se completed ou tiver erro real
+        if (progress.completed || eventSource.readyState === 2) {
+          eventSource.close();
+        }
+      };
+
+      // Evento de conexão aberta
+      eventSource.onopen = () => {
+        console.log('[SSE] Conexão estabelecida com sucesso');
+      };
+    }, 500);
 
     // Cleanup ao desmontar
     return () => {
-      eventSource.close();
+      clearTimeout(connectTimeout);
+      const es = (window as any).__activeEventSource;
+      if (es) {
+        es.close();
+        delete (window as any).__activeEventSource;
+      }
     };
   }, [uploadId]);
 
