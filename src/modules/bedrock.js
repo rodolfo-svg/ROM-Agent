@@ -198,14 +198,24 @@ let managementClient = null;
 
 function getBedrockRuntimeClient() {
   if (!runtimeClient) {
-    runtimeClient = new BedrockRuntimeClient({ region: CONFIG.region });
+    runtimeClient = new BedrockRuntimeClient({
+      region: CONFIG.region,
+      requestHandler: {
+        requestTimeout: 30000  // 30 segundos (reduzido de 60s para melhorar UX)
+      }
+    });
   }
   return runtimeClient;
 }
 
 function getBedrockManagementClient() {
   if (!managementClient) {
-    managementClient = new BedrockClient({ region: CONFIG.region });
+    managementClient = new BedrockClient({
+      region: CONFIG.region,
+      requestHandler: {
+        requestTimeout: 30000  // 30 segundos
+      }
+    });
   }
   return managementClient;
 }

@@ -89,9 +89,12 @@ export function getModelLimit(model) {
  */
 export function getSafeContextLimit(model) {
   const maxTokens = getModelLimit(model);
-  // Reservar 30% para a resposta do modelo (60k tokens)
-  // Usar 70% para contexto (140k tokens)
-  return Math.floor(maxTokens * 0.7);
+  // 🔥 OTIMIZAÇÃO v2.10.0: Reduzido de 70% para 25% (~50k tokens para Claude 200k)
+  // Motivo: Latências extremas (47-74s) causadas por contexto muito longo
+  // Impacto: Redução esperada de 40-60% na latência + economia de 60% nos custos
+  // Reservar 75% para a resposta do modelo
+  // Usar 25% para contexto (~50k tokens para Claude 200k)
+  return Math.floor(maxTokens * 0.25);
 }
 
 /**
