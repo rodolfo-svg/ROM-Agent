@@ -51,3 +51,12 @@ __pycache__/
 
 # Archived old files
 archive/
+
+# Cache files
+data/cache/
+
+# Test results
+test-results/
+
+# Monitor scripts (temporary)
+monitor-*.sh
