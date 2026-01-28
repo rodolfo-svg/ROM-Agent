@@ -120,17 +120,12 @@ class KnowledgeBase {
 
   async loadDocuments(projectId) {
     try {
-      const response = await fetch(`/api/projects/${projectId}/documents`);
-      if (!response.ok) {
-        // Tentar endpoint alternativo
-        const altResponse = await fetch(`/api/documents?project=${projectId}`);
-        if (!altResponse.ok) throw new Error('Failed to load documents');
-        const data = await altResponse.json();
-        this.documents = data.documents || [];
-      } else {
-        const data = await response.json();
-        this.documents = data.documents || [];
-      }
+      // ✨ CORRIGIDO: Usar endpoint correto /api/kb/documents
+      const response = await fetch('/api/kb/documents');
+      if (!response.ok) throw new Error('Failed to load documents');
+
+      const data = await response.json();
+      this.documents = data.documents || [];
 
       this.renderDocumentList();
       this.updateProjectStats();
@@ -1069,7 +1064,8 @@ class KnowledgeBase {
     }
 
     try {
-      const response = await fetch(`/api/documents/${docId}`, {
+      // ✨ CORRIGIDO: Usar endpoint correto /api/kb/documents/:id
+      const response = await fetch(`/api/kb/documents/${docId}`, {
         method: 'DELETE'
       });
 

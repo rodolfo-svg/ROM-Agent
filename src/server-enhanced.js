@@ -1802,31 +1802,32 @@ Enquanto isso, pode continuar usando o sistema normalmente.
     });
 
     // 🔍 BUSCAR DOCUMENTOS RELEVANTES NO KB COM GERENCIAMENTO INTELIGENTE DE CONTEXTO
+    // ✨ CORRIGIDO: Usar novo sistema data/kb-documents.json com filtragem por userId
     let kbContext = '';
     let relevantDocs = []; // Declarar no escopo correto
     try {
-      const kbDocsPath = path.join(ACTIVE_PATHS.kb, 'documents');
+      const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
       if (fs.existsSync(kbDocsPath)) {
-        const files = await fs.promises.readdir(kbDocsPath);
-        const txtFiles = files.filter(f => f.endsWith('.txt'));
+        // Ler todos os documentos do novo sistema
+        const allDocsData = await fs.promises.readFile(kbDocsPath, 'utf8');
+        const allDocs = JSON.parse(allDocsData);
 
-        if (txtFiles.length > 0) {
-          console.log(`📚 Buscando em ${txtFiles.length} documentos do KB...`);
+        // Obter userId da sessão
+        const userId = req.session.userId || (req.session.user && req.session.user.id) || null;
 
-          // Ler todos os documentos e seus metadados
-          const docs = await Promise.all(txtFiles.map(async (file) => {
-            const filePath = path.join(kbDocsPath, file);
-            const metadataPath = filePath.replace('.txt', '.metadata.json');
+        // Filtrar apenas documentos do usuário atual
+        const userDocs = userId
+          ? allDocs.filter(doc => doc.userId === userId)
+          : allDocs; // Se não houver userId, usar todos (backward compatibility)
 
-            const content = await fs.promises.readFile(filePath, 'utf8');
-            let metadata = {};
-            try {
-              if (fs.existsSync(metadataPath)) {
-                metadata = JSON.parse(await fs.promises.readFile(metadataPath, 'utf8'));
-              }
-            } catch (e) {}
+        if (userDocs.length > 0) {
+          console.log(`📚 Buscando em ${userDocs.length} documentos do KB do usuário...`);
 
-            return { file, content, metadata };
+          // Converter para formato esperado (com extractedText já disponível)
+          const docs = userDocs.map(doc => ({
+            file: doc.name,
+            content: doc.extractedText || '',
+            metadata: doc.metadata || {}
           }));
 
           // 🎯 BUSCA INTELIGENTE: Filtrar documentos relevantes
