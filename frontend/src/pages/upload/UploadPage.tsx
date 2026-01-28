@@ -76,6 +76,7 @@ export function UploadPage() {
     attachedFiles,
     removeFile,
     clearFiles,
+    error: uploadError,
   } = useFileUpload({
     endpoint: 'kb',
     maxFiles: 20,
