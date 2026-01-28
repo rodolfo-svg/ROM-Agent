@@ -60,6 +60,7 @@ import chatStreamRoutes from './routes/chat-stream.js';
 import diagnosticBedrockRoutes from './routes/diagnostic-bedrock.js';
 import exportRoutes from './routes/export.js';
 import uploadProgressRoutes from './routes/upload-progress.js';
+console.log('🔍 [IMPORT] uploadProgressRoutes carregado:', typeof uploadProgressRoutes);
 import progressEmitter from './utils/progress-emitter.js';
 import certidoesDJEService from './services/certidoes-dje-service.js';
 import multiAgentPipelineService from './services/multi-agent-pipeline-service.js';
@@ -534,6 +535,7 @@ app.use('/api/export', exportRoutes);
 
 // Rotas de Progresso de Upload (SSE) - path específico para evitar conflito
 app.use('/api/upload-progress', uploadProgressRoutes);
+console.log('✅ [ROUTES] /api/upload-progress registrado:', typeof uploadProgressRoutes);
 
 // ====================================================================
 // 📄 API DE CERTIDÕES DJe/DJEN (CNJ)
@@ -10042,6 +10044,49 @@ app.get('/api/db-diagnose', async (req, res) => {
       success: false,
       message: 'Falha ao conectar PostgreSQL'
     };
+  }
+
+  res.json(diagnostic);
+});
+
+// ROUTE DIAGNOSTIC ENDPOINT - verifica rotas carregadas e commit atual
+app.get('/api/route-diagnose', async (req, res) => {
+  const diagnostic = {
+    timestamp: new Date().toISOString(),
+    server: 'server-enhanced.js',
+    environment: {
+      NODE_ENV: process.env.NODE_ENV,
+      RENDER: process.env.RENDER || 'false',
+      PORT: PORT
+    },
+    routes: {
+      uploadProgress: {
+        imported: typeof uploadProgressRoutes !== 'undefined',
+        type: typeof uploadProgressRoutes,
+        registered: app._router.stack.some(layer =>
+          layer.name === 'router' &&
+          layer.regexp.test('/api/upload-progress')
+        )
+      },
+      total: app._router.stack.filter(layer => layer.name === 'router').length
+    },
+    git: {
+      commit: null,
+      branch: null
+    }
+  };
+
+  // Get current git commit
+  try {
+    const { execSync } = await import('child_process');
+    diagnostic.git.commit = execSync('git rev-parse --short HEAD', {
+      encoding: 'utf8'
+    }).trim();
+    diagnostic.git.branch = execSync('git rev-parse --abbrev-ref HEAD', {
+      encoding: 'utf8'
+    }).trim();
+  } catch (error) {
+    diagnostic.git.error = error.message;
   }
 
   res.json(diagnostic);
