@@ -33,7 +33,8 @@ export function useUploadProgress(uploadId: string | null) {
 
     console.log(`[SSE] Conectando ao progresso: ${uploadId}`);
 
-    // Aguardar 500ms antes de conectar (dar tempo para sessão ser criada)
+    // Aguardar 1000ms antes de conectar (dar tempo para sessão ser criada)
+    const connectTime = Date.now();
     const connectTimeout = setTimeout(() => {
       // Conectar ao SSE de progresso
       const eventSource = new EventSource(
@@ -74,6 +75,7 @@ export function useUploadProgress(uploadId: string | null) {
     eventSource.addEventListener('session-complete', (e: any) => {
       try {
         const result = JSON.parse(e.data);
+        console.log('[SSE] Session complete recebido:', result);
         setProgress(prev => ({
           ...prev,
           percent: 100,
@@ -81,6 +83,7 @@ export function useUploadProgress(uploadId: string | null) {
           stage: 'Concluído',
           result: result.summary
         }));
+        console.log('[SSE] Fechando conexão (sessão completa)');
         eventSource.close();
       } catch (err) {
         console.error('Erro ao processar session-complete:', err);
@@ -109,9 +112,30 @@ export function useUploadProgress(uploadId: string | null) {
         console.error('[SSE] ReadyState:', eventSource.readyState);
         console.error('[SSE] URL:', eventSource.url);
 
-        // Não fechar imediatamente - EventSource tenta reconectar automaticamente
-        // Só fechar se completed ou tiver erro real
-        if (progress.completed || eventSource.readyState === 2) {
+        // Se já completou, fechar imediatamente
+        if (progress.completed) {
+          console.log('[SSE] Fechando conexão (já completado)');
+          eventSource.close();
+          return;
+        }
+
+        // Se readyState = CLOSED (2), não tentar reconectar
+        if (eventSource.readyState === 2) {
+          console.log('[SSE] Conexão permanentemente fechada');
+          eventSource.close();
+          return;
+        }
+
+        // Se readyState = CONNECTING (0), deixar EventSource tentar reconectar
+        // Mas se já tentou por > 10 segundos, desistir
+        const elapsed = Date.now() - connectTime;
+        if (elapsed > 10000) {
+          console.error('[SSE] Timeout de reconexão (10s), desistindo');
+          setProgress(prev => ({
+            ...prev,
+            error: 'Timeout de conexão SSE. Upload continua em background.',
+            stage: 'Processando em background'
+          }));
           eventSource.close();
         }
       };
@@ -120,7 +144,7 @@ export function useUploadProgress(uploadId: string | null) {
       eventSource.onopen = () => {
         console.log('[SSE] Conexão estabelecida com sucesso');
       };
-    }, 500);
+    }, 1000);
 
     // Cleanup ao desmontar
     return () => {

@@ -23,9 +23,13 @@ router.get('/:uploadId/progress', (req, res) => {
 
   // Configurar headers SSE + CORS
   res.setHeader('Content-Type', 'text/event-stream');
-  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Cache-Control', 'no-cache, no-transform');
   res.setHeader('Connection', 'keep-alive');
   res.setHeader('X-Accel-Buffering', 'no'); // Render/Nginx
+
+  // ✨ FIX: Bypass Cloudflare buffering
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.flushHeaders(); // Force immediate header flush
 
   // ✨ FIX: Headers CORS necessários para EventSource com withCredentials
   const origin = req.headers.origin || 'https://iarom.com.br';
