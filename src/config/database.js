@@ -193,6 +193,13 @@ export async function initRedis() {
       redisClient = new Redis(config);
     }
 
+    // ✅ CRITICAL: Register error handler BEFORE connecting
+    // Prevents unhandled error events that crash the server
+    redisClient.on('error', (err) => {
+      console.error('[Redis] Erro de conexão (servidor continuará sem cache):', err.message);
+      logger.error('Redis error', { error: err.message });
+    });
+
     // Connect and test
     const startTime = Date.now();
     await redisClient.connect();
@@ -204,11 +211,6 @@ export async function initRedis() {
       latency: `${latency}ms`,
       autoPipelining: true,
       commandTimeout: '5000ms'
-    });
-
-    // Event handlers
-    redisClient.on('error', (err) => {
-      logger.error('Redis error', { error: err.message });
     });
 
     redisClient.on('reconnecting', (delay) => {
