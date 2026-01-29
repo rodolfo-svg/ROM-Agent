@@ -62,4 +62,53 @@ router.get('/:uploadId/progress', (req, res) => {
   });
 });
 
+/**
+ * GET /api/upload-progress/:uploadId/status
+ *
+ * Endpoint REST para polling de progresso (fallback quando SSE falha)
+ * Retorna o estado atual da sessão de progresso
+ */
+router.get('/:uploadId/status', (req, res) => {
+  const { uploadId } = req.params;
+
+  console.log(`📊 [POLLING] Status solicitado: ${uploadId}`);
+
+  // Obter updates da sessão
+  const updates = progressEmitter.getSessionUpdates(uploadId);
+  const sessionStatus = progressEmitter.getSessionStatus(uploadId);
+
+  // Se sessão não existe, retornar estado inicial
+  if (!sessionStatus) {
+    return res.json({
+      percent: 0,
+      stage: 'Aguardando...',
+      currentFile: 0,
+      totalFiles: 0,
+      fileName: '',
+      completed: false,
+      result: null
+    });
+  }
+
+  // Encontrar último update relevante
+  const lastUpdate = updates[updates.length - 1];
+
+  // Determinar se completou
+  const completed = sessionStatus.status === 'completed' || sessionStatus.status === 'failed';
+
+  // Buscar dados do último update
+  const progressData = lastUpdate?.data || {};
+
+  res.json({
+    percent: progressData.percent || 0,
+    stage: lastUpdate?.message || 'Processando...',
+    currentFile: progressData.currentFile || 0,
+    totalFiles: progressData.totalFiles || 0,
+    fileName: progressData.fileName || '',
+    completed,
+    result: completed ? progressData : null,
+    status: sessionStatus.status
+  });
+});
+
 export default router;

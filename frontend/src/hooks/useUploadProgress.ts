@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export interface UploadProgress {
   percent: number;
@@ -12,7 +12,7 @@ export interface UploadProgress {
 }
 
 /**
- * Hook para acompanhar progresso de upload via SSE
+ * Hook para acompanhar progresso de upload via SSE com fallback para polling
  * @param uploadId - ID do upload retornado por /api/kb/upload
  * @returns Estado do progresso em tempo real
  */
@@ -28,12 +28,15 @@ export function useUploadProgress(uploadId: string | null) {
     result: null
   });
 
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const sseFailedRef = useRef(false);
+
   useEffect(() => {
     if (!uploadId) return;
 
-    console.log(`[SSE] Conectando ao progresso: ${uploadId}`);
+    console.log(`[PROGRESS] Iniciando monitoramento: ${uploadId}`);
 
-    // Aguardar 1000ms antes de conectar (dar tempo para sessão ser criada)
+    // Tentar SSE primeiro, com fallback para polling
     const connectTime = Date.now();
     const connectTimeout = setTimeout(() => {
       // Conectar ao SSE de progresso
@@ -127,16 +130,15 @@ export function useUploadProgress(uploadId: string | null) {
         }
 
         // Se readyState = CONNECTING (0), deixar EventSource tentar reconectar
-        // Mas se já tentou por > 10 segundos, desistir
+        // Mas se já tentou por > 5 segundos, fazer fallback para polling
         const elapsed = Date.now() - connectTime;
-        if (elapsed > 10000) {
-          console.error('[SSE] Timeout de reconexão (10s), desistindo');
-          setProgress(prev => ({
-            ...prev,
-            error: 'Timeout de conexão SSE. Upload continua em background.',
-            stage: 'Processando em background'
-          }));
+        if (elapsed > 5000 && !sseFailedRef.current) {
+          console.warn('[SSE] Timeout (5s), fazendo fallback para polling');
+          sseFailedRef.current = true;
           eventSource.close();
+
+          // Iniciar polling como fallback
+          startPolling();
         }
       };
 
@@ -146,13 +148,66 @@ export function useUploadProgress(uploadId: string | null) {
       };
     }, 1000);
 
+    // Função de polling como fallback
+    const startPolling = () => {
+      console.log('[POLLING] Iniciando polling como fallback');
+
+      const poll = async () => {
+        try {
+          const response = await fetch(`/api/upload-progress/${uploadId}/status`, {
+            credentials: 'include'
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+
+            setProgress(prev => ({
+              ...prev,
+              percent: data.percent || prev.percent,
+              stage: data.stage || prev.stage,
+              currentFile: data.currentFile || prev.currentFile,
+              totalFiles: data.totalFiles || prev.totalFiles,
+              fileName: data.fileName || prev.fileName,
+              completed: data.completed || false,
+              result: data.result || null
+            }));
+
+            // Se completou, parar polling
+            if (data.completed) {
+              console.log('[POLLING] Upload completo, parando polling');
+              if (pollingIntervalRef.current) {
+                clearInterval(pollingIntervalRef.current);
+                pollingIntervalRef.current = null;
+              }
+            }
+          }
+        } catch (err) {
+          console.error('[POLLING] Erro:', err);
+        }
+      };
+
+      // Poll inicial imediato
+      poll();
+
+      // Poll a cada 2 segundos
+      pollingIntervalRef.current = setInterval(poll, 2000);
+    };
+
     // Cleanup ao desmontar
     return () => {
       clearTimeout(connectTimeout);
+
+      // Limpar EventSource
       const es = (window as any).__activeEventSource;
       if (es) {
         es.close();
         delete (window as any).__activeEventSource;
+      }
+
+      // Limpar polling
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+        pollingIntervalRef.current = null;
       }
     };
   }, [uploadId]);
