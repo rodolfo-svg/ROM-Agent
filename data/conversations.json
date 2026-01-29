@@ -474,5 +474,28 @@
     "createdAt": "2026-01-22T08:07:34.085Z",
     "updatedAt": "2026-01-22T08:07:38.921Z",
     "messageCount": 2
+  },
+  "conv_1769580113961_12p2ak": {
+    "id": "conv_1769580113961_12p2ak",
+    "userId": "anonymous",
+    "sessionId": "HUVcjxYmvryhFcIvhzcym6KSSWajuAjQ",
+    "projectId": "rom-agent",
+    "title": "Teste de conexão",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de conexão",
+        "timestamp": "2026-01-28T06:01:53.961Z"
+      },
+      {
+        "role": "assistant",
+        "content": "# ✅ Conexão Estabelecida com Sucesso!\n\nOlá! Sou o **ROM Agent**, seu assistente jurídico especializado.\n\n## 🔧 Status dos Sistemas\n\n✅ **Assistente jurídico**: Online  \n✅ **Pesquisa de jurisprudência**: Disponível (STF, STJ, TST, TSE, DataJud)  \n✅ **Pesquisa de súmulas e teses**: Disponível  \n✅ **Consulta CNJ DataJud**: Disponível  \n✅ **Pesquisa doutrinária**: Disponível (Google Scholar, Conjur, Migalhas, JOTA)  \n✅ **Knowledge Base**: Pronta para consulta (documentos enviados)  \n✅ **Geração de documentos**: Disponível (Word, PDF, Markdown)\n\n---\n\n## 📋 Como Posso Ajudar?\n\n**Redação de Peças:**\n- Petições iniciais, contestações, recursos\n- Contratos e aditivos contratuais\n- Alterações contratuais (DNRC)\n- Procurações e substabelecimentos\n\n**Pesquisa Jurídica:**\n- Jurisprudência dos tribunais superiores\n- Súmulas e teses vinculantes\n- Doutrina e artigos especializados\n- Análise de legislação\n\n**Análise Processual:**\n- Cálculo de prazos (DJe/DJEN)\n- Análise de preclusão/prescrição\n- Estratégia processual\n- Revisão de documentos\n\n**Consultas:**\n- Processos no CNJ DataJud\n- Documentos da sua Knowledge Base\n\n---\n\n**Pronto para trabalhar!** Como posso auxiliá-lo hoje? 🎯",
+        "timestamp": "2026-01-28T06:02:01.136Z"
+      }
+    ],
+    "createdAt": "2026-01-28T06:01:53.961Z",
+    "updatedAt": "2026-01-28T06:02:01.136Z",
+    "messageCount": 2
   }
 }

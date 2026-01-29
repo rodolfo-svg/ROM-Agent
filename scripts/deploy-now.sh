@@ -1,91 +1,62 @@
 #!/bin/bash
-# DEPLOY IMEDIATO - Sistema Integrado
-# Git → GitHub → Render → AWS Bedrock → iarom.com.br
+# ROM Agent - Deploy Agora para Produção
+set -e
 
-set -e  # Parar em caso de erro
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
 
-echo "🚀 DEPLOY AUTOMÁTICO - ROM Agent v2.8.0"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+HEROKU_APP="iarom"
+APP_URL="https://${HEROKU_APP}.herokuapp.com"
+
+echo -e "${BLUE}${BOLD}══════════════════════════════════════════════════════════════${NC}"
+echo -e "${BLUE}${BOLD}  ROM AGENT - DEPLOY PARA PRODUÇÃO${NC}"
+echo -e "${BLUE}${BOLD}══════════════════════════════════════════════════════════════${NC}"
 echo ""
 
-# 1. Verificar versão
-echo "📦 1/5 - Verificando versão..."
-node scripts/auto-version.js || true
-echo ""
+# Step 1: Verificar Heroku CLI
+echo -e "${CYAN}[1/6] Verificando Heroku CLI...${NC}"
+if ! command -v heroku &> /dev/null; then
+    echo -e "${RED}✗ Heroku CLI não encontrado${NC}"
+    exit 1
+fi
+echo -e "${GREEN}✓ Heroku CLI instalado${NC}"
 
-# 2. Git Add
-echo "📥 2/5 - Adicionando arquivos ao git..."
-git add .
-echo "✅ Arquivos adicionados"
-echo ""
+# Step 2: Login
+echo -e "${CYAN}[2/6] Verificando autenticação...${NC}"
+if heroku auth:whoami &> /dev/null; then
+    echo -e "${GREEN}✓ Autenticado${NC}"
+else
+    echo -e "${YELLOW}⚠ Execute: heroku login${NC}"
+    exit 1
+fi
 
-# 3. Git Status
-echo "📊 3/5 - Status atual:"
-git status --short
-echo ""
+# Step 3: Remote
+echo -e "${CYAN}[3/6] Configurando remote...${NC}"
+if ! git remote | grep -q "^heroku$"; then
+    heroku git:remote -a "$HEROKU_APP"
+fi
+echo -e "${GREEN}✓ Remote configurado${NC}"
 
-# 4. Commit
-echo "💾 4/5 - Criando commit..."
-TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
-VERSION=$(node -p "require('./package.json').version")
+# Step 4: Deploy
+echo -e "${CYAN}[4/6] Fazendo deploy (2-5 min)...${NC}"
+git push heroku main
 
-git commit -m "🚀 Deploy automático v${VERSION}
+# Step 5: Validação
+echo -e "${CYAN}[5/6] Validando...${NC}"
+sleep 10
 
-✨ Features ativas:
-- Chat com IA (AWS Bedrock)
-- Projeto ROM Agent
-- DataJud integration
-- Web Search
-- Sistema de correção de português
-- Upload chunked (arquivos gigantes)
-- Calculadora de tarifação
-- Gestão de equipe
-- 113+ APIs funcionando
+HEALTH=$(curl -s -o /dev/null -w "%{http_code}" "$APP_URL/api/health")
+echo "Health: $HEALTH"
 
-🔄 Sistema de preservação ATIVO:
-- Auto-versionamento
-- Auto-deploy (Render)
-- Backup automático
-- Logs completos
-
-⏰ Deploy: ${TIMESTAMP}
-
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>" || echo "⚠️  Nada para commitar (tudo já está salvo)"
-
-echo ""
-
-# 5. Push
-echo "📤 5/5 - Enviando para GitHub..."
-git push origin main
-
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "✅ DEPLOY INICIADO COM SUCESSO!"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo ""
-echo "🔄 Fluxo automático ativo:"
-echo "   1. ✅ GitHub recebeu código v${VERSION}"
-echo "   2. ⏳ Render detectando mudanças..."
-echo "   3. ⏳ Build iniciando (~2-3 min)"
-echo "   4. ⏳ Deploy em progresso"
-echo "   5. ⏳ iarom.com.br será atualizado"
-echo ""
-echo "📊 Acompanhar em:"
-echo "   GitHub: https://github.com/rodolfo-svg/ROM-Agent"
-echo "   Render: https://dashboard.render.com"
-echo ""
-echo "⚠️  PRÓXIMO PASSO MANUAL (se ainda não fez):"
-echo "   Adicionar variáveis AWS no Render Dashboard"
-echo "   → AWS_ACCESS_KEY_ID"
-echo "   → AWS_SECRET_ACCESS_KEY"
-echo "   → AWS_REGION"
-echo "   → CNJ_DATAJUD_API_KEY"
-echo ""
-echo "⏱️  Tempo estimado até site atualizado: 3-5 minutos"
-echo ""
-echo "🧪 APÓS O DEPLOY, TESTAR SITE DE PRODUÇÃO:"
-echo "   node test-production-site.js"
-echo ""
-echo "   ⚠️  SEMPRE teste iarom.com.br, NUNCA localhost!"
-echo ""
+# Step 6: Resultado
+if [ "$HEALTH" = "200" ]; then
+    echo -e "${GREEN}${BOLD}✓ DEPLOY BEM-SUCEDIDO!${NC}"
+    echo "URL: $APP_URL"
+else
+    echo -e "${RED}⚠ Verificar logs: heroku logs --tail${NC}"
+fi

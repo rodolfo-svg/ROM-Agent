@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-01-22T05:01:23.160Z",
+  "timestamp": "2026-01-28T05:01:15.536Z",
   "summary": {
     "total": 26,
-    "passed": 14,
-    "failed": 5,
+    "passed": 13,
+    "failed": 6,
     "warnings": 7,
-    "successRate": 53.8,
-    "duration": 27346
+    "successRate": 50,
+    "duration": 15577
   },
   "results": [
     {
@@ -16,7 +16,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 50,
+      "duration": 73,
       "validation": "✓ Contém 'version'"
     },
     {
@@ -30,7 +30,7 @@
         "unit": "seconds"
       },
       "duration": 5,
-      "validation": "✓ Stats completas (23 conversas)"
+      "validation": "✓ Stats completas (24 conversas)"
     },
     {
       "category": "Sistema",
@@ -49,7 +49,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 1,
+      "duration": 2,
       "validation": ""
     },
     {
@@ -59,7 +59,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 27258,
+      "duration": 15456,
       "validation": "✓ Contém 'response'"
     },
     {
@@ -69,7 +69,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 6,
+      "duration": 3,
       "validation": ""
     },
     {
@@ -79,17 +79,17 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
-      "validation": "✓ KB com 5 documentos"
+      "duration": 4,
+      "validation": "✓ KB com 3 documentos"
     },
     {
       "category": "Knowledge Base",
       "name": "Listar documentos KB (/api/kb/documents) [requer auth]",
       "url": "http://localhost:3000/api/kb/documents",
-      "status": 401,
+      "status": 302,
       "expected": 401,
-      "passed": true,
-      "duration": 2,
+      "passed": false,
+      "duration": 4,
       "validation": ""
     },
     {
@@ -99,7 +99,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 3,
       "validation": ""
     },
     {
@@ -109,7 +109,7 @@
       "status": 404,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 3,
       "validation": ""
     },
     {
@@ -129,7 +129,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 4,
       "validation": "✓ É array com 0 itens"
     },
     {
@@ -139,8 +139,8 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
-      "validation": "✓ É array com 7 itens"
+      "duration": 4,
+      "validation": "✓ É array com 0 itens"
     },
     {
       "category": "Ferramentas",
@@ -149,7 +149,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 1,
+      "duration": 2,
       "validation": "✓ Contém 'stats'"
     },
     {
@@ -159,7 +159,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 3,
       "validation": "✓ HTML válido"
     },
     {
@@ -169,7 +169,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 1,
+      "duration": 5,
       "validation": "✓ Analytics HTML válido"
     }
   ]
