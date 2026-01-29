@@ -461,10 +461,10 @@ app.use('/api', csrfProtection.protection({
     '/users*',                  // ✅ ADICIONADO: CRUD de usuários (wildcard)
 
     // ═══════════════════════════════════════════════════════════════
-    // FILE UPLOADS
+    // FILE UPLOADS & KNOWLEDGE BASE
     // ═══════════════════════════════════════════════════════════════
     '/upload*',                 // ✅ ADICIONADO: Upload e gerenciamento (wildcard)
-    '/kb/upload',               // ✅ ADICIONADO: Upload para Knowledge Base
+    '/kb/*',                    // ✅ ADICIONADO: Knowledge Base (upload, documents, delete)
 
     // ═══════════════════════════════════════════════════════════════
     // CONTENT MANAGEMENT
@@ -5973,7 +5973,7 @@ app.delete('/api/kb/extracted-documents/:id', async (req, res) => {
  * Deletar documento do KB com limpeza completa (usa kb-cleaner.cjs)
  * Deleta documento do sistema antigo (KB/) e também de data/kb-documents.json
  */
-app.delete('/api/kb/documents/:id', generalLimiter, async (req, res) => {
+app.delete('/api/kb/documents/:id', requireAuth, generalLimiter, async (req, res) => {
   try {
     const { id } = req.params;
     logger.info(`🗑️ Iniciando deleção completa do documento: ${id}`);
