@@ -497,5 +497,51 @@
     "createdAt": "2026-01-28T06:01:53.961Z",
     "updatedAt": "2026-01-28T06:02:01.136Z",
     "messageCount": 2
+  },
+  "conv_1769662830756_stnt4j": {
+    "id": "conv_1769662830756_stnt4j",
+    "userId": "anonymous",
+    "sessionId": "SFx9w_jfN0nAfANP1h1rAUXZVRVi1aKe",
+    "projectId": null,
+    "title": "Teste Automático - Renomeado",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de sistema - responda apenas com OK",
+        "timestamp": "2026-01-29T05:00:30.757Z"
+      },
+      {
+        "role": "assistant",
+        "content": "OK",
+        "timestamp": "2026-01-29T05:00:32.373Z"
+      }
+    ],
+    "createdAt": "2026-01-29T05:00:30.756Z",
+    "updatedAt": "2026-01-29T05:00:32.381Z",
+    "messageCount": 2
+  },
+  "conv_1769664475418_xz86v": {
+    "id": "conv_1769664475418_xz86v",
+    "userId": "anonymous",
+    "sessionId": "4k90FFTrAQKLSFed048sq_pqVGTffrW_",
+    "projectId": "rom-agent",
+    "title": "Teste de conexão",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de conexão",
+        "timestamp": "2026-01-29T05:27:55.420Z"
+      },
+      {
+        "role": "assistant",
+        "content": "# ✅ **ROM Agent - Conexão Estabelecida**\n\nOlá! Sou o **ROM Agent**, seu assistente jurídico especializado em Direito brasileiro.\n\n## 🔧 **Status do Sistema**\n\n✅ **Conexão ativa e operacional**  \n✅ **Ferramentas jurídicas disponíveis**  \n✅ **Knowledge Base habilitada**  \n✅ **Integração com tribunais pronta**\n\n---\n\n## 📋 **Posso auxiliar com:**\n\n### **Peças Processuais**\n- Petições iniciais, contestações, recursos\n- Embargos, agravos, apelações\n- Análise de prazos e preclusões\n\n### **Documentos Extrajudiciais**\n- Contratos (todos os tipos)\n- Alterações contratuais (DNRC)\n- Procurações e substabelecimentos\n\n### **Pesquisa Jurídica**\n- Jurisprudência (STF, STJ, TST, TSE)\n- Súmulas e teses vinculantes\n- Doutrina e artigos especializados\n\n### **Análise de Documentos**\n- Revisão de peças e contratos\n- Análise de certidões do DJe/DJEN\n- Cálculo de prazos processuais\n\n---\n\n## 🚀 **Como posso ajudar hoje?**\n\nDescreva sua necessidade jurídica e terei prazer em auxiliá-lo com precisão técnica e fundamentação adequada.",
+        "timestamp": "2026-01-29T05:28:01.733Z"
+      }
+    ],
+    "createdAt": "2026-01-29T05:27:55.418Z",
+    "updatedAt": "2026-01-29T05:28:01.733Z",
+    "messageCount": 2
   }
 }

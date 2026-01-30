@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-28T05:00:31.722Z",
+  "timestamp": "2026-01-29T05:00:32.406Z",
   "summary": {
     "total": 18,
     "passed": 10,
@@ -13,7 +13,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 59,
+      "duration": 58,
       "data": {
         "nome": "ROM",
         "versao": "2.8.0",
@@ -30,8 +30,8 @@
         ],
         "health": {
           "status": "healthy",
-          "uptime": "4h 32m",
-          "uptimeSeconds": 16348
+          "uptime": "22h 52m",
+          "uptimeSeconds": 82343
         },
         "bedrock": {
           "status": "connected",
@@ -50,14 +50,14 @@
           "nodeVersion": "v25.2.1",
           "platform": "darwin",
           "arch": "arm64",
-          "pid": 54025,
-          "gitCommit": "b9c0973"
+          "pid": 90260,
+          "gitCommit": "895be3d"
         },
         "memory": {
           "rss": "89 MB",
-          "heapTotal": "166 MB",
-          "heapUsed": "163 MB",
-          "external": "22 MB"
+          "heapTotal": "170 MB",
+          "heapUsed": "167 MB",
+          "external": "23 MB"
         },
         "storage": {
           "isRender": false,
@@ -121,14 +121,14 @@
           "assetsCount": 69,
           "jsFilesCount": 34,
           "sampleJsFiles": [
-            "CaseProcessorPage-B7gw-gCs.js",
-            "CertidoesPage-CZ2S_Z3w.js",
-            "ChatPage-B2DYsAXh.js",
-            "DashboardPage-Cnc85BkI.js",
-            "EmptyState-DtUWB4z0.js"
+            "CaseProcessorPage-BOmns811.js",
+            "CertidoesPage-Dl_KqyEi.js",
+            "ChatPage-Bsd_rV-5.js",
+            "DashboardPage-CsttJdpP.js",
+            "EmptyState-Bph9jwjo.js"
           ]
         },
-        "timestamp": "2026-01-28T05:00:29.649Z"
+        "timestamp": "2026-01-29T05:00:30.730Z"
       }
     },
     {
@@ -137,12 +137,12 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 4,
+      "duration": 5,
       "data": {
         "success": true,
         "conversations": {
-          "total": 23,
-          "totalMessages": 36
+          "total": 24,
+          "totalMessages": 38
         },
         "cache": {
           "activeSessions": 0,
@@ -155,7 +155,7 @@
           "averageResponseTime": 3,
           "unit": "seconds"
         },
-        "timestamp": "2026-01-28T05:00:29.660Z"
+        "timestamp": "2026-01-29T05:00:30.741Z"
       }
     },
     {
@@ -164,7 +164,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 1,
       "data": {
         "success": false,
         "error": "Banco de dados indisponível"
@@ -176,10 +176,10 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2024,
+      "duration": 1631,
       "data": {
         "response": "OK",
-        "conversationId": "conv_1769576429679_je497k",
+        "conversationId": "conv_1769662830756_stnt4j",
         "metadados": {},
         "recomendacoes": [],
         "verificacaoRealizada": false
@@ -187,7 +187,7 @@
     },
     {
       "name": "2.3 Obter Conversa Específica",
-      "url": "http://localhost:3000/api/conversations/conv_1769576429679_je497k",
+      "url": "http://localhost:3000/api/conversations/conv_1769662830756_stnt4j",
       "status": 503,
       "expected": 200,
       "passed": false,
@@ -199,11 +199,11 @@
     },
     {
       "name": "2.4 Renomear Conversa",
-      "url": "http://localhost:3000/api/conversations/conv_1769576429679_je497k/rename",
+      "url": "http://localhost:3000/api/conversations/conv_1769662830756_stnt4j/rename",
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 4,
+      "duration": 5,
       "data": {
         "success": true
       }
@@ -214,7 +214,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 3,
+      "duration": 2,
       "data": {
         "success": false,
         "error": "Banco de dados indisponível"
@@ -239,10 +239,10 @@
       "data": {
         "success": true,
         "status": "active",
-        "totalDocuments": 3,
-        "totalSize": 304,
+        "totalDocuments": 5,
+        "totalSize": 432,
         "totalSizeFormatted": "0.00 MB",
-        "lastUpdate": "2026-01-28T00:40:23.582Z",
+        "lastUpdate": "2026-01-28T06:08:03.962Z",
         "kbPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/KB"
       }
     },
@@ -289,7 +289,7 @@
       "status": 403,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 1,
       "data": {
         "success": false,
         "error": "CSRF token inválido",
@@ -302,7 +302,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 3,
       "data": []
     },
     {
@@ -312,7 +312,13 @@
       "expected": 200,
       "passed": true,
       "duration": 2,
-      "data": []
+      "data": [
+        {
+          "filename": "backup-2026-01-28.zip",
+          "size": 334497,
+          "timestamp": "2026-01-28T06:00:02.094Z"
+        }
+      ]
     },
     {
       "name": "6.4 Estatísticas de Cache",
@@ -320,7 +326,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 1,
       "data": {
         "success": true,
         "stats": {
@@ -352,7 +358,7 @@
       "expected": 200,
       "passed": true,
       "duration": 2,
-      "data": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n  <head>\n    <meta charset=\"UTF-8\" />\n\n    <!-- Viewport with iOS notch support -->\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover\" />\n\n    <!-- PWA Meta Tags -->\n    <meta name=\"theme-color\" content=\"#D97706\" />\n    <meta name=\"theme-color\" media=\"(prefers-color-scheme: light)\" content=\"#D97706\" />\n    <meta name=\"theme-color\" media=\"(prefers-color-scheme: dark)\" content=\"#78716C\" />\n\n    <!-- iOS PWA Meta Tags -->\n    <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n    <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\" />\n    <meta name=\"apple-mobile-web-app-title\" content=\"ROM Agent\" />\n    <meta name=\"mobile-web-app-capable\" content=\"yes\" />\n\n    <!-- iOS Status Bar -->\n    <meta name=\"apple-touch-fullscreen\" content=\"yes\" />\n\n    <!-- Disable iOS phone number detection -->\n    <meta name=\"format-detection\" content=\"telephone=no\" />\n\n    <!-- Standard Icons -->\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.json\" />\n\n    <!-- Apple Touch Icons (iOS Home Screen) -->\n    <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/icons/icon-180x180.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"192x192\" href=\"/icons/icon-192x192.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"512x512\" href=\"/icons/icon-512x512.png\" />\n\n    <!-- iOS Splash Screens -->\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-14-pro-max-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-14-pro-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-13-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-x-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)\" href=\"/splash/iphone-11-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)\" href=\"/splash/iphone-8-portrait.png\" />\n\n    <!-- SEO -->\n    <meta name=\"description\" content=\"Assistente Jurídico Inteligente com IA - Análise Processual Completa\" />\n    <meta name=\"keywords\" content=\"assistente jurídico, IA, análise processual, direito, advocacia\" />\n\n    <title>ROM Agent - Assistente Jurídico Inteligente</title>\n    <script type=\"module\" crossorigin src=\"/assets/index-C-cdmDNW.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-DfFhQPd8.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
+      "data": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n  <head>\n    <meta charset=\"UTF-8\" />\n\n    <!-- Viewport with iOS notch support -->\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover\" />\n\n    <!-- PWA Meta Tags -->\n    <meta name=\"theme-color\" content=\"#D97706\" />\n    <meta name=\"theme-color\" media=\"(prefers-color-scheme: light)\" content=\"#D97706\" />\n    <meta name=\"theme-color\" media=\"(prefers-color-scheme: dark)\" content=\"#78716C\" />\n\n    <!-- iOS PWA Meta Tags -->\n    <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n    <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\" />\n    <meta name=\"apple-mobile-web-app-title\" content=\"ROM Agent\" />\n    <meta name=\"mobile-web-app-capable\" content=\"yes\" />\n\n    <!-- iOS Status Bar -->\n    <meta name=\"apple-touch-fullscreen\" content=\"yes\" />\n\n    <!-- Disable iOS phone number detection -->\n    <meta name=\"format-detection\" content=\"telephone=no\" />\n\n    <!-- Standard Icons -->\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.json\" />\n\n    <!-- Apple Touch Icons (iOS Home Screen) -->\n    <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/icons/icon-180x180.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"192x192\" href=\"/icons/icon-192x192.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"512x512\" href=\"/icons/icon-512x512.png\" />\n\n    <!-- iOS Splash Screens -->\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-14-pro-max-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-14-pro-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-13-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-x-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)\" href=\"/splash/iphone-11-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)\" href=\"/splash/iphone-8-portrait.png\" />\n\n    <!-- SEO -->\n    <meta name=\"description\" content=\"Assistente Jurídico Inteligente com IA - Análise Processual Completa\" />\n    <meta name=\"keywords\" content=\"assistente jurídico, IA, análise processual, direito, advocacia\" />\n\n    <title>ROM Agent - Assistente Jurídico Inteligente</title>\n    <script type=\"module\" crossorigin src=\"/assets/index-CvAjANi0.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-DfFhQPd8.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
     }
   ]
 }
