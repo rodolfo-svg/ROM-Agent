@@ -76,6 +76,8 @@ import usersRoutes from './routes/users.js';
 import { requireAuth } from './middleware/auth.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 import extractionService from './services/extraction-service.js';
+import customInstructionsRoutes from './routes/custom-instructions.js';
+import { startCustomInstructionsCron } from './services/custom-instructions-cron.js';
 
 // ═══════════════════════════════════════════════════════════════════════
 // PROMPT OPTIMIZATION v3.0 - Modular prompt builder with 79% token reduction
@@ -520,6 +522,9 @@ app.use('/api', usersRoutes);
 
 // Rotas de Conversas (Histórico de Chat)
 app.use('/api/conversations', conversationsRoutes);
+
+// Rotas de Custom Instructions (Sistema de Prompts Personalizados)
+app.use('/api/custom-instructions', requireAuth, customInstructionsRoutes);
 
 // Rotas de Processamento de Casos (Extração + 5 Layers)
 app.use('/api/case-processor', caseProcessorRouter);
@@ -10307,6 +10312,11 @@ app.listen(PORT, async () => {
   logger.info('Agendando backup automático diário...');
   backupManager.scheduleBackup('03:00');
   logger.info('Backup automático ATIVO - Execução às 03h diariamente');
+
+  // Ativar análise periódica de Custom Instructions (segunda-feira 02h / dia 1 02h)
+  logger.info('Ativando análise periódica de Custom Instructions...');
+  startCustomInstructionsCron();
+  logger.info('Custom Instructions Cron ATIVO - Análise semanal/mensal configurada');
 
   console.log(`
 ╔══════════════════════════════════════════════════════════════╗

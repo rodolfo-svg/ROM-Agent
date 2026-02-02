@@ -25,6 +25,7 @@ import {
   TOOL_KEYWORDS,
   ABNT_KEYWORDS
 } from '../modules/optimized-prompts.js';
+import { customInstructionsManager } from '../../lib/custom-instructions-manager.js';
 
 // Simple cache for built prompts
 const promptCache = new Map();
@@ -49,6 +50,8 @@ export class PromptBuilder {
    * @param {boolean} options.includeABNT - Load ABNT formatting rules
    * @param {string} options.documentType - Specific document template
    * @param {string} options.userId - User ID for A/B bucketing
+   * @param {string} options.partnerId - Partner ID for Custom Instructions
+   * @param {Object} options.context - Context for Custom Instructions (type: 'chat' | 'peca', userPreference)
    * @returns {Object} { prompt: string, tokens: number, modules: string[] }
    */
   build(options = {}) {
@@ -56,7 +59,9 @@ export class PromptBuilder {
       includeTools = false,
       includeABNT = false,
       documentType = null,
-      userId = null
+      userId = null,
+      partnerId = 'rom',
+      context = { type: 'chat' }
     } = options;
 
     // Check if user is in optimized bucket
@@ -66,8 +71,14 @@ export class PromptBuilder {
       return this.buildLegacy();
     }
 
-    // Generate cache key
-    const cacheKey = `${includeTools}-${includeABNT}-${documentType || 'none'}`;
+    // Adiciona partnerId ao contexto
+    const ciContext = { ...context, partnerId };
+
+    // Verifica se deve aplicar Custom Instructions
+    const includeCustomInstructions = customInstructionsManager.shouldApply(ciContext);
+
+    // Generate cache key (incluindo CI)
+    const cacheKey = `${partnerId}-${includeCustomInstructions}-${includeTools}-${includeABNT}-${documentType || 'none'}`;
 
     // Check cache
     if (this.enableCaching && promptCache.has(cacheKey)) {
@@ -79,9 +90,45 @@ export class PromptBuilder {
     }
 
     // Build prompt
-    const parts = [OPTIMIZED_SYSTEM_PROMPT];
-    const modules = ['core'];
-    let estimatedTokens = 438; // Base tokens
+    const parts = [];
+    const modules = [];
+    let estimatedTokens = 0;
+
+    // ═══════════════════════════════════════════════════════
+    // ETAPA 1: CUSTOM INSTRUCTIONS (OBRIGATÓRIO, SE HABILITADO)
+    // ═══════════════════════════════════════════════════════
+    if (includeCustomInstructions) {
+      try {
+        const customInstructions = customInstructionsManager.getCompiledText(partnerId);
+        const components = customInstructionsManager.getComponents(partnerId);
+
+        parts.push('═══════════════════════════════════════════════════════\n');
+        parts.push('CUSTOM INSTRUCTIONS - SEQUÊNCIA OBRIGATÓRIA\n');
+        parts.push('═══════════════════════════════════════════════════════\n\n');
+        parts.push(customInstructions);
+        parts.push('\n\n');
+
+        modules.push('custom-instructions');
+
+        // Calcula tokens das Custom Instructions
+        const ciTokens = components.reduce((sum, c) => sum + (c.metadata?.estimatedTokens || 0), 0);
+        estimatedTokens += ciTokens;
+      } catch (error) {
+        console.error('[PromptBuilder] Erro ao carregar Custom Instructions:', error);
+        // Continua sem Custom Instructions em caso de erro
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // ETAPA 2: PROMPT BASE (OPTIMIZED_SYSTEM_PROMPT)
+    // ═══════════════════════════════════════════════════════
+    parts.push(OPTIMIZED_SYSTEM_PROMPT);
+    modules.push('core');
+    estimatedTokens += 438;
+
+    // ═══════════════════════════════════════════════════════
+    // ETAPA 3: MÓDULOS CONDICIONAIS (TOOLS, ABNT)
+    // ═══════════════════════════════════════════════════════
 
     // Add tool instructions if needed
     if (includeTools) {
@@ -106,7 +153,9 @@ export class PromptBuilder {
       tokens: estimatedTokens,
       modules,
       size: prompt.length,
-      version: 'optimized'
+      version: 'optimized',
+      hasCustomInstructions: includeCustomInstructions,
+      partnerId
     };
 
     // Cache result
@@ -268,6 +317,8 @@ export function createPromptBuilder(options = {}) {
  * @param {boolean} options.includeABNT - Override: include ABNT
  * @param {string} options.documentType - Document type
  * @param {string} options.userId - User ID for A/B testing
+ * @param {string} options.partnerId - Partner ID for Custom Instructions
+ * @param {Object} options.context - Context for Custom Instructions (type: 'chat' | 'peca', userPreference)
  * @returns {Object} { prompt: string, tokens: number, modules: string[] }
  */
 export function buildSystemPrompt(options = {}) {
@@ -276,7 +327,9 @@ export function buildSystemPrompt(options = {}) {
     includeTools,
     includeABNT,
     documentType,
-    userId
+    userId,
+    partnerId = 'rom',
+    context = { type: 'chat' }
   } = options;
 
   // Auto-detect or use explicit values
@@ -295,7 +348,9 @@ export function buildSystemPrompt(options = {}) {
     includeTools: toolsNeeded,
     includeABNT: abntNeeded,
     documentType: docType,
-    userId
+    userId,
+    partnerId,
+    context
   });
 }
 

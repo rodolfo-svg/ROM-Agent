@@ -16,6 +16,8 @@ const UsersPage = lazy(() => import('@/pages/users/UsersPage').then(m => ({ defa
 const PartnersPage = lazy(() => import('@/pages/partners/PartnersPage').then(m => ({ default: m.PartnersPage })))
 const ReportsPage = lazy(() => import('@/pages/reports/ReportsPage').then(m => ({ default: m.ReportsPage })))
 const SystemPromptsPage = lazy(() => import('@/pages/admin/SystemPromptsPage'))
+const CustomInstructionsPage = lazy(() => import('@/pages/custom-instructions/CustomInstructionsPage'))
+const SuggestionsPage = lazy(() => import('@/pages/custom-instructions/SuggestionsPage'))
 
 // Loading component
 function PageLoader() {
@@ -192,6 +194,26 @@ export default function App() {
           element={
             <ProtectedRoute>
               <SystemPromptsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Custom Instructions */}
+        <Route
+          path="/admin/custom-instructions"
+          element={
+            <ProtectedRoute>
+              <CustomInstructionsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* AI Suggestions */}
+        <Route
+          path="/admin/suggestions"
+          element={
+            <ProtectedRoute>
+              <SuggestionsPage />
             </ProtectedRoute>
           }
         />
