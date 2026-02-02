@@ -543,5 +543,28 @@
     "createdAt": "2026-01-29T05:27:55.418Z",
     "updatedAt": "2026-01-29T05:28:01.733Z",
     "messageCount": 2
+  },
+  "conv_1769750946899_tf4e6n": {
+    "id": "conv_1769750946899_tf4e6n",
+    "userId": "anonymous",
+    "sessionId": "uAxdcW5PA_JCSHRACLo7SlDqFrDD3xVt",
+    "projectId": "rom-agent",
+    "title": "Teste de conexão",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de conexão",
+        "timestamp": "2026-01-30T05:29:06.901Z"
+      },
+      {
+        "role": "assistant",
+        "content": "# ✅ Conexão Estabelecida com Sucesso!\n\nOlá! Sou o **ROM Agent**, seu assistente jurídico especializado.\n\n## 🔧 Status dos Sistemas\n\n✅ **Sistema Principal**: Online  \n✅ **Ferramentas Jurídicas**: Operacionais  \n✅ **Knowledge Base**: Habilitada  \n✅ **Geração de Documentos**: Pronta  \n\n## 🎯 Estou Pronto Para Auxiliar Em:\n\n### 📝 Redação de Peças Processuais\n- Petições iniciais, contestações, recursos\n- Embargos de declaração, agravos\n- Memoriais e alegações finais\n\n### 🏢 Direito Empresarial\n- Contratos sociais e alterações contratuais\n- Atos societários (DNRC)\n- Contratos empresariais\n\n### 📋 Documentos Extrajudiciais\n- Contratos diversos\n- Procurações e substabelecimentos\n- Notificações e interpelações\n\n### 🔍 Pesquisas e Análises\n- Jurisprudência (STF, STJ, TST, TSE)\n- Súmulas e teses vinculantes\n- Doutrina e artigos especializados\n\n### ⏰ Gestão Processual\n- Cálculo de prazos (Lei 11.419/2006)\n- Análise de publicações DJe/DJEN\n- Verificação de preclusão e prescrição\n\n---\n\n**Como posso ajudá-lo hoje?**\n\nVocê pode:\n- Solicitar redação de uma peça específica\n- Pedir análise de jurisprudência\n- Calcular prazos processuais\n- Gerar contratos ou documentos\n- Consultar documentos já enviados",
+        "timestamp": "2026-01-30T05:29:13.845Z"
+      }
+    ],
+    "createdAt": "2026-01-30T05:29:06.899Z",
+    "updatedAt": "2026-01-30T05:29:13.845Z",
+    "messageCount": 2
   }
 }

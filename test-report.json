@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-29T05:00:32.406Z",
+  "timestamp": "2026-01-30T05:00:33.797Z",
   "summary": {
     "total": 18,
     "passed": 10,
@@ -13,7 +13,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 58,
+      "duration": 66,
       "data": {
         "nome": "ROM",
         "versao": "2.8.0",
@@ -31,7 +31,7 @@
         "health": {
           "status": "healthy",
           "uptime": "22h 52m",
-          "uptimeSeconds": 82343
+          "uptimeSeconds": 82340
         },
         "bedrock": {
           "status": "connected",
@@ -50,14 +50,14 @@
           "nodeVersion": "v25.2.1",
           "platform": "darwin",
           "arch": "arm64",
-          "pid": 90260,
-          "gitCommit": "895be3d"
+          "pid": 65266,
+          "gitCommit": "db10fa6"
         },
         "memory": {
-          "rss": "89 MB",
-          "heapTotal": "170 MB",
-          "heapUsed": "167 MB",
-          "external": "23 MB"
+          "rss": "104 MB",
+          "heapTotal": "169 MB",
+          "heapUsed": "162 MB",
+          "external": "22 MB"
         },
         "storage": {
           "isRender": false,
@@ -128,7 +128,7 @@
             "EmptyState-Bph9jwjo.js"
           ]
         },
-        "timestamp": "2026-01-29T05:00:30.730Z"
+        "timestamp": "2026-01-30T05:00:31.260Z"
       }
     },
     {
@@ -137,12 +137,12 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 5,
+      "duration": 7,
       "data": {
         "success": true,
         "conversations": {
-          "total": 24,
-          "totalMessages": 38
+          "total": 26,
+          "totalMessages": 42
         },
         "cache": {
           "activeSessions": 0,
@@ -155,7 +155,7 @@
           "averageResponseTime": 3,
           "unit": "seconds"
         },
-        "timestamp": "2026-01-29T05:00:30.741Z"
+        "timestamp": "2026-01-30T05:00:31.273Z"
       }
     },
     {
@@ -176,10 +176,10 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 1631,
+      "duration": 2477,
       "data": {
         "response": "OK",
-        "conversationId": "conv_1769662830756_stnt4j",
+        "conversationId": "conv_1769749231289_7hl79w",
         "metadados": {},
         "recomendacoes": [],
         "verificacaoRealizada": false
@@ -187,11 +187,11 @@
     },
     {
       "name": "2.3 Obter Conversa Específica",
-      "url": "http://localhost:3000/api/conversations/conv_1769662830756_stnt4j",
+      "url": "http://localhost:3000/api/conversations/conv_1769749231289_7hl79w",
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 3,
+      "duration": 6,
       "data": {
         "success": false,
         "error": "Banco de dados indisponível"
@@ -199,11 +199,11 @@
     },
     {
       "name": "2.4 Renomear Conversa",
-      "url": "http://localhost:3000/api/conversations/conv_1769662830756_stnt4j/rename",
+      "url": "http://localhost:3000/api/conversations/conv_1769749231289_7hl79w/rename",
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 5,
+      "duration": 9,
       "data": {
         "success": true
       }
@@ -214,7 +214,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 4,
       "data": {
         "success": false,
         "error": "Banco de dados indisponível"
@@ -235,7 +235,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 3,
       "data": {
         "success": true,
         "status": "active",
@@ -265,7 +265,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 3,
       "data": {
         "success": false,
         "error": "Banco de dados temporariamente indisponível"
@@ -277,7 +277,7 @@
       "status": 404,
       "expected": 200,
       "passed": false,
-      "duration": 1,
+      "duration": 2,
       "data": {
         "error": "Projeto não encontrado",
         "message": "Projeto não encontrado"
@@ -302,7 +302,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
+      "duration": 2,
       "data": []
     },
     {
@@ -313,6 +313,11 @@
       "passed": true,
       "duration": 2,
       "data": [
+        {
+          "filename": "backup-2026-01-29.zip",
+          "size": 344993,
+          "timestamp": "2026-01-29T06:00:03.125Z"
+        },
         {
           "filename": "backup-2026-01-28.zip",
           "size": 334497,

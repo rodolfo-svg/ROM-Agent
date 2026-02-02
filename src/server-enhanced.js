@@ -4136,6 +4136,50 @@ app.get('/api/info', async (req, res) => {
         };
       })(),
 
+      // ✅ TOOLS DISPONÍVEIS (diagnóstico de pesquisas)
+      tools: (() => {
+        try {
+          // Importar tools dinamicamente
+          const { BEDROCK_TOOLS } = require('./modules/bedrock-tools.js');
+
+          return {
+            available: true,
+            count: BEDROCK_TOOLS ? BEDROCK_TOOLS.length : 0,
+            tools: BEDROCK_TOOLS ? BEDROCK_TOOLS.map(t => ({
+              name: t.toolSpec?.name || 'unknown',
+              description: t.toolSpec?.description?.substring(0, 100) || 'No description'
+            })) : []
+          };
+        } catch (error) {
+          return {
+            available: false,
+            error: error.message,
+            count: 0,
+            tools: []
+          };
+        }
+      })(),
+
+      // ✅ SEARCH SERVICES CONFIG (diagnóstico de configuração)
+      searchServices: {
+        googleSearch: {
+          enabled: !!process.env.GOOGLE_SEARCH_ENABLED && process.env.GOOGLE_SEARCH_ENABLED !== 'false',
+          configured: !!(process.env.GOOGLE_SEARCH_API_KEY && process.env.GOOGLE_SEARCH_CX),
+          hasApiKey: !!process.env.GOOGLE_SEARCH_API_KEY,
+          hasCx: !!process.env.GOOGLE_SEARCH_CX
+        },
+        datajud: {
+          enabled: !!process.env.DATAJUD_ENABLED && process.env.DATAJUD_ENABLED !== 'false',
+          configured: !!process.env.DATAJUD_API_KEY,
+          hasApiKey: !!process.env.DATAJUD_API_KEY,
+          baseUrl: process.env.DATAJUD_BASE_URL || 'not set'
+        },
+        jusbrasil: {
+          enabled: false, // Desabilitado por bloqueio anti-bot
+          note: 'Substituído por Google Search que indexa JusBrasil'
+        }
+      },
+
       // Timestamp
       timestamp: new Date().toISOString()
     };

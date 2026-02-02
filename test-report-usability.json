@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-01-29T05:00:52.511Z",
+  "timestamp": "2026-01-30T05:00:52.987Z",
   "summary": {
     "total": 26,
     "passed": 13,
     "failed": 6,
     "warnings": 7,
     "successRate": 50,
-    "duration": 12884
+    "duration": 14538
   },
   "results": [
     {
@@ -29,8 +29,8 @@
         "averageResponseTime": 3,
         "unit": "seconds"
       },
-      "duration": 6,
-      "validation": "✓ Stats completas (25 conversas)"
+      "duration": 5,
+      "validation": "✓ Stats completas (27 conversas)"
     },
     {
       "category": "Sistema",
@@ -59,7 +59,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 12778,
+      "duration": 14438,
       "validation": "✓ Contém 'response'"
     },
     {
@@ -79,7 +79,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 6,
+      "duration": 5,
       "validation": "✓ KB com 5 documentos"
     },
     {
@@ -89,7 +89,7 @@
       "status": 302,
       "expected": 401,
       "passed": false,
-      "duration": 4,
+      "duration": 5,
       "validation": ""
     },
     {
@@ -99,7 +99,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 3,
+      "duration": 4,
       "validation": ""
     },
     {
@@ -129,7 +129,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
+      "duration": 2,
       "validation": "✓ É array com 0 itens"
     },
     {
@@ -140,7 +140,7 @@
       "expected": 200,
       "passed": true,
       "duration": 3,
-      "validation": "✓ É array com 1 itens"
+      "validation": "✓ É array com 2 itens"
     },
     {
       "category": "Ferramentas",
@@ -149,7 +149,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 1,
       "validation": "✓ Contém 'stats'"
     },
     {
@@ -159,7 +159,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 4,
+      "duration": 3,
       "validation": "✓ HTML válido"
     },
     {
@@ -169,7 +169,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
+      "duration": 2,
       "validation": "✓ Analytics HTML válido"
     }
   ]
