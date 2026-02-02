@@ -3662,7 +3662,7 @@ app.get('/api/prompts', (req, res) => {
 });
 
 // API - Listar prompts do Projeto ROM (JSON)
-app.get('/api/rom-prompts', async (req, res) => {
+app.get('/api/rom-prompts', requireAuth, async (req, res) => {
   try {
     const promptsDir = path.join(ACTIVE_PATHS.data, 'rom-project', 'prompts');
     const prompts = {
@@ -3686,10 +3686,10 @@ app.get('/api/rom-prompts', async (req, res) => {
 
           prompts[categoria].push({
             id: promptData.id || file.replace('.json', ''),
-            nome: promptData.nome || promptData.name || file.replace('.json', ''),
-            categoria: categoria,
-            subcategoria: promptData.subcategoria || promptData.subcategory || null,
-            descricao: promptData.descricao || promptData.description || '',
+            title: promptData.title || promptData.nome || promptData.name || file.replace('.json', ''),
+            category: categoria,
+            description: promptData.description || promptData.descricao || '',
+            template: promptData.template || promptData.content || '',
             tags: promptData.tags || [],
             version: promptData.version || '1.0',
             updated: promptData.updated || promptData.lastModified || null,
@@ -3715,6 +3715,7 @@ app.get('/api/rom-prompts', async (req, res) => {
 
     res.json({
       success: true,
+      data: prompts,
       prompts,
       message: `${prompts.total} prompts do Projeto ROM disponíveis`
     });
@@ -3730,7 +3731,7 @@ app.get('/api/rom-prompts', async (req, res) => {
 });
 
 // API - Obter prompt específico do Projeto ROM
-app.get('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
+app.get('/api/rom-prompts/:categoria/:promptId', requireAuth, async (req, res) => {
   try {
     const { categoria, promptId } = req.params;
     const promptsDir = path.join(ACTIVE_PATHS.data, 'rom-project', 'prompts');
@@ -3750,9 +3751,25 @@ app.get('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
     const content = await fs.promises.readFile(promptPath, 'utf-8');
     const promptData = JSON.parse(content);
 
+    // ✅ Padronizar campos para o frontend
+    const normalizedPrompt = {
+      id: promptData.id,
+      title: promptData.title || promptData.nome || '',
+      description: promptData.description || promptData.descricao || '',
+      template: promptData.template || promptData.content || '',
+      tags: promptData.tags || [],
+      category: promptData.category || categoria,
+      version: promptData.version || '1.0',
+      created: promptData.created || null,
+      updated: promptData.updated || null,
+      createdBy: promptData.createdBy || 'system',
+      lastModifiedBy: promptData.lastModifiedBy || null,
+      autoUpdateable: promptData.autoUpdateable || false
+    };
+
     res.json({
       success: true,
-      prompt: promptData
+      prompt: normalizedPrompt
     });
 
   } catch (error) {
@@ -3765,10 +3782,19 @@ app.get('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
 });
 
 // API - Editar prompt do Projeto ROM
-app.put('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
+app.put('/api/rom-prompts/:categoria/:promptId', requireAuth, async (req, res) => {
   try {
     const { categoria, promptId } = req.params;
     const { prompt } = req.body;
+    const userRole = req.session?.user?.role || 'user';
+
+    // ✅ Verificar permissões - apenas admin/partner_admin/master_admin podem editar
+    if (!['admin', 'partner_admin', 'master_admin'].includes(userRole)) {
+      return res.status(403).json({
+        success: false,
+        error: 'Sem permissão para editar prompts. Apenas administradores podem editar prompts.'
+      });
+    }
 
     if (!prompt) {
       return res.status(400).json({
@@ -3781,8 +3807,10 @@ app.put('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
     const promptPath = path.join(promptsDir, categoria, `${promptId}.json`);
 
     // Verificar se o arquivo existe
+    let originalData = null;
     try {
-      await fs.promises.access(promptPath);
+      const originalContent = await fs.promises.readFile(promptPath, 'utf-8');
+      originalData = JSON.parse(originalContent);
     } catch {
       return res.status(404).json({
         success: false,
@@ -3794,14 +3822,22 @@ app.put('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
     const backupDir = path.join(promptsDir, '.backups');
     await fs.promises.mkdir(backupDir, { recursive: true });
     const backupPath = path.join(backupDir, `${promptId}_${Date.now()}.json`);
-    const originalContent = await fs.promises.readFile(promptPath, 'utf-8');
-    await fs.promises.writeFile(backupPath, originalContent, 'utf-8');
+    await fs.promises.writeFile(backupPath, JSON.stringify(originalData, null, 2), 'utf-8');
 
-    // Adicionar timestamp de atualização
+    // ✅ Padronizar campos e preservar metadados originais
     const updatedPrompt = {
-      ...prompt,
+      id: prompt.id || promptId,
+      title: prompt.title || prompt.nome || originalData.title || '',
+      description: prompt.description || prompt.descricao || originalData.description || '',
+      template: prompt.template || prompt.content || originalData.template || '',
+      tags: prompt.tags || originalData.tags || [],
+      category: categoria,
+      version: originalData.version || '1.0',
+      created: originalData.created || new Date().toISOString(),
       updated: new Date().toISOString(),
-      lastModifiedBy: 'user'
+      createdBy: originalData.createdBy || 'user',
+      lastModifiedBy: req.session?.user?.email || 'user',
+      autoUpdateable: originalData.autoUpdateable || false
     };
 
     // Salvar prompt editado
@@ -3814,7 +3850,8 @@ app.put('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
     logger.info('Prompt ROM editado', {
       categoria,
       promptId,
-      backupPath
+      backupPath,
+      modifiedBy: updatedPrompt.lastModifiedBy
     });
 
     res.json({
@@ -3834,10 +3871,19 @@ app.put('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
 });
 
 // API - Criar novo prompt do Projeto ROM
-app.post('/api/rom-prompts/:categoria', async (req, res) => {
+app.post('/api/rom-prompts/:categoria', requireAuth, async (req, res) => {
   try {
     const { categoria } = req.params;
     const { prompt } = req.body;
+    const userRole = req.session?.user?.role || 'user';
+
+    // ✅ Verificar permissões - apenas admin/partner_admin/master_admin podem criar
+    if (!['admin', 'partner_admin', 'master_admin'].includes(userRole)) {
+      return res.status(403).json({
+        success: false,
+        error: 'Sem permissão para criar prompts. Apenas administradores podem criar prompts.'
+      });
+    }
 
     if (!prompt || !prompt.id) {
       return res.status(400).json({
@@ -3873,14 +3919,18 @@ app.post('/api/rom-prompts/:categoria', async (req, res) => {
     // Criar diretório da categoria se não existir
     await fs.promises.mkdir(categoriaPath, { recursive: true });
 
-    // Adicionar metadados
+    // ✅ Padronizar campos (usar inglês)
     const newPrompt = {
-      ...prompt,
-      categoria: categoria,
+      id: prompt.id,
+      title: prompt.title || prompt.nome || '',
+      description: prompt.description || prompt.descricao || '',
+      template: prompt.template || prompt.content || '',
+      tags: prompt.tags || [],
+      category: categoria,
       version: prompt.version || '1.0',
       created: new Date().toISOString(),
       updated: new Date().toISOString(),
-      createdBy: 'user',
+      createdBy: req.session?.user?.email || 'user',
       autoUpdateable: false
     };
 
@@ -3893,7 +3943,8 @@ app.post('/api/rom-prompts/:categoria', async (req, res) => {
 
     logger.info('Novo prompt ROM criado', {
       categoria,
-      promptId: prompt.id
+      promptId: prompt.id,
+      createdBy: newPrompt.createdBy
     });
 
     res.status(201).json({
@@ -3912,9 +3963,19 @@ app.post('/api/rom-prompts/:categoria', async (req, res) => {
 });
 
 // API - Deletar prompt do Projeto ROM
-app.delete('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
+app.delete('/api/rom-prompts/:categoria/:promptId', requireAuth, async (req, res) => {
   try {
     const { categoria, promptId } = req.params;
+    const userRole = req.session?.user?.role || 'user';
+
+    // ✅ Verificar permissões - apenas admin/partner_admin/master_admin podem deletar
+    if (!['admin', 'partner_admin', 'master_admin'].includes(userRole)) {
+      return res.status(403).json({
+        success: false,
+        error: 'Sem permissão para deletar prompts. Apenas administradores podem deletar prompts.'
+      });
+    }
+
     const promptsDir = path.join(ACTIVE_PATHS.data, 'rom-project', 'prompts');
     const promptPath = path.join(promptsDir, categoria, `${promptId}.json`);
 
@@ -3944,7 +4005,8 @@ app.delete('/api/rom-prompts/:categoria/:promptId', async (req, res) => {
     logger.info('Prompt ROM deletado', {
       categoria,
       promptId,
-      backupPath
+      backupPath,
+      deletedBy: req.session?.user?.email || 'user'
     });
 
     res.json({
