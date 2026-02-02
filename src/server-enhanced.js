@@ -3518,7 +3518,7 @@ app.post('/api/upload-documents', upload.array('files', 20), async (req, res) =>
 
           // 📋 REGISTRAR NO kb-documents.json (para aparecer na interface do KB)
           try {
-            const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+            const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
             let kbDocs = [];
 
             if (fs.existsSync(kbDocsPath)) {
@@ -5704,7 +5704,7 @@ async function processUploadInBackground(uploadId, files, userId, userName) {
         };
 
         // Salvar no kb-documents.json
-        const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+        const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
         let kbDocs = [];
 
         if (fs.existsSync(kbDocsPath)) {
@@ -5811,7 +5811,7 @@ async function processFileWithProgress(filePath, onProgress = null) {
 app.get('/api/kb/documents', requireAuth, (req, res) => {
   try {
     const userId = req.session.user.id; // ✅ Usar session auth
-    const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+    const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
 
     if (!fs.existsSync(kbDocsPath)) {
       return res.json({ documents: [] });
@@ -5847,7 +5847,7 @@ app.get('/api/kb/documents/:id/download', requireAuth, (req, res) => {
     const { id } = req.params;
     const userId = req.session.user.id; // ✅ Usar session auth
     const userRole = req.session.user.role; // ✅ Usar session auth
-    const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+    const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
 
     if (!fs.existsSync(kbDocsPath)) {
       return res.status(404).json({ error: 'Documento não encontrado' });
@@ -7000,7 +7000,7 @@ app.delete('/api/kb/structured-documents/:id', async (req, res) => {
 app.get('/api/kb/user-statistics', authSystem.authMiddleware(), (req, res) => {
   try {
     const userId = req.user.userId;
-    const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+    const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
 
     if (!fs.existsSync(kbDocsPath)) {
       return res.json({

@@ -14,6 +14,7 @@
 import jurisprudenceService from '../services/jurisprudence-search-service.js';
 import doctrineSearchService from '../services/doctrine-search-service.js';
 import { pesquisarSumulas } from './jurisprudencia.js';
+import { ACTIVE_PATHS } from '../../lib/storage-config.js';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -605,8 +606,9 @@ export async function executeTool(toolName, toolInput) {
         console.log(`📚 [KB] Consultando documentos: "${query}"`);
 
         try {
-          // Ler documentos da KB
-          const kbDocsPath = path.join(process.cwd(), 'data', 'kb-documents.json');
+          // ✅ CRÍTICO: Usar ACTIVE_PATHS para acessar disco persistente no Render
+          // Antes usava process.cwd() que é efêmero e perdido a cada deploy
+          const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
 
           if (!fs.existsSync(kbDocsPath)) {
             return {
