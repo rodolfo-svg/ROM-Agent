@@ -5496,7 +5496,9 @@ app.get('/api/kb/status', (req, res) => {
   try {
     const fs = require('fs');
     const path = require('path');
-    const kbPath = path.join(__dirname, '../KB');
+    // ✅ CRÍTICO: Usar ACTIVE_PATHS.kb para acessar disco persistente
+    // Antes usava __dirname/../KB que é efêmero
+    const kbPath = ACTIVE_PATHS.kb;
 
     // Verificar se diretório KB existe
     if (!fs.existsSync(kbPath)) {
@@ -9008,8 +9010,8 @@ app.delete('/api/projects/:id', (req, res) => {
 // GET /api/kb/stats - Estatísticas completas do KB
 app.get('/api/kb/stats', (req, res) => {
   try {
-    const uploadDir = path.join(__dirname, '../upload');
-    const kbDir = path.join(__dirname, '../KB');
+    const uploadDir = ACTIVE_PATHS.upload;
+    const kbDir = ACTIVE_PATHS.kb;
 
     // Calcular estatísticas
     const projects = Array.from(projectsStore.values());
@@ -9169,7 +9171,7 @@ app.post('/api/semantic-search', searchLimiter, async (req, res) => {
     logger.info(`Semantic search: "${query}"`);
 
     // Buscar documentos na Knowledge Base
-    const kbPath = path.join(__dirname, '../KB/ROM');
+    const kbPath = path.join(ACTIVE_PATHS.kb, 'ROM');
     const documents = [];
 
     // Ler todos os documentos das subpastas
