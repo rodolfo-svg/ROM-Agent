@@ -627,14 +627,27 @@ export async function executeTool(toolName, toolInput) {
             };
           }
 
-          // Buscar documentos relevantes (busca simples por texto)
+          // Buscar documentos relevantes (busca por palavras individuais)
+          // ✅ MELHORADO: Divide query em palavras e procura cada uma
           const queryLower = query.toLowerCase();
+          const queryWords = queryLower
+            .split(/\s+/)
+            .filter(word => word.length > 3); // Ignora palavras muito curtas (de, da, os, etc)
+
           const relevantDocs = allDocs
             .filter(doc => {
-              const nameMatch = doc.name.toLowerCase().includes(queryLower);
-              const textMatch = doc.extractedText?.toLowerCase().includes(queryLower);
-              const typeMatch = doc.metadata?.documentType?.toLowerCase().includes(queryLower);
-              return nameMatch || textMatch || typeMatch;
+              const docName = doc.name.toLowerCase();
+              const docText = doc.extractedText?.toLowerCase() || '';
+              const docType = doc.metadata?.documentType?.toLowerCase() || '';
+              const combinedText = `${docName} ${docText} ${docType}`;
+
+              // Se query tem palavras, procura por QUALQUER palavra
+              if (queryWords.length > 0) {
+                return queryWords.some(word => combinedText.includes(word));
+              }
+
+              // Se query é muito curta, busca string completa (fallback)
+              return combinedText.includes(queryLower);
             })
             .slice(0, limite);
 
