@@ -296,7 +296,24 @@ const app = express();
 // Trust proxy para Render (necessário para rate limiting e X-Forwarded-For)
 app.set('trust proxy', true);
 
-app.use(cors());
+// ═══════════════════════════════════════════════════════════════════════
+// CORS - CRÍTICO PARA SSE (Server-Sent Events)
+// ═══════════════════════════════════════════════════════════════════════
+// IMPORTANTE: SSE com EventSource requer credentials: true
+// Origin específico é obrigatório quando credentials: true (não pode ser "*")
+app.use(cors({
+  origin: [
+    'https://iarom.com.br',
+    'https://www.iarom.com.br',
+    'http://localhost:5173',  // Dev local
+    'http://localhost:3000'   // Dev local alternativo
+  ],
+  credentials: true,  // ✅ CRÍTICO: Permite cookies e autenticação em SSE
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
+  exposedHeaders: ['Content-Type', 'Cache-Control', 'Connection']
+}));
+
 app.use(express.json({ limit: '550mb' })); // ✅ Aumentado para suportar documentos jurídicos grandes (500MB)
 app.use(express.urlencoded({ limit: '550mb', extended: true })); // ✅ Adicionar para form-data
 

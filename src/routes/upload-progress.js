@@ -21,17 +21,19 @@ router.get('/:uploadId/progress', (req, res) => {
 
   console.log(`📡 [SSE] Cliente conectou: ${uploadId}`);
 
-  // Configurar headers SSE + CORS
+  // Configurar headers SSE
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache, no-transform');
   res.setHeader('Connection', 'keep-alive');
-  res.setHeader('X-Accel-Buffering', 'no'); // Render/Nginx
+  res.setHeader('X-Accel-Buffering', 'no'); // Render/Nginx: Desabilita buffering
 
   // ✨ FIX: Bypass Cloudflare buffering
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.flushHeaders(); // Force immediate header flush
 
-  // ✨ FIX: Headers CORS necessários para EventSource com withCredentials
+  // ✨ CORS para SSE: Configuração global em server-enhanced.js já define
+  // Access-Control-Allow-Origin e Access-Control-Allow-Credentials
+  // Headers abaixo são redundantes mas garantem compatibilidade
   const origin = req.headers.origin || 'https://iarom.com.br';
   res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Credentials', 'true');
