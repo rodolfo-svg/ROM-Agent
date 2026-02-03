@@ -1,5 +1,5 @@
-# Build Info - 2026-02-03 06:07:24
-Version: 4.0.2
-Commit: 39d3b5f
-Build: Updated with all January-February 2026 fixes
-Features: Custom Instructions v1.7, Word extraction, Unified artifacts, No emojis
+# Build Info - 2026-02-03 06:16:52
+Version: 4.0.3
+Commit: 57ec4ff
+Build: Removed outdated suggestion cards from empty state
+Changes: Clean, modern empty state without example prompts
