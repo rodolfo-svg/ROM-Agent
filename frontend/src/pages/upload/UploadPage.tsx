@@ -66,6 +66,9 @@ export function UploadPage() {
   const [showStructured, setShowStructured] = useState(false)
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null)
   const [currentUploadId, setCurrentUploadId] = useState<string | null>(null)
+  const [chunkedProgress, setChunkedProgress] = useState<number>(0) // Progresso do chunked upload
+  const [chunkedStage, setChunkedStage] = useState<string>('') // Stage do chunked upload
+  const [isChunkedUploading, setIsChunkedUploading] = useState(false) // Flag de chunked upload
 
   // SSE Progress tracking (progresso em tempo real via Server-Sent Events)
   const sseProgress = useUploadProgress(currentUploadId)
@@ -138,6 +141,11 @@ export function UploadPage() {
       if (hasLargeFile) {
         console.log(`[UploadPage] Arquivo(s) >80MB detectado(s), usando CHUNKED UPLOAD`)
 
+        // ✅ Ativar UI de chunked upload
+        setIsChunkedUploading(true)
+        setChunkedProgress(0)
+        setChunkedStage('Preparando upload...')
+
         // Upload cada arquivo via chunked upload
         const uploadedFiles: Array<{ originalName: string; uploadedPath: string }> = []
 
@@ -146,6 +154,8 @@ export function UploadPage() {
             console.log(`📦 [UploadPage] Chunked upload: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`)
 
             // 1. Iniciar sessão chunked
+            setChunkedStage(`Iniciando upload: ${file.name}`)
+
             const CHUNK_SIZE = 40 * 1024 * 1024 // 40MB
             const totalChunks = Math.ceil(file.size / CHUNK_SIZE)
 
@@ -175,7 +185,12 @@ export function UploadPage() {
               const end = Math.min(start + CHUNK_SIZE, file.size)
               const chunk = file.slice(start, end)
 
-              console.log(`   📤 Chunk ${chunkIndex + 1}/${totalChunks} (${((chunkIndex + 1) / totalChunks * 100).toFixed(0)}%)`)
+              const progress = Math.round(((chunkIndex + 1) / totalChunks) * 100)
+
+              setChunkedProgress(progress)
+              setChunkedStage(`Enviando chunk ${chunkIndex + 1}/${totalChunks}`)
+
+              console.log(`   📤 Chunk ${chunkIndex + 1}/${totalChunks} (${progress}%)`)
 
               const chunkResponse = await fetch(`/api/upload/chunked/${uploadId}/chunk/${chunkIndex}`, {
                 method: 'POST',
@@ -189,6 +204,9 @@ export function UploadPage() {
             }
 
             // 3. Finalizar
+            setChunkedStage('Finalizando e montando arquivo...')
+            setChunkedProgress(100)
+
             const finalizeResponse = await fetch(`/api/upload/chunked/${uploadId}/finalize`, {
               method: 'POST',
               credentials: 'include',
@@ -201,7 +219,7 @@ export function UploadPage() {
             const finalResult = await finalizeResponse.json()
             uploadedFiles.push({
               originalName: file.name,
-              uploadedPath: finalResult.filePath
+              uploadedPath: finalResult.path || finalResult.filePath
             })
 
             console.log(`   ✅ Chunked upload completo: ${file.name}`)
@@ -234,6 +252,8 @@ export function UploadPage() {
         // Após todos os uploads chunked, iniciar processamento KB
         console.log(`[UploadPage] Iniciando processamento KB para ${uploadedFiles.length} arquivo(s)`)
 
+        setChunkedStage('Iniciando processamento IA...')
+
         const kbResponse = await fetch('/api/kb/process-uploaded', {
           method: 'POST',
           headers: {
@@ -251,6 +271,11 @@ export function UploadPage() {
         const kbData = await kbResponse.json()
         if (kbData.success && kbData.uploadId) {
           console.log(`[UploadPage] Processamento KB iniciado: ${kbData.uploadId}`)
+
+          // ✅ Resetar estados de chunked e começar SSE tracking
+          setIsChunkedUploading(false)
+          setChunkedProgress(0)
+          setChunkedStage('')
           setCurrentUploadId(kbData.uploadId)
         }
 
@@ -290,6 +315,11 @@ export function UploadPage() {
     } catch (error) {
       console.error('[UploadPage] Erro no upload:', error)
       alert(`Erro no upload: ${error instanceof Error ? error.message : 'Erro desconhecido'}`)
+
+      // ✅ Resetar estados de chunked em caso de erro
+      setIsChunkedUploading(false)
+      setChunkedProgress(0)
+      setChunkedStage('')
     } finally {
       // Reset input
       if (e.target) {
@@ -483,7 +513,7 @@ export function UploadPage() {
             <div className="bg-white rounded-xl shadow-soft p-8 mb-6">
               <div
                 className={`border-2 border-dashed rounded-xl p-12 text-center transition-colors ${
-                  currentUploadId && !sseProgress.completed
+                  (isChunkedUploading || (currentUploadId && !sseProgress.completed))
                     ? 'border-bronze-400 bg-bronze-50/50'
                     : 'border-stone-300 hover:border-bronze-400 hover:bg-bronze-50/50'
                 }`}
@@ -494,10 +524,36 @@ export function UploadPage() {
                   onChange={handleFileUpload}
                   className="hidden"
                   id="file-upload"
-                  disabled={currentUploadId !== null && !sseProgress.completed}
+                  disabled={isChunkedUploading || (currentUploadId !== null && !sseProgress.completed)}
                 />
                 <label htmlFor="file-upload" className="cursor-pointer">
-                  {currentUploadId && !sseProgress.completed ? (
+                  {isChunkedUploading ? (
+                    <>
+                      <Loader2 className="w-12 h-12 text-bronze-500 mx-auto mb-4 animate-spin" />
+                      <p className="text-lg font-medium text-stone-700 mb-2">
+                        Upload Chunked
+                      </p>
+
+                      {/* Barra de Progresso Chunked */}
+                      <div className="w-full max-w-md mx-auto mb-3">
+                        <div className="w-full bg-stone-200 rounded-full h-3 overflow-hidden">
+                          <div
+                            className="bg-bronze-500 h-3 rounded-full transition-all duration-300 ease-out"
+                            style={{ width: `${chunkedProgress}%` }}
+                          />
+                        </div>
+
+                        <div className="flex justify-between items-center mt-2 text-sm text-stone-600">
+                          <span className="truncate">{chunkedStage}</span>
+                          <span className="font-semibold ml-2">{chunkedProgress}%</span>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-bronze-600 mt-2">
+                        Enviando arquivo em chunks de 40MB
+                      </p>
+                    </>
+                  ) : currentUploadId && !sseProgress.completed ? (
                     <>
                       {sseProgress.error ? (
                         <>

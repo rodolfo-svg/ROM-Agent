@@ -1,5 +1,5 @@
-Build Info - 2026-02-03 13:30:00
-Version: 4.0.7
-Commit: kb-upload-chunked-support
-Build: Adicionado chunked upload na página Upload/KB
-Features: Upload >80MB funciona em TODAS as páginas (Chat + KB)
+Build Info - 2026-02-03 14:00:00
+Version: 4.0.8
+Commit: fix-chunked-upload-complete
+Build: Corrigido chunked upload + auth + progresso em tempo real
+Features: Upload >80MB com barra de progresso funcional + logs detalhados

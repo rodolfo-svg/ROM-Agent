@@ -3120,13 +3120,19 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
  * POST /api/upload/chunked/init
  * Body: { filename, fileSize, contentType }
  */
-app.post('/api/upload/chunked/init', uploadLimiter, async (req, res) => {
+app.post('/api/upload/chunked/init', requireAuth, uploadLimiter, async (req, res) => {
   try {
     const { filename, fileSize, contentType } = req.body;
 
     if (!filename || !fileSize) {
       return res.status(400).json({ error: 'Filename e fileSize são obrigatórios' });
     }
+
+    console.log('🚀 [Chunked Init]', {
+      filename,
+      fileSize: `${(fileSize / 1024 / 1024).toFixed(2)} MB`,
+      user: req.session?.user?.email || 'unknown'
+    });
 
     const session = await chunkedUpload.initSession(filename, fileSize, contentType || 'application/octet-stream');
 
@@ -3142,6 +3148,7 @@ app.post('/api/upload/chunked/init', uploadLimiter, async (req, res) => {
     });
 
   } catch (error) {
+    console.error('❌ [Chunked Init] Erro:', error.message);
     logger.error('Erro ao iniciar upload chunked', { error: error.message });
     res.status(500).json({ error: error.message });
   }
@@ -3152,18 +3159,26 @@ app.post('/api/upload/chunked/init', uploadLimiter, async (req, res) => {
  * POST /api/upload/chunked/:uploadId/chunk/:chunkIndex
  * Body: binary data (chunk)
  */
-app.post('/api/upload/chunked/:uploadId/chunk/:chunkIndex', uploadLimiter, async (req, res) => {
+app.post('/api/upload/chunked/:uploadId/chunk/:chunkIndex', requireAuth, uploadLimiter, async (req, res) => {
   try {
     const { uploadId, chunkIndex } = req.params;
     const chunks = [];
 
+    console.log(`📦 [Chunk ${chunkIndex}] Recebendo chunk para uploadId: ${uploadId}`);
+
     // Receber dados binários
-    req.on('data', chunk => chunks.push(chunk));
+    req.on('data', chunk => {
+      chunks.push(chunk);
+    });
 
     req.on('end', async () => {
       try {
         const chunkData = Buffer.concat(chunks);
+        console.log(`📦 [Chunk ${chunkIndex}] Tamanho recebido: ${(chunkData.length / 1024 / 1024).toFixed(2)} MB`);
+
         const result = await chunkedUpload.uploadChunk(uploadId, parseInt(chunkIndex), chunkData);
+
+        console.log(`✅ [Chunk ${chunkIndex}] Salvo. Progresso: ${result.progress}%`);
 
         logger.info('Chunk recebido', {
           uploadId,
@@ -3177,12 +3192,19 @@ app.post('/api/upload/chunked/:uploadId/chunk/:chunkIndex', uploadLimiter, async
         });
 
       } catch (error) {
-        logger.error('Erro ao processar chunk', { error: error.message });
+        console.error(`❌ [Chunk ${chunkIndex}] Erro ao processar:`, error.message);
+        logger.error('Erro ao processar chunk', { error: error.message, stack: error.stack });
         res.status(500).json({ error: error.message });
       }
     });
 
+    req.on('error', (error) => {
+      console.error(`❌ [Chunk ${chunkIndex}] Erro no stream:`, error.message);
+      res.status(500).json({ error: error.message });
+    });
+
   } catch (error) {
+    console.error(`❌ [Chunk] Erro geral:`, error.message);
     logger.error('Erro no upload de chunk', { error: error.message });
     res.status(500).json({ error: error.message });
   }
@@ -3192,10 +3214,19 @@ app.post('/api/upload/chunked/:uploadId/chunk/:chunkIndex', uploadLimiter, async
  * Finalizar upload chunked
  * POST /api/upload/chunked/:uploadId/finalize
  */
-app.post('/api/upload/chunked/:uploadId/finalize', uploadLimiter, async (req, res) => {
+app.post('/api/upload/chunked/:uploadId/finalize', requireAuth, uploadLimiter, async (req, res) => {
   try {
     const { uploadId } = req.params;
+
+    console.log(`🔄 [Finalize] Montando arquivo completo para uploadId: ${uploadId}`);
+
     const result = await chunkedUpload.finalizeUpload(uploadId);
+
+    console.log(`✅ [Finalize] Upload completo:`, {
+      filename: result.filename,
+      fileSize: `${(result.fileSize / 1024 / 1024).toFixed(2)} MB`,
+      path: result.path
+    });
 
     logger.info('Upload chunked finalizado', {
       uploadId,
@@ -3209,7 +3240,8 @@ app.post('/api/upload/chunked/:uploadId/finalize', uploadLimiter, async (req, re
     });
 
   } catch (error) {
-    logger.error('Erro ao finalizar upload chunked', { error: error.message });
+    console.error('❌ [Finalize] Erro:', error.message);
+    logger.error('Erro ao finalizar upload chunked', { error: error.message, stack: error.stack });
     res.status(500).json({ error: error.message });
   }
 });
@@ -10480,6 +10512,11 @@ app.listen(PORT, async () => {
   ensureStorageStructure();
   logger.info(`Armazenamento: ${STORAGE_INFO.environment} (${STORAGE_INFO.diskSize})`);
   logger.info(`Base: ${STORAGE_INFO.basePath}`);
+
+  // Inicializar sistema de upload chunked
+  logger.info('Inicializando sistema de upload chunked...');
+  await chunkedUpload.initialize();
+  logger.info('Upload chunked ATIVO - Suporte para arquivos de qualquer tamanho');
 
   // Ativar sistema de auto-atualização e aprendizado
   logger.info('Ativando sistema de auto-atualização e aprendizado...');
