@@ -42,17 +42,35 @@ export function PromptsPage() {
 
   const fetchPrompts = async () => {
     try {
-      const response = await apiFetch('/rom-prompts', {
+      const response = await apiFetch('/rom-project/prompts', {
         credentials: 'include',
       })
 
-      if (response.success && response.data) {
+      if (response.success && response.prompts) {
         // Flatten all categories into single array
-        const allPrompts = [
-          ...(response.data.prompts.gerais || []),
-          ...(response.data.prompts.judiciais || []),
-          ...(response.data.prompts.extrajudiciais || [])
-        ]
+        const allPromptsMap: Record<string, any> = response.prompts;
+        const allPrompts = [];
+
+        // Iterar sobre categorias e converter para array
+        for (const categoria in allPromptsMap) {
+          const promptsCategoria = allPromptsMap[categoria];
+
+          // Se é um objeto com prompts, iterar
+          if (typeof promptsCategoria === 'object') {
+            for (const promptId in promptsCategoria) {
+              const promptData = promptsCategoria[promptId];
+              allPrompts.push({
+                id: promptData.id || promptId,
+                title: promptData.nome || promptData.title || promptId,
+                description: promptData.descricao || promptData.description || '',
+                template: promptData.estrutura || promptData.template || '',
+                category: categoria,
+                tags: promptData.tags || []
+              });
+            }
+          }
+        }
+
         setPrompts(allPrompts)
       }
     } catch (error) {
@@ -98,47 +116,42 @@ export function PromptsPage() {
     e.preventDefault()
 
     try {
+      const promptId = formData.id || formData.title.toLowerCase().replace(/\s+/g, '-');
+
+      // ✅ Backend espera dados diretamente, não dentro de { prompt: {...} }
       const promptData = {
-        prompt: {
-          id: formData.id || formData.title.toLowerCase().replace(/\s+/g, '-'),
-          title: formData.title,
-          description: formData.description,
-          template: formData.template,
-          tags: formData.tags,
-          category: formData.category,
-        }
-      }
+        id: promptId,
+        nome: formData.title,
+        title: formData.title,
+        descricao: formData.description,
+        description: formData.description,
+        estrutura: formData.template,
+        template: formData.template,
+        tags: formData.tags,
+        categoria: formData.category,
+        category: formData.category,
+      };
 
-      if (editingPrompt) {
-        // Update existing
-        const response = await apiFetch(`/rom-prompts/${formData.category}/${promptData.prompt.id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify(promptData),
-        })
+      // ✅ Backend usa POST tanto para criar quanto para atualizar
+      const response = await apiFetch(`/rom-project/prompts/${formData.category}/${promptId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(promptData),
+      })
 
-        if (response.success) {
-          setShowModal(false)
-          await fetchPrompts()
-        }
-      } else {
-        // Create new
-        const response = await apiFetch(`/rom-prompts/${formData.category}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
-          body: JSON.stringify(promptData),
-        })
-
-        if (response.success) {
-          setShowModal(false)
+      if (response.success) {
+        setShowModal(false)
+        if (!editingPrompt) {
           setFormData({ id: '', title: '', description: '', category: 'gerais', template: '', tags: [] })
-          await fetchPrompts()
         }
+        await fetchPrompts()
+      } else {
+        alert(response.error || 'Erro ao salvar prompt. Verifique suas permissões.')
       }
     } catch (error) {
       console.error('Save error:', error)
+      alert('Erro ao salvar prompt. Você pode não ter permissão para esta ação.')
     }
   }
 
@@ -146,13 +159,19 @@ export function PromptsPage() {
     if (!confirm(`Tem certeza que deseja excluir "${prompt.title}"?`)) return
 
     try {
-      await apiFetch(`/rom-prompts/${prompt.category}/${prompt.id}`, {
+      const response = await apiFetch(`/rom-project/prompts/${prompt.category}/${prompt.id}`, {
         method: 'DELETE',
         credentials: 'include',
       })
-      await fetchPrompts()
+
+      if (response.success) {
+        await fetchPrompts()
+      } else {
+        alert(response.error || 'Erro ao deletar prompt. Verifique suas permissões.')
+      }
     } catch (error) {
       console.error('Delete error:', error)
+      alert('Erro ao deletar prompt. Você pode não ter permissão para esta ação.')
     }
   }
 
