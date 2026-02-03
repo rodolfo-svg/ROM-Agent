@@ -1,5 +1,5 @@
-# Build Info - 2026-01-11 21:28:25
-Version: 4.0.1
-Commit: d755905
-Build: Force frontend rebuild
-
+# Build Info - 2026-02-03 06:07:24
+Version: 4.0.2
+Commit: 39d3b5f
+Build: Updated with all January-February 2026 fixes
+Features: Custom Instructions v1.7, Word extraction, Unified artifacts, No emojis
