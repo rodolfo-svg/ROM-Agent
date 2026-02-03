@@ -1,5 +1,5 @@
-Build Info - 2026-02-03 15:30:00
-Version: 4.0.9
-Commit: fix-chunked-sessions-persistent
-Build: Sessões de upload PERSISTENTES em disco (sobrevive a restarts do Render)
-Features: SOLUÇÃO DEFINITIVA para erro 500 - sessões salvas em /var/data/upload/sessions
+Build Info - 2026-02-03 17:00:00
+Version: 4.1.0
+Commit: ui-artifacts-elegant-redesign
+Build: REDESIGN COMPLETO dos artefatos e documentos - Interface elegante e amigável
+Features: Blocos de código com gradiente claro + Cards modernos + Painel lateral bronze elegante

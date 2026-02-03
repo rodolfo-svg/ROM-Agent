@@ -149,23 +149,25 @@ export function ArtifactPanel() {
     <div
       className={cn(
         panelWidth,
-        'h-screen bg-white border-l border-stone-200 flex flex-col',
+        'h-screen bg-gradient-to-br from-white via-stone-50/30 to-bronze-50/20 border-l border-stone-200/60 flex flex-col shadow-2xl',
         'animate-slide-in-right',
         'max-md:fixed max-md:right-0 max-md:top-0 max-md:z-50'
       )}
     >
-      {/* Header */}
-      <div className="px-4 py-3 border-b border-stone-200 flex items-center justify-between">
+      {/* Header - Modern gradient */}
+      <div className="px-4 py-4 border-b border-stone-200/60 bg-gradient-to-r from-bronze-600 via-bronze-700 to-amber-700 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="text-stone-500">{getIcon()}</div>
+          <div className="p-2 bg-white/20 backdrop-blur-sm rounded-lg text-white">
+            {getIcon()}
+          </div>
           <div>
-            <h2 className="text-sm font-medium text-stone-800">
+            <h2 className="text-sm font-semibold text-white drop-shadow-sm">
               {activeArtifact.title}
             </h2>
-            <span className="text-xs text-stone-400">
-              {activeArtifact.type === 'document' ? 'Documento' : 
+            <span className="text-xs text-white/80 font-medium">
+              {activeArtifact.type === 'document' ? 'Documento Jurídico' :
                activeArtifact.type === 'code' ? `Código ${activeArtifact.language || ''}` :
-               activeArtifact.type === 'table' ? 'Tabela' : 
+               activeArtifact.type === 'table' ? 'Tabela' :
                activeArtifact.type === 'html' ? 'HTML' : 'Gráfico'}
             </span>
           </div>
@@ -173,11 +175,11 @@ export function ArtifactPanel() {
 
         <div className="flex items-center gap-2">
           {/* Actions */}
-          <div className="flex items-center gap-1 mr-2">
+          <div className="flex items-center gap-2 mr-2">
             {isEditing ? (
               <button
                 onClick={handleSave}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-stone-700 text-white rounded-lg text-xs font-medium hover:bg-stone-800 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-bronze-700 rounded-lg text-xs font-semibold hover:bg-white/90 transition-all hover:scale-105 shadow-sm"
               >
                 <Save className="w-3.5 h-3.5" />
                 Salvar
@@ -185,20 +187,20 @@ export function ArtifactPanel() {
             ) : (
               <button
                 onClick={handleEdit}
-                className="flex items-center gap-1.5 px-3 py-1.5 border border-stone-200 rounded-lg text-xs text-stone-600 hover:bg-stone-50 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm text-white rounded-lg text-xs font-medium hover:bg-white/30 transition-all border border-white/20"
               >
                 <Edit3 className="w-3.5 h-3.5" />
                 Editar
               </button>
             )}
-            
+
             <button
               onClick={handleCopy}
-              className="flex items-center gap-1.5 px-3 py-1.5 border border-stone-200 rounded-lg text-xs text-stone-600 hover:bg-stone-50 transition-colors"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-white/20 backdrop-blur-sm text-white rounded-lg text-xs font-medium hover:bg-white/30 transition-all border border-white/20"
             >
               {copied ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-green-600" />
+                  <Check className="w-3.5 h-3.5" />
                   Copiado!
                 </>
               ) : (
@@ -213,7 +215,7 @@ export function ArtifactPanel() {
             <div className="relative">
               <button
                 onClick={() => setShowDownloadMenu(!showDownloadMenu)}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-stone-700 text-white rounded-lg text-xs font-medium hover:bg-stone-800 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white text-bronze-700 rounded-lg text-xs font-semibold hover:bg-white/90 transition-all hover:scale-105 shadow-sm"
               >
                 <Download className="w-3.5 h-3.5" />
                 Baixar
@@ -275,68 +277,73 @@ export function ArtifactPanel() {
 
           <button
             onClick={toggleFullscreen}
-            className="p-2 hover:bg-stone-100 rounded-lg text-stone-500"
+            className="p-2 hover:bg-white/30 rounded-lg text-white/90 hover:text-white transition-all border border-white/20 backdrop-blur-sm"
+            title={isFullscreen ? "Minimizar" : "Tela cheia"}
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
           </button>
 
           <button
             onClick={closePanel}
-            className="p-2 hover:bg-stone-100 rounded-lg text-stone-500"
+            className="p-2 hover:bg-white/30 rounded-lg text-white/90 hover:text-white transition-all border border-white/20 backdrop-blur-sm"
+            title="Fechar"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="px-4 py-2 bg-stone-50 border-b border-stone-200 flex gap-1">
+      {/* Tabs - Modern design */}
+      <div className="px-4 py-3 bg-gradient-to-r from-stone-50 to-bronze-50/30 border-b border-stone-200/60 flex gap-2">
         <button
           onClick={() => setActiveTab('preview')}
           className={cn(
-            'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
-            activeTab === 'preview' 
-              ? 'bg-white text-stone-800 shadow-sm' 
-              : 'text-stone-500 hover:text-stone-700'
+            'px-4 py-2 rounded-lg text-xs font-semibold transition-all',
+            activeTab === 'preview'
+              ? 'bg-gradient-to-r from-bronze-600 to-bronze-700 text-white shadow-md scale-105'
+              : 'bg-white/60 text-stone-600 hover:bg-white hover:text-stone-800 hover:scale-105 border border-stone-200/60'
           )}
         >
-          Visualizar
+          📄 Visualizar
         </button>
         <button
           onClick={() => setActiveTab('code')}
           className={cn(
-            'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
-            activeTab === 'code' 
-              ? 'bg-white text-stone-800 shadow-sm' 
-              : 'text-stone-500 hover:text-stone-700'
+            'px-4 py-2 rounded-lg text-xs font-semibold transition-all',
+            activeTab === 'code'
+              ? 'bg-gradient-to-r from-bronze-600 to-bronze-700 text-white shadow-md scale-105'
+              : 'bg-white/60 text-stone-600 hover:bg-white hover:text-stone-800 hover:scale-105 border border-stone-200/60'
           )}
         >
-          Código
+          💻 Código
         </button>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 overflow-auto p-4">
+      {/* Content - Enhanced with beautiful styling */}
+      <div className="flex-1 overflow-auto p-6 bg-gradient-to-br from-white via-transparent to-bronze-50/10">
         {isEditing ? (
           <textarea
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
-            className="w-full h-full p-4 bg-stone-50 border border-stone-200 rounded-xl font-mono text-sm text-stone-800 resize-none focus:outline-none focus:border-bronze-400 focus:ring-4 focus:ring-bronze-400/10"
+            className="w-full h-full p-5 bg-white border-2 border-bronze-200 rounded-xl font-mono text-sm text-stone-800 resize-none focus:outline-none focus:border-bronze-400 focus:ring-4 focus:ring-bronze-400/20 shadow-sm transition-all"
+            placeholder="Edite o conteúdo do documento..."
           />
         ) : activeTab === 'code' ? (
-          <pre className="font-mono text-sm leading-relaxed">
-            {activeArtifact.content.split('\n').map((line, i) => (
-              <div key={i} className="flex hover:bg-stone-50 -mx-4 px-4">
-                <span className="w-10 text-right pr-4 text-stone-400 select-none">
-                  {i + 1}
-                </span>
-                <span className="text-stone-800 flex-1">{line || ' '}</span>
-              </div>
-            ))}
-          </pre>
+          <div className="bg-gradient-to-br from-stone-50 to-stone-100/80 border border-stone-200/60 rounded-xl p-4 shadow-sm">
+            <pre className="font-mono text-sm leading-relaxed">
+              {activeArtifact.content.split('\n').map((line, i) => (
+                <div key={i} className="flex hover:bg-bronze-50/30 -mx-4 px-4 transition-colors">
+                  <span className="w-12 text-right pr-4 text-bronze-500/70 select-none font-semibold">
+                    {i + 1}
+                  </span>
+                  <span className="text-stone-800 flex-1">{line || ' '}</span>
+                </div>
+              ))}
+            </pre>
+          </div>
         ) : (
-          <div className="prose-chat">
-            <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-stone-800">
+          <div className="prose-chat bg-white/60 backdrop-blur-sm border border-stone-200/40 rounded-xl p-6 shadow-sm">
+            <pre className="whitespace-pre-wrap font-sans text-[15px] leading-relaxed text-stone-800">
               {activeArtifact.content}
             </pre>
           </div>

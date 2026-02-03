@@ -86,10 +86,11 @@ export const MessageItem = memo(function MessageItem({
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeHighlight]}
             components={{
-              // Custom code block with copy button
+              // Custom code block with copy button - Modern light theme
               pre: ({ children }) => (
-                <div className="relative group">
-                  <pre className="my-4 p-4 bg-stone-900 text-stone-100 rounded-xl overflow-x-auto">
+                <div className="relative group my-4">
+                  <div className="absolute inset-0 bg-gradient-to-br from-bronze-50 via-amber-50 to-orange-50 rounded-xl opacity-50" />
+                  <pre className="relative p-5 bg-gradient-to-br from-stone-50 to-stone-100/80 backdrop-blur-sm text-stone-800 rounded-xl overflow-x-auto border border-stone-200/60 shadow-sm">
                     {children}
                   </pre>
                   <button
@@ -97,7 +98,8 @@ export const MessageItem = memo(function MessageItem({
                       const code = (children as any)?.props?.children
                       if (code) copyToClipboard(String(code))
                     }}
-                    className="absolute top-2 right-2 p-2 bg-stone-800 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity text-stone-400 hover:text-white"
+                    className="absolute top-3 right-3 p-2 bg-white/90 backdrop-blur-sm border border-stone-200 rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:scale-105 text-stone-600 hover:text-bronze-600 hover:border-bronze-300 shadow-sm"
+                    title="Copiar código"
                   >
                     <Copy className="w-4 h-4" />
                   </button>
@@ -121,37 +123,48 @@ export const MessageItem = memo(function MessageItem({
           </ReactMarkdown>
         </div>
 
-        {/* Artifacts */}
+        {/* Artifacts - Modern elegant design */}
         {artifacts.length > 0 && (
           <div className="mt-4 space-y-3">
             {artifacts.map((artifact) => (
               <div
                 key={artifact.id}
                 onClick={() => setActiveArtifact(artifact)}
-                className="artifact-card cursor-pointer group"
+                className="relative cursor-pointer group overflow-hidden rounded-xl border border-stone-200/60 bg-gradient-to-br from-white via-stone-50/30 to-bronze-50/20 hover:from-bronze-50/30 hover:via-amber-50/20 hover:to-orange-50/20 transition-all duration-300 shadow-sm hover:shadow-md hover:border-bronze-300/40"
               >
-                <div className="artifact-header">
-                  <div className="flex items-center gap-2 text-stone-700">
-                    {getArtifactIcon(artifact.type)}
-                    <span className="text-sm font-medium">{artifact.title}</span>
+                {/* Subtle gradient overlay */}
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-white/40 to-bronze-100/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                {/* Header */}
+                <div className="relative px-4 py-3 border-b border-stone-200/40 bg-gradient-to-r from-stone-50/50 to-transparent flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="text-bronze-600 group-hover:text-bronze-700 transition-colors">
+                      {getArtifactIcon(artifact.type)}
+                    </div>
+                    <span className="text-sm font-medium text-stone-700 group-hover:text-stone-900 transition-colors">
+                      {artifact.title}
+                    </span>
                   </div>
                   <button
                     onClick={(e) => {
                       e.stopPropagation()
                       setActiveArtifact(artifact)
                     }}
-                    className="flex items-center gap-1.5 px-2.5 py-1 text-xs bg-stone-700 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-xs bg-gradient-to-r from-bronze-600 to-bronze-700 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 hover:from-bronze-700 hover:to-bronze-800 hover:scale-105 shadow-sm"
                   >
-                    <Eye className="w-3 h-3" />
+                    <Eye className="w-3.5 h-3.5" />
                     Abrir
                   </button>
                 </div>
-                <div className="artifact-preview">
+
+                {/* Preview */}
+                <div className="relative px-4 py-3 max-h-32 overflow-hidden">
                   <pre className="text-xs text-stone-600 font-mono leading-relaxed whitespace-pre-wrap">
                     {artifact.content ? artifact.content.slice(0, 400) : '(conteúdo vazio)'}
                     {artifact.content && artifact.content.length > 400 && '...'}
                   </pre>
-                  <div className="artifact-fade" />
+                  {/* Fade effect at bottom */}
+                  <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-white via-white/80 to-transparent pointer-events-none" />
                 </div>
               </div>
             ))}
