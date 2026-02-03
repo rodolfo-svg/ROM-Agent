@@ -159,6 +159,8 @@ export const useArtifactStore = create<ArtifactState>()(
       name: 'rom-artifacts',
       partialize: (state) => ({
         artifacts: state.artifacts,
+        activeArtifactId: state.activeArtifactId, // ✅ Persist which artifact is active
+        isPanelOpen: state.isPanelOpen, // ✅ Persist panel open state
       }),
     }
   )

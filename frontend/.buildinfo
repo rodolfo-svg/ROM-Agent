@@ -1,5 +1,5 @@
-Build Info - 2026-02-03 06:25:00
-Version: 4.0.4
-Commit: keydown-fix-v7
-Build: Fixed keydown handler UI freeze
-Features: Asynchronous Enter key handling with requestIdleCallback
+Build Info - 2026-02-03 12:15:00
+Version: 4.0.5
+Commit: artifact-panel-persist-fix
+Build: Fixed ArtifactPanel not opening after artifact creation
+Features: Persist isPanelOpen and activeArtifactId to localStorage
