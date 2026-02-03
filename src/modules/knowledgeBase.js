@@ -6,12 +6,53 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { extractTextFromPDF } from './textract.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Diretório base da Knowledge Base
 const KB_BASE_DIR = process.env.KB_BASE_DIR || path.join(__dirname, '../../data/knowledge-base');
+
+/**
+ * Extrai texto de arquivos baseado no tipo
+ * @param {string} filePath - Caminho do arquivo
+ * @returns {Promise<string>} Texto extraído
+ */
+async function extractTextFromFile(filePath) {
+  const ext = path.extname(filePath).toLowerCase();
+
+  try {
+    // Arquivos de texto simples
+    if (['.txt', '.md', '.json', '.csv', '.log'].includes(ext)) {
+      return await fs.readFile(filePath, 'utf-8');
+    }
+
+    // PDFs
+    if (ext === '.pdf') {
+      const result = await extractTextFromPDF(filePath);
+      return result.text || '';
+    }
+
+    // Word documents (DOCX)
+    if (['.doc', '.docx'].includes(ext)) {
+      const mammoth = await import('mammoth');
+      const buffer = await fs.readFile(filePath);
+      const result = await mammoth.extractRawText({ buffer });
+      return result.value || '';
+    }
+
+    // Outros formatos não suportados - tentar ler como texto
+    try {
+      return await fs.readFile(filePath, 'utf-8');
+    } catch {
+      throw new Error(`Tipo de arquivo não suportado para extração: ${ext}`);
+    }
+
+  } catch (error) {
+    throw new Error(`Erro ao extrair texto de ${path.basename(filePath)}: ${error.message}`);
+  }
+}
 
 /**
  * Upload de arquivos para a Knowledge Base
@@ -44,8 +85,8 @@ export async function uploadToKnowledgeBase(options) {
         // Verificar se arquivo existe
         await fs.access(file.path);
 
-        // Ler conteúdo do arquivo
-        const content = await fs.readFile(file.path, 'utf-8');
+        // Extrair texto do arquivo (suporta PDF, DOCX, TXT, etc)
+        const content = await extractTextFromFile(file.path);
 
         // Gerar ID único para o arquivo
         const timestamp = Date.now();

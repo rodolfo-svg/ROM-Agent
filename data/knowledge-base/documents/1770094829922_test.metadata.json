@@ -1,0 +1,64 @@
+{
+  "source": "web-upload",
+  "originalFilename": "test.txt",
+  "uploadedAt": "2026-02-03T05:00:29.923Z",
+  "textLength": 365,
+  "wordCount": 52,
+  "toolsUsed": [
+    "direct-read",
+    "33-ferramentas-processamento",
+    "10-processadores-otimizacao"
+  ],
+  "structuredDocuments": {
+    "success": true,
+    "filesGenerated": 7,
+    "files": [
+      "FICHAMENTO",
+      "ÍNDICE_CRONOLÓGICO",
+      "ÍNDICE_POR_TIPO",
+      "ENTIDADES",
+      "ANÁLISE_PEDIDOS",
+      "FATOS_RELEVANTES",
+      "LEGISLAÇÃO_CITADA"
+    ],
+    "outputPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/extracted/structured/1770094829915-204712729-test"
+  },
+  "structuredDocsPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/extracted/structured/1770094829915-204712729-test",
+  "structuredDocsInKB": [
+    {
+      "name": "01_FICHAMENTO.md",
+      "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_01_FICHAMENTO.md",
+      "type": ".md"
+    },
+    {
+      "name": "02_INDICE_CRONOLOGICO.md",
+      "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_02_INDICE_CRONOLOGICO.md",
+      "type": ".md"
+    },
+    {
+      "name": "03_INDICE_POR_TIPO.md",
+      "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_03_INDICE_POR_TIPO.md",
+      "type": ".md"
+    },
+    {
+      "name": "04_ENTIDADES.json",
+      "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_04_ENTIDADES.json",
+      "type": ".json"
+    },
+    {
+      "name": "05_ANALISE_PEDIDOS.md",
+      "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_05_ANALISE_PEDIDOS.md",
+      "type": ".md"
+    },
+    {
+      "name": "06_FATOS_RELEVANTES.md",
+      "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_06_FATOS_RELEVANTES.md",
+      "type": ".md"
+    },
+    {
+      "name": "07_LEGISLACAO_CITADA.md",
+      "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_07_LEGISLACAO_CITADA.md",
+      "type": ".md"
+    }
+  ]
+}

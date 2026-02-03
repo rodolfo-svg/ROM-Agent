@@ -1293,5 +1293,190 @@
       "documentType": "LEGISLACAO",
       "structuredType": "07_LEGISLACAO_CITADA.md"
     }
+  },
+  {
+    "id": "kb-1770094829924-1fkv4ci3k",
+    "name": "test.txt",
+    "type": "text/plain",
+    "size": 378,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829922_test.txt",
+    "userId": "web-upload",
+    "userName": "Web Upload",
+    "uploadedAt": "2026-02-03T05:00:29.924Z",
+    "extractedText": "PETIÇÃO INICIAL\n\nProcesso: 1234567-89.2024.8.13.0024\nAutor: João Silva\nRéu: Maria Santos\nVara: 1a Vara Cível de Belo Horizonte\nAssunto: Indenização por Danos Morais\nValor da Causa: R$ 50.000,00\n\nEXCELENTÍSSIMO SENHOR DOUTOR JUIZ DE DIREITO DA 1a VARA CÍVEL DE BELO HORIZONTE.\n\nJOÃO SILVA, brasileiro, solteiro, engenheiro, inscrito no CPF sob o no 123.456.789-00...",
+    "textLength": 365,
+    "metadata": {
+      "toolsUsed": [
+        "direct-read",
+        "33-ferramentas-processamento",
+        "10-processadores-otimizacao"
+      ],
+      "structuredDocuments": 7,
+      "structuredDocsPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/extracted/structured/1770094829915-204712729-test",
+      "wordCount": 52,
+      "structuredDocsInKB": [
+        {
+          "name": "01_FICHAMENTO.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_01_FICHAMENTO.md",
+          "type": ".md"
+        },
+        {
+          "name": "02_INDICE_CRONOLOGICO.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_02_INDICE_CRONOLOGICO.md",
+          "type": ".md"
+        },
+        {
+          "name": "03_INDICE_POR_TIPO.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_03_INDICE_POR_TIPO.md",
+          "type": ".md"
+        },
+        {
+          "name": "04_ENTIDADES.json",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_04_ENTIDADES.json",
+          "type": ".json"
+        },
+        {
+          "name": "05_ANALISE_PEDIDOS.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_05_ANALISE_PEDIDOS.md",
+          "type": ".md"
+        },
+        {
+          "name": "06_FATOS_RELEVANTES.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_06_FATOS_RELEVANTES.md",
+          "type": ".md"
+        },
+        {
+          "name": "07_LEGISLACAO_CITADA.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_07_LEGISLACAO_CITADA.md",
+          "type": ".md"
+        }
+      ]
+    }
+  },
+  {
+    "id": "kb-struct-1770094829924-0j7zcf63t",
+    "name": "test.txt - 01_FICHAMENTO.md",
+    "type": "text/markdown",
+    "size": 945,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_01_FICHAMENTO.md",
+    "userId": "web-upload",
+    "userName": "Web Upload",
+    "uploadedAt": "2026-02-03T05:00:29.924Z",
+    "extractedText": "# FICHAMENTO: 1770094829915-204712729-test\n\n## Informações Gerais\n- **Total de palavras**: 52\n- **Total de linhas**: 9\n- **Gerado em**: 03/02/2026, 02:00:29\n\n## Primeiras 50 linhas\n```\nPETIÇÃO INICIAL\nProcesso: 1234567-89.2024.8.13.0024\nAutor: João Silva\nRéu: Maria Santos\nVara: 1a Vara Cível de Belo Horizonte\nAssunto: Indenização por Danos Morais\nValor da Causa: R$ 50.000,00\nEXCELENTÍSSIMO SENHOR DOUTOR JUIZ DE DIREITO DA 1a VARA CÍVEL DE BELO HORIZONTE.\nJOÃO SILVA, brasileiro, solteiro, engenheiro, inscrito no CPF sob o no 123.456.789-00...\n```\n\n## Últimas 50 linhas\n```\nPETIÇÃO INICIAL\nProcesso: 1234567-89.2024.8.13.0024\nAutor: João Silva\nRéu: Maria Santos\nVara: 1a Vara Cível de Belo Horizonte\nAssunto: Indenização por Danos Morais\nValor da Causa: R$ 50.000,00\nEXCELENTÍSSIMO SENHOR DOUTOR JUIZ DE DIREITO DA 1a VARA CÍVEL DE BELO HORIZONTE.\nJOÃO SILVA, brasileiro, solteiro, engenheiro, inscrito no CPF sob o no 123.456.789-00...\n```\n",
+    "textLength": 945,
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "test.txt",
+      "documentType": "FICHAMENTO",
+      "structuredType": "01_FICHAMENTO.md"
+    }
+  },
+  {
+    "id": "kb-struct-1770094829924-8ps5i659x",
+    "name": "test.txt - 02_INDICE_CRONOLOGICO.md",
+    "type": "text/markdown",
+    "size": 244,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_02_INDICE_CRONOLOGICO.md",
+    "userId": "web-upload",
+    "userName": "Web Upload",
+    "uploadedAt": "2026-02-03T05:00:29.924Z",
+    "extractedText": "# ÍNDICE CRONOLÓGICO\n\n**Total de datas encontradas**: 1\n\n## 1. Data: 8.13.0024\n**Contexto**: ...PETIÇÃO INICIAL  Processo: 1234567-89.2024.8.13.0024 Autor: João Silva Réu: Maria Santos Vara: 1a Vara Cível de Belo Horizonte Assunto: Indeniz...\n\n",
+    "textLength": 244,
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "test.txt",
+      "documentType": "INDICE",
+      "structuredType": "02_INDICE_CRONOLOGICO.md"
+    }
+  },
+  {
+    "id": "kb-struct-1770094829924-k8gc525ds",
+    "name": "test.txt - 03_INDICE_POR_TIPO.md",
+    "type": "text/markdown",
+    "size": 71,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_03_INDICE_POR_TIPO.md",
+    "userId": "web-upload",
+    "userName": "Web Upload",
+    "uploadedAt": "2026-02-03T05:00:29.924Z",
+    "extractedText": "# ÍNDICE POR TIPO DE DOCUMENTO\n\n- **Petição Inicial**: 1 ocorrência(s)\n",
+    "textLength": 71,
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "test.txt",
+      "documentType": "INDICE",
+      "structuredType": "03_INDICE_POR_TIPO.md"
+    }
+  },
+  {
+    "id": "kb-struct-1770094829924-olbjir51o",
+    "name": "test.txt - 04_ENTIDADES.json",
+    "type": "application/json",
+    "size": 124,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_04_ENTIDADES.json",
+    "userId": "web-upload",
+    "userName": "Web Upload",
+    "uploadedAt": "2026-02-03T05:00:29.924Z",
+    "extractedText": "{\n  \"cpfs\": [\n    \"123.456.789-00\"\n  ],\n  \"cnpjs\": [],\n  \"oabs\": [],\n  \"totalCPFs\": 1,\n  \"totalCNPJs\": 0,\n  \"totalOABs\": 0\n}",
+    "textLength": 124,
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "test.txt",
+      "documentType": "ENTIDADES",
+      "structuredType": "04_ENTIDADES.json"
+    }
+  },
+  {
+    "id": "kb-struct-1770094829924-fztx66o2z",
+    "name": "test.txt - 05_ANALISE_PEDIDOS.md",
+    "type": "text/markdown",
+    "size": 61,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_05_ANALISE_PEDIDOS.md",
+    "userId": "web-upload",
+    "userName": "Web Upload",
+    "uploadedAt": "2026-02-03T05:00:29.924Z",
+    "extractedText": "# ANÁLISE DE PEDIDOS\n\n**Total de pedidos identificados**: 0\n\n",
+    "textLength": 61,
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "test.txt",
+      "documentType": "ANALISE",
+      "structuredType": "05_ANALISE_PEDIDOS.md"
+    }
+  },
+  {
+    "id": "kb-struct-1770094829924-q305ukrth",
+    "name": "test.txt - 06_FATOS_RELEVANTES.md",
+    "type": "text/markdown",
+    "size": 57,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_06_FATOS_RELEVANTES.md",
+    "userId": "web-upload",
+    "userName": "Web Upload",
+    "uploadedAt": "2026-02-03T05:00:29.924Z",
+    "extractedText": "# FATOS RELEVANTES\n\n**Total de fatos identificados**: 0\n\n",
+    "textLength": 57,
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "test.txt",
+      "documentType": "FATOS",
+      "structuredType": "06_FATOS_RELEVANTES.md"
+    }
+  },
+  {
+    "id": "kb-struct-1770094829925-h9ny8tfja",
+    "name": "test.txt - 07_LEGISLACAO_CITADA.md",
+    "type": "text/markdown",
+    "size": 147,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770094829923_test_07_LEGISLACAO_CITADA.md",
+    "userId": "web-upload",
+    "userName": "Web Upload",
+    "uploadedAt": "2026-02-03T05:00:29.925Z",
+    "extractedText": "# LEGISLAÇÃO CITADA\n\n## Leis e Normas (1)\n\n1. leiro, solteiro, engenheiro, inscrito no CPF sob o no 123.456.789-00...\n\n## Artigos Mencionados (0)\n\n",
+    "textLength": 147,
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "test.txt",
+      "documentType": "LEGISLACAO",
+      "structuredType": "07_LEGISLACAO_CITADA.md"
+    }
   }
 ]

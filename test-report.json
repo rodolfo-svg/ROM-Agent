@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-01-30T05:00:33.797Z",
+  "timestamp": "2026-02-03T05:00:30.759Z",
   "summary": {
-    "total": 18,
-    "passed": 10,
+    "total": 16,
+    "passed": 8,
     "failed": 8,
-    "successRate": 55.6
+    "successRate": 50
   },
   "results": [
     {
@@ -13,7 +13,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 66,
+      "duration": 37,
       "data": {
         "nome": "ROM",
         "versao": "2.8.0",
@@ -30,8 +30,8 @@
         ],
         "health": {
           "status": "healthy",
-          "uptime": "22h 52m",
-          "uptimeSeconds": 82340
+          "uptime": "0h 10m",
+          "uptimeSeconds": 608
         },
         "bedrock": {
           "status": "connected",
@@ -50,13 +50,13 @@
           "nodeVersion": "v25.2.1",
           "platform": "darwin",
           "arch": "arm64",
-          "pid": 65266,
-          "gitCommit": "db10fa6"
+          "pid": 11994,
+          "gitCommit": "393fb15"
         },
         "memory": {
-          "rss": "104 MB",
-          "heapTotal": "169 MB",
-          "heapUsed": "162 MB",
+          "rss": "119 MB",
+          "heapTotal": "163 MB",
+          "heapUsed": "160 MB",
           "external": "22 MB"
         },
         "storage": {
@@ -128,7 +128,55 @@
             "EmptyState-Bph9jwjo.js"
           ]
         },
-        "timestamp": "2026-01-30T05:00:31.260Z"
+        "tools": {
+          "available": true,
+          "count": 6,
+          "tools": [
+            {
+              "name": "pesquisar_jurisprudencia",
+              "description": "Pesquisa jurisprudência nos tribunais brasileiros (STF, STJ, CNJ DataJud) e retorna precedentes rele"
+            },
+            {
+              "name": "consultar_cnj_datajud",
+              "description": "Consulta processo judicial especifico na base do CNJ DataJud (Conselho Nacional de Justica). Use qua"
+            },
+            {
+              "name": "pesquisar_sumulas",
+              "description": "Pesquisa súmulas, temas, IRDR e teses jurisprudenciais dos tribunais superiores (STF, STJ, TST, TSE)"
+            },
+            {
+              "name": "consultar_kb",
+              "description": "Consulta documentos já processados na Knowledge Base do usuário. Use quando o usuário mencionar \"o d"
+            },
+            {
+              "name": "pesquisar_doutrina",
+              "description": "Busca artigos jurídicos, análises doutrinárias, teses e dissertações em fontes especializadas (Googl"
+            },
+            {
+              "name": "create_artifact",
+              "description": "Cria um artifact (documento estruturado) que aparece em painel lateral para download. Use SEMPRE que"
+            }
+          ]
+        },
+        "searchServices": {
+          "googleSearch": {
+            "enabled": true,
+            "configured": true,
+            "hasApiKey": true,
+            "hasCx": true
+          },
+          "datajud": {
+            "enabled": true,
+            "configured": true,
+            "hasApiKey": true,
+            "baseUrl": "https://api-publica.datajud.cnj.jus.br"
+          },
+          "jusbrasil": {
+            "enabled": false,
+            "note": "Substituído por Google Search que indexa JusBrasil"
+          }
+        },
+        "timestamp": "2026-02-03T05:00:30.019Z"
       }
     },
     {
@@ -137,12 +185,12 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 7,
+      "duration": 2,
       "data": {
         "success": true,
         "conversations": {
-          "total": 26,
-          "totalMessages": 42
+          "total": 29,
+          "totalMessages": 46
         },
         "cache": {
           "activeSessions": 0,
@@ -155,7 +203,7 @@
           "averageResponseTime": 3,
           "unit": "seconds"
         },
-        "timestamp": "2026-01-30T05:00:31.273Z"
+        "timestamp": "2026-02-03T05:00:30.031Z"
       }
     },
     {
@@ -164,7 +212,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 1,
+      "duration": 2,
       "data": {
         "success": false,
         "error": "Banco de dados indisponível"
@@ -173,39 +221,13 @@
     {
       "name": "2.2 Enviar Mensagem ao Chat",
       "url": "http://localhost:3000/api/chat",
-      "status": 200,
-      "expected": 200,
-      "passed": true,
-      "duration": 2477,
-      "data": {
-        "response": "OK",
-        "conversationId": "conv_1769749231289_7hl79w",
-        "metadados": {},
-        "recomendacoes": [],
-        "verificacaoRealizada": false
-      }
-    },
-    {
-      "name": "2.3 Obter Conversa Específica",
-      "url": "http://localhost:3000/api/conversations/conv_1769749231289_7hl79w",
-      "status": 503,
+      "status": 500,
       "expected": 200,
       "passed": false,
-      "duration": 6,
+      "duration": 711,
       "data": {
-        "success": false,
-        "error": "Banco de dados indisponível"
-      }
-    },
-    {
-      "name": "2.4 Renomear Conversa",
-      "url": "http://localhost:3000/api/conversations/conv_1769749231289_7hl79w/rename",
-      "status": 200,
-      "expected": 200,
-      "passed": true,
-      "duration": 9,
-      "data": {
-        "success": true
+        "error": "All models in fallback chain failed (1 attempts)",
+        "status": 500
       }
     },
     {
@@ -214,7 +236,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 4,
+      "duration": 2,
       "data": {
         "success": false,
         "error": "Banco de dados indisponível"
@@ -226,7 +248,7 @@
       "status": 302,
       "expected": 200,
       "passed": false,
-      "duration": 3,
+      "duration": 1,
       "data": "Found. Redirecting to /login.html"
     },
     {
@@ -235,15 +257,15 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
+      "duration": 1,
       "data": {
         "success": true,
         "status": "active",
-        "totalDocuments": 5,
-        "totalSize": 432,
+        "totalDocuments": 4,
+        "totalSize": 3737,
         "totalSizeFormatted": "0.00 MB",
-        "lastUpdate": "2026-01-28T06:08:03.962Z",
-        "kbPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/KB"
+        "lastUpdate": "2026-02-03T05:00:29.924Z",
+        "kbPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base"
       }
     },
     {
@@ -252,7 +274,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 1,
       "data": {
         "authenticated": false,
         "username": null,
@@ -265,7 +287,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 3,
+      "duration": 1,
       "data": {
         "success": false,
         "error": "Banco de dados temporariamente indisponível"
@@ -277,7 +299,7 @@
       "status": 404,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 1,
       "data": {
         "error": "Projeto não encontrado",
         "message": "Projeto não encontrado"
@@ -302,7 +324,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 3,
       "data": []
     },
     {
@@ -311,8 +333,13 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 1,
       "data": [
+        {
+          "filename": "backup-2026-01-30.zip",
+          "size": 353754,
+          "timestamp": "2026-01-30T06:00:02.429Z"
+        },
         {
           "filename": "backup-2026-01-29.zip",
           "size": 344993,
@@ -362,7 +389,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 1,
       "data": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n  <head>\n    <meta charset=\"UTF-8\" />\n\n    <!-- Viewport with iOS notch support -->\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover\" />\n\n    <!-- PWA Meta Tags -->\n    <meta name=\"theme-color\" content=\"#D97706\" />\n    <meta name=\"theme-color\" media=\"(prefers-color-scheme: light)\" content=\"#D97706\" />\n    <meta name=\"theme-color\" media=\"(prefers-color-scheme: dark)\" content=\"#78716C\" />\n\n    <!-- iOS PWA Meta Tags -->\n    <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n    <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\" />\n    <meta name=\"apple-mobile-web-app-title\" content=\"ROM Agent\" />\n    <meta name=\"mobile-web-app-capable\" content=\"yes\" />\n\n    <!-- iOS Status Bar -->\n    <meta name=\"apple-touch-fullscreen\" content=\"yes\" />\n\n    <!-- Disable iOS phone number detection -->\n    <meta name=\"format-detection\" content=\"telephone=no\" />\n\n    <!-- Standard Icons -->\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.json\" />\n\n    <!-- Apple Touch Icons (iOS Home Screen) -->\n    <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/icons/icon-180x180.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"192x192\" href=\"/icons/icon-192x192.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"512x512\" href=\"/icons/icon-512x512.png\" />\n\n    <!-- iOS Splash Screens -->\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-14-pro-max-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-14-pro-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-13-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-x-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)\" href=\"/splash/iphone-11-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)\" href=\"/splash/iphone-8-portrait.png\" />\n\n    <!-- SEO -->\n    <meta name=\"description\" content=\"Assistente Jurídico Inteligente com IA - Análise Processual Completa\" />\n    <meta name=\"keywords\" content=\"assistente jurídico, IA, análise processual, direito, advocacia\" />\n\n    <title>ROM Agent - Assistente Jurídico Inteligente</title>\n    <script type=\"module\" crossorigin src=\"/assets/index-CvAjANi0.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-DfFhQPd8.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
     }
   ]

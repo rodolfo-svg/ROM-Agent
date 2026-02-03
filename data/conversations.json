@@ -585,22 +585,163 @@
     "updatedAt": "2026-02-03T04:41:33.643Z",
     "messageCount": 1
   },
-  "conv_1770094622885_624w3": {
-    "id": "conv_1770094622885_624w3",
+  "conv_1770094838674_vj4kcge": {
+    "id": "conv_1770094838674_vj4kcge",
     "userId": "anonymous",
-    "sessionId": "5NsFFovQHMLaBcpec1QtMKl_G9Ej9vdQ",
+    "sessionId": "uN1-KYCA7IUW_jbj5Ey9QkKABD1Se_II",
     "projectId": null,
     "title": "Nova Conversa",
     "titleGenerated": false,
     "messages": [
       {
         "role": "user",
-        "content": "Elabore um RECURSO DE APELAÇÃO CÍVEL COMPLETO E EXAUSTIVO contra sentença que julgou IMPROCEDENTE ação de cobrança de R$ 850.000,00 decorrente de contrato de prestação de serviços de consultoria empresarial. A peça deve ter APROXIMADAMENTE 40 PÁGINAS e incluir:\n\nPRELIMINARES (extensas):\n1. Cerceamento de defesa por indeferimento de 8 provas testemunhais e 3 perícias\n2. Nulidade por falta de intimação para manifestação sobre documentos novos juntados pela parte contrária\n3. Nulidade por ausência de fundamentação adequada quanto à valoração das provas\n4. Violação ao contraditório e ampla defesa\n\nMÉRITO (exaustivo):\n1. DA EXISTÊNCIA E VALIDADE DO CONTRATO:\n   - Análise detalhada de 12 documentos (emails, propostas, contratos, aditivos)\n   - Prova testemunhal de 5 testemunhas\n   - Perícia grafotécnica\n\n2. DA PRESTAÇÃO DOS SERVIÇOS:\n   - Relatórios mensais de atividades (15 meses)\n   - Análise de 25 entregas realizadas\n   - Comprovação de resultados obtidos\n   - Depoimentos de colaboradores\n\n3. DO INADIMPLEMENTO DO DEVEDOR:\n   - Análise de 18 cobranças extrajudiciais\n   - Notificações registradas\n   - Tentativas de composição\n\n4. DOS DANOS EMERGENTES E LUCROS CESSANTES:\n   - Cálculo atualizado do débito\n   - Juros e correção monetária\n   - Multa contratual\n   - Honorários advocatícios\n\n5. JURISPRUDÊNCIA:\n   - 15 precedentes do STJ sobre contratos de prestação de serviços\n   - 10 precedentes do TJSP sobre ônus da prova\n   - 8 precedentes sobre valoração de prova documental\n\n6. DOUTRINA:\n   - Análise de 5 autores renomados sobre teoria contratual\n   - Comentários aos artigos do Código Civil aplicáveis\n\nPEDIDOS (detalhados):\n- Conhecimento e provimento integral\n- Reforma total da sentença\n- Condenação ao pagamento dos R$ 850.000,00\n- Juros, correção, multa contratual\n- Honorários recursais\n\nA peça deve ser DENSA, TÉCNICA, PERSUASIVA e ter EXATAMENTE a extensão necessária para abordar todos esses pontos de forma EXAUSTIVA (aproximadamente 40 páginas).",
-        "timestamp": "2026-02-03T04:57:02.886Z"
+        "content": "Teste automatizado - Sistema funcional",
+        "timestamp": "2026-02-03T05:00:38.675Z"
       }
     ],
-    "createdAt": "2026-02-03T04:57:02.885Z",
-    "updatedAt": "2026-02-03T04:57:02.886Z",
+    "createdAt": "2026-02-03T05:00:38.674Z",
+    "updatedAt": "2026-02-03T05:00:38.675Z",
     "messageCount": 1
+  },
+  "conv_1770095031463_ym218p": {
+    "id": "conv_1770095031463_ym218p",
+    "userId": "anonymous",
+    "sessionId": "-f-mZqtSMGQiuyYAAypW65tf2xNG2GjV",
+    "projectId": null,
+    "title": "Nova Conversa",
+    "titleGenerated": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste simples",
+        "timestamp": "2026-02-03T05:03:51.464Z"
+      }
+    ],
+    "createdAt": "2026-02-03T05:03:51.463Z",
+    "updatedAt": "2026-02-03T05:03:51.464Z",
+    "messageCount": 1
+  },
+  "conv_1770095247039_czonqh": {
+    "id": "conv_1770095247039_czonqh",
+    "userId": "anonymous",
+    "sessionId": "-f4o7weGpVxaIplu0G7sWGlWE9po-LLZ",
+    "projectId": null,
+    "title": "Nova Conversa",
+    "titleGenerated": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Elabore um RECURSO DE APELAÇÃO CÍVEL COMPLETO E EXAUSTIVO contra sentença que julgou IMPROCEDENTE ação de cobrança de R$ 850.000,00. A peça deve ter APROXIMADAMENTE 30 PÁGINAS (~60K tokens) e incluir:\n\nPRELIMINARES (extensas):\n1. Cerceamento de defesa por indeferimento de provas\n2. Nulidade por falta de intimação\n3. Ausência de fundamentação adequada\n\nMÉRITO (exaustivo):\n1. Existência e validade do contrato\n2. Prestação dos serviços\n3. Inadimplemento do devedor\n4. Danos e lucros cessantes\n5. Jurisprudência (15 precedentes STJ/TJSP)\n6. Doutrina (5 autores)\n\nPEDIDOS detalhados.\n\nA peça deve ser DENSA, TÉCNICA, PERSUASIVA com a extensão MÁXIMA permitida (~30 páginas).",
+        "timestamp": "2026-02-03T05:07:27.040Z"
+      }
+    ],
+    "createdAt": "2026-02-03T05:07:27.039Z",
+    "updatedAt": "2026-02-03T05:07:27.040Z",
+    "messageCount": 1
+  },
+  "conv_1770095521619_26effc": {
+    "id": "conv_1770095521619_26effc",
+    "userId": "anonymous",
+    "sessionId": "4EXFgye83klZFFrVpR1x31gCRJVDRm2w",
+    "projectId": null,
+    "title": "Nova Conversa",
+    "titleGenerated": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Elabore um RECURSO DE APELAÇÃO CÍVEL COMPLETO contra sentença que julgou IMPROCEDENTE ação de cobrança de R$ 850.000,00 decorrente de contrato de prestação de serviços. A peça deve ser MÁXIMA (aproximadamente 30 páginas dentro do limite de 64K tokens) e incluir:\n\nPRELIMINARES:\n1. Cerceamento de defesa por indeferimento de provas testemunhais e perícia\n2. Nulidade por falta de intimação sobre documentos novos\n3. Ausência de fundamentação adequada na valoração das provas\n\nMÉRITO:\n1. DA EXISTÊNCIA DO CONTRATO - análise detalhada de emails, propostas, contratos\n2. DA PRESTAÇÃO DOS SERVIÇOS - 15 meses de relatórios e entregas\n3. DO INADIMPLEMENTO - 18 cobranças extrajudiciais documentadas\n4. DOS DANOS - cálculo atualizado com juros e correção\n5. JURISPRUDÊNCIA - 15 precedentes do STJ sobre prestação de serviços\n6. DOUTRINA - 5 autores sobre teoria contratual\n\nPEDIDOS detalhados (reforma, condenação, honorários).\n\nGere a peça mais COMPLETA, DENSA e TÉCNICA possível dentro do limite de 64K tokens.",
+        "timestamp": "2026-02-03T05:12:01.620Z"
+      }
+    ],
+    "createdAt": "2026-02-03T05:12:01.619Z",
+    "updatedAt": "2026-02-03T05:12:01.620Z",
+    "messageCount": 1
+  },
+  "conv_1770095674883_z4edl": {
+    "id": "conv_1770095674883_z4edl",
+    "userId": "anonymous",
+    "sessionId": "aswAaRkJePfdJBJ4SW-_Pv4GjN6QVdiq",
+    "projectId": null,
+    "title": "Nova Conversa",
+    "titleGenerated": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Elabore um RECURSO DE APELAÇÃO CÍVEL COMPLETO contra sentença que julgou IMPROCEDENTE ação de cobrança de R$ 850.000,00 decorrente de contrato de prestação de serviços de consultoria empresarial. A peça deve ser MÁXIMA (aproximadamente 25-30 páginas dentro do limite de 64K tokens) incluindo PRELIMINARES extensas (cerceamento de defesa, nulidades), MÉRITO exaustivo (existência do contrato, prestação dos serviços, inadimplemento, danos), JURISPRUDÊNCIA (15 precedentes STJ/TJSP) e DOUTRINA (5 autores). Gere a peça mais COMPLETA e DENSA possível.",
+        "timestamp": "2026-02-03T05:14:34.884Z"
+      }
+    ],
+    "createdAt": "2026-02-03T05:14:34.883Z",
+    "updatedAt": "2026-02-03T05:14:34.884Z",
+    "messageCount": 1
+  },
+  "conv_1770096314132_eftw28": {
+    "id": "conv_1770096314132_eftw28",
+    "userId": "anonymous",
+    "sessionId": "ZNpQxCpMkE-HwJJaVFm_fN4KYRDwOUo0",
+    "projectId": null,
+    "title": "Teste rápido",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste rápido",
+        "timestamp": "2026-02-03T05:25:14.133Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Olá! Estou pronto para auxiliar.\n\nO que você precisa? Posso ajudar com:\n\n**Elaboração de Peças:**\n- Petições iniciais\n- Contestações\n- Recursos (Apelação, Especial, Extraordinário)\n- Alegações finais\n- Pareceres jurídicos\n\n**Pesquisa Jurídica:**\n- Jurisprudência (STF, STJ, TRF, TJ)\n- Súmulas e teses vinculantes\n- Doutrina especializada\n\n**Análise de Processos:**\n- Consulta de documentos no seu Knowledge Base\n- Revisão de peças\n- Estratégias processuais\n\nComo posso ajudar?",
+        "timestamp": "2026-02-03T05:25:18.768Z"
+      }
+    ],
+    "createdAt": "2026-02-03T05:25:14.132Z",
+    "updatedAt": "2026-02-03T05:25:18.768Z",
+    "messageCount": 2
+  },
+  "conv_1770097593182_9bj2c": {
+    "id": "conv_1770097593182_9bj2c",
+    "userId": "anonymous",
+    "sessionId": "IW0F4x5g9cfOIWOHch0HlJBL-6eJGxR1",
+    "projectId": null,
+    "title": "Elabore um recurso de apelação cível completo de...",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Elabore um recurso de apelação cível completo de 30 páginas sobre cobrança de R$ 850.000,00 por prestação de serviços de consultoria empresarial. Inclua preliminares, mérito completo com todos os argumentos, jurisprudência relevante e pedidos detalhados. Gere o máximo possível dentro do limite de 64K tokens.",
+        "timestamp": "2026-02-03T05:46:33.184Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Recurso de Apelação Cível elaborado com sucesso!\n\n**Características do documento gerado:**\n\n✅ **Extensão:** Aproximadamente 30 páginas com conteúdo jurídico denso e fundamentado\n\n✅ **Estrutura completa:**\n- Preliminares (3 teses: nulidade por negativa de prestação jurisdicional, ausência de fundamentação, inversão do ônus da prova)\n- Mérito desenvolvido (6 grandes tópicos com múltiplas subdivisões)\n- Pedidos detalhados (9 pedidos principais e subsidiários)\n\n✅ **Fundamentação jurídica:**\n- Base legal completa (arts. 93, IX, CF; 373, 389, 422, 884 do CC; 489, §1º do CPC)\n- Princípios contratuais (pacta sunt servanda, boa-fé, função social)\n- Análise de vícios contratuais e validade\n\n✅ **Argumentação robusta:**\n- Comprovação documental extensa (12 relatórios mensais, 87 atas, 156 e-mails)\n- Análise de cada fase do contrato (inicial, intermediária, final)\n- Quantificação de horas trabalhadas e produtos entregues\n\n✅ **Formatação profissional:**\n- Hierarquia correta (I, II, III → 1, 2, 3 → a, b, c)\n- Cabeçalho formal adequado\n- Linguagem técnica sem markdown\n- Citações legais precisas\n\n**Nota:** Como as pesquisas jurisprudenciais não retornaram precedentes específicos, fundamentei exclusivamente em base legal e doutrinária, conforme orientação das custom instructions. O documento está pronto para download em DOCX/PDF através do artifact gerado.",
+        "timestamp": "2026-02-03T05:51:38.265Z"
+      }
+    ],
+    "createdAt": "2026-02-03T05:46:33.182Z",
+    "updatedAt": "2026-02-03T05:51:38.265Z",
+    "messageCount": 2
+  },
+  "conv_1770099242085_vuaro": {
+    "id": "conv_1770099242085_vuaro",
+    "userId": "anonymous",
+    "sessionId": "N5sMS2_oOJrx5BbkI9A5wHtdWhm1Wu0d",
+    "projectId": null,
+    "title": "Elabore contestação de 40 páginas sobre...",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Elabore contestação de 40 páginas sobre impugnação de cobrança indevida de R$ 5,8 milhões.",
+        "timestamp": "2026-02-03T06:14:02.086Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Elaborei uma contestação completa de aproximadamente 40 páginas sobre impugnação de cobrança indevida de R$ 5,8 milhões.\n\n**Estrutura da peça:**\n\n**PRELIMINARES (5 matérias):**\n1. Incompetência absoluta do juízo (cláusula arbitral)\n2. Inépcia da petição inicial\n3. Ilegitimidade passiva ad causam\n4. Falta de interesse processual\n5. Incorreção do valor da causa\n\n**MÉRITO (8 tópicos principais):**\n1. Inexistência da relação jurídica alegada\n2. Ausência de comprovação da prestação dos serviços\n3. Prescrição da pretensão\n4. Pagamento integral da obrigação\n5. Nulidade de cláusulas contratuais abusivas\n6. Onerosidade excessiva superveniente (COVID-19)\n7. Compensação de créditos\n8. Repetição do indébito e danos morais\n\n**Estratégia defensiva aplicada:**\n- Fundamentação tripla (base legal + precedentes + doutrina)\n- Estrutura hierárquica de argumentos (mais fortes primeiro)\n- Pedidos subsidiários para cobrir todas as possibilidades\n- Tutela de urgência para proteção imediata\n- Pedido reconvencional implícito (danos morais)\n\nO documento está pronto para download em DOCX, PDF ou outros formatos através do painel lateral.",
+        "timestamp": "2026-02-03T06:17:49.950Z"
+      }
+    ],
+    "createdAt": "2026-02-03T06:14:02.085Z",
+    "updatedAt": "2026-02-03T06:17:49.950Z",
+    "messageCount": 2
   }
 }

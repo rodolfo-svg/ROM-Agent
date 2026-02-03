@@ -5,16 +5,16 @@
     "failed": 10,
     "warnings": 0,
     "successRate": 75.6,
-    "duration": 0.13,
-    "timestamp": "2026-01-30T05:00:31.109Z"
+    "duration": 0.07,
+    "timestamp": "2026-02-03T05:00:29.941Z"
   },
   "tests": [
     {
       "name": "Health Check (/api/info)",
       "passed": {
         "status": "healthy",
-        "uptime": "22h 56m",
-        "uptimeSeconds": 82584
+        "uptime": "0h 10m",
+        "uptimeSeconds": 607
       },
       "details": "Status: 200, Version: 2.8.0, Health: healthy, Bedrock: connected"
     },
@@ -46,7 +46,7 @@
     {
       "name": "Status do Knowledge Base (/api/kb/status)",
       "passed": true,
-      "details": "Status: 200, Documentos: 5"
+      "details": "Status: 200, Documentos: 4"
     },
     {
       "name": "Suporte a Export TXT",
@@ -211,7 +211,7 @@
     {
       "name": "Status de Backups (/api/backup/status)",
       "passed": true,
-      "details": "Status: 200, Backups: 2"
+      "details": "Status: 200, Backups: 3"
     },
     {
       "name": "Estatísticas de Cache (/api/cache/statistics)",

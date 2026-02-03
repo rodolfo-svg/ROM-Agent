@@ -319,6 +319,46 @@ async function processVideo(filePath, outputFolder) {
 }
 
 /**
+ * Processar documento Word (DOCX)
+ */
+async function processWordDocument(filePath) {
+  try {
+    const result = {
+      type: 'document',
+      success: false,
+      text: '',
+      lines: 0,
+      words: 0,
+      format: 'docx',
+      warnings: [],
+      errors: []
+    };
+
+    // Importar mammoth para extração de texto de DOCX
+    const mammoth = await import('mammoth');
+
+    // Extrair texto do DOCX
+    const buffer = await fs.readFile(filePath);
+    const extractionResult = await mammoth.extractRawText({ buffer });
+
+    result.text = extractionResult.value || '';
+    result.lines = result.text.split('\n').length;
+    result.words = result.text.split(/\s+/).filter(w => w.length > 0).length;
+
+    // Adicionar warnings do mammoth (se houver problemas de conversão)
+    if (extractionResult.messages && extractionResult.messages.length > 0) {
+      result.warnings = extractionResult.messages.map(m => m.message);
+    }
+
+    result.success = true;
+
+    return result;
+  } catch (error) {
+    throw new Error(`Erro ao processar documento Word: ${error.message}`);
+  }
+}
+
+/**
  * Processar documento de texto
  */
 async function processTextDocument(filePath) {
@@ -409,6 +449,11 @@ export async function extractGeneralDocuments(options = {}) {
         switch (fileType) {
           case 'pdf':
             processResult = await processPDF(filePath, ocrFolder);
+            if (processResult.text) allText.push(processResult.text);
+            break;
+
+          case 'document':
+            processResult = await processWordDocument(filePath);
             if (processResult.text) allText.push(processResult.text);
             break;
 

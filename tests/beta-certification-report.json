@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-01-30T05:29:23.769Z",
+  "timestamp": "2026-02-03T06:02:09.132Z",
   "environment": "http://localhost:3000",
-  "duration": "3.08s",
+  "duration": "3.10s",
   "summary": {
     "total": 20,
     "passed": 12,
@@ -13,9 +13,9 @@
     "health": {
       "Server responde": {
         "passed": true,
-        "duration": 32,
+        "duration": 55,
         "status": 200,
-        "responseTime": 31
+        "responseTime": 54
       },
       "Health check endpoint": {
         "passed": false,
@@ -26,7 +26,7 @@
     "apis": {
       "KB Statistics API": {
         "passed": true,
-        "duration": 2,
+        "duration": 6,
         "stats": {
           "kb": {
             "totalDocuments": 0,
@@ -47,22 +47,22 @@
       },
       "KB Reindex API": {
         "passed": true,
-        "duration": 7,
+        "duration": 10,
         "success": true
       },
       "Feature Flags GET": {
         "passed": false,
-        "duration": 2,
+        "duration": 1,
         "error": "Expected status 200, got 500"
       },
       "Feature Flags Validate": {
         "passed": false,
-        "duration": 1,
+        "duration": 2,
         "error": "Expected status 200, got 500"
       },
       "Feature Flags By Category": {
         "passed": false,
-        "duration": 3,
+        "duration": 1,
         "error": "Expected status 200, got 500"
       },
       "Spell Check Info": {
@@ -81,7 +81,7 @@
       },
       "Paradigmas List": {
         "passed": true,
-        "duration": 3,
+        "duration": 2,
         "total": 0
       },
       "Paradigmas Stats": {
@@ -100,7 +100,7 @@
       },
       "Analytics Dashboard": {
         "passed": true,
-        "duration": 1,
+        "duration": 0,
         "metrics": []
       },
       "Analytics Usage": {
@@ -110,14 +110,14 @@
       },
       "Stats General": {
         "passed": true,
-        "duration": 2,
+        "duration": 1,
         "success": true
       }
     },
     "performance": {
       "Response time: /api/health": {
         "passed": false,
-        "duration": 1,
+        "duration": 2,
         "error": "Expected status 200, got 404"
       },
       "Response time: /api/feature-flags": {
@@ -133,9 +133,9 @@
       },
       "Response time: /api/paradigmas/categories": {
         "passed": true,
-        "duration": 1,
+        "duration": 0,
         "endpoint": "/api/paradigmas/categories",
-        "responseTime": 1
+        "responseTime": 0
       }
     },
     "logs": {
