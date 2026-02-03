@@ -77,6 +77,7 @@ import { requireAuth } from './middleware/auth.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 import extractionService from './services/extraction-service.js';
 import customInstructionsRoutes from './routes/custom-instructions.js';
+import multiStepGenerationRoutes from './routes/multi-step-generation.js';
 import { startCustomInstructionsCron } from './services/custom-instructions-cron.js';
 import { loadStructuredFilesFromKB } from './middleware/kb-loader.js';
 
@@ -481,6 +482,7 @@ app.use('/api', csrfProtection.protection({
     '/certidoes*',              // ✅ ADICIONADO: Geração de certidões (wildcard)
     '/multi-agent*',            // ✅ ADICIONADO: Sistema multi-agent (wildcard)
     '/case-processor*',         // ✅ ADICIONADO: Processamento de casos (wildcard)
+    '/generate*',               // ✅ ADICIONADO: Geração multi-step (wildcard)
 
     // ═══════════════════════════════════════════════════════════════
     // FEEDBACK & MISC
@@ -526,6 +528,9 @@ app.use('/api/conversations', conversationsRoutes);
 
 // Rotas de Custom Instructions (Sistema de Prompts Personalizados)
 app.use('/api/custom-instructions', requireAuth, customInstructionsRoutes);
+
+// Rotas de Geração Multi-Step (Documentos >35 páginas)
+app.use('/api/generate/multi-step', multiStepGenerationRoutes);
 
 // Rotas de Processamento de Casos (Extração + 5 Layers)
 app.use('/api/case-processor', caseProcessorRouter);

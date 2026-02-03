@@ -18,6 +18,7 @@ const ReportsPage = lazy(() => import('@/pages/reports/ReportsPage').then(m => (
 const SystemPromptsPage = lazy(() => import('@/pages/admin/SystemPromptsPage'))
 const CustomInstructionsPage = lazy(() => import('@/pages/custom-instructions/CustomInstructionsPage'))
 const SuggestionsPage = lazy(() => import('@/pages/custom-instructions/SuggestionsPage'))
+const MultiStepGenerationPage = lazy(() => import('@/pages/multi-step-generation/MultiStepGenerationPage').then(m => ({ default: m.MultiStepGenerationPage })))
 
 // Loading component
 function PageLoader() {
@@ -204,6 +205,16 @@ export default function App() {
           element={
             <ProtectedRoute>
               <CustomInstructionsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Multi-Step Generation */}
+        <Route
+          path="/multi-step"
+          element={
+            <ProtectedRoute>
+              <MultiStepGenerationPage />
             </ProtectedRoute>
           }
         />
