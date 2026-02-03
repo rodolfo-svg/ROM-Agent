@@ -1,5 +1,5 @@
-Build Info - 2026-02-03 12:15:00
-Version: 4.0.5
-Commit: artifact-panel-persist-fix
-Build: Fixed ArtifactPanel not opening after artifact creation
-Features: Persist isPanelOpen and activeArtifactId to localStorage
+Build Info - 2026-02-03 12:45:00
+Version: 4.0.6
+Commit: chunked-upload-bypass-413
+Build: Implementado upload chunked para arquivos >80MB
+Features: Bypass completo do limite HTTP 413 do Render

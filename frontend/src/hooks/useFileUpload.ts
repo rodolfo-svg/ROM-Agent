@@ -1204,10 +1204,152 @@ export function useFileUpload<T = DefaultUploadResponse>(
   };
 
   /**
+   * Executa upload chunked para arquivos grandes (>80MB)
+   * Divide arquivo em chunks de 40MB e envia sequencialmente
+   */
+  const executeChunkedUpload = useCallback(
+    async (file: File, fileId: string, attempt: number = 1): Promise<T> => {
+      const CHUNK_SIZE = 40 * 1024 * 1024; // 40MB por chunk
+      const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+
+      console.log('📦 [useFileUpload] Starting CHUNKED upload:', {
+        fileName: file.name,
+        fileSize: `${(file.size / 1024 / 1024).toFixed(2)} MB`,
+        chunkSize: '40 MB',
+        totalChunks,
+      });
+
+      try {
+        // 1. Iniciar sessão de upload chunked
+        console.log('🎬 [useFileUpload] Initializing chunked upload session...');
+        const initResponse = await fetch('/api/upload/chunked/init', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(withCsrf ? { 'x-csrf-token': await getCsrfToken() || '' } : {}),
+          },
+          credentials: withCredentials ? 'include' : 'same-origin',
+          body: JSON.stringify({
+            filename: file.name,
+            fileSize: file.size,
+            contentType: file.type,
+          }),
+        });
+
+        if (!initResponse.ok) {
+          throw createUploadError('SERVER_ERROR', file, undefined, initResponse.status, attempt);
+        }
+
+        const { uploadId, chunkSize } = await initResponse.json();
+        console.log('✅ [useFileUpload] Chunked session initialized:', { uploadId, chunkSize });
+
+        // 2. Enviar cada chunk
+        for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+          if (cancelledRef.current) {
+            throw createUploadError('CANCELLED', file, undefined, undefined, attempt);
+          }
+
+          const start = chunkIndex * CHUNK_SIZE;
+          const end = Math.min(start + CHUNK_SIZE, file.size);
+          const chunk = file.slice(start, end);
+
+          console.log(`📤 [useFileUpload] Uploading chunk ${chunkIndex + 1}/${totalChunks}`, {
+            start,
+            end,
+            size: `${(chunk.size / 1024 / 1024).toFixed(2)} MB`,
+          });
+
+          const chunkResponse = await fetch(`/api/upload/chunked/${uploadId}/chunk/${chunkIndex}`, {
+            method: 'POST',
+            body: chunk,
+            credentials: withCredentials ? 'include' : 'same-origin',
+          });
+
+          if (!chunkResponse.ok) {
+            throw createUploadError('SERVER_ERROR', file, undefined, chunkResponse.status, attempt);
+          }
+
+          const { progress } = await chunkResponse.json();
+
+          // Atualizar progresso real
+          setState((prev) => ({
+            ...prev,
+            progress,
+            bytesUploaded: Math.floor((progress / 100) * file.size),
+            bytesTotal: file.size,
+          }));
+
+          setAttachedFiles((prev) =>
+            prev.map((af) =>
+              af.fileInfo.id === fileId ? { ...af, fileInfo: { ...af.fileInfo, progress } } : af
+            )
+          );
+
+          onProgress?.(progress, Math.floor((progress / 100) * file.size), file.size);
+
+          console.log(`✅ [useFileUpload] Chunk ${chunkIndex + 1}/${totalChunks} uploaded (${progress}%)`);
+        }
+
+        // 3. Finalizar upload
+        console.log('🏁 [useFileUpload] Finalizing chunked upload...');
+        const finalizeResponse = await fetch(`/api/upload/chunked/${uploadId}/finalize`, {
+          method: 'POST',
+          credentials: withCredentials ? 'include' : 'same-origin',
+        });
+
+        if (!finalizeResponse.ok) {
+          throw createUploadError('SERVER_ERROR', file, undefined, finalizeResponse.status, attempt);
+        }
+
+        const result = await finalizeResponse.json();
+        console.log('✅ [useFileUpload] Chunked upload completed:', result);
+
+        // Progress 100%
+        setState((prev) => ({
+          ...prev,
+          progress: 100,
+          bytesUploaded: file.size,
+          bytesTotal: file.size,
+        }));
+
+        setAttachedFiles((prev) =>
+          prev.map((af) =>
+            af.fileInfo.id === fileId ? { ...af, fileInfo: { ...af.fileInfo, progress: 100 } } : af
+          )
+        );
+
+        onProgress?.(100, file.size, file.size);
+
+        return result as T;
+      } catch (error: any) {
+        console.error('❌ [useFileUpload] Chunked upload error:', error);
+        throw createUploadError('SERVER_ERROR', file, error, undefined, attempt);
+      }
+    },
+    [
+      withCsrf,
+      withCredentials,
+      getCsrfToken,
+      onProgress,
+      cancelledRef,
+      setState,
+      setAttachedFiles,
+      createUploadError,
+    ]
+  );
+
+  /**
    * Executa upload de um arquivo (interno) - REFATORADO para fetch()
    */
   const executeUpload = useCallback(
     async (file: File, fileId: string, attempt: number = 1): Promise<T> => {
+      // ✅ CHUNKED UPLOAD: Para arquivos >80MB, usar chunked upload (bypass HTTP 413)
+      const CHUNKED_THRESHOLD = 80 * 1024 * 1024; // 80MB
+      if (file.size > CHUNKED_THRESHOLD) {
+        console.log(`📦 [useFileUpload] File >80MB detected (${(file.size / 1024 / 1024).toFixed(2)} MB), using CHUNKED upload`);
+        return executeChunkedUpload(file, fileId, attempt);
+      }
+
       // ✅ CRITICAL FIX: Reset Base64 flag no início de CADA ciclo de tentativas
       if (attempt === 1) {
         triedBase64Ref.current = false;
@@ -1494,6 +1636,7 @@ export function useFileUpload<T = DefaultUploadResponse>(
       transformResponse,
       onProgress,
       onUploadProgress,
+      executeChunkedUpload, // ✅ Adicionado para detecção de arquivos >80MB
     ]
   );
 
