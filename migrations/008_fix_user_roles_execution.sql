@@ -1,6 +1,9 @@
--- Migration 007: Add role column to users table
+-- Migration 008: Force execution of user roles migration
+-- This fixes the failed migration 007 and applies it correctly
 -- Created: 2026-02-03
--- Purpose: Add role-based access control for system prompts and multi-tenant features
+
+-- Remove failed migration 007 from history to allow re-execution
+DELETE FROM schema_migrations WHERE version = '007_add_user_roles';
 
 -- Add role column if it doesn't exist
 DO $$
@@ -159,7 +162,7 @@ AND NOT EXISTS (
 );
 
 -- Comment the table
-COMMENT ON TABLE users IS 'Users table with role-based access control (v007)';
+COMMENT ON TABLE users IS 'Users table with role-based access control (v008 - fixed)';
 COMMENT ON COLUMN users.role IS 'User role: user, admin, partner_admin, master_admin';
 COMMENT ON COLUMN users.partner_id IS 'Partner ID for multi-tenant isolation (null for global users)';
 COMMENT ON COLUMN users.name IS 'Full name of the user';
