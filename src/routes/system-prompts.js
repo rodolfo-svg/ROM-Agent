@@ -93,7 +93,7 @@ router.put('/:type/:id', async (req, res) => {
     const partnerId = req.session?.user?.partnerId || 'global';
     const userRole = req.session?.user?.role || 'user';
 
-    // Validar permissões
+    // ✅ Validar permissões - incluir admin
     if (type === 'global' && userRole !== 'master_admin') {
       return res.status(403).json({
         success: false,
@@ -101,7 +101,7 @@ router.put('/:type/:id', async (req, res) => {
       });
     }
 
-    if (type === 'partner' && !['partner_admin', 'master_admin'].includes(userRole)) {
+    if (type === 'partner' && !['admin', 'partner_admin', 'master_admin'].includes(userRole)) {
       return res.status(403).json({
         success: false,
         error: 'Sem permissão para editar prompts do parceiro'
@@ -149,11 +149,18 @@ router.post('/', async (req, res) => {
     const partnerId = req.session?.user?.partnerId || 'global';
     const userRole = req.session?.user?.role || 'user';
 
-    // Validar permissões
+    // ✅ Validar permissões - incluir admin
     if (type === 'global' && userRole !== 'master_admin') {
       return res.status(403).json({
         success: false,
         error: 'Sem permissão para criar prompts globais'
+      });
+    }
+
+    if (type === 'partner' && !['admin', 'partner_admin', 'master_admin'].includes(userRole)) {
+      return res.status(403).json({
+        success: false,
+        error: 'Sem permissão para criar prompts do parceiro'
       });
     }
 
@@ -213,11 +220,18 @@ router.delete('/:type/:id', async (req, res) => {
     const partnerId = req.session?.user?.partnerId || 'global';
     const userRole = req.session?.user?.role || 'user';
 
-    // Validar permissões
+    // ✅ Validar permissões - incluir admin
     if (type === 'global' && userRole !== 'master_admin') {
       return res.status(403).json({
         success: false,
         error: 'Sem permissão para deletar prompts globais'
+      });
+    }
+
+    if (type === 'partner' && !['admin', 'partner_admin', 'master_admin'].includes(userRole)) {
+      return res.status(403).json({
+        success: false,
+        error: 'Sem permissão para deletar prompts do parceiro'
       });
     }
 
