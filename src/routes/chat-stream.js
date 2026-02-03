@@ -321,7 +321,12 @@ router.post('/stream', async (req, res) => {
     };
 
     // ✅ CRÍTICO: Usar systemPrompt com instruções de ferramentas se não vier do frontend
-    const finalSystemPrompt = systemPrompt || buildSystemPrompt();
+    // 🔧 IMPORTANTE: Passar context para garantir que Custom Instructions sejam aplicadas
+    const finalSystemPrompt = systemPrompt || buildSystemPrompt({
+      userMessage: message,
+      context: { type: 'chat' },  // Garante que Custom Instructions sejam aplicadas em análises
+      partnerId: req.session?.user?.partnerId || 'rom'
+    });
 
     // Executar streaming (sem timeout - permitir documentos grandes)
     const resultado = await conversarStream(message, onChunk, {

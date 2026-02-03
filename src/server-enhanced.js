@@ -1164,7 +1164,9 @@ export function buildSystemPrompt(options = {}) {
         includeTools,
         includeABNT,
         documentType: detectDocumentType(userMessage),
-        userId
+        userId,
+        partnerId,  // 🔧 Passar partnerId para carregar Custom Instructions corretas
+        context: options.context || { type: 'chat' }  // 🔧 Passar context para shouldApply()
       });
 
       console.log(`[buildSystemPrompt] OPTIMIZED v3.0 | ${result.size} chars | ~${result.tokens} tokens | modules: ${result.modules.join(', ')}`);
@@ -2778,10 +2780,12 @@ app.post('/api/chat/stream', loadStructuredFilesFromKB, async (req, res) => {
           content: m.content
         })),
         // ✅ CRÍTICO: Se systemPrompt não vier do frontend, construir um com buildSystemPrompt
+        // 🔧 IMPORTANTE: Passar context para garantir que Custom Instructions sejam aplicadas
         systemPrompt: systemPrompt || buildSystemPrompt({
           userMessage: finalMessage,
           userId: userId,
-          partnerId: req.user?.partnerId
+          partnerId: req.user?.partnerId,
+          context: { type: 'chat' }  // Garante que Custom Instructions sejam aplicadas
         }),
         maxTokens: maxTokens,
         temperature: temperature,

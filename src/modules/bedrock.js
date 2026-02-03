@@ -775,6 +775,14 @@ export async function conversarStream(prompt, onChunk, options = {}) {
     const streamStartTime = Date.now();
     metrics.incrementTotalRequests();
 
+    // 🔧 FIX: Estado de artifacts FORA do loop para preservar entre tool calls
+    // Se resetar a cada loop, documentos com ferramentas geram múltiplos artifacts!
+    let isStreamingArtifact = false;
+    let artifactWillStreamProgressively = false;
+    let artifactMetadata = null;
+    let artifactContent = '';
+    let artifactId = null;
+
     while (loopCount < MAX_TOOL_LOOPS) {
       // 🔄 v2.9.0: Logging melhorado para rastreamento de loops
       console.log(`🔄 [Loop ${loopCount + 1}/${MAX_TOOL_LOOPS}] Processing tool results...`);
@@ -807,12 +815,8 @@ export async function conversarStream(prompt, onChunk, options = {}) {
       let currentToolUse = null;
       let eventCount = 0;
 
-      // 🎨 Estado para streaming progressivo de artifacts
-      let isStreamingArtifact = false;
-      let artifactWillStreamProgressively = false; // false = acumular e enviar de uma vez
-      let artifactMetadata = null;
-      let artifactContent = '';
-      let artifactId = null;
+      // 🔧 FIX: Variáveis de artifact agora são preservadas entre loops (movidas para fora)
+      // Apenas resetar usouFerramentas baseado no loop atual
       let usouFerramentas = toolUseData.length > 0; // Rastrear se usou ferramentas neste loop
 
       console.log(`🔄 [Stream Loop ${loopCount}] Starting to process Bedrock stream...`);
