@@ -3,6 +3,10 @@
  *
  * Endpoints para gerenciar Custom Instructions, Prompts e Templates do Projeto ROM
  * Sistema autoatualizável de prompts jurídicos
+ *
+ * ✅ SEGURANÇA:
+ * - GET (leitura): Público, sem autenticação
+ * - POST/PUT/DELETE (escrita): Requer autenticação + permissões admin
  */
 
 import express from 'express';
@@ -14,6 +18,28 @@ import romProjectService from '../services/rom-project-service.js';
 const router = express.Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// ==========================================
+// MIDDLEWARE DE SEGURANÇA
+// ==========================================
+
+/**
+ * Middleware para verificar se usuário pode editar prompts/custom instructions
+ * Apenas admin, partner_admin e master_admin podem editar
+ */
+function requireAdminPermissions(req, res, next) {
+  const userRole = req.session?.user?.role || 'user';
+
+  if (!['admin', 'partner_admin', 'master_admin'].includes(userRole)) {
+    return res.status(403).json({
+      success: false,
+      error: 'Sem permissão para editar. Apenas administradores podem criar/editar/deletar prompts.',
+      code: 'PERMISSION_DENIED'
+    });
+  }
+
+  next();
+}
 
 // Configurar multer para upload de arquivos no KB
 const storage = multer.diskStorage({
@@ -62,12 +88,16 @@ router.get('/custom-instructions', async (req, res) => {
 /**
  * PUT /api/rom-project/custom-instructions
  * Atualizar custom instructions
+ * ✅ PROTEGIDO: Requer permissões de admin
  */
-router.put('/custom-instructions', async (req, res) => {
+router.put('/custom-instructions', requireAdminPermissions, async (req, res) => {
   try {
     const updates = req.body;
+    const userEmail = req.session?.user?.email || 'unknown';
 
     await romProjectService.updateCustomInstructions(updates);
+
+    console.log(`[ROM-PROJECT] Custom instructions atualizadas por: ${userEmail}`);
 
     res.json({
       success: true,
@@ -156,13 +186,17 @@ router.get('/prompts/:category/:promptId', async (req, res) => {
 /**
  * POST /api/rom-project/prompts/:category/:promptId
  * Criar ou atualizar prompt
+ * ✅ PROTEGIDO: Requer permissões de admin
  */
-router.post('/prompts/:category/:promptId', async (req, res) => {
+router.post('/prompts/:category/:promptId', requireAdminPermissions, async (req, res) => {
   try {
     const { category, promptId } = req.params;
     const promptData = req.body;
+    const userEmail = req.session?.user?.email || 'unknown';
 
     await romProjectService.savePrompt(category, promptId, promptData);
+
+    console.log(`[ROM-PROJECT] Prompt salvo por ${userEmail}: ${category}/${promptId}`);
 
     res.json({
       success: true,
@@ -183,12 +217,16 @@ router.post('/prompts/:category/:promptId', async (req, res) => {
 /**
  * DELETE /api/rom-project/prompts/:category/:promptId
  * Deletar prompt
+ * ✅ PROTEGIDO: Requer permissões de admin
  */
-router.delete('/prompts/:category/:promptId', async (req, res) => {
+router.delete('/prompts/:category/:promptId', requireAdminPermissions, async (req, res) => {
   try {
     const { category, promptId } = req.params;
+    const userEmail = req.session?.user?.email || 'unknown';
 
     await romProjectService.deletePrompt(category, promptId);
+
+    console.log(`[ROM-PROJECT] Prompt deletado por ${userEmail}: ${category}/${promptId}`);
 
     res.json({
       success: true,
@@ -322,13 +360,17 @@ router.get('/templates/:templateId', async (req, res) => {
 /**
  * POST /api/rom-project/templates/:templateId
  * Salvar template
+ * ✅ PROTEGIDO: Requer permissões de admin
  */
-router.post('/templates/:templateId', async (req, res) => {
+router.post('/templates/:templateId', requireAdminPermissions, async (req, res) => {
   try {
     const { templateId } = req.params;
     const { content } = req.body;
+    const userEmail = req.session?.user?.email || 'unknown';
 
     await romProjectService.saveTemplate(templateId, content);
+
+    console.log(`[ROM-PROJECT] Template salvo por ${userEmail}: ${templateId}`);
 
     res.json({
       success: true,
@@ -354,8 +396,9 @@ router.post('/templates/:templateId', async (req, res) => {
  *
  * Suporta: PDFs, DOCXs, imagens, vídeos, áudios, planilhas, códigos, etc.
  * Limite: 100MB por arquivo
+ * ✅ PROTEGIDO: Requer permissões de admin
  */
-router.post('/kb/upload', upload.array('files', 50), async (req, res) => {
+router.post('/kb/upload', requireAdminPermissions, upload.array('files', 50), async (req, res) => {
   try {
     const { projectName, category } = req.body;
     const files = req.files;
@@ -456,16 +499,20 @@ router.get('/export', async (req, res) => {
  * POST /api/rom-project/import
  * Importar projeto completo
  * Body: { customInstructions, prompts, templates }
+ * ✅ PROTEGIDO: Requer permissões de admin
  */
-router.post('/import', async (req, res) => {
+router.post('/import', requireAdminPermissions, async (req, res) => {
   try {
     const { customInstructions, prompts, templates } = req.body;
+    const userEmail = req.session?.user?.email || 'unknown';
 
     await romProjectService.importProject({
       customInstructions,
       prompts,
       templates
     });
+
+    console.log(`[ROM-PROJECT] Projeto importado por ${userEmail}`);
 
     res.json({
       success: true,
