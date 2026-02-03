@@ -1,5 +1,5 @@
-Build Info - 2026-02-03 12:45:00
-Version: 4.0.6
-Commit: chunked-upload-bypass-413
-Build: Implementado upload chunked para arquivos >80MB
-Features: Bypass completo do limite HTTP 413 do Render
+Build Info - 2026-02-03 13:30:00
+Version: 4.0.7
+Commit: kb-upload-chunked-support
+Build: Adicionado chunked upload na página Upload/KB
+Features: Upload >80MB funciona em TODAS as páginas (Chat + KB)

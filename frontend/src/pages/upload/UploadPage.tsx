@@ -129,41 +129,164 @@ export function UploadPage() {
     if (selectedFiles.length === 0) return
 
     try {
-      // Criar FormData com arquivos
-      const formData = new FormData()
-      selectedFiles.forEach(file => {
-        formData.append('files', file)
-      })
-
-      // Obter CSRF token
       const csrfToken = getCsrfToken()
 
-      console.log(`[UploadPage] Enviando ${selectedFiles.length} arquivo(s) para /api/kb/upload`)
+      // ✅ DETECTAR SE PRECISA CHUNKED UPLOAD (arquivos >80MB)
+      const CHUNKED_THRESHOLD = 80 * 1024 * 1024 // 80MB
+      const hasLargeFile = selectedFiles.some(f => f.size > CHUNKED_THRESHOLD)
 
-      // POST para /api/kb/upload (retorna uploadId imediatamente)
-      const response = await fetch('/api/kb/upload', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-        headers: {
-          'x-csrf-token': csrfToken
+      if (hasLargeFile) {
+        console.log(`[UploadPage] Arquivo(s) >80MB detectado(s), usando CHUNKED UPLOAD`)
+
+        // Upload cada arquivo via chunked upload
+        const uploadedFiles: Array<{ originalName: string; uploadedPath: string }> = []
+
+        for (const file of selectedFiles) {
+          if (file.size > CHUNKED_THRESHOLD) {
+            console.log(`📦 [UploadPage] Chunked upload: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`)
+
+            // 1. Iniciar sessão chunked
+            const CHUNK_SIZE = 40 * 1024 * 1024 // 40MB
+            const totalChunks = Math.ceil(file.size / CHUNK_SIZE)
+
+            const initResponse = await fetch('/api/upload/chunked/init', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'x-csrf-token': csrfToken
+              },
+              credentials: 'include',
+              body: JSON.stringify({
+                filename: file.name,
+                fileSize: file.size,
+                contentType: file.type,
+              }),
+            })
+
+            if (!initResponse.ok) {
+              throw new Error(`Falha ao iniciar chunked upload: ${initResponse.status}`)
+            }
+
+            const { uploadId } = await initResponse.json()
+
+            // 2. Upload cada chunk
+            for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+              const start = chunkIndex * CHUNK_SIZE
+              const end = Math.min(start + CHUNK_SIZE, file.size)
+              const chunk = file.slice(start, end)
+
+              console.log(`   📤 Chunk ${chunkIndex + 1}/${totalChunks} (${((chunkIndex + 1) / totalChunks * 100).toFixed(0)}%)`)
+
+              const chunkResponse = await fetch(`/api/upload/chunked/${uploadId}/chunk/${chunkIndex}`, {
+                method: 'POST',
+                body: chunk,
+                credentials: 'include',
+              })
+
+              if (!chunkResponse.ok) {
+                throw new Error(`Falha no chunk ${chunkIndex}: ${chunkResponse.status}`)
+              }
+            }
+
+            // 3. Finalizar
+            const finalizeResponse = await fetch(`/api/upload/chunked/${uploadId}/finalize`, {
+              method: 'POST',
+              credentials: 'include',
+            })
+
+            if (!finalizeResponse.ok) {
+              throw new Error(`Falha ao finalizar chunked upload: ${finalizeResponse.status}`)
+            }
+
+            const finalResult = await finalizeResponse.json()
+            uploadedFiles.push({
+              originalName: file.name,
+              uploadedPath: finalResult.filePath
+            })
+
+            console.log(`   ✅ Chunked upload completo: ${file.name}`)
+          } else {
+            // Arquivo pequeno - pode usar FormData normal
+            const formData = new FormData()
+            formData.append('files', file)
+
+            const response = await fetch('/api/kb/upload', {
+              method: 'POST',
+              body: formData,
+              credentials: 'include',
+              headers: {
+                'x-csrf-token': csrfToken
+              }
+            })
+
+            if (!response.ok) {
+              throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+            }
+
+            const data = await response.json()
+            if (data.success && data.uploadId) {
+              setCurrentUploadId(data.uploadId)
+            }
+            return // Upload normal já inicia SSE tracking
+          }
         }
-      })
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-      }
+        // Após todos os uploads chunked, iniciar processamento KB
+        console.log(`[UploadPage] Iniciando processamento KB para ${uploadedFiles.length} arquivo(s)`)
 
-      const data = await response.json()
+        const kbResponse = await fetch('/api/kb/process-uploaded', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-csrf-token': csrfToken
+          },
+          credentials: 'include',
+          body: JSON.stringify({ uploadedFiles })
+        })
 
-      if (data.success && data.uploadId) {
-        console.log(`[UploadPage] Upload iniciado: ${data.uploadId}`)
-        // Definir uploadId para iniciar tracking via SSE
-        setCurrentUploadId(data.uploadId)
+        if (!kbResponse.ok) {
+          throw new Error(`Falha ao processar arquivos: ${kbResponse.status}`)
+        }
+
+        const kbData = await kbResponse.json()
+        if (kbData.success && kbData.uploadId) {
+          console.log(`[UploadPage] Processamento KB iniciado: ${kbData.uploadId}`)
+          setCurrentUploadId(kbData.uploadId)
+        }
+
       } else {
-        console.error('[UploadPage] Resposta sem uploadId:', data)
-        throw new Error(data.error || 'Falha ao iniciar upload')
+        // ✅ UPLOAD NORMAL (arquivos <80MB)
+        console.log(`[UploadPage] Enviando ${selectedFiles.length} arquivo(s) para /api/kb/upload (upload normal)`)
+
+        const formData = new FormData()
+        selectedFiles.forEach(file => {
+          formData.append('files', file)
+        })
+
+        const response = await fetch('/api/kb/upload', {
+          method: 'POST',
+          body: formData,
+          credentials: 'include',
+          headers: {
+            'x-csrf-token': csrfToken
+          }
+        })
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+        }
+
+        const data = await response.json()
+
+        if (data.success && data.uploadId) {
+          console.log(`[UploadPage] Upload iniciado: ${data.uploadId}`)
+          setCurrentUploadId(data.uploadId)
+        } else {
+          console.error('[UploadPage] Resposta sem uploadId:', data)
+          throw new Error(data.error || 'Falha ao iniciar upload')
+        }
       }
+
     } catch (error) {
       console.error('[UploadPage] Erro no upload:', error)
       alert(`Erro no upload: ${error instanceof Error ? error.message : 'Erro desconhecido'}`)

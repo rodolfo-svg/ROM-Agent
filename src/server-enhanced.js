@@ -5688,6 +5688,100 @@ app.post('/api/kb/upload', requireAuth, upload.array('files', 20), async (req, r
 });
 
 /**
+ * ✅ NOVO: Processar arquivos já uploadados via chunked upload
+ * POST /api/kb/process-uploaded
+ *
+ * Recebe paths de arquivos que já foram montados via chunked upload
+ * e processa eles da mesma forma que /api/kb/upload faz
+ */
+app.post('/api/kb/process-uploaded', requireAuth, async (req, res) => {
+  try {
+    const { uploadedFiles } = req.body; // [ { originalName, uploadedPath }, ... ]
+
+    if (!uploadedFiles || uploadedFiles.length === 0) {
+      return res.status(400).json({ error: 'Nenhum arquivo para processar' });
+    }
+
+    // Gerar uploadId único
+    const uploadId = `upload_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+
+    // Usuário autenticado via session
+    const userId = req.session.user.id;
+    const userName = req.session.user.name || req.session.user.email;
+
+    console.log(`📤 KB Process (Chunked) iniciado: ${uploadId} por ${userName} (${uploadedFiles.length} arquivos)`);
+
+    // Criar objetos compatíveis com multer para cada arquivo
+    const fileObjects = [];
+    for (const { originalName, uploadedPath } of uploadedFiles) {
+      try {
+        const stats = await fs.promises.stat(uploadedPath);
+
+        // Simular estrutura do multer
+        const fileObj = {
+          fieldname: 'files',
+          originalname: originalName,
+          encoding: '7bit',
+          mimetype: getMimeType(originalName),
+          path: uploadedPath,
+          size: stats.size,
+          filename: path.basename(uploadedPath)
+        };
+
+        fileObjects.push(fileObj);
+      } catch (error) {
+        console.error(`❌ Erro ao ler arquivo ${uploadedPath}:`, error);
+        throw new Error(`Arquivo não encontrado: ${originalName}`);
+      }
+    }
+
+    // Iniciar sessão de progresso
+    progressEmitter.startSession(uploadId, {
+      fileCount: fileObjects.length,
+      user: userName,
+      startedAt: new Date().toISOString()
+    });
+
+    // Responder imediatamente com uploadId
+    res.json({
+      success: true,
+      uploadId,
+      fileCount: fileObjects.length,
+      message: 'Processamento iniciado. Conecte-se ao SSE para acompanhar progresso.'
+    });
+
+    // Processar em background
+    processUploadInBackground(uploadId, fileObjects, userId, userName).catch(err => {
+      console.error(`❌ Erro no processamento ${uploadId}:`, err);
+      progressEmitter.failSession(uploadId, err);
+    });
+
+  } catch (error) {
+    console.error('❌ Erro no process-uploaded:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * Helper: Detectar mimetype baseado em extensão
+ */
+function getMimeType(filename) {
+  const ext = path.extname(filename).toLowerCase();
+  const mimeTypes = {
+    '.pdf': 'application/pdf',
+    '.doc': 'application/msword',
+    '.docx': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    '.txt': 'text/plain',
+    '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
+    '.zip': 'application/zip',
+    '.rar': 'application/x-rar-compressed'
+  };
+  return mimeTypes[ext] || 'application/octet-stream';
+}
+
+/**
  * Processar upload em background com emissão de progresso via SSE
  * NOTA: Sessão já foi iniciada em /api/kb/upload antes de responder ao frontend
  * @param {string} uploadId - ID único do upload
