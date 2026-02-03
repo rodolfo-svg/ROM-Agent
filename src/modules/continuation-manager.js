@@ -184,13 +184,16 @@ export class ContinuationManager {
     logger.info(`[ContinuationManager] Mesclando ${parts.length} partes`);
 
     const merged = parts.map((part, index) => {
+      // Garante que part é string
+      const partStr = typeof part === 'string' ? part : String(part || '');
+
       if (index === 0) {
         // Primeira parte: mantém tudo (cabeçalho, preliminares, mérito)
-        return part.trim();
+        return partStr.trim();
       }
 
       // Partes subsequentes: remove cabeçalho/preliminares duplicados
-      let cleanedPart = part.trim();
+      let cleanedPart = partStr.trim();
 
       if (removeHeaders) {
         // Remove cabeçalhos típicos de peças jurídicas
@@ -239,22 +242,27 @@ export class ContinuationManager {
 
     // Verifica se cada parte tem conteúdo mínimo
     parts.forEach((part, index) => {
-      if (!part || part.trim().length < 500) {
+      // Garante que part é string
+      const partStr = typeof part === 'string' ? part : String(part || '');
+
+      if (!partStr || partStr.trim().length < 500) {
         validation.isValid = false;
         validation.errors.push(
-          `Parte ${index + 1} vazia ou muito curta (${part?.length || 0} caracteres)`
+          `Parte ${index + 1} vazia ou muito curta (${partStr?.length || 0} caracteres)`
         );
       }
     });
 
     // Verifica se primeira parte tem preliminares
-    if (parts[0] && !parts[0].match(/preliminar/i)) {
+    const firstPartStr = typeof parts[0] === 'string' ? parts[0] : String(parts[0] || '');
+    if (firstPartStr && !firstPartStr.match(/preliminar/i)) {
       validation.warnings.push('Primeira parte pode não conter preliminares');
     }
 
     // Verifica se última parte tem pedidos
     const lastPart = parts[parts.length - 1];
-    if (lastPart && !lastPart.match(/pedido|requer/i)) {
+    const lastPartStr = typeof lastPart === 'string' ? lastPart : String(lastPart || '');
+    if (lastPartStr && !lastPartStr.match(/pedido|requer/i)) {
       validation.warnings.push('Última parte pode não conter pedidos');
     }
 
