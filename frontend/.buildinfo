@@ -1,5 +1,5 @@
-# Build Info - 2026-02-03 06:16:52
-Version: 4.0.3
-Commit: 57ec4ff
-Build: Removed outdated suggestion cards from empty state
-Changes: Clean, modern empty state without example prompts
+Build Info - 2026-02-03 06:25:00
+Version: 4.0.4
+Commit: keydown-fix-v7
+Build: Fixed keydown handler UI freeze
+Features: Asynchronous Enter key handling with requestIdleCallback

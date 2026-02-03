@@ -84,38 +84,42 @@ export function ChatInput({ onSend, isLoading, onStop, onAttachClick, hasAttachm
     }
   }, [onAttachClick])
 
-  // V6 FIX: handleKeyDown with ZERO dependencies + performance tracking
+  // V7 FIX: handleKeyDown com execução ASSÍNCRONA para não travar UI
   const handleKeyDown = useCallback((e: KeyboardEvent<HTMLTextAreaElement>) => {
-    const t0 = performance.now()
-
     if (e.key === 'Enter' && !e.shiftKey) {
+      // 1. PREVENIR comportamento padrão IMEDIATAMENTE
       e.preventDefault()
 
-      const t1 = performance.now()
-      // Get values directly from ref - no function dependency!
+      // 2. Capturar valores ANTES de qualquer operação assíncrona
       const { message, files, hasAttachments, onSend, isLoading } = latestValuesRef.current
 
-      const t2 = performance.now()
-      if (!isLoading && (message.trim() || files.length > 0 || hasAttachments)) {
-        const t3 = performance.now()
-        onSend(message.trim(), files.length > 0 ? files : undefined)
-        const t4 = performance.now()
+      // 3. Validar ANTES de limpar UI
+      if (isLoading || (!message.trim() && files.length === 0 && !hasAttachments)) {
+        return // Não fazer nada se está carregando ou não tem conteúdo
+      }
 
-        setMessage('')
-        setFiles([])
-        if (textareaRef.current) {
-          textareaRef.current.style.height = 'auto'
-        }
+      // 4. LIMPAR UI IMEDIATAMENTE para feedback visual instantâneo
+      const messageToSend = message.trim()
+      const filesToSend = files.length > 0 ? [...files] : undefined
 
-        const t5 = performance.now()
+      setMessage('')
+      setFiles([])
+      if (textareaRef.current) {
+        textareaRef.current.style.height = 'auto'
+      }
 
-        console.log('%c⏱️ V6 handleKeyDown timing breakdown:', 'color: cyan; font-weight: bold;')
-        console.log(`  preventDefault: ${(t1-t0).toFixed(2)}ms`)
-        console.log(`  Read from ref: ${(t2-t1).toFixed(2)}ms`)
-        console.log(`  Validation: ${(t3-t2).toFixed(2)}ms`)
-        console.log(`  onSend(): ${(t4-t3).toFixed(2)}ms ← CRITICAL`)
-        console.log(`  State updates: ${(t5-t4).toFixed(2)}ms`)
-        console.log(`  TOTAL: ${(t5-t0).toFixed(2)}ms`)
+      // 5. ENVIAR de forma ASSÍNCRONA usando requestIdleCallback ou setTimeout
+      // Isso libera a thread principal para processar o clear da UI primeiro
+      if ('requestIdleCallback' in window) {
+        // Usar requestIdleCallback se disponível (melhor performance)
+        requestIdleCallback(() => {
+          onSend(messageToSend, filesToSend)
+        }, { timeout: 100 })
+      } else {
+        // Fallback para setTimeout com delay mínimo
+        setTimeout(() => {
+          onSend(messageToSend, filesToSend)
+        }, 0)
       }
     }
   }, []) // ZERO DEPENDENCIES = NEVER RECREATED
