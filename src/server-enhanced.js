@@ -3250,10 +3250,10 @@ app.post('/api/upload/chunked/:uploadId/finalize', requireAuth, uploadLimiter, a
  * Status de upload chunked
  * GET /api/upload/chunked/:uploadId/status
  */
-app.get('/api/upload/chunked/:uploadId/status', (req, res) => {
+app.get('/api/upload/chunked/:uploadId/status', async (req, res) => {
   try {
     const { uploadId } = req.params;
-    const status = chunkedUpload.getStatus(uploadId);
+    const status = await chunkedUpload.getStatus(uploadId);
 
     if (!status) {
       return res.status(404).json({ error: 'Sessão de upload não encontrada' });

@@ -1,5 +1,5 @@
-Build Info - 2026-02-03 14:00:00
-Version: 4.0.8
-Commit: fix-chunked-upload-complete
-Build: Corrigido chunked upload + auth + progresso em tempo real
-Features: Upload >80MB com barra de progresso funcional + logs detalhados
+Build Info - 2026-02-03 15:30:00
+Version: 4.0.9
+Commit: fix-chunked-sessions-persistent
+Build: Sessões de upload PERSISTENTES em disco (sobrevive a restarts do Render)
+Features: SOLUÇÃO DEFINITIVA para erro 500 - sessões salvas em /var/data/upload/sessions
