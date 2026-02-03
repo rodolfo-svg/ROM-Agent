@@ -149,18 +149,31 @@ router.post('/', async (req, res) => {
     const partnerId = req.session?.user?.partnerId || 'global';
     const userRole = req.session?.user?.role || 'user';
 
+    // Debug log para diagnóstico
+    console.log('[System Prompts] POST - Tentativa de criação:', {
+      name,
+      type,
+      userRole,
+      partnerId,
+      userEmail: req.session?.user?.email
+    });
+
     // ✅ Validar permissões - incluir admin
     if (type === 'global' && userRole !== 'master_admin') {
+      console.warn('[System Prompts] POST - Permissão negada (global):', { userRole, type });
       return res.status(403).json({
         success: false,
-        error: 'Sem permissão para criar prompts globais'
+        error: 'Sem permissão para criar prompts globais. Apenas master_admin pode criar prompts globais.',
+        details: { userRole, required: 'master_admin' }
       });
     }
 
     if (type === 'partner' && !['admin', 'partner_admin', 'master_admin'].includes(userRole)) {
+      console.warn('[System Prompts] POST - Permissão negada (partner):', { userRole, type });
       return res.status(403).json({
         success: false,
-        error: 'Sem permissão para criar prompts do parceiro'
+        error: 'Sem permissão para criar prompts do parceiro. Necessário: admin, partner_admin ou master_admin.',
+        details: { userRole, required: ['admin', 'partner_admin', 'master_admin'] }
       });
     }
 
