@@ -5923,6 +5923,42 @@ async function processUploadInBackground(uploadId, files, userId, userName) {
           }
         }
 
+        // 📦 COPIAR CHUNKS PARA KB (RAG)
+        const chunksInKB = [];
+        if (processResult.metadata?.processing?.chunks > 0) {
+          try {
+            const baseName = path.basename(file.path, path.extname(file.path));
+            const chunksFolder = path.join(EXTRACTOR_CONFIG.extractedFolder, 'chunks', baseName);
+
+            if (fs.existsSync(chunksFolder)) {
+              const chunkFiles = fs.readdirSync(chunksFolder);
+
+              for (const chunkFile of chunkFiles) {
+                const sourcePath = path.join(chunksFolder, chunkFile);
+                const timestamp = Date.now();
+                const destPath = path.join(ACTIVE_PATHS.kb, 'documents', 'chunks', `${timestamp}_${baseFilename}_${chunkFile}`);
+
+                // Criar diretório chunks se não existir
+                const chunksDir = path.dirname(destPath);
+                if (!fs.existsSync(chunksDir)) {
+                  fs.mkdirSync(chunksDir, { recursive: true });
+                }
+
+                await fs.promises.copyFile(sourcePath, destPath);
+                chunksInKB.push({
+                  name: chunkFile,
+                  path: destPath,
+                  size: fs.statSync(destPath).size
+                });
+              }
+
+              console.log(`   📦 ${chunksInKB.length} chunks copiados para KB`);
+            }
+          } catch (error) {
+            console.warn(`   ⚠️ Erro ao copiar chunks: ${error.message}`);
+          }
+        }
+
         // Criar documento KB principal
         const doc = {
           id: `kb-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
@@ -5940,7 +5976,9 @@ async function processUploadInBackground(uploadId, files, userId, userName) {
             structuredDocuments: processResult.structuredDocuments?.filesGenerated || 0,
             structuredDocsPath: processResult.structuredDocuments?.outputPath,
             wordCount: processResult.extraction?.wordCount || 0,
-            structuredDocsInKB: structuredDocs
+            structuredDocsInKB: structuredDocs,
+            chunks: chunksInKB.length,
+            chunksInKB: chunksInKB  // ✅ CHUNKS SALVOS AQUI
           }
         };
 

@@ -601,13 +601,12 @@ export async function executeTool(toolName, toolInput) {
       }
 
       case 'consultar_kb': {
-        const { query, limite = 10 } = toolInput; // ⬆️ AUMENTADO DE 3 PARA 10
+        const { query, limite = 5 } = toolInput; // Limite de DOCUMENTOS (não chunks)
 
         console.log(`📚 [KB] Consultando documentos: "${query}"`);
 
         try {
           // ✅ CRÍTICO: Usar ACTIVE_PATHS para acessar disco persistente no Render
-          // Antes usava process.cwd() que é efêmero e perdido a cada deploy
           const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
 
           if (!fs.existsSync(kbDocsPath)) {
@@ -627,35 +626,143 @@ export async function executeTool(toolName, toolInput) {
             };
           }
 
-          // Buscar documentos relevantes (busca por palavras individuais)
-          // ✅ MELHORADO: Divide query em palavras e procura cada uma
+          // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          // ETAPA 1: IDENTIFICAR DOCUMENTOS RELEVANTES (por nome/metadata)
+          // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
           const queryLower = query.toLowerCase();
           const queryWords = queryLower
             .split(/\s+/)
-            .filter(word => word.length > 3); // Ignora palavras muito curtas (de, da, os, etc)
+            .filter(word => word.length > 3); // Ignora palavras muito curtas
 
-          const relevantDocs = allDocs
-            .filter(doc => {
+          // Filtrar documentos principais (não chunks individuais)
+          const mainDocs = allDocs.filter(doc =>
+            !doc.metadata?.isStructuredDocument &&
+            doc.metadata?.chunks > 0  // Apenas docs que têm chunks
+          );
+
+          // Score de relevância baseado em nome e metadata
+          const scoredDocs = mainDocs
+            .map(doc => {
               const docName = doc.name.toLowerCase();
-              const docText = doc.extractedText?.toLowerCase() || '';
               const docType = doc.metadata?.documentType?.toLowerCase() || '';
-              const combinedText = `${docName} ${docText} ${docType}`;
+              let score = 0;
 
-              // Se query tem palavras, procura por QUALQUER palavra
-              if (queryWords.length > 0) {
-                return queryWords.some(word => combinedText.includes(word));
+              queryWords.forEach(word => {
+                if (docName.includes(word)) score += 10; // Nome tem peso alto
+                if (docType.includes(word)) score += 5;  // Tipo tem peso médio
+              });
+
+              // Boost para documentos recentes (últimos 7 dias)
+              const docAge = Date.now() - new Date(doc.uploadedAt).getTime();
+              const isRecent = docAge < 7 * 24 * 60 * 60 * 1000;
+              if (isRecent) score *= 2;
+
+              return { doc, score };
+            })
+            .filter(({ score }) => score > 0)
+            .sort((a, b) => b.score - a.score)
+            .slice(0, limite);
+
+          if (scoredDocs.length === 0) {
+            return {
+              success: false,
+              content: `Nenhum documento encontrado para "${query}". Documentos disponíveis: ${allDocs.length}`
+            };
+          }
+
+          // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          // ETAPA 2: BUSCAR CHUNKS RELEVANTES DE CADA DOCUMENTO
+          // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+          let respostaFormatada = `\n📚 **Knowledge Base - "${query}"** (${scoredDocs.length} documento(s) encontrado(s))\n\n`;
+
+          for (const { doc } of scoredDocs) {
+            respostaFormatada += `**[${doc.name}]**\n`;
+            respostaFormatada += `Tipo: ${doc.metadata?.documentType || 'Não identificado'}\n`;
+            respostaFormatada += `Upload: ${new Date(doc.uploadedAt).toLocaleDateString('pt-BR')}\n`;
+
+            // 🔍 BUSCAR CHUNKS RELEVANTES (RAG)
+            if (doc.metadata?.chunksInKB && doc.metadata.chunksInKB.length > 0) {
+              const relevantChunks = [];
+
+              for (const chunk of doc.metadata.chunksInKB) {
+                try {
+                  const chunkContent = fs.readFileSync(chunk.path, 'utf8');
+                  const chunkLower = chunkContent.toLowerCase();
+
+                  // Score por chunk: quantas palavras da query aparecem
+                  let chunkScore = 0;
+                  queryWords.forEach(word => {
+                    if (chunkLower.includes(word)) {
+                      // Contar quantas vezes palavra aparece
+                      const matches = (chunkLower.match(new RegExp(word, 'g')) || []).length;
+                      chunkScore += matches;
+                    }
+                  });
+
+                  if (chunkScore > 0) {
+                    relevantChunks.push({
+                      name: chunk.name,
+                      content: chunkContent,
+                      score: chunkScore,
+                      size: chunk.size
+                    });
+                  }
+                } catch (error) {
+                  console.error(`   ⚠️ Erro ao ler chunk ${chunk.name}:`, error.message);
+                }
               }
 
-              // Se query é muito curta, busca string completa (fallback)
-              return combinedText.includes(queryLower);
-            })
-            .sort((a, b) => {
-              // ⭐ ORDENAR POR DATA: Mais recentes primeiro
-              const dateA = new Date(a.uploadedAt || 0).getTime();
-              const dateB = new Date(b.uploadedAt || 0).getTime();
-              return dateB - dateA; // Decrescente (mais recente primeiro)
-            })
-            .slice(0, limite);
+              // Ordenar chunks por relevância e pegar top 3
+              relevantChunks.sort((a, b) => b.score - a.score);
+              const topChunks = relevantChunks.slice(0, 3); // Top 3 chunks mais relevantes
+
+              if (topChunks.length > 0) {
+                respostaFormatada += `\n📦 **Trechos Relevantes** (${topChunks.length} de ${doc.metadata.chunks} partes):\n\n`;
+
+                topChunks.forEach((chunk, idx) => {
+                  respostaFormatada += `**[Parte ${chunk.name}]**\n`;
+                  respostaFormatada += `${chunk.content}\n`;
+                  respostaFormatada += `---\n\n`;
+                });
+
+                respostaFormatada += `✅ Mostrando ${topChunks.length} trechos mais relevantes de ${doc.metadata.chunks} partes totais\n`;
+              } else {
+                respostaFormatada += `⚠️ Nenhum trecho relevante encontrado nos chunks\n`;
+              }
+            } else {
+              // Fallback: sem chunks, usar primeiros 15k chars
+              if (doc.extractedText) {
+                const preview = doc.extractedText.slice(0, 15000);
+                respostaFormatada += `\nConteúdo (primeiros 15k caracteres):\n${preview}\n`;
+                respostaFormatada += `\n... (documento completo tem ${Math.round(doc.textLength/1000)}k caracteres)\n`;
+              }
+            }
+
+            respostaFormatada += '\n═══════════════════════════════════\n\n';
+          }
+
+          respostaFormatada += `✅ **Total de documentos na KB**: ${allDocs.length}\n`;
+
+          console.log(`✅ [KB] ${scoredDocs.length} documento(s) encontrado(s)`);
+
+          return {
+            success: true,
+            content: respostaFormatada,
+            metadata: {
+              query,
+              totalEncontrados: scoredDocs.length,
+              totalNaKB: allDocs.length
+            }
+          };
+        } catch (error) {
+          console.error(`❌ [KB] Erro:`, error);
+          return {
+            success: false,
+            error: error.message,
+            content: `Erro ao consultar Knowledge Base: ${error.message}`
+          };
+        }
+      }
 
           if (relevantDocs.length === 0) {
             return {

@@ -383,6 +383,17 @@ router.post('/login', authLimiter, async (req, res) => {
     req.session.username = user.name;
     req.session.userRole = user.role;
 
+    // LOG DETALHADO: Verificar role sendo salvo na sessão
+    console.log('🔐 [AUTH] Sessão criada com sucesso:', {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      roleInSession: req.session.user.role,
+      userRoleInSession: req.session.userRole,
+      sessionId: req.sessionID,
+      authenticated: req.session.authenticated
+    });
+
     // 9. Regenerar CSRF token por segurança
     regenerateCsrfToken(req, res, () => {});
 

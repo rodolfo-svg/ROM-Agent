@@ -14,6 +14,18 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   try {
+    // LOG: Mostrar exatamente o que está na sessão
+    console.log('🔍 [DIAGNOSTIC] Session data:', {
+      hasSession: !!req.session,
+      hasUser: !!req.session?.user,
+      sessionKeys: req.session ? Object.keys(req.session) : [],
+      sessionID: req.sessionID,
+      sessionUser: req.session?.user,
+      sessionAuthenticated: req.session?.authenticated,
+      sessionUserRole: req.session?.userRole,
+      cookies: req.headers.cookie
+    });
+
     const pool = getPostgresPool();
 
     // 1. Verificar colunas da tabela users
