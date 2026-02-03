@@ -87,6 +87,17 @@ export const csrfProtection = (options = {}) => {
       req.headers[headerName.toLowerCase()] ||
       req.body?.[bodyField];
 
+    // LOG DETALHADO para debug
+    console.log(`🔍 [CSRF] Validando token:`, {
+      path: req.path,
+      method: req.method,
+      sessionID: req.sessionID,
+      hasClientToken: !!clientToken,
+      clientTokenPrefix: clientToken ? clientToken.substring(0, 8) : 'NONE',
+      sessionTokenPrefix: req.session.csrfToken ? req.session.csrfToken.substring(0, 8) : 'NONE',
+      tokensMatch: clientToken === req.session.csrfToken
+    });
+
     // Validar token
     if (!clientToken || clientToken !== req.session.csrfToken) {
       console.error(`❌ [CSRF] Token inválido: ${req.path} - IP: ${req.ip}`);

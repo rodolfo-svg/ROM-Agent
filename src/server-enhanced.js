@@ -494,6 +494,7 @@ app.use('/api', csrfProtection.protection({
     // ═══════════════════════════════════════════════════════════════
     '/partners*',               // ✅ ADICIONADO: CRUD de parceiros (wildcard)
     '/rom-prompts*',            // ✅ ADICIONADO: CRUD de prompts (wildcard)
+    '/system-prompts*',         // ✅ ADICIONADO: CRUD de system prompts (wildcard)
 
     // ═══════════════════════════════════════════════════════════════
     // LEGAL SERVICES
