@@ -32,9 +32,14 @@ router.get('/', async (req, res) => {
       LIMIT 10
     `);
 
-    // 3. Listar usuários e seus roles
+    // 3. Listar usuários e seus roles (dynamic - only existing columns)
+    const columns = columnsResult.rows.map(col => col.column_name);
+    const selectColumns = ['id', 'email', 'role', 'partner_id', 'created_at']
+      .filter(col => columns.includes(col))
+      .join(', ');
+
     const usersResult = await pool.query(`
-      SELECT id, email, username, role, partner_id, created_at
+      SELECT ${selectColumns}
       FROM users
       ORDER BY created_at ASC
       LIMIT 20
@@ -63,11 +68,10 @@ router.get('/', async (req, res) => {
         migration008Executed: migrationsResult.rows.some(m => m.version === '008_fix_user_roles_execution'),
         users: usersResult.rows.map(u => ({
           id: u.id,
-          email: u.email,
-          username: u.username,
+          email: u.email || 'NULL',
           role: u.role || 'NULL',
           partner_id: u.partner_id || 'NULL',
-          created_at: u.created_at
+          created_at: u.created_at || 'NULL'
         })),
         roleStats: roleStatsResult.rows,
         currentSession: {
