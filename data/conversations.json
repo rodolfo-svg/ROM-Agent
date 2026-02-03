@@ -566,5 +566,41 @@
     "createdAt": "2026-01-30T05:29:06.899Z",
     "updatedAt": "2026-01-30T05:29:13.845Z",
     "messageCount": 2
+  },
+  "conv_1770093693642_1irqe9": {
+    "id": "conv_1770093693642_1irqe9",
+    "userId": "anonymous",
+    "sessionId": "nl2bNp8TZdabITS10emC-PWpy3iXJLtS",
+    "projectId": null,
+    "title": "Nova Conversa",
+    "titleGenerated": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Elabore uma petição inicial simples de cobrança de honorários advocatícios no valor de R$ 15.000,00",
+        "timestamp": "2026-02-03T04:41:33.643Z"
+      }
+    ],
+    "createdAt": "2026-02-03T04:41:33.642Z",
+    "updatedAt": "2026-02-03T04:41:33.643Z",
+    "messageCount": 1
+  },
+  "conv_1770094622885_624w3": {
+    "id": "conv_1770094622885_624w3",
+    "userId": "anonymous",
+    "sessionId": "5NsFFovQHMLaBcpec1QtMKl_G9Ej9vdQ",
+    "projectId": null,
+    "title": "Nova Conversa",
+    "titleGenerated": false,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Elabore um RECURSO DE APELAÇÃO CÍVEL COMPLETO E EXAUSTIVO contra sentença que julgou IMPROCEDENTE ação de cobrança de R$ 850.000,00 decorrente de contrato de prestação de serviços de consultoria empresarial. A peça deve ter APROXIMADAMENTE 40 PÁGINAS e incluir:\n\nPRELIMINARES (extensas):\n1. Cerceamento de defesa por indeferimento de 8 provas testemunhais e 3 perícias\n2. Nulidade por falta de intimação para manifestação sobre documentos novos juntados pela parte contrária\n3. Nulidade por ausência de fundamentação adequada quanto à valoração das provas\n4. Violação ao contraditório e ampla defesa\n\nMÉRITO (exaustivo):\n1. DA EXISTÊNCIA E VALIDADE DO CONTRATO:\n   - Análise detalhada de 12 documentos (emails, propostas, contratos, aditivos)\n   - Prova testemunhal de 5 testemunhas\n   - Perícia grafotécnica\n\n2. DA PRESTAÇÃO DOS SERVIÇOS:\n   - Relatórios mensais de atividades (15 meses)\n   - Análise de 25 entregas realizadas\n   - Comprovação de resultados obtidos\n   - Depoimentos de colaboradores\n\n3. DO INADIMPLEMENTO DO DEVEDOR:\n   - Análise de 18 cobranças extrajudiciais\n   - Notificações registradas\n   - Tentativas de composição\n\n4. DOS DANOS EMERGENTES E LUCROS CESSANTES:\n   - Cálculo atualizado do débito\n   - Juros e correção monetária\n   - Multa contratual\n   - Honorários advocatícios\n\n5. JURISPRUDÊNCIA:\n   - 15 precedentes do STJ sobre contratos de prestação de serviços\n   - 10 precedentes do TJSP sobre ônus da prova\n   - 8 precedentes sobre valoração de prova documental\n\n6. DOUTRINA:\n   - Análise de 5 autores renomados sobre teoria contratual\n   - Comentários aos artigos do Código Civil aplicáveis\n\nPEDIDOS (detalhados):\n- Conhecimento e provimento integral\n- Reforma total da sentença\n- Condenação ao pagamento dos R$ 850.000,00\n- Juros, correção, multa contratual\n- Honorários recursais\n\nA peça deve ser DENSA, TÉCNICA, PERSUASIVA e ter EXATAMENTE a extensão necessária para abordar todos esses pontos de forma EXAUSTIVA (aproximadamente 40 páginas).",
+        "timestamp": "2026-02-03T04:57:02.886Z"
+      }
+    ],
+    "createdAt": "2026-02-03T04:57:02.885Z",
+    "updatedAt": "2026-02-03T04:57:02.886Z",
+    "messageCount": 1
   }
 }
