@@ -978,14 +978,24 @@ const upload = multer({
     files: 20 // 20 arquivos por vez
   },
   fileFilter: (req, file, cb) => {
-    const allowedTypes = /pdf|docx|doc|txt/;
-    const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
+    // Aceitar por extensão de arquivo
+    const allowedExtensions = /\.(pdf|docx|doc|txt|md)$/i;
+    const hasValidExtension = allowedExtensions.test(file.originalname);
 
-    if (mimetype || extname) {
+    // Aceitar por MIME type
+    const allowedMimeTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain',
+      'text/markdown'
+    ];
+    const hasValidMimeType = allowedMimeTypes.includes(file.mimetype);
+
+    if (hasValidExtension || hasValidMimeType) {
       return cb(null, true);
     } else {
-      cb(new Error('Apenas arquivos PDF, DOCX e TXT são permitidos!'));
+      cb(new Error('Apenas arquivos PDF, DOCX, DOC, TXT e MD são permitidos!'));
     }
   }
 });
