@@ -23,6 +23,7 @@ import {
   ChevronRight,
   Info
 } from 'lucide-react'
+import { apiFetch } from '@/services/api'
 
 interface Prompt {
   id: string
@@ -73,10 +74,9 @@ export default function AdminPrompts() {
   const loadPrompts = async () => {
     try {
       setLoading(true)
-      const response = await fetch('/api/system-prompts')
-      if (!response.ok) throw new Error('Erro ao carregar prompts')
-      const data = await response.json()
-      setPrompts(data.prompts || data)
+      const response = await apiFetch<PromptsResponse>('/system-prompts')
+      if (!response.success) throw new Error(response.error || 'Erro ao carregar prompts')
+      setPrompts(response.data.prompts || response.data)
     } catch (error) {
       console.error('Erro ao carregar prompts:', error)
       showMessage('error', 'Erro ao carregar prompts')
@@ -87,11 +87,10 @@ export default function AdminPrompts() {
 
   const loadPromptContent = async (prompt: Prompt) => {
     try {
-      const response = await fetch(`/api/system-prompts/${prompt.type}/${prompt.id}`)
-      if (!response.ok) throw new Error('Erro ao carregar conteúdo')
-      const data = await response.json()
-      setSelectedPrompt({ ...prompt, content: data.content })
-      setEditContent(data.content || '')
+      const response = await apiFetch<{ content: string }>(`/system-prompts/${prompt.type}/${prompt.id}`)
+      if (!response.success) throw new Error(response.error || 'Erro ao carregar conteúdo')
+      setSelectedPrompt({ ...prompt, content: response.data.content })
+      setEditContent(response.data.content || '')
     } catch (error) {
       console.error('Erro ao carregar conteúdo do prompt:', error)
       showMessage('error', 'Erro ao carregar conteúdo do prompt')
@@ -103,13 +102,12 @@ export default function AdminPrompts() {
 
     try {
       setSaving(true)
-      const response = await fetch(`/api/system-prompts/${selectedPrompt.type}/${selectedPrompt.id}`, {
+      const response = await apiFetch(`/system-prompts/${selectedPrompt.type}/${selectedPrompt.id}`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: editContent })
       })
 
-      if (!response.ok) throw new Error('Erro ao salvar prompt')
+      if (!response.success) throw new Error(response.error || 'Erro ao salvar prompt')
 
       showMessage('success', 'Prompt salvo com sucesso!')
       setEditMode(false)
@@ -144,9 +142,8 @@ export default function AdminPrompts() {
       : 'partner'
 
     try {
-      const response = await fetch('/api/system-prompts', {
+      const response = await apiFetch('/system-prompts', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
           type,
@@ -154,7 +151,7 @@ export default function AdminPrompts() {
         })
       })
 
-      if (!response.ok) throw new Error('Erro ao criar prompt')
+      if (!response.success) throw new Error(response.error || 'Erro ao criar prompt')
 
       showMessage('success', 'Prompt criado com sucesso!')
       await loadPrompts()
@@ -168,11 +165,11 @@ export default function AdminPrompts() {
     if (!confirm(`Tem certeza que deseja deletar "${prompt.name}"?`)) return
 
     try {
-      const response = await fetch(`/api/system-prompts/${prompt.type}/${prompt.id}`, {
+      const response = await apiFetch(`/system-prompts/${prompt.type}/${prompt.id}`, {
         method: 'DELETE'
       })
 
-      if (!response.ok) throw new Error('Erro ao deletar prompt')
+      if (!response.success) throw new Error(response.error || 'Erro ao deletar prompt')
 
       showMessage('success', 'Prompt deletado com sucesso!')
       await loadPrompts()
