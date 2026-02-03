@@ -768,7 +768,7 @@ export async function conversarStream(prompt, onChunk, options = {}) {
 
     let currentMessages = messages;
     let loopCount = 0;
-    const MAX_TOOL_LOOPS = 2; // ✅ v2.9.0: 1 busca + 1 apresentação IMEDIATA (-75% latência SSE)
+    const MAX_TOOL_LOOPS = 3; // ✅ v2.9.2: 2 buscas + 1 apresentação forçada (balance latência/completude)
     let hasJurisprudenceResults = false;
 
     // v2.9.0: Metricas de performance SSE
@@ -787,13 +787,19 @@ export async function conversarStream(prompt, onChunk, options = {}) {
       // 🔄 v2.9.0: Logging melhorado para rastreamento de loops
       console.log(`🔄 [Loop ${loopCount + 1}/${MAX_TOOL_LOOPS}] Processing tool results...`);
 
-      if (loopCount >= MAX_TOOL_LOOPS - 1) {
-        console.log(`⚠️ [MAX_LOOPS REACHED] Forcing presentation now (loopCount=${loopCount})`);
+      // 🔧 FIX: Remover tools no último loop para forçar apresentação
+      const isLastLoop = loopCount >= MAX_TOOL_LOOPS - 1;
+      const currentParams = { ...commandParams, messages: currentMessages };
+
+      if (isLastLoop) {
+        // Remover toolConfig no último loop - força Claude a apresentar o que tem
+        delete currentParams.toolConfig;
+        console.log(`⚠️ [MAX_LOOPS REACHED] TOOLS DISABLED - Forcing final presentation (loopCount=${loopCount})`);
       }
 
-      console.log(`📤 [Loop ${loopCount}] Sending request to Bedrock with ${currentMessages.length} messages`);
+      console.log(`📤 [Loop ${loopCount}] Sending request to Bedrock with ${currentMessages.length} messages (tools: ${!!currentParams.toolConfig})`);
 
-      const command = new ConverseStreamCommand({ ...commandParams, messages: currentMessages });
+      const command = new ConverseStreamCommand(currentParams);
 
       let response;
       try {
