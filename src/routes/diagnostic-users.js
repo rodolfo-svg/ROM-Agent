@@ -4,7 +4,7 @@
  */
 
 import express from 'express';
-import { getPostgresPool } from '../lib/db.js';
+import { getPostgresPool } from '../config/database.js';
 
 const router = express.Router();
 
