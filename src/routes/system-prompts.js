@@ -34,6 +34,16 @@ router.get('/', async (req, res) => {
     // Listar prompts usando PromptsManager
     const prompts = PromptsManager.listarPrompts(partnerId, userRole);
 
+    // LOG DETALHADO: Ver o que está sendo retornado
+    console.log('[System Prompts] GET - Lista de prompts:', {
+      partnerId,
+      userRole,
+      globalCount: prompts.global?.length || 0,
+      partnerCount: prompts.partner?.length || 0,
+      globalPrompts: prompts.global?.map(p => p.name).slice(0, 10) || [],
+      hasMetodo: prompts.global?.some(p => p.name.toLowerCase().includes('metodo')) || false
+    });
+
     res.json({
       success: true,
       prompts
