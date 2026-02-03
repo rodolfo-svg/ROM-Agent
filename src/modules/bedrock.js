@@ -89,8 +89,8 @@ function getDefaultModel() {
 const CONFIG = {
   region: process.env.AWS_REGION || 'us-west-2',
   defaultModel: getDefaultModel(),
-  maxTokens: 32000,  // 🎯 LIMITE PADRÃO: 32K tokens (~96K chars) - documentos completos
-  maxTokensLongForm: 64000,  // 📄 LIMITE DOCUMENTOS GRANDES: 64K tokens (~192K chars)
+  maxTokens: 100000,  // 🎯 LIMITE PADRÃO: 100K tokens (~300K chars) - peças jurídicas completas
+  maxTokensLongForm: 150000,  // 📄 LIMITE DOCUMENTOS GRANDES: 150K tokens (~450K chars) - recursos complexos
   maxTokensAbsolute: 200000,  // 🚀 MÁXIMO ABSOLUTO: 200K tokens (raramente usado)
   temperature: 0.7,
   autoModelSelection: true,  // Habilitar seleção automática de modelo

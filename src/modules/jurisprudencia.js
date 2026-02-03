@@ -630,7 +630,7 @@ export async function pesquisarViaIA(termo, options = {}) {
   const {
     modelo = 'amazon.nova-pro-v1:0',
     tribunal = null,
-    maxTokens = 4096
+    maxTokens = 16384
   } = options;
 
   const tribunalFiltro = tribunal ? ` no ${tribunal.toUpperCase()}` : ' nos tribunais superiores brasileiros (STF, STJ)';

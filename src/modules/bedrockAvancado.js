@@ -295,7 +295,7 @@ export async function reordenarResultados(query, documentos, options = {}) {
 export async function analisarImagem(imagemPath, prompt, options = {}) {
   const {
     modelo = 'amazon.nova-pro-v1:0',
-    maxTokens = 2000
+    maxTokens = 16000
   } = options;
 
   const client = getClient();
@@ -381,7 +381,7 @@ Se houver texto ilegível, indique com [ilegível].`;
   return analisarImagem(imagemPath, prompt, {
     ...options,
     modelo: options.modelo || 'amazon.nova-pro-v1:0',
-    maxTokens: 4000
+    maxTokens: 32000
   });
 }
 
@@ -616,7 +616,7 @@ export async function transcreverAudiencia(audioPath, options = {}) {
 export async function analisarVideo(videoPath, prompt, options = {}) {
   const {
     modelo = 'amazon.nova-pro-v1:0',
-    maxTokens = 2000
+    maxTokens = 16000
   } = options;
 
   const client = getClient();
@@ -725,7 +725,7 @@ Destaque cláusulas potencialmente abusivas ou problemáticas.`;
 
   return analisarImagem(imagemPath, prompt, {
     ...options,
-    maxTokens: 4000
+    maxTokens: 32000
   });
 }
 

@@ -2447,7 +2447,7 @@ app.post('/api/chat/stream', loadStructuredFilesFromKB, async (req, res) => {
       systemPrompt = null,     // System prompt customizado
       enableTools = true,      // Habilitar ferramentas (KB, jurisprudência)
       temperature = 0.7,
-      maxTokens = 16384        // ✅ AUMENTADO: 8192 → 16384 para artifacts grandes
+      maxTokens = 100000        // ✅ AUMENTADO: 16384 → 100K para peças completas sem truncamento
     } = req.body;
 
     const sessionId = conversationId || req.session?.id || `anon_${Date.now()}`;

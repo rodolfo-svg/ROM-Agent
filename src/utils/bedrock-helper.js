@@ -107,7 +107,7 @@ try {
 export async function bedrockConverse({
   modelId,
   prompt,
-  maxTokens = 1024,
+  maxTokens = 8192,
   temperature = 0.2,
   topP = 0.9,
 }) {

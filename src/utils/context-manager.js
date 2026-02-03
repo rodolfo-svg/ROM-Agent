@@ -104,7 +104,7 @@ export function getSafeContextLimit(model) {
  * @param {number} maxTokens - Máximo de tokens para o resumo
  * @returns {object} Resumo e metadados
  */
-export function extractRelevantSections(content, query, maxTokens = 30000) {
+export function extractRelevantSections(content, query, maxTokens = 80000) {
   const maxChars = maxTokens * 3.5; // Aproximação: 3.5 chars/token
   const lines = content.split('\n');
   const queryTerms = query.toLowerCase()
@@ -366,7 +366,7 @@ export function formatContextForPrompt(managedContext) {
  * @param {string} currentMessage - Mensagem atual (para subtrair do orçamento total)
  * @returns {Array} Histórico truncado
  */
-export function truncateHistory(history, maxTokens = 20000, kbContext = '', currentMessage = '') {
+export function truncateHistory(history, maxTokens = 60000, kbContext = '', currentMessage = '') {
   if (!history || history.length === 0) return [];
 
   // Estimar tokens já usados pelo KB e mensagem atual
