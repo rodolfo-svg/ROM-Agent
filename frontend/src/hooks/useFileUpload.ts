@@ -1301,8 +1301,36 @@ export function useFileUpload<T = DefaultUploadResponse>(
           throw createUploadError('SERVER_ERROR', file, undefined, finalizeResponse.status, attempt);
         }
 
-        const result = await finalizeResponse.json();
-        console.log('✅ [useFileUpload] Chunked upload completed:', result);
+        const finalizeResult = await finalizeResponse.json();
+        console.log('✅ [useFileUpload] Chunked upload finalized:', finalizeResult);
+
+        // ✅ CRITICAL FIX: Process uploaded file through KB
+        // After chunked upload finishes, we MUST call /api/kb/process-uploaded
+        // to actually add the document to kb-documents.json
+        console.log('📚 [useFileUpload] Processing file in KB...');
+
+        const processResponse = await fetch('/api/kb/process-uploaded', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(withCsrf ? { 'x-csrf-token': await getCsrfToken() || '' } : {}),
+          },
+          credentials: withCredentials ? 'include' : 'same-origin',
+          body: JSON.stringify({
+            uploadedFiles: [{
+              originalName: file.name,
+              uploadedPath: finalizeResult.path
+            }]
+          }),
+        });
+
+        if (!processResponse.ok) {
+          console.error('❌ [useFileUpload] KB processing failed:', processResponse.status);
+          throw createUploadError('SERVER_ERROR', file, new Error('KB processing failed'), processResponse.status, attempt);
+        }
+
+        const kbResult = await processResponse.json();
+        console.log('✅ [useFileUpload] KB processing completed:', kbResult);
 
         // Progress 100%
         setState((prev) => ({
@@ -1320,7 +1348,8 @@ export function useFileUpload<T = DefaultUploadResponse>(
 
         onProgress?.(100, file.size, file.size);
 
-        return result as T;
+        // Return KB processing result (contains document info)
+        return kbResult as T;
       } catch (error: any) {
         console.error('❌ [useFileUpload] Chunked upload error:', error);
         throw createUploadError('SERVER_ERROR', file, error, undefined, attempt);
