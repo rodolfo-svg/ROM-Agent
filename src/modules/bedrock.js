@@ -89,9 +89,9 @@ function getDefaultModel() {
 const CONFIG = {
   region: process.env.AWS_REGION || 'us-west-2',
   defaultModel: getDefaultModel(),
-  maxTokens: 100000,  // 🎯 LIMITE PADRÃO: 100K tokens (~300K chars) - peças jurídicas completas
-  maxTokensLongForm: 150000,  // 📄 LIMITE DOCUMENTOS GRANDES: 150K tokens (~450K chars) - recursos complexos
-  maxTokensAbsolute: 200000,  // 🚀 MÁXIMO ABSOLUTO: 200K tokens (raramente usado)
+  maxTokens: 64000,  // 🎯 LIMITE PADRÃO: 64K tokens (~192K chars) - LIMITE REAL DO CLAUDE SONNET 4.5
+  maxTokensLongForm: 64000,  // 📄 LIMITE DOCUMENTOS GRANDES: 64K tokens (MÁXIMO do modelo)
+  maxTokensAbsolute: 64000,  // 🚀 MÁXIMO ABSOLUTO: 64K tokens (limite do AWS Bedrock Claude)
   temperature: 0.7,
   autoModelSelection: true,  // Habilitar seleção automática de modelo
   maxContextTokens: 200000,  // Limite de contexto de entrada (200k tokens - Sonnet/Opus 4.5)
@@ -201,7 +201,7 @@ function getBedrockRuntimeClient() {
     runtimeClient = new BedrockRuntimeClient({
       region: CONFIG.region,
       requestHandler: {
-        requestTimeout: 30000  // 30 segundos (reduzido de 60s para melhorar UX)
+        requestTimeout: 300000  // 300 segundos (5 min) - necessário para peças muito grandes (25-30 páginas)
       }
     });
   }
@@ -213,7 +213,7 @@ function getBedrockManagementClient() {
     managementClient = new BedrockClient({
       region: CONFIG.region,
       requestHandler: {
-        requestTimeout: 30000  // 30 segundos
+        requestTimeout: 300000  // 300 segundos (5 min) - necessário para peças muito grandes (25-30 páginas)
       }
     });
   }

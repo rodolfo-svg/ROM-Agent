@@ -1498,25 +1498,30 @@ function selectIntelligentModel(message, metadata = {}, relevantDocs = []) {
   // 1. MULTIMODAL - Detecção de imagens (futuro)
   const hasImageAttachment = metadata.hasImage || false;
 
-  // 2. RACIOCÍNIO PROFUNDO - DeepSeek R1
-  if (lowerMessage.includes('fundamentação') ||
-      lowerMessage.includes('raciocínio') ||
-      lowerMessage.includes('explicação detalhada') ||
-      lowerMessage.includes('passo a passo')) {
-    console.log('🧠 Modelo selecionado: DeepSeek R1 (raciocínio exposto)');
-    return 'deepseek.r1-v1:0';
-  }
-
-  // 3. ANÁLISE JURÍDICA / PEÇAS PROCESSUAIS - Claude Sonnet 4.5 (PRIORIDADE)
+  // 2. ANÁLISE JURÍDICA / PEÇAS PROCESSUAIS - Claude Sonnet 4.5 (MÁXIMA PRIORIDADE)
+  // ✅ IMPORTANTE: Priorizar Claude para TODAS as peças jurídicas (suporta 64K tokens)
   if (lowerMessage.includes('analise') || lowerMessage.includes('análise') ||
       lowerMessage.includes('processo') || lowerMessage.includes('sentença') ||
       lowerMessage.includes('decisão') || lowerMessage.includes('acórdão') ||
       lowerMessage.includes('embargos') || lowerMessage.includes('recurso') ||
       lowerMessage.includes('petição') || lowerMessage.includes('contestação') ||
-      lowerMessage.includes('fundamentação') || lowerMessage.includes('resumo executivo') ||
-      lowerMessage.includes('fichamento') || lowerMessage.includes('parecer')) {
-    console.log('🔥 Modelo selecionado: Claude Sonnet 4.5 (análise jurídica profunda)');
-    return 'global.anthropic.claude-sonnet-4-5-20250929-v1:0';
+      lowerMessage.includes('apelação') || lowerMessage.includes('fundamentação') ||
+      lowerMessage.includes('resumo executivo') || lowerMessage.includes('fichamento') ||
+      lowerMessage.includes('parecer') || lowerMessage.includes('elabore')) {
+    console.log('🔥 Modelo selecionado: Claude Sonnet 4.5 (peças jurídicas - 64K tokens)');
+    return 'us.anthropic.claude-sonnet-4-5-20250929-v1:0'; // ✅ us. não global.
+  }
+
+  // 3. RACIOCÍNIO PROFUNDO EXPLÍCITO - DeepSeek R1 (apenas quando solicitado)
+  // ⚠️ Limite: 32K tokens - NÃO usar para peças grandes
+  if ((lowerMessage.includes('raciocínio exposto') ||
+       lowerMessage.includes('pensamento') ||
+       lowerMessage.includes('explicação passo a passo')) &&
+      !lowerMessage.includes('elabore') &&
+      !lowerMessage.includes('petição') &&
+      !lowerMessage.includes('recurso')) {
+    console.log('🧠 Modelo selecionado: DeepSeek R1 (raciocínio exposto - 32K tokens)');
+    return 'us.deepseek.r1-v1:0';
   }
 
   // 4. RAG / PESQUISA NO KB - Claude Sonnet 4.5 ou Llama 3.3
@@ -1526,7 +1531,7 @@ function selectIntelligentModel(message, metadata = {}, relevantDocs = []) {
       (relevantDocs && relevantDocs.length > 3)) {
     if (metadata.clienteVIP || relevantDocs.length > 10) {
       console.log('🔍 Modelo selecionado: Claude Sonnet 4.5 (RAG premium)');
-      return 'global.anthropic.claude-sonnet-4-5-20250929-v1:0';
+      return 'us.anthropic.claude-sonnet-4-5-20250929-v1:0';
     } else {
       console.log('📚 Modelo selecionado: Llama 3.3 70B (RAG custo-benefício)');
       return 'meta.llama3-3-70b-instruct-v1:0';
@@ -1573,7 +1578,7 @@ function selectIntelligentModel(message, metadata = {}, relevantDocs = []) {
 
   // 9. PADRÃO - Claude Sonnet 4.5 (máxima qualidade para análises jurídicas)
   console.log('✅ Modelo selecionado: Claude Sonnet 4.5 (padrão - máxima qualidade)');
-  return 'global.anthropic.claude-sonnet-4-5-20250929-v1:0';
+  return 'us.anthropic.claude-sonnet-4-5-20250929-v1:0';
 }
 
 // Armazenar instâncias de agente por sessão
@@ -1591,7 +1596,7 @@ function getAgent(sessionId, modelId = null, forceNew = false) {
     const systemPrompt = buildSystemPrompt();
 
     // Usar modelo específico ou padrão (Claude Sonnet 4.5 - máxima qualidade)
-    const modelo = modelId || 'global.anthropic.claude-sonnet-4-5-20250929-v1:0';
+    const modelo = modelId || 'us.anthropic.claude-sonnet-4-5-20250929-v1:0';
 
     console.log(`🤖 [DEBUG] Criando agente para sessão ${sessionId}`);
     console.log(`   - Modelo: ${modelo}`);
@@ -1811,6 +1816,7 @@ Enquanto isso, pode continuar usando o sistema normalmente.
     // ✨ CORRIGIDO: Usar novo sistema data/kb-documents.json com filtragem por userId
     let kbContext = '';
     let relevantDocs = []; // Declarar no escopo correto
+    let selectedModel = null; // ✅ Declarar aqui para evitar TDZ (Temporal Dead Zone)
     try {
       const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
       if (fs.existsSync(kbDocsPath)) {
@@ -1913,7 +1919,7 @@ Enquanto isso, pode continuar usando o sistema normalmente.
     console.log(`   - Docs Relevantes: ${relevantDocs.length}`);
     console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
 
-    const selectedModel = selectIntelligentModel(message, metadata, relevantDocs);
+    selectedModel = selectIntelligentModel(message, metadata, relevantDocs); // ✅ Atribuição (já declarado acima)
 
     console.log(`\n🎯 [DEBUG] MODELO SELECIONADO: ${selectedModel}`);
 
@@ -2439,7 +2445,7 @@ app.post('/api/chat/stream', loadStructuredFilesFromKB, async (req, res) => {
     // ═══════════════════════════════════════════════════════════════════════════
     const {
       message,
-      model = 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
+      model = 'us.anthropic.claude-sonnet-4-5-20250929-v1:0',
       conversationId,
       messages = [],           // Histórico completo do frontend
       attachedFiles = [],      // ✅ NOVO: Arquivos anexados [{id, name, path, type, size}]
@@ -2447,7 +2453,7 @@ app.post('/api/chat/stream', loadStructuredFilesFromKB, async (req, res) => {
       systemPrompt = null,     // System prompt customizado
       enableTools = true,      // Habilitar ferramentas (KB, jurisprudência)
       temperature = 0.7,
-      maxTokens = 100000        // ✅ AUMENTADO: 16384 → 100K para peças completas sem truncamento
+      maxTokens = 64000        // ✅ AUMENTADO: 16384 → 64K (LIMITE REAL DO CLAUDE SONNET 4.5)
     } = req.body;
 
     const sessionId = conversationId || req.session?.id || `anon_${Date.now()}`;
@@ -7535,7 +7541,7 @@ app.post('/api/chat/voting', async (req, res) => {
 // Estratégia Best-of-N: gera N respostas, retorna melhor
 app.post('/api/chat/best-of-n', async (req, res) => {
   try {
-    const { message, n = 3, modelo = 'global.anthropic.claude-sonnet-4-5-20250929-v1:0' } = req.body;
+    const { message, n = 3, modelo = 'us.anthropic.claude-sonnet-4-5-20250929-v1:0' } = req.body;
     const history = getHistory(req.session.id);
 
     if (!message || !message.trim()) {
