@@ -135,11 +135,18 @@ export default function AdminPrompts() {
     const name = suggestedName || prompt('Nome do novo prompt:')
     if (!name) return
 
+    // LOG: Verificar o nome ANTES de enviar
+    console.log('🔵 [Frontend] Nome digitado:', name)
+    console.log('🔵 [Frontend] Tamanho do nome:', name.length)
+    console.log('🔵 [Frontend] Caracteres:', name.split('').map(c => c.charCodeAt(0)))
+
     const type = prompts.canEditGlobal
       ? confirm('Criar como prompt global? (Cancelar = específico do parceiro)')
         ? 'global'
         : 'partner'
       : 'partner'
+
+    console.log('🔵 [Frontend] Enviando para API:', { name, type })
 
     try {
       const response = await apiFetch('/system-prompts', {
