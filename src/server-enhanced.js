@@ -297,7 +297,8 @@ const app = express();
 app.set('trust proxy', true);
 
 app.use(cors());
-app.use(express.json({ limit: '50mb' }));
+app.use(express.json({ limit: '550mb' })); // ✅ Aumentado para suportar documentos jurídicos grandes (500MB)
+app.use(express.urlencoded({ limit: '550mb', extended: true })); // ✅ Adicionar para form-data
 
 // Sessões persistentes (PostgreSQL-backed com fallback para memória)
 // IMPORTANTE: Deve vir ANTES de qualquer middleware que use req.session
