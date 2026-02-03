@@ -601,7 +601,7 @@ export async function executeTool(toolName, toolInput) {
       }
 
       case 'consultar_kb': {
-        const { query, limite = 3 } = toolInput;
+        const { query, limite = 10 } = toolInput; // ⬆️ AUMENTADO DE 3 PARA 10
 
         console.log(`📚 [KB] Consultando documentos: "${query}"`);
 
@@ -648,6 +648,12 @@ export async function executeTool(toolName, toolInput) {
 
               // Se query é muito curta, busca string completa (fallback)
               return combinedText.includes(queryLower);
+            })
+            .sort((a, b) => {
+              // ⭐ ORDENAR POR DATA: Mais recentes primeiro
+              const dateA = new Date(a.uploadedAt || 0).getTime();
+              const dateB = new Date(b.uploadedAt || 0).getTime();
+              return dateB - dateA; // Decrescente (mais recente primeiro)
             })
             .slice(0, limite);
 
