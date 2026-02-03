@@ -128,6 +128,11 @@ router.post('/stream', async (req, res) => {
 
     // Debug logging removido para producao - use LOG_LEVEL=debug se necessario
 
+    // ✅ CORREÇÃO CRÍTICA: Configurar timeouts para streaming longo (documentos grandes)
+    // Timeout de 10 minutos para permitir geração de peças jurídicas extensas
+    req.setTimeout(600000); // 10 minutos
+    res.setTimeout(600000); // 10 minutos
+
     // Configurar headers SSE
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
