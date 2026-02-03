@@ -12,7 +12,7 @@ services:
   - type: web
     name: rom-agent
     runtime: node
-    plan: free
+    plan: standard  # ✅ 2GB RAM - suporta uploads de até 500MB
     branch: main
 
     # ═══ BUILD ═══
@@ -87,6 +87,16 @@ services:
       - key: RATE_LIMIT_PER_HOUR
         value: 100
 
+      # ═══════════════════════════════════════════════════════════════
+      # UPLOAD LIMITS - STANDARD PLAN (2GB RAM)
+      # ═══════════════════════════════════════════════════════════════
+      - key: MAX_BODY_SIZE
+        value: 550mb
+      - key: MAX_FILE_SIZE
+        value: 500mb
+      - key: REQUEST_TIMEOUT
+        value: 300000  # 5 minutos para uploads grandes
+
     # ═══ HEALTH CHECK ═══
     healthCheckPath: /api/info
 
@@ -110,7 +120,7 @@ services:
   - type: web
     name: rom-agent-staging
     runtime: node
-    plan: free
+    plan: standard  # ✅ 2GB RAM - suporta uploads de até 500MB
     branch: staging
 
     # ═══ BUILD ═══
@@ -188,6 +198,16 @@ services:
         value: 20
       - key: RATE_LIMIT_PER_HOUR
         value: 200
+
+      # ═══════════════════════════════════════════════════════════════
+      # UPLOAD LIMITS - STANDARD PLAN (2GB RAM)
+      # ═══════════════════════════════════════════════════════════════
+      - key: MAX_BODY_SIZE
+        value: 550mb
+      - key: MAX_FILE_SIZE
+        value: 500mb
+      - key: REQUEST_TIMEOUT
+        value: 300000  # 5 minutos para uploads grandes
 
     # ═══ HEALTH CHECK ═══
     healthCheckPath: /api/info
