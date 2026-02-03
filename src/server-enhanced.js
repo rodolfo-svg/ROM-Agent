@@ -78,6 +78,7 @@ import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/stora
 import extractionService from './services/extraction-service.js';
 import customInstructionsRoutes from './routes/custom-instructions.js';
 import { startCustomInstructionsCron } from './services/custom-instructions-cron.js';
+import { loadStructuredFilesFromKB } from './middleware/kb-loader.js';
 
 // ═══════════════════════════════════════════════════════════════════════
 // PROMPT OPTIMIZATION v3.0 - Modular prompt builder with 79% token reduction
@@ -1627,7 +1628,7 @@ app.get('/', (req, res) => {
 });
 
 // API - Processar mensagem com streaming
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', loadStructuredFilesFromKB, async (req, res) => {
   try {
     const { message, metadata = {}, projectId = null } = req.body;
 
@@ -2381,7 +2382,7 @@ Sempre cite as fontes corretamente e formate as referências em ABNT.`,
 // ============================================================================
 
 // Alias para compatibilidade com frontend React V4
-app.post('/api/chat/stream', async (req, res) => {
+app.post('/api/chat/stream', loadStructuredFilesFromKB, async (req, res) => {
   // ═══════════════════════════════════════════════════════════════════════════
   // MÉTRICAS DE PERFORMANCE
   // ═══════════════════════════════════════════════════════════════════════════
