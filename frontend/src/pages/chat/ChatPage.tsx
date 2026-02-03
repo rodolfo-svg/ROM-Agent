@@ -126,7 +126,7 @@ export function ChatPage() {
     selectedModel,
   } = useChatStore()
 
-  const { artifacts, addArtifact, openPanel } = useArtifactStore()
+  const { artifacts, addArtifactAndOpen } = useArtifactStore()
 
   // File upload hook - uses simple endpoint for chat
   const {
@@ -360,8 +360,9 @@ export function ChatPage() {
           if (!chunk.artifact.title || !chunk.artifact.content) {
             console.warn('⚠️ [ChatPage] Artifact inválido (sem título ou conteúdo), ignorando:', chunk.artifact)
           } else {
-            // Create artifact
-            const artifact = addArtifact({
+            // ✅ FIX: Create artifact AND open panel atomically (prevents race condition)
+            console.log('   🔓 Creating artifact and opening panel atomically...')
+            const artifact = addArtifactAndOpen({
               title: chunk.artifact.title,
               type: chunk.artifact.type,
               content: chunk.artifact.content,
@@ -370,16 +371,12 @@ export function ChatPage() {
             })
 
             console.log('   ✅ Artifact created with ID:', artifact.id)
+            console.log('   ✅ Panel opened atomically (no race condition)')
 
             // Link artifact to message
             useChatStore.getState().addArtifactToMessage(assistantMsg.id, artifact.id)
 
             console.log('   ✅ Artifact linked to message:', assistantMsg.id)
-
-            // Open artifact panel
-            console.log('   🔓 Calling openPanel...')
-            openPanel(artifact)
-            console.log('   ✅ openPanel called for artifact_complete')
 
             // Remover indicador de geração da mensagem
             if (fullContent.includes('📄 **Gerando:')) {
@@ -400,8 +397,9 @@ export function ChatPage() {
           if (!chunk.artifact.title || !chunk.artifact.content) {
             console.warn('⚠️ [ChatPage] Artifact inválido (sem título ou conteúdo), ignorando:', chunk.artifact)
           } else {
-            // Create artifact
-            const artifact = addArtifact({
+            // ✅ FIX: Create artifact AND open panel atomically (prevents race condition)
+            console.log('   🔓 Creating artifact and opening panel atomically...')
+            const artifact = addArtifactAndOpen({
               title: chunk.artifact.title,
               type: chunk.artifact.type,
               content: chunk.artifact.content,
@@ -410,16 +408,12 @@ export function ChatPage() {
             })
 
             console.log('   ✅ Artifact created with ID:', artifact.id)
+            console.log('   ✅ Panel opened atomically (legacy mode, no race condition)')
 
             // Link artifact to message
             useChatStore.getState().addArtifactToMessage(assistantMsg.id, artifact.id)
 
             console.log('   ✅ Artifact linked to message:', assistantMsg.id)
-
-            // Open artifact panel
-            console.log('   🔓 Calling openPanel...')
-            openPanel(artifact)
-            console.log('   ✅ openPanel called for legacy artifact')
           }
         } else if (chunk.type === 'error') {
           fullContent = `❌ ${chunk.error}`
