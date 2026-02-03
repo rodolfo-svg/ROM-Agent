@@ -208,6 +208,40 @@ export const BEDROCK_TOOLS = [
   },
   {
     toolSpec: {
+      name: 'analisar_documento_kb',
+      description: 'Analisa 100% de um documento grande da Knowledge Base usando LLM premium (Haiku/Sonnet/Opus) com processamento multi-pass + consolidação paralela. Use quando precisar análise COMPLETA e PROFUNDA de processo/inventário/documento volumoso. O sistema lê o documento em chunks sequenciais, gera resumo estruturado em paralelo e consolida tudo em análise final unificada. Ideal para documentos > 50 páginas.',
+      inputSchema: {
+        json: {
+          type: 'object',
+          properties: {
+            document_name: {
+              type: 'string',
+              description: 'Nome do documento da KB para analisar (ex: "Inventário - Paulo Cesar Ribeiro.pdf")'
+            },
+            analysis_prompt: {
+              type: 'string',
+              description: 'Prompt de análise específico (ex: "Identifique todos os herdeiros e bens", "Liste as intimações pendentes", "Analise os pedidos e fundamentos")'
+            },
+            model: {
+              type: 'string',
+              description: 'Modelo de LLM a usar: "haiku" (rápido/barato), "sonnet" (padrão/equilibrado), "opus" (excelência máxima)',
+              enum: ['haiku', 'sonnet', 'opus'],
+              default: 'sonnet'
+            },
+            mode: {
+              type: 'string',
+              description: 'Modo de processamento: "auto" (sistema escolhe), "multipass" (leitura completa em chunks + consolidação), "summary" (resumo econômico)',
+              enum: ['auto', 'multipass', 'summary'],
+              default: 'auto'
+            }
+          },
+          required: ['document_name', 'analysis_prompt']
+        }
+      }
+    }
+  },
+  {
+    toolSpec: {
       name: 'create_artifact',
       description: 'Cria um artifact (documento estruturado) que aparece em painel lateral para download. Use SEMPRE que o usuário pedir para "gerar documento", "exportar para Word", "criar peça", "fazer arquivo", etc. O artifact permite download em DOCX, PDF, HTML e Markdown.',
       inputSchema: {
@@ -753,6 +787,123 @@ export async function executeTool(toolName, toolInput) {
             success: false,
             error: error.message,
             content: `Erro ao buscar doutrina: ${error.message}`
+          };
+        }
+      }
+
+      case 'analisar_documento_kb': {
+        const {
+          document_name,
+          analysis_prompt,
+          model = 'sonnet',
+          mode = 'auto'
+        } = toolInput;
+
+        console.log(`🔍 [analisar_documento_kb] Documento: "${document_name}"`);
+        console.log(`   Modelo: ${model}`);
+        console.log(`   Modo: ${mode}`);
+
+        try {
+          // Importar document-processor
+          const { documentProcessor } = await import('../../lib/document-processor.js');
+
+          // Buscar documento na KB
+          const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
+
+          if (!fs.existsSync(kbDocsPath)) {
+            return {
+              success: false,
+              content: 'Knowledge Base vazia. Faça upload de documentos primeiro.'
+            };
+          }
+
+          const allDocs = JSON.parse(fs.readFileSync(kbDocsPath, 'utf8'));
+
+          // Encontrar documento por nome (busca parcial case-insensitive)
+          const doc = allDocs.find(d =>
+            d.name.toLowerCase().includes(document_name.toLowerCase()) ||
+            d.originalName?.toLowerCase().includes(document_name.toLowerCase())
+          );
+
+          if (!doc) {
+            return {
+              success: false,
+              content: `Documento "${document_name}" não encontrado na KB. Documentos disponíveis:\n${allDocs.map(d => `- ${d.name}`).join('\n')}`
+            };
+          }
+
+          console.log(`   ✅ Documento encontrado: ${doc.name}`);
+          console.log(`   📊 Tamanho: ${Math.round(doc.textLength / 1000)}k caracteres`);
+
+          // Ler texto completo do documento
+          if (!doc.path || !fs.existsSync(doc.path)) {
+            return {
+              success: false,
+              content: `Arquivo do documento "${doc.name}" não encontrado no disco.`
+            };
+          }
+
+          const fullText = fs.readFileSync(doc.path, 'utf-8');
+
+          // Processar documento com document-processor
+          console.log(`   ⚙️ Iniciando processamento...`);
+
+          const result = await documentProcessor.process(fullText, analysis_prompt, {
+            model,
+            mode,
+            systemPrompt: 'Você é um assistente jurídico especializado em análise de documentos processuais brasileiros.'
+          });
+
+          if (!result.success) {
+            return {
+              success: false,
+              content: `Erro ao processar documento: ${result.error}`
+            };
+          }
+
+          // Formatar resposta
+          let responseContent = `\n📄 **Análise Completa: ${doc.name}**\n\n`;
+          responseContent += `═══════════════════════════════════════════════════════════════════════\n`;
+          responseContent += `🤖 Modelo: ${model.toUpperCase()}\n`;
+          responseContent += `⚙️ Modo: ${result.mode.toUpperCase()}\n`;
+          responseContent += `📊 Documento: ${Math.round(doc.textLength / 1000)}k caracteres\n`;
+          responseContent += `⏱️ Tempo: ${result.metadata.processingTime}s\n`;
+          responseContent += `💰 Custo: $${result.metadata.cost.toFixed(4)}\n`;
+
+          if (result.mode === 'multipass') {
+            responseContent += `📦 Chunks processados: ${result.metadata.chunks}\n`;
+            responseContent += `🔄 Consolidação: ${result.metadata.chunkAnalyses} análises parciais\n`;
+          }
+
+          responseContent += `═══════════════════════════════════════════════════════════════════════\n\n`;
+
+          responseContent += result.response;
+
+          responseContent += `\n\n═══════════════════════════════════════════════════════════════════════\n`;
+          responseContent += `✅ Análise ${result.mode.toUpperCase()} concluída com sucesso\n`;
+          responseContent += `💡 Documento completo foi lido e analisado em ${result.metadata.processingTime}s\n`;
+
+          console.log(`   ✅ Análise concluída: $${result.metadata.cost.toFixed(4)} em ${result.metadata.processingTime}s`);
+
+          return {
+            success: true,
+            content: responseContent,
+            metadata: {
+              documentName: doc.name,
+              model,
+              mode: result.mode,
+              cost: result.metadata.cost,
+              processingTime: result.metadata.processingTime,
+              chunks: result.metadata.chunks
+            }
+          };
+
+        } catch (error) {
+          console.error(`❌ [analisar_documento_kb] Erro:`, error);
+          return {
+            success: false,
+            error: error.message,
+            content: `Erro ao analisar documento: ${error.message}`
           };
         }
       }
