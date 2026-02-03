@@ -5905,8 +5905,8 @@ app.get('/api/kb/documents', requireAuth, (req, res) => {
     const data = fs.readFileSync(kbDocsPath, 'utf8');
     const allDocs = JSON.parse(data);
 
-    // Filtrar apenas documentos do usuário atual
-    const userDocs = allDocs.filter(doc => doc.userId === userId);
+    // Filtrar documentos do usuário atual + documentos compartilhados (web-upload)
+    const userDocs = allDocs.filter(doc => doc.userId === userId || doc.userId === 'web-upload');
 
     // Retornar documentos formatados
     const documents = userDocs.map(doc => ({
@@ -7100,7 +7100,7 @@ app.get('/api/kb/user-statistics', authSystem.authMiddleware(), (req, res) => {
 
     const data = fs.readFileSync(kbDocsPath, 'utf8');
     const allDocs = JSON.parse(data);
-    const userDocs = allDocs.filter(doc => doc.userId === userId);
+    const userDocs = allDocs.filter(doc => doc.userId === userId || doc.userId === 'web-upload');
 
     // Calcular estatísticas
     const totalSize = userDocs.reduce((sum, doc) => sum + doc.size, 0);
