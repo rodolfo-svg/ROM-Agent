@@ -16,13 +16,75 @@
 
 import { searchKnowledgeBase } from '../modules/knowledgeBase.js';
 import fs from 'fs/promises';
+import path from 'path';
 import logger from '../../lib/logger.js';
+import { ACTIVE_PATHS } from '../../lib/storage-config.js';
 
 /**
  * Regex para detectar números de processo no formato CNJ
  * NNNNNNN-DD.AAAA.J.TR.OOOO
  */
 const PROCESSO_REGEX = /\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}/g;
+
+/**
+ * Buscar documentos no KB que contenham o número do processo
+ * Como metadata não tem campo processNumber, busca no conteúdo dos arquivos .txt
+ */
+async function searchDocumentsByProcessNumber(partnerId, processNumber) {
+  try {
+    const kbDir = path.join(ACTIVE_PATHS.data, 'knowledge-base', 'documents');
+
+    // Verificar se diretório existe
+    try {
+      await fs.access(kbDir);
+    } catch {
+      return [];
+    }
+
+    // Listar todos os arquivos .txt
+    const files = await fs.readdir(kbDir);
+    const txtFiles = files.filter(f => f.endsWith('.txt'));
+
+    const matchingDocs = [];
+
+    // Buscar processo em cada arquivo .txt
+    for (const txtFile of txtFiles) {
+      try {
+        const txtPath = path.join(kbDir, txtFile);
+        const content = await fs.readFile(txtPath, 'utf-8');
+
+        // Verificar se o conteúdo contém o número do processo
+        if (content.includes(processNumber)) {
+          // Buscar metadata correspondente
+          const baseName = txtFile.replace('.txt', '');
+          const metadataPath = path.join(kbDir, `${baseName}.metadata.json`);
+
+          try {
+            const metadataContent = await fs.readFile(metadataPath, 'utf-8');
+            const metadata = JSON.parse(metadataContent);
+
+            // Adicionar aos resultados
+            matchingDocs.push({
+              ...metadata,
+              txtFile,
+              txtPath,
+              processNumber
+            });
+          } catch (metaErr) {
+            logger.debug(`   Metadata não encontrado para ${txtFile}`);
+          }
+        }
+      } catch (readErr) {
+        logger.debug(`   Erro ao ler ${txtFile}:`, readErr.message);
+      }
+    }
+
+    return matchingDocs;
+  } catch (error) {
+    logger.error(`❌ [KB Search] Erro ao buscar processo ${processNumber}:`, error.message);
+    return [];
+  }
+}
 
 /**
  * Middleware para carregar ficheiros estruturados do KB
@@ -56,11 +118,9 @@ export async function loadStructuredFilesFromKB(req, res, next) {
 
     for (const processNumber of processNumbers) {
       try {
-        // Buscar no KB
-        const kbDocs = await searchKnowledgeBase({
-          projectName: partnerId,
-          processNumber
-        });
+        // Buscar documentos que contenham o número do processo
+        // Como o metadata não tem campo processNumber, vamos buscar no conteúdo dos arquivos .txt
+        const kbDocs = await searchDocumentsByProcessNumber(partnerId, processNumber);
 
         if (kbDocs.length > 0) {
           totalDocsFound += kbDocs.length;
