@@ -14,6 +14,15 @@ const router = express.Router();
  */
 router.get('/', async (req, res) => {
   try {
+    // LOG: Session state
+    console.log('[DIAGNOSTIC] Session state:', {
+      hasSession: !!req.session,
+      hasUser: !!req.session?.user,
+      sessionID: req.sessionID,
+      userRole: req.session?.user?.role,
+      authenticated: req.session?.authenticated
+    });
+
     const pool = getPostgresPool();
 
     // 1. Verificar colunas da tabela users
