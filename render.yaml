@@ -12,8 +12,14 @@ services:
   - type: web
     name: rom-agent
     runtime: node
-    plan: standard  # ✅ 2GB RAM - suporta uploads de até 500MB
+    plan: pro  # ✅ 8GB RAM - suporta 10+ usuários simultâneos com uploads de 500MB
     branch: main
+
+    # ═══ SCALING (PRO PLAN) ═══
+    # Horizontal scaling para lidar com múltiplos uploads simultâneos
+    scaling:
+      minInstances: 1
+      maxInstances: 3  # Escala automaticamente até 3 instâncias sob carga
 
     # ═══ BUILD ═══
     buildCommand: bash scripts/build-production.sh
@@ -31,6 +37,11 @@ services:
         value: production
       - key: NODE_VERSION
         value: 25.2.1
+
+      # ═══ CONCORRÊNCIA - PRO PLAN ═══
+      # Permite múltiplos workers para processar uploads simultâneos
+      - key: WEB_CONCURRENCY
+        value: 4  # 4 workers = suporta 4-8 uploads simultâneos processando
 
       # Porta (Render usa 10000)
       - key: PORT
@@ -82,29 +93,32 @@ services:
         value: postgresql://rom_agent_user:faPSk0YSNlhyPfBYpri2RcK9XdRbaE8L@dpg-d5819bhr0fns73dmfsv0-a/rom_agent
 
       # Rate Limiter
+      # AJUSTADO PARA CHUNKED UPLOAD: 500MB = 13 chunks = 13 requests
+      # Permitir múltiplos uploads grandes simultâneos
       - key: RATE_LIMIT_PER_MINUTE
-        value: 10
+        value: 60  # 60 requests/min = 4 uploads de 500MB simultâneos
       - key: RATE_LIMIT_PER_HOUR
-        value: 100
+        value: 500  # ~30 uploads de 500MB por hora
 
       # ═══════════════════════════════════════════════════════════════
-      # UPLOAD LIMITS - STANDARD PLAN (2GB RAM)
+      # UPLOAD LIMITS - PRO PLAN (8GB RAM)
+      # Suporta 10+ usuários simultâneos com arquivos até 1GB
       # ═══════════════════════════════════════════════════════════════
       - key: MAX_BODY_SIZE
-        value: 550mb
+        value: 1100mb  # Aumentado para suportar arquivos até 1GB
       - key: MAX_FILE_SIZE
-        value: 500mb
+        value: 1000mb  # Limite de 1GB por arquivo
       - key: REQUEST_TIMEOUT
-        value: 300000  # 5 minutos para uploads grandes
+        value: 1800000  # 30 minutos - suporta uploads lentos de 500MB-1GB
 
     # ═══ HEALTH CHECK ═══
     healthCheckPath: /api/info
 
     # ═══ RECURSOS ═══
-    # Disco persistente (criado automaticamente no primeiro deploy)
+    # Disco persistente - 100 GB para múltiplos uploads simultâneos
     disk:
       mountPath: /var/data
-      sizeGB: 1
+      sizeGB: 100  # ✅ CORRIGIDO: 100 GB (10 usuários × 500 MB + processamento)
 
     # ═══ AUTO-DEPLOY ═══
     autoDeploy: true
@@ -195,19 +209,19 @@ services:
 
       # Rate Limiter (mais permissivo para testes)
       - key: RATE_LIMIT_PER_MINUTE
-        value: 20
+        value: 60  # Mesmo que produção para testar chunked upload
       - key: RATE_LIMIT_PER_HOUR
-        value: 200
+        value: 500  # Mesmo que produção
 
       # ═══════════════════════════════════════════════════════════════
-      # UPLOAD LIMITS - STANDARD PLAN (2GB RAM)
+      # UPLOAD LIMITS - STAGING (Standard 2GB RAM - suficiente para testes)
       # ═══════════════════════════════════════════════════════════════
       - key: MAX_BODY_SIZE
-        value: 550mb
+        value: 1100mb  # Consistente com produção
       - key: MAX_FILE_SIZE
-        value: 500mb
+        value: 1000mb  # Consistente com produção
       - key: REQUEST_TIMEOUT
-        value: 300000  # 5 minutos para uploads grandes
+        value: 1800000  # 30 minutos - consistente com produção
 
     # ═══ HEALTH CHECK ═══
     healthCheckPath: /api/info
@@ -216,7 +230,7 @@ services:
     # Disco persistente separado para staging
     disk:
       mountPath: /var/data
-      sizeGB: 1
+      sizeGB: 50  # ✅ 50 GB para staging (menor que produção, suficiente para testes)
 
     # ═══ AUTO-DEPLOY ═══
     autoDeploy: true
