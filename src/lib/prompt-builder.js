@@ -1,9 +1,10 @@
 /**
  * PromptBuilder - Modular Prompt Construction System
- * Version: 1.0
+ * Version: 2.0
  *
  * Features:
  * - Conditional loading of prompt modules (base + tools + ABNT)
+ * - Hierarchical System Prompts integration (Custom Instructions → Global → Partner)
  * - 79% token reduction vs original prompts
  * - Feature flag support for A/B testing
  * - Hash-based user bucketing for deterministic assignment
@@ -15,6 +16,13 @@
  * - Base + ABNT: ~1,463 tokens
  * - Base + Tools + ABNT: ~2,513 tokens
  * - Original (legacy): ~2,058 tokens
+ *
+ * Hierarchy (v2.0):
+ * 1. Custom Instructions (base comportamental)
+ * 2. System Prompts Global (override master_admin)
+ * 3. System Prompts Partner (override escritório)
+ * 4. Optimized System Prompt (hardcoded)
+ * 5. Tools/ABNT (módulos condicionais)
  */
 
 import {
@@ -26,6 +34,15 @@ import {
   ABNT_KEYWORDS
 } from '../modules/optimized-prompts.js';
 import { customInstructionsManager } from '../../lib/custom-instructions-manager.js';
+import { createRequire } from 'module';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+// Importar PromptsManager (CommonJS)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const require = createRequire(import.meta.url);
+const PromptsManager = require('../../lib/prompts-manager.cjs');
 
 // Simple cache for built prompts
 const promptCache = new Map();
@@ -77,8 +94,11 @@ export class PromptBuilder {
     // Verifica se deve aplicar Custom Instructions
     const includeCustomInstructions = customInstructionsManager.shouldApply(ciContext);
 
-    // Generate cache key (incluindo CI)
-    const cacheKey = `${partnerId}-${includeCustomInstructions}-${includeTools}-${includeABNT}-${documentType || 'none'}`;
+    // Verifica se existem System Prompts
+    const hasSystemPrompts = PromptsManager.hasSystemPrompts(partnerId);
+
+    // Generate cache key (incluindo CI e System Prompts)
+    const cacheKey = `${partnerId}-${includeCustomInstructions}-${hasSystemPrompts}-${includeTools}-${includeABNT}-${documentType || 'none'}`;
 
     // Check cache
     if (this.enableCaching && promptCache.has(cacheKey)) {
@@ -93,9 +113,10 @@ export class PromptBuilder {
     const parts = [];
     const modules = [];
     let estimatedTokens = 0;
+    let systemPromptsMetadata = null;
 
     // ═══════════════════════════════════════════════════════
-    // ETAPA 1: CUSTOM INSTRUCTIONS (OBRIGATÓRIO, SE HABILITADO)
+    // ETAPA 1: CUSTOM INSTRUCTIONS (BASE COMPORTAMENTAL)
     // ═══════════════════════════════════════════════════════
     if (includeCustomInstructions) {
       try {
@@ -120,14 +141,52 @@ export class PromptBuilder {
     }
 
     // ═══════════════════════════════════════════════════════
-    // ETAPA 2: PROMPT BASE (OPTIMIZED_SYSTEM_PROMPT)
+    // ETAPA 2: SYSTEM PROMPTS (HIERARQUIA: GLOBAL → PARTNER)
+    // ═══════════════════════════════════════════════════════
+    if (hasSystemPrompts) {
+      try {
+        const systemPrompts = PromptsManager.getCompiledSystemPrompts(partnerId, {
+          includeGlobal: true,
+          includePartner: true
+        });
+
+        if (systemPrompts.text && systemPrompts.metadata.totalPrompts > 0) {
+          parts.push('═══════════════════════════════════════════════════════\n');
+          parts.push('SYSTEM PROMPTS - CUSTOMIZAÇÕES ADMINISTRATIVAS\n');
+          parts.push(`Partner: ${partnerId} | Global: ${systemPrompts.metadata.globalPrompts} | Partner: ${systemPrompts.metadata.partnerPrompts} | Overrides: ${systemPrompts.metadata.overrides}\n`);
+          parts.push('═══════════════════════════════════════════════════════\n\n');
+          parts.push(systemPrompts.text);
+          parts.push('\n\n');
+
+          modules.push('system-prompts');
+          estimatedTokens += systemPrompts.metadata.estimatedTokens;
+          systemPromptsMetadata = systemPrompts.metadata;
+
+          console.log('[PromptBuilder] System Prompts aplicados:', {
+            partnerId,
+            totalPrompts: systemPrompts.metadata.totalPrompts,
+            globalPrompts: systemPrompts.metadata.globalPrompts,
+            partnerPrompts: systemPrompts.metadata.partnerPrompts,
+            overrides: systemPrompts.metadata.overrides,
+            tokens: systemPrompts.metadata.estimatedTokens,
+            prompts: systemPrompts.prompts.map(p => `${p.type}:${p.id}`)
+          });
+        }
+      } catch (error) {
+        console.error('[PromptBuilder] Erro ao carregar System Prompts:', error);
+        // Continua sem System Prompts em caso de erro
+      }
+    }
+
+    // ═══════════════════════════════════════════════════════
+    // ETAPA 3: PROMPT BASE (OPTIMIZED_SYSTEM_PROMPT)
     // ═══════════════════════════════════════════════════════
     parts.push(OPTIMIZED_SYSTEM_PROMPT);
     modules.push('core');
     estimatedTokens += 438;
 
     // ═══════════════════════════════════════════════════════
-    // ETAPA 3: MÓDULOS CONDICIONAIS (TOOLS, ABNT)
+    // ETAPA 4: MÓDULOS CONDICIONAIS (TOOLS, ABNT)
     // ═══════════════════════════════════════════════════════
 
     // Add tool instructions if needed
@@ -155,6 +214,8 @@ export class PromptBuilder {
       size: prompt.length,
       version: 'optimized',
       hasCustomInstructions: includeCustomInstructions,
+      hasSystemPrompts: systemPromptsMetadata !== null,
+      systemPromptsMetadata,
       partnerId
     };
 
