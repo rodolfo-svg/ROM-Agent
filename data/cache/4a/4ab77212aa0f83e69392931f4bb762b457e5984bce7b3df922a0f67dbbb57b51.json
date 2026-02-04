@@ -1,1 +1,0 @@
-{"data":{"sucesso":true,"resposta":"OK","raciocinio":null,"modelo":"global.anthropic.claude-sonnet-4-5-20250929-v1:0","uso":{"tokensEntrada":2512,"tokensSaida":4,"tokensTotal":2516},"latencia":2199,"motivoParada":"end_turn","guardrailStats":{"found":false,"conversationId":"conv_1769058029562_o7zwbxdb8"}},"expiry":1769061632203,"created":1769058032203}
