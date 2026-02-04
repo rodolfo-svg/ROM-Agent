@@ -10521,10 +10521,11 @@ app.get('*', (req, res, next) => {
 
 // Iniciar servidor
 const PORT = process.env.PORT || 3000;
+const HOST = '0.0.0.0'; // Listen on all interfaces for Render/external access
 
-app.listen(PORT, async () => {
+app.listen(PORT, HOST, async () => {
   // Database já foi inicializado no início do arquivo (antes de criar session middleware)
-  console.log('🚀 [SERVER] Servidor iniciado na porta', PORT);
+  console.log(`🚀 [SERVER] Servidor iniciado em ${HOST}:${PORT}`);
   console.log('🚀 [SERVER] Database já inicializado - session store configurado');
 
   // Configurar armazenamento persistente
