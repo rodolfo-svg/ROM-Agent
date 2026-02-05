@@ -136,8 +136,29 @@ router.post('/', async (req, res) => {
     console.log(`   ✅ Arquivo existe no disco`);
 
     // Ler texto completo
-    const rawText = fs.readFileSync(doc.path, 'utf-8');
-    console.log(`   📊 Tamanho: ${Math.round(rawText.length / 1000)}k caracteres`);
+    console.log(`   📖 Lendo arquivo do disco...`);
+    let rawText;
+    try {
+      rawText = fs.readFileSync(doc.path, 'utf-8');
+      console.log(`   ✅ Arquivo lido com sucesso`);
+      console.log(`   📊 Tamanho: ${Math.round(rawText.length / 1000)}k caracteres`);
+    } catch (readError) {
+      console.error(`   ❌ Erro ao ler arquivo:`, readError);
+      return res.status(500).json({
+        success: false,
+        error: `Erro ao ler arquivo: ${readError.message}`,
+        path: doc.path
+      });
+    }
+
+    // Validar rawText
+    if (!rawText || rawText.length === 0) {
+      return res.status(400).json({
+        success: false,
+        error: 'Arquivo vazio ou não pôde ser lido',
+        path: doc.path
+      });
+    }
 
     // Processar com V2
     let result;
@@ -242,11 +263,13 @@ router.post('/', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('❌ [V2 Direct] Erro:', error);
+    console.error('❌ [V2 Direct] Erro completo:', error);
+    console.error('   Stack trace:', error.stack);
     res.status(500).json({
       success: false,
       error: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      errorType: error.name,
+      stack: error.stack // Sempre incluir stack para debug
     });
   }
 });
