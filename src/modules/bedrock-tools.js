@@ -63,19 +63,30 @@ export const BEDROCK_TOOLS = [
   {
     toolSpec: {
       name: 'pesquisar_jurisprudencia',
-      description: 'Pesquisa jurisprudência nos tribunais brasileiros (STF, STJ, CNJ DataJud) e retorna precedentes relevantes com ementas completas. Use esta ferramenta quando precisar de precedentes judiciais, súmulas, acórdãos ou decisões para fundamentar argumentos jurídicos.',
+      description: 'Pesquisa jurisprudência em TODOS os tribunais brasileiros: Superiores (STF, STJ, TST, TSE), Estaduais (TJGO, TJSP, TJRJ, etc), Federais (TRF1-6) e via CNJ DataJud. Busca também em JusBrasil, Conjur e Migalhas. Retorna precedentes com ementas completas e análise semântica. Use quando precisar de precedentes judiciais, súmulas, acórdãos ou decisões.',
       inputSchema: {
         json: {
           type: 'object',
           properties: {
             termo: {
               type: 'string',
-              description: 'Termo de busca, palavras-chave ou assunto jurídico (ex: "prisão preventiva", "indenização moral", "LGPD")'
+              description: 'Termo de busca, palavras-chave ou assunto jurídico (ex: "prisão preventiva", "indenização moral", "LGPD", "Súmula 63")'
             },
             tribunal: {
               type: 'string',
-              description: 'Tribunal específico para filtrar (opcional). Valores: "STF", "STJ", "TST", "TSE". Se não informado, busca em todos.',
-              enum: ['STF', 'STJ', 'TST', 'TSE', null]
+              description: 'Tribunal específico (opcional). Superiores: STF, STJ, TST, TSE, STM. Federais: TRF1, TRF2, TRF3, TRF4, TRF5, TRF6. Estaduais: TJAC, TJAL, TJAM, TJAP, TJBA, TJCE, TJDF, TJES, TJGO, TJMA, TJMG, TJMS, TJMT, TJPA, TJPB, TJPE, TJPI, TJPR, TJRJ, TJRN, TJRO, TJRR, TJRS, TJSC, TJSE, TJSP, TJTO. Se não informado, busca em todos os tribunais .jus.br.',
+              enum: [
+                // Superiores
+                'STF', 'STJ', 'TST', 'TSE', 'STM',
+                // Federais
+                'TRF1', 'TRF2', 'TRF3', 'TRF4', 'TRF5', 'TRF6',
+                // Estaduais
+                'TJAC', 'TJAL', 'TJAM', 'TJAP', 'TJBA', 'TJCE', 'TJDF', 'TJES',
+                'TJGO', 'TJMA', 'TJMG', 'TJMS', 'TJMT', 'TJPA', 'TJPB', 'TJPE',
+                'TJPI', 'TJPR', 'TJRJ', 'TJRN', 'TJRO', 'TJRR', 'TJRS', 'TJSC',
+                'TJSE', 'TJSP', 'TJTO',
+                null
+              ]
             },
             limite: {
               type: 'number',
@@ -134,19 +145,30 @@ export const BEDROCK_TOOLS = [
   {
     toolSpec: {
       name: 'pesquisar_sumulas',
-      description: 'Pesquisa súmulas, temas, IRDR e teses jurisprudenciais dos tribunais superiores (STF, STJ, TST, TSE). Use quando precisar de orientações jurisprudenciais consolidadas, súmulas vinculantes, temas de repercussão geral ou teses fixadas. Fontes oficiais.',
+      description: 'Pesquisa súmulas, temas, IRDR e teses jurisprudenciais em TODOS os tribunais brasileiros: Superiores (STF, STJ, TST, TSE) e Estaduais (TJGO, TJSP, etc). Use quando precisar de orientações jurisprudenciais consolidadas, súmulas vinculantes, temas de repercussão geral, teses fixadas ou súmulas de tribunais estaduais. Fontes oficiais via Google Search nos sites .jus.br.',
       inputSchema: {
         json: {
           type: 'object',
           properties: {
             tema: {
               type: 'string',
-              description: 'Tema ou palavras-chave para buscar súmulas/teses (ex: "prescrição", "honorários advocatícios")'
+              description: 'Tema, número ou palavras-chave para buscar súmulas/teses (ex: "prescrição", "Súmula 63", "honorários advocatícios")'
             },
             tribunal: {
               type: 'string',
-              description: 'Tribunal específico (opcional). Valores: "STF", "STJ", "TST", "TSE"',
-              enum: ['STF', 'STJ', 'TST', 'TSE', null]
+              description: 'Tribunal específico (opcional). Superiores: STF, STJ, TST, TSE, STM. Federais: TRF1-6. Estaduais: TJAC a TJTO (incluindo TJGO). Se não informado, busca em todos.',
+              enum: [
+                // Superiores
+                'STF', 'STJ', 'TST', 'TSE', 'STM',
+                // Federais
+                'TRF1', 'TRF2', 'TRF3', 'TRF4', 'TRF5', 'TRF6',
+                // Estaduais (principais)
+                'TJAC', 'TJAL', 'TJAM', 'TJAP', 'TJBA', 'TJCE', 'TJDF', 'TJES',
+                'TJGO', 'TJMA', 'TJMG', 'TJMS', 'TJMT', 'TJPA', 'TJPB', 'TJPE',
+                'TJPI', 'TJPR', 'TJRJ', 'TJRN', 'TJRO', 'TJRR', 'TJRS', 'TJSC',
+                'TJSE', 'TJSP', 'TJTO',
+                null
+              ]
             }
           },
           required: ['tema']
