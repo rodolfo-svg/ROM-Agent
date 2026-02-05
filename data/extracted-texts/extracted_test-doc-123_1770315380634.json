@@ -1,0 +1,17 @@
+{
+  "extractedText": "═══════════════════════════════════════════════════════════════════════\nDOCUMENTO EXTRAÍDO E ESTRUTURADO\n═══════════════════════════════════════════════════════════════════════\n\n[Cabeçalho do documento]\n\n[Página 1]\n\nPETIÇÃO INICIAL\n\nEXCELENTÍSSIMO SENHOR DOUTOR JUIZ DE DIREITO DA 1ª VARA CÍVEL DA COMARCA DE BRASÍLIA/DF\n\nPAULA RIBEIRO, brasileira, casada, empresária, portadora da cédula de identidade RG n° 123.456.789-0 SSP/DF, inscrita no CPF sob o nº 987.654.321-00, residente e domiciliada na SHRA Q. 01 Conjunto A Casa 15, Brasília/DF, CEP 71234-567, por seu advogado que esta subscreve (doc. anexo), com escritório profissional na SCS Q. 02 Bloco C Sala 456, Brasília/DF, CEP 70300-500, onde recebe intimações, vem, respeitosamente, à presença de Vossa Excelência, propor\n\nAÇÃO DE COBRANÇA\n\nem face de JOÃO DA SILVA, brasileiro, solteiro, comerciante, portador da cédula de identidade RG n° 111.222.333-4 SSP/DF, inscrito no CPF sob o nº 444.555.666-77, residente e domiciliado na SGAN 910 Bloco F Apto 203, Brasília/DF, CEP 70790-123, pelos fatos e fundamentos jurídicos a seguir expostos:\n\n[Página 2]\n\nDOS FATOS\n\nA Autora é empresária do ramo de consultoria jurídica e, em 15 de janeiro de 2024, prestou serviços de consultoria ao Réu, conforme Contrato de Prestação de Serviços anexo (doc. 01).\n\nO valor acordado pelos serviços foi de R$ 50.000,00 (cinquenta mil reais), a ser pago em 5 (cinco) parcelas mensais de R$ 10.000,00 (dez mil reais), com vencimento todo dia 15 de cada mês, iniciando-se em 15/02/2024.\n\nO Réu pagou apenas as 2 (duas) primeiras parcelas, quedando-se inadimplente quanto às 3 (três) últimas, no valor total de R$ 30.000,00 (trinta mil reais).\n\nForam realizadas diversas tentativas de cobrança amigável, todas infrutíferas, restando apenas a via judicial para recuperação do crédito.\n\n[Página 3]\n\nDO DIREITO\n\nO artigo 389 do Código Civil estabelece que \"não cumprida a obrigação, responde o devedor por perdas e danos, mais juros e atualização monetária segundo índices oficiais regularmente estabelecidos, e honorários de advogado\".\n\nO inadimplemento contratual está plenamente caracterizado, ensejando a cobrança judicial do valor devido.\n\n[Página 4]\n\nDOS PEDIDOS\n\nDiante do exposto, requer-se a Vossa Excelência:\n\na) A citação do Réu para, querendo, apresentar contestação no prazo legal, sob pena de revelia;\n\nb) A procedência total dos pedidos, condenando o Réu ao pagamento de R$ 30.000,00 (trinta mil reais), corrigido monetariamente desde o vencimento de cada parcela e acrescido de juros de mora de 1% ao mês;\n\nc) A condenação do Réu ao pagamento das custas processuais e honorários advocatícios no percentual de 20% sobre o valor da condenação.\n\nDá-se à causa o valor de R$ 30.000,00 (trinta mil reais).\n\nTermos em que,\nPede deferimento.\n\nBrasília/DF, 05 de fevereiro de 2026.\n\n_______________________________\nAdvogado da Autora\nOAB/DF 12345\n\n═══════════════════════════════════════════════════════════════════════\nFIM DO DOCUMENTO\n═══════════════════════════════════════════════════════════════════════",
+  "metadata": {
+    "documentId": "test-doc-123",
+    "documentName": "Petição Inicial - Paula Ribeiro.pdf",
+    "originalSize": 2635,
+    "extractedSize": 3049,
+    "extractedAt": "2026-02-05T18:16:23.646Z",
+    "model": "nova-micro",
+    "modelName": "Amazon Nova Micro",
+    "usedFallback": false,
+    "inputTokens": 659,
+    "outputTokens": 763,
+    "cost": 0.00012988500000000002,
+    "processingTime": 3
+  }
+}

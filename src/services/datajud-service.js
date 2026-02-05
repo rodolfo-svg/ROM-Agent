@@ -154,22 +154,82 @@ export async function buscarProcessos(filtros = {}, options = {}) {
     }
 
     try {
-      const response = await axios.get(`${DATAJUD_API_URL}${ENDPOINTS.processos}`, {
-        params,
+      // ✅ CORREÇÃO: Construir URL correta baseada no tribunal
+      const tribunalLower = tribunal ? TRIBUNAL_ALIASES[tribunal.toUpperCase()] : 'stj';
+      if (!tribunalLower) {
+        logger.warn(`DataJud: Tribunal ${tribunal} não suportado, usando fallback`);
+        return await fallbackToGoogleSearch(filtros, 'processos');
+      }
+
+      const url = `${DATAJUD_BASE_URL}/api_publica_${tribunalLower}/_search`;
+
+      // ✅ CORREÇÃO: Construir query ElasticSearch
+      const queryBody = {
+        query: {
+          bool: {
+            must: []
+          }
+        },
+        from: offset,
+        size: limit
+      };
+
+      // Adicionar filtros
+      if (numero) {
+        queryBody.query.bool.must.push({
+          match: { numeroProcesso: numero }
+        });
+      }
+      if (classe) {
+        queryBody.query.bool.must.push({
+          match: { classeProcessual: classe }
+        });
+      }
+      if (assunto) {
+        queryBody.query.bool.must.push({
+          match: { assunto: assunto }
+        });
+      }
+
+      // Se nenhum filtro, busca geral
+      if (queryBody.query.bool.must.length === 0) {
+        queryBody.query.bool.must.push({
+          match_all: {}
+        });
+      }
+
+      logger.info(`[DataJud] Buscando processos em ${url}`);
+
+      const response = await axios.post(url, queryBody, {
         headers: {
-          'Authorization': `Bearer ${DATAJUD_TOKEN}`,
+          'Authorization': `ApiKey ${DATAJUD_TOKEN}`,
           'Content-Type': 'application/json',
           'User-Agent': 'ROM-Agent/2.8.0'
         },
         timeout: 30000
       });
 
+      // Parse resultados ElasticSearch
+      const hits = response.data?.hits?.hits || [];
+      const processos = hits.map(hit => {
+        const source = hit._source || {};
+        return {
+          numero: source.numeroProcesso || numero || 'N/A',
+          classe: source.classeProcessual || source.classe || classe,
+          assunto: source.assunto || assunto,
+          orgaoJulgador: source.orgaoJulgador || null,
+          dataDistribuicao: source.dataDistribuicao || source.dataAjuizamento || null,
+          tribunal: source.tribunal || source.siglaTribunal || tribunal,
+          movimentos: source.movimentos || []
+        };
+      });
+
       const resultado = {
         fonte: 'DataJud (CNJ)',
         tribunal,
         filtros,
-        totalEncontrado: response.data.total || 0,
-        processos: response.data.processos || response.data.resultados || [],
+        totalEncontrado: response.data?.hits?.total?.value || processos.length,
+        processos: processos,
         fromCache: false,
         timestamp: new Date().toISOString()
       };
