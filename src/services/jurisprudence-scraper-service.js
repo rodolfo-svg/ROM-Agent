@@ -200,6 +200,12 @@ class JurisprudenceScraperService {
     }
 
     try {
+      // ✅ NOVO: Validar se URL não é página de listagem
+      if (this.isListingPage(url)) {
+        logger.warn(`[Scraper] URL rejeitada (página de listagem): ${url.substring(0, 80)}`);
+        throw new Error('URL de listagem/busca - não contém decisão individual');
+      }
+
       // Detectar tipo de documento
       const urlLower = url.toLowerCase();
       const isPdf = urlLower.endsWith('.pdf') || urlLower.includes('.pdf?');
@@ -313,23 +319,67 @@ class JurisprudenceScraperService {
     // STJ - Superior Tribunal de Justiça
     // ========================================
     if (tribunalUpper === 'STJ' || urlLower.includes('stj.jus.br')) {
+      // ✅ Seletores melhorados baseados na estrutura real do STJ
       return $('.ementa').text() ||
              $('#ementa').text() ||
              $('.secao-ementa').text() ||
              $('.decisao-ementa').text() ||
+             $('.documento-ementa').text() ||
+             $('.conteudo-ementa').text() ||
+             // Inteiro teor (quando disponível)
+             $('.inteiro-teor').text() ||
+             $('.texto-integral').text() ||
+             $('[id*="inteiro"]').first().text() ||
+             // Fallback genérico
              $('[id*="ementa"]').first().text() ||
-             $('[class*="ementa"]').first().text();
+             $('[class*="ementa"]').first().text() ||
+             // Textos de decisão
+             $('.texto-decisao').text() ||
+             $('.acordao-texto').text();
     }
 
     // ========================================
     // STF - Supremo Tribunal Federal
     // ========================================
     if (tribunalUpper === 'STF' || urlLower.includes('stf.jus.br') || urlLower.includes('portal.stf.jus.br')) {
+      // ✅ Seletores melhorados para o novo portal do STF
       return $('.ementa').text() ||
              $('.decisao-ementa').text() ||
              $('#ementa-completa').text() ||
              $('.texto-ementa').text() ||
-             $('[class*="ementa"]').first().text();
+             $('.ementa-acordao').text() ||
+             // Inteiro teor
+             $('.inteiro-teor').text() ||
+             $('.texto-integral').text() ||
+             $('.documento-completo').text() ||
+             // Portal antigo
+             $('.decision-content').text() ||
+             $('.processo-conteudo').text() ||
+             // Fallback
+             $('[class*="ementa"]').first().text() ||
+             $('[id*="ementa"]').first().text() ||
+             $('.acordao').text();
+    }
+
+    // ========================================
+    // TJSP - Tribunal de Justiça de São Paulo
+    // ========================================
+    if (tribunalUpper === 'TJSP' || urlLower.includes('tjsp.jus.br')) {
+      // ✅ Seletores específicos para TJSP (sistema ESAJ)
+      return $('.ementaClass').text() ||
+             $('.ementa').text() ||
+             $('#ementa').text() ||
+             $('.acordaoEmenta').text() ||
+             $('.linhaTabela').text() ||
+             // Sistema ESAJ
+             $('[name="ementa"]').text() ||
+             $('[id*="Ementa"]').first().text() ||
+             // Inteiro teor
+             $('.texto-acordao').text() ||
+             $('.integra-texto').text() ||
+             // Fallback
+             $('[class*="ementa"]').first().text() ||
+             $('.decisao-texto').text();
     }
 
     // ========================================
@@ -376,20 +426,35 @@ class JurisprudenceScraperService {
    * Seletores genéricos (fallback)
    */
   extractGeneric($) {
+    // ✅ Seletores expandidos com prioridade correta
     const selectors = [
+      // Prioridade 1: Ementa específica
       '.ementa',
       '#ementa',
-      '[id*="ementa"]',
-      '[class*="ementa"]',
-      '.decisao',
+      '.ementaClass',
+      // Prioridade 2: Inteiro teor
+      '.inteiro-teor',
+      '.texto-integral',
+      '.integra',
+      // Prioridade 3: Decisão/Acórdão
       '.acordao',
       '.texto-acordao',
-      '.conteudo-decisao',
+      '.acordao-texto',
+      '.decisao',
       '.texto-decisao',
+      '.conteudo-decisao',
+      // Prioridade 4: IDs e classes parciais
+      '[id*="ementa"]',
+      '[class*="ementa"]',
+      '[id*="acordao"]',
+      '[class*="acordao"]',
+      '[id*="decisao"]',
+      // Prioridade 5: Estruturas genéricas
       'article.content',
       '.content-text',
+      '.document-content',
       'main article',
-      '.document-content'
+      '.main-content'
     ];
 
     for (const selector of selectors) {
@@ -538,6 +603,36 @@ class JurisprudenceScraperService {
       .replace(/\r/g, '')            // Remove \r
       .replace(/[^\S\n]+/g, ' ')     // Whitespace exceto \n
       .substring(0, 20000);          // Limitar a 20k caracteres
+  }
+
+  /**
+   * Verificar se URL é de página de listagem/busca (não decisão individual)
+   * URLs de listagem não têm ementa completa
+   */
+  isListingPage(url) {
+    if (!url) return false;
+
+    const urlLower = url.toLowerCase();
+
+    // Padrões de URLs de listagem/busca
+    const listingPatterns = [
+      '/busca',
+      '/consulta',
+      '/pesquisa',
+      '/lista',
+      '/resultados',
+      '/search',
+      '/query',
+      'q=',           // Query string de busca
+      'buscar=',
+      'pesquisar=',
+      '/toc.jsp',     // STJ: table of contents
+      '/index.jsp',   // Páginas index
+      '/sumario',
+      '/indice'
+    ];
+
+    return listingPatterns.some(pattern => urlLower.includes(pattern));
   }
 
   /**
