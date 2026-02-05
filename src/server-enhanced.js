@@ -18,6 +18,8 @@ import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 import multer from 'multer';
 import fs from 'fs';
+import { Server as SocketIOServer } from 'socket.io';
+import { createServer } from 'http';
 import { initPostgres, initRedis, checkDatabaseHealth, closeDatabaseConnections, getPostgresPool } from './config/database.js';
 import { createSessionMiddleware, sessionEnhancerMiddleware } from './config/session-store.js';
 import { ROMAgent, CONFIG } from './index.js';
@@ -78,11 +80,13 @@ import usersRoutes from './routes/users.js';
 import { requireAuth } from './middleware/auth.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 import extractionService from './services/extraction-service.js';
+import extractionProgressService from './services/extraction-progress.js';
 import customInstructionsRoutes from './routes/custom-instructions.js';
 import multiStepGenerationRoutes from './routes/multi-step-generation.js';
 import { startCustomInstructionsCron } from './services/custom-instructions-cron.js';
 import { loadStructuredFilesFromKB } from './middleware/kb-loader.js';
 import kbAnalyzeV2Routes from './routes/kb-analyze-v2.js';
+import extractionJobsRoutes from './routes/extraction-jobs.js';
 
 // ═══════════════════════════════════════════════════════════════════════
 // PROMPT OPTIMIZATION v3.0 - Modular prompt builder with 79% token reduction
@@ -577,6 +581,10 @@ app.use('/api/export', exportRoutes);
 // Rotas de Progresso de Upload (SSE) - path específico para evitar conflito
 app.use('/api/upload-progress', uploadProgressRoutes);
 console.log('✅ [ROUTES] /api/upload-progress registrado:', typeof uploadProgressRoutes);
+
+// Rotas de Extraction Jobs (V2 API)
+app.use('/api', extractionJobsRoutes);
+logger.info('✅ [ROUTES] /api/extraction-jobs registrado');
 
 // ====================================================================
 // 📄 API DE CERTIDÕES DJe/DJEN (CNJ)
@@ -10163,6 +10171,17 @@ app.get('/health', async (req, res) => {
   });
 });
 
+// WebSocket health check endpoint
+app.get('/api/health/websocket', (req, res) => {
+  res.json({
+    success: true,
+    websocket: {
+      connected: io.engine.clientsCount,
+      rooms: Array.from(io.sockets.adapter.rooms.keys())
+    }
+  });
+});
+
 // DATABASE DIAGNOSTIC ENDPOINT - exposes exact connection error
 app.get('/api/db-diagnose', async (req, res) => {
   const diagnostic = {
@@ -10395,10 +10414,65 @@ app.get('*', (req, res, next) => {
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0'; // Listen on all interfaces for Render/external access
 
-app.listen(PORT, HOST, async () => {
+// Create HTTP server
+const httpServer = createServer(app);
+
+// Initialize Socket.IO
+const io = new SocketIOServer(httpServer, {
+  cors: {
+    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+    credentials: true
+  },
+  transports: ['websocket', 'polling']
+});
+
+// Socket.IO authentication middleware
+io.use((socket, next) => {
+  const userId = socket.handshake.auth.userId;
+  const token = socket.handshake.auth.token;
+
+  if (!userId || !token) {
+    return next(new Error('Authentication error'));
+  }
+
+  // TODO: Validate token here (use your existing auth middleware)
+  socket.userId = userId;
+  next();
+});
+
+// Socket.IO connection handler
+io.on('connection', (socket) => {
+  console.log(`[WebSocket] User ${socket.userId} connected (${socket.id})`);
+
+  // Join user's personal room
+  socket.join(`user:${socket.userId}`);
+
+  // Subscribe to extraction job updates
+  socket.on('subscribe_extraction', ({ jobId }) => {
+    console.log(`[WebSocket] User ${socket.userId} subscribed to job ${jobId}`);
+    socket.join(`job:${jobId}`);
+  });
+
+  // Unsubscribe from extraction job
+  socket.on('unsubscribe_extraction', ({ jobId }) => {
+    console.log(`[WebSocket] User ${socket.userId} unsubscribed from job ${jobId}`);
+    socket.leave(`job:${jobId}`);
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`[WebSocket] User ${socket.userId} disconnected (${socket.id})`);
+  });
+});
+
+// Initialize extraction progress service with Socket.IO
+extractionProgressService.initialize(io);
+console.log('[WebSocket] Extraction progress service initialized');
+
+httpServer.listen(PORT, HOST, async () => {
   // Database já foi inicializado no início do arquivo (antes de criar session middleware)
-  console.log(`🚀 [SERVER] Servidor iniciado em ${HOST}:${PORT}`);
-  console.log('🚀 [SERVER] Database já inicializado - session store configurado');
+  console.log(`✅ [SERVER] Servidor iniciado em ${HOST}:${PORT}`);
+  console.log(`✅ [SERVER] WebSocket server inicializado`);
+  console.log('✅ [SERVER] Database já inicializado - session store configurado');
 
   // Configurar armazenamento persistente
   logger.info('Configurando armazenamento persistente...');
