@@ -149,7 +149,7 @@ export function ArtifactPanel() {
     <div
       className={cn(
         panelWidth,
-        'h-screen bg-gradient-to-br from-white via-stone-50/30 to-bronze-50/20 border-l border-stone-200/60 flex flex-col shadow-2xl',
+        'h-screen bg-white border-l-2 border-stone-300 flex flex-col shadow-2xl',
         'animate-slide-in-right',
         'max-md:fixed max-md:right-0 max-md:top-0 max-md:z-50'
       )}
@@ -293,15 +293,15 @@ export function ArtifactPanel() {
         </div>
       </div>
 
-      {/* Tabs - Modern design */}
-      <div className="px-4 py-3 bg-gradient-to-r from-stone-50 to-bronze-50/30 border-b border-stone-200/60 flex gap-2">
+      {/* Tabs - Clean modern design */}
+      <div className="px-4 py-3 bg-stone-100 border-b-2 border-stone-300 flex gap-2">
         <button
           onClick={() => setActiveTab('preview')}
           className={cn(
             'px-4 py-2 rounded-lg text-xs font-semibold transition-all',
             activeTab === 'preview'
               ? 'bg-gradient-to-r from-bronze-600 to-bronze-700 text-white shadow-md scale-105'
-              : 'bg-white/60 text-stone-600 hover:bg-white hover:text-stone-800 hover:scale-105 border border-stone-200/60'
+              : 'bg-white text-stone-700 hover:bg-stone-50 hover:text-stone-900 hover:scale-105 border-2 border-stone-300'
           )}
         >
           📄 Visualizar
@@ -312,38 +312,38 @@ export function ArtifactPanel() {
             'px-4 py-2 rounded-lg text-xs font-semibold transition-all',
             activeTab === 'code'
               ? 'bg-gradient-to-r from-bronze-600 to-bronze-700 text-white shadow-md scale-105'
-              : 'bg-white/60 text-stone-600 hover:bg-white hover:text-stone-800 hover:scale-105 border border-stone-200/60'
+              : 'bg-white text-stone-700 hover:bg-stone-50 hover:text-stone-900 hover:scale-105 border-2 border-stone-300'
           )}
         >
           💻 Código
         </button>
       </div>
 
-      {/* Content - Enhanced with beautiful styling */}
-      <div className="flex-1 overflow-auto p-6 bg-gradient-to-br from-white via-transparent to-bronze-50/10">
+      {/* Content - Clean readable styling */}
+      <div className="flex-1 overflow-auto p-6 bg-stone-50">
         {isEditing ? (
           <textarea
             value={editContent}
             onChange={(e) => setEditContent(e.target.value)}
-            className="w-full h-full p-5 bg-white border-2 border-bronze-200 rounded-xl font-mono text-sm text-stone-800 resize-none focus:outline-none focus:border-bronze-400 focus:ring-4 focus:ring-bronze-400/20 shadow-sm transition-all"
+            className="w-full h-full p-5 bg-white border-2 border-stone-300 rounded-xl font-mono text-sm text-stone-800 resize-none focus:outline-none focus:border-bronze-500 focus:ring-4 focus:ring-bronze-400/20 shadow-sm transition-all"
             placeholder="Edite o conteúdo do documento..."
           />
         ) : activeTab === 'code' ? (
-          <div className="bg-gradient-to-br from-stone-50 to-stone-100/80 border border-stone-200/60 rounded-xl p-4 shadow-sm">
+          <div className="bg-white border-2 border-stone-300 rounded-xl p-4 shadow-sm">
             <pre className="font-mono text-sm leading-relaxed">
               {activeArtifact.content.split('\n').map((line, i) => (
-                <div key={i} className="flex hover:bg-bronze-50/30 -mx-4 px-4 transition-colors">
-                  <span className="w-12 text-right pr-4 text-bronze-500/70 select-none font-semibold">
+                <div key={i} className="flex hover:bg-bronze-50 -mx-4 px-4 transition-colors">
+                  <span className="w-12 text-right pr-4 text-bronze-600 select-none font-semibold">
                     {i + 1}
                   </span>
-                  <span className="text-stone-800 flex-1">{line || ' '}</span>
+                  <span className="text-stone-900 flex-1">{line || ' '}</span>
                 </div>
               ))}
             </pre>
           </div>
         ) : (
-          <div className="prose-chat bg-white/60 backdrop-blur-sm border border-stone-200/40 rounded-xl p-6 shadow-sm">
-            <pre className="whitespace-pre-wrap font-sans text-[15px] leading-relaxed text-stone-800">
+          <div className="prose-chat bg-white border-2 border-stone-300 rounded-xl p-6 shadow-sm">
+            <pre className="whitespace-pre-wrap font-sans text-[15px] leading-relaxed text-stone-900">
               {activeArtifact.content}
             </pre>
           </div>

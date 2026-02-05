@@ -209,7 +209,7 @@ export const BEDROCK_TOOLS = [
   {
     toolSpec: {
       name: 'analisar_documento_kb',
-      description: 'Analisa documentos da Knowledge Base gerando fichamentos técnicos profissionais (FICHAMENTO, ANALISE_JURIDICA, CRONOLOGIA, RESUMO_EXECUTIVO). Use para análise completa e detalhada de processos judiciais e documentos volumosos.',
+      description: 'Analisa documentos da Knowledge Base gerando fichamentos técnicos profissionais (FICHAMENTO, ANALISE_JURIDICA, CRONOLOGIA, RESUMO_EXECUTIVO). IMPORTANTE: Use SEMPRE que usuário solicitar "analisar", "processar", "gerar fichamentos" ou "análise completa" de documento da KB, mesmo que informações já existam - a ferramenta gera versão atualizada.',
       inputSchema: {
         json: {
           type: 'object',
