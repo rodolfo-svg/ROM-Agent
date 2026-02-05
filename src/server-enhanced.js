@@ -2505,7 +2505,8 @@ app.post('/api/chat/stream', loadStructuredFilesFromKB, async (req, res) => {
       systemPrompt = null,     // System prompt customizado
       enableTools = true,      // Habilitar ferramentas (KB, jurisprudência)
       temperature = 0.7,
-      maxTokens = 64000        // ✅ AUMENTADO: 16384 → 64K (LIMITE REAL DO CLAUDE SONNET 4.5)
+      maxTokens = 64000,       // ✅ AUMENTADO: 16384 → 64K (LIMITE REAL DO CLAUDE SONNET 4.5)
+      kbContext = ''           // ✅ NOVO: Contexto do KB populado pelo middleware kb-loader
     } = req.body;
 
     const sessionId = conversationId || req.session?.id || `anon_${Date.now()}`;
@@ -2518,7 +2519,8 @@ app.post('/api/chat/stream', loadStructuredFilesFromKB, async (req, res) => {
       messageLength: message?.length || 0,
       attachedFilesCount: attachedFiles?.length || 0,
       historyLength: messages?.length || 0,
-      projectId
+      projectId,
+      kbContextLength: kbContext?.length || 0  // ✅ Log KB context size
     });
 
     // Validação básica
@@ -2835,7 +2837,7 @@ app.post('/api/chat/stream', loadStructuredFilesFromKB, async (req, res) => {
         maxTokens: maxTokens,
         temperature: temperature,
         enableTools: enableTools,
-        kbContext: ''  // KB context já incluído no extractedContext se necessário
+        kbContext: kbContext  // ✅ CORRIGIDO: Passa contexto do middleware kb-loader
       }
     );
 
