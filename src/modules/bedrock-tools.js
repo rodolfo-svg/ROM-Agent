@@ -209,7 +209,7 @@ export const BEDROCK_TOOLS = [
   {
     toolSpec: {
       name: 'analisar_documento_kb',
-      description: 'ARQUITETURA V2: Analisa 100% de documento da KB com extração inteligente. FLUXO: 1) LLM barata (Nova Micro) extrai TEXTO COMPLETO do PDF, 2) Salva texto no KB reutilizável, 3) LLM premium analisa texto limpo, 4) Gera múltiplos ficheiros técnicos (FICHAMENTO, ANALISE_JURIDICA, CRONOLOGIA, RESUMO_EXECUTIVO). Economia de 50% vs abordagem 100% Claude. Use para análise COMPLETA de processos/inventários volumosos.',
+      description: 'Analisa documentos da Knowledge Base gerando fichamentos técnicos profissionais (FICHAMENTO, ANALISE_JURIDICA, CRONOLOGIA, RESUMO_EXECUTIVO). Use para análise completa e detalhada de processos judiciais e documentos volumosos.',
       inputSchema: {
         json: {
           type: 'object',
@@ -220,23 +220,23 @@ export const BEDROCK_TOOLS = [
             },
             analysis_type: {
               type: 'string',
-              description: 'Tipo de análise: "complete" (todas as 4 etapas + ficheiros), "extract_only" (só extração), "custom" (análise customizada)',
+              description: 'Tipo de análise: "complete" (análise completa com ficheiros), "extract_only" (extração de texto), "custom" (análise personalizada)',
               enum: ['complete', 'extract_only', 'custom'],
               default: 'complete'
             },
             custom_prompt: {
               type: 'string',
-              description: 'Prompt customizado para análise (apenas se analysis_type="custom")'
+              description: 'Instruções específicas para análise personalizada'
             },
             model: {
               type: 'string',
-              description: 'Modelo LLM premium: "haiku" (rápido/barato), "sonnet" (padrão/equilibrado), "opus" (excelência máxima)',
+              description: 'Modelo de análise: "haiku" (rápido), "sonnet" (padrão), "opus" (máxima qualidade)',
               enum: ['haiku', 'sonnet', 'opus'],
               default: 'sonnet'
             },
             mode: {
               type: 'string',
-              description: 'Modo de processamento: "auto" (sistema escolhe), "multipass" (leitura completa em chunks + consolidação), "summary" (resumo econômico)',
+              description: 'Modo de processamento (geralmente deixar em "auto")',
               enum: ['auto', 'multipass', 'summary'],
               default: 'auto'
             }
