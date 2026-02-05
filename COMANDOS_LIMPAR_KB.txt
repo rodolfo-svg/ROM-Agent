@@ -1,0 +1,46 @@
+# ═════════════════════════════════════════════════════════════
+# 🧹 COMANDOS PARA LIMPAR KB NO RENDER SHELL
+# Copie e cole TODOS os comandos de uma vez
+# ═════════════════════════════════════════════════════════════
+
+cd /opt/render/project/src && \
+echo "📦 Criando backup..." && \
+mkdir -p data/.backup-kb/manual-$(date +%Y%m%d-%H%M%S) && \
+cp data/kb-documents.json data/.backup-kb/manual-$(date +%Y%m%d-%H%M%S)/ 2>/dev/null || echo "   kb-documents.json não existe" && \
+tar -czf data/.backup-kb/manual-$(date +%Y%m%d-%H%M%S)/kb-documents.tar.gz data/knowledge-base/documents/ 2>/dev/null || echo "   knowledge-base/documents/ vazio" && \
+echo "✅ Backup criado" && \
+echo "" && \
+echo "📊 ANTES da limpeza:" && \
+echo -n "   Documentos: " && \
+cat data/kb-documents.json 2>/dev/null | jq 'length' 2>/dev/null || echo "0" && \
+echo -n "   Ficheiros: " && \
+ls -1 data/knowledge-base/documents/ 2>/dev/null | wc -l || echo "0" && \
+echo "" && \
+echo "🗑️  Deletando..." && \
+rm -f data/kb-documents.json 2>/dev/null && echo "   ✅ kb-documents.json" || echo "   ⏭️  já estava vazio" && \
+rm -rf data/knowledge-base/documents/* 2>/dev/null && echo "   ✅ Ficheiros estruturados" || echo "   ⏭️  já estava vazio" && \
+rm -rf data/extracted-texts/* 2>/dev/null && echo "   ✅ Textos extraídos" || echo "   ⏭️  já estava vazio" && \
+echo "" && \
+echo "📁 Recriando estrutura..." && \
+mkdir -p data/knowledge-base/documents && \
+mkdir -p data/extracted-texts && \
+echo "[]" > data/kb-documents.json && \
+chmod 755 data/knowledge-base/documents && \
+chmod 644 data/kb-documents.json && \
+echo "   ✅ Estrutura recriada" && \
+echo "" && \
+echo "📊 DEPOIS da limpeza:" && \
+echo -n "   Documentos: " && \
+cat data/kb-documents.json | jq 'length' && \
+echo -n "   Ficheiros: " && \
+ls -1 data/knowledge-base/documents/ | wc -l && \
+echo "" && \
+echo "╔═══════════════════════════════════════════════════════════╗" && \
+echo "║  ✅ KB LIMPO COM SUCESSO                                  ║" && \
+echo "╚═══════════════════════════════════════════════════════════╝" && \
+echo "" && \
+echo "💡 Próximos passos:" && \
+echo "   1. Ir para iarom.com.br → KB Tab" && \
+echo "   2. Upload Alessandro Ribeiro" && \
+echo "   3. Analisar → Complete → Sonnet" && \
+echo "   4. Testar no chat"

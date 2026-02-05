@@ -222,7 +222,9 @@ router.post('/', async (req, res) => {
 async function processExtractionInBackground(jobId, doc, rawText, analysisType, model, userId) {
   try {
     if (jobId) {
-      await extractionProgressService.startJob(jobId, 'single-pass', 1);
+      // Definir número de etapas baseado no tipo de análise
+      const chunksTotal = analysisType === 'complete' ? 7 : (analysisType === 'extract_only' ? 2 : 3);
+      await extractionProgressService.startJob(jobId, 'multi-step', chunksTotal);
     }
 
     // Processar com V2
@@ -230,6 +232,14 @@ async function processExtractionInBackground(jobId, doc, rawText, analysisType, 
 
     if (analysisType === 'complete') {
       console.log(`   ⚙️ Processamento COMPLETO iniciado...`);
+
+      // Etapa 1: Extração (0-15%)
+      if (jobId) {
+        await extractionProgressService.updateChunkProgress(jobId, 0, {
+          stage: 'extraction',
+          message: 'Extraindo texto com Nova Micro...'
+        });
+      }
 
       result = await documentProcessorV2.processComplete(
         rawText,
@@ -239,7 +249,27 @@ async function processExtractionInBackground(jobId, doc, rawText, analysisType, 
           extractionModel: 'nova-micro',
           analysisModel: model,
           generateFiles: true,
-          saveToKB: true
+          saveToKB: true,
+          progressCallback: async (stage, progress, message) => {
+            // Callback para atualizar progresso durante processamento
+            if (jobId) {
+              const chunkMap = {
+                'extraction': 0,
+                'saving': 1,
+                'fichamento': 2,
+                'analise': 3,
+                'cronologia': 4,
+                'resumo': 5,
+                'saving_files': 6
+              };
+              const chunkNumber = chunkMap[stage] || 0;
+              await extractionProgressService.updateChunkProgress(jobId, chunkNumber, {
+                stage,
+                message,
+                progress
+              });
+            }
+          }
         }
       );
 
