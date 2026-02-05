@@ -10,6 +10,7 @@
 import express from 'express';
 import { documentProcessorV2 } from '../../lib/document-processor-v2.js';
 import { ACTIVE_PATHS } from '../../lib/storage-config.js';
+import extractionProgressService from '../services/extraction-progress.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -160,6 +161,70 @@ router.post('/', async (req, res) => {
       });
     }
 
+    // Create extraction job for progress tracking
+    let job;
+    try {
+      job = await extractionProgressService.createJob(
+        doc.id,
+        doc.name || doc.originalName,
+        req.session?.user?.id || 'anonymous',
+        {
+          analysisType,
+          model,
+          originalSize: rawText.length
+        }
+      );
+
+      console.log(`   📊 Created extraction job: ${job.id}`);
+    } catch (jobError) {
+      console.error(`   ⚠️ Failed to create extraction job:`, jobError);
+      // Continue without job tracking
+    }
+
+    // Return job ID immediately for progress tracking
+    res.json({
+      success: true,
+      jobId: job?.id || null,
+      message: 'Extraction started. Use jobId to track progress.'
+    });
+
+    // Process in background (don't await)
+    processExtractionInBackground(
+      job?.id || null,
+      doc,
+      rawText,
+      analysisType,
+      model,
+      req.session?.user?.id || 'anonymous'
+    ).catch(error => {
+      console.error(`   ❌ Background extraction failed:`, error);
+      if (job?.id) {
+        extractionProgressService.failJob(job.id, error.message);
+      }
+    });
+
+    return;
+  } catch (error) {
+    console.error('❌ [V2 Direct] Erro completo:', error);
+    console.error('   Stack trace:', error.stack);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      errorType: error.name,
+      stack: error.stack
+    });
+  }
+});
+
+/**
+ * Background extraction processing
+ */
+async function processExtractionInBackground(jobId, doc, rawText, analysisType, model, userId) {
+  try {
+    if (jobId) {
+      await extractionProgressService.startJob(jobId, 'single-pass', 1);
+    }
+
     // Processar com V2
     let result;
 
@@ -177,6 +242,20 @@ router.post('/', async (req, res) => {
           saveToKB: true
         }
       );
+
+      // Mark job as completed
+      if (jobId) {
+        await extractionProgressService.completeJob(
+          jobId,
+          result.intermediateDoc?.id || doc.id,
+          {
+            extractionCost: result.metadata?.extractionCost || 0,
+            analysisCost: result.metadata?.analysisCost || 0,
+            totalCost: result.metadata?.totalCost || 0,
+            filesGenerated: result.metadata?.filesGenerated || 0
+          }
+        );
+      }
 
     } else if (analysisType === 'extract_only') {
       console.log(`   ⚙️ Extração APENAS iniciada...`);
@@ -207,6 +286,21 @@ router.post('/', async (req, res) => {
         }
       };
 
+      // Mark job as completed
+      if (jobId) {
+        await extractionProgressService.completeJob(
+          jobId,
+          intermediateDoc.id,
+          {
+            extractionCost: extraction.metadata.cost,
+            analysisCost: 0,
+            totalCost: extraction.metadata.cost,
+            extractedSize: extraction.extractedText.length,
+            method: extraction.metadata.method
+          }
+        );
+      }
+
     } else if (analysisType === 'custom') {
       console.log(`   ⚙️ Análise CUSTOMIZADA iniciada...`);
 
@@ -235,44 +329,41 @@ router.post('/', async (req, res) => {
           filesGenerated: 0
         }
       };
+
+      // Mark job as completed
+      if (jobId) {
+        await extractionProgressService.completeJob(
+          jobId,
+          doc.id,
+          {
+            extractionCost: extraction.metadata.cost,
+            analysisCost: analysis.metadata?.cost || 0,
+            totalCost: result.metadata.totalCost
+          }
+        );
+      }
     }
 
     if (!result.success) {
-      return res.status(500).json({
-        success: false,
-        error: `Erro no processamento V2: ${result.error}`
-      });
+      if (jobId) {
+        await extractionProgressService.failJob(jobId, `Erro no processamento V2: ${result.error}`);
+      }
+      return;
     }
 
     console.log(`   ✅ Processamento concluído!`);
     console.log(`   💰 Custo total: $${result.metadata.totalCost.toFixed(4)}`);
     console.log(`   ⏱️  Tempo total: ${result.metadata.totalTime}s`);
 
-    // Retornar resultado
-    res.json({
-      success: true,
-      data: result,
-      metadata: {
-        documentName: doc.name || doc.originalName,
-        documentId: doc.id,
-        analysisType,
-        model,
-        timestamp: new Date().toISOString(),
-        version: 'v2'
-      }
-    });
-
   } catch (error) {
-    console.error('❌ [V2 Direct] Erro completo:', error);
+    console.error('❌ [Background Extraction] Erro completo:', error);
     console.error('   Stack trace:', error.stack);
-    res.status(500).json({
-      success: false,
-      error: error.message,
-      errorType: error.name,
-      stack: error.stack // Sempre incluir stack para debug
-    });
+
+    if (jobId) {
+      await extractionProgressService.failJob(jobId, error.message);
+    }
   }
-});
+}
 
 /**
  * GET /api/kb/analyze-v2/status

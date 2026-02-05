@@ -31,6 +31,7 @@ import { Button } from '@/components/ui'
 import { apiFetch, getCsrfToken } from '@/services/api'
 import { useFileUpload, type FileInfo } from '@/hooks'
 import { useUploadProgress } from '@/hooks/useUploadProgress'
+import { ExtractionProgressBar } from '@/components/extraction'
 
 // ============================================================
 // TYPES
@@ -69,6 +70,7 @@ export function UploadPage() {
   const [chunkedProgress, setChunkedProgress] = useState<number>(0) // Progresso do chunked upload
   const [chunkedStage, setChunkedStage] = useState<string>('') // Stage do chunked upload
   const [isChunkedUploading, setIsChunkedUploading] = useState(false) // Flag de chunked upload
+  const [activeExtractionJobs, setActiveExtractionJobs] = useState<string[]>([])
 
   // SSE Progress tracking (progresso em tempo real via Server-Sent Events)
   const sseProgress = useUploadProgress(currentUploadId)
@@ -90,7 +92,7 @@ export function UploadPage() {
   })
 
   // ============================================================
-  // FETCH DOCUMENTS
+  // FETCH DOCUMENTS AND ACTIVE JOBS
   // ============================================================
 
   const fetchDocuments = useCallback(async () => {
@@ -107,21 +109,41 @@ export function UploadPage() {
     }
   }, [])
 
+  // Fetch active extraction jobs
+  const fetchActiveJobs = useCallback(async () => {
+    try {
+      const response = await fetch('/api/extraction-jobs/active', {
+        credentials: 'include'
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        if (data.success && data.jobs) {
+          setActiveExtractionJobs(data.jobs.map((job: any) => job.id))
+        }
+      }
+    } catch (error) {
+      console.error('[UploadPage] Error fetching active jobs:', error)
+    }
+  }, [])
+
   useEffect(() => {
     fetchDocuments()
-  }, [fetchDocuments])
+    fetchActiveJobs()
+  }, [fetchDocuments, fetchActiveJobs])
 
   // Detectar conclusão do upload via SSE e atualizar lista
   useEffect(() => {
     if (sseProgress.completed && !sseProgress.error) {
       console.log('[UploadPage] Upload concluído via SSE, atualizando lista...')
       fetchDocuments()
+      fetchActiveJobs()
       // Reset uploadId após 2 segundos para permitir visualização do 100%
       setTimeout(() => {
         setCurrentUploadId(null)
       }, 2000)
     }
-  }, [sseProgress.completed, sseProgress.error, fetchDocuments])
+  }, [sseProgress.completed, sseProgress.error, fetchDocuments, fetchActiveJobs])
 
   // ============================================================
   // HANDLERS
@@ -509,6 +531,43 @@ export function UploadPage() {
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-8">
           <div className="max-w-5xl mx-auto">
+            {/* Active Extraction Jobs */}
+            {activeExtractionJobs.length > 0 && (
+              <div className="mb-6 space-y-3">
+                <div className="flex items-center gap-2">
+                  <Brain className="w-5 h-5 text-purple-500" />
+                  <h3 className="text-lg font-semibold text-stone-800">
+                    Extrações em Andamento
+                  </h3>
+                  <span className="text-sm text-stone-500">
+                    ({activeExtractionJobs.length})
+                  </span>
+                </div>
+
+                <div className="space-y-3">
+                  {activeExtractionJobs.map((jobId) => (
+                    <ExtractionProgressBar
+                      key={jobId}
+                      jobId={jobId}
+                      onComplete={() => {
+                        console.log('[UploadPage] Extraction completed:', jobId)
+                        setActiveExtractionJobs(jobs => jobs.filter(j => j !== jobId))
+                        // Refresh documents list
+                        setTimeout(fetchDocuments, 1000)
+                      }}
+                      onError={(error) => {
+                        console.error('[UploadPage] Extraction error:', error)
+                        setActiveExtractionJobs(jobs => jobs.filter(j => j !== jobId))
+                      }}
+                      onDismiss={() => {
+                        setActiveExtractionJobs(jobs => jobs.filter(j => j !== jobId))
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Upload Area */}
             <div className="bg-white rounded-xl shadow-soft p-8 mb-6">
               <div
