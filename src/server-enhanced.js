@@ -86,6 +86,7 @@ import multiStepGenerationRoutes from './routes/multi-step-generation.js';
 import { startCustomInstructionsCron } from './services/custom-instructions-cron.js';
 import { loadStructuredFilesFromKB } from './middleware/kb-loader.js';
 import kbAnalyzeV2Routes from './routes/kb-analyze-v2.js';
+import kbMergeVolumesRoutes from './routes/kb-merge-volumes.js';
 import extractionJobsRoutes from './routes/extraction-jobs.js';
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -557,6 +558,7 @@ app.use('/api/custom-instructions', requireAuth, customInstructionsRoutes);
 
 // Rotas de KB Analyze V2 (Análise Direta de Documentos - Bypass LLM)
 app.use('/api/kb/analyze-v2', requireAuth, kbAnalyzeV2Routes);
+app.use('/api/kb/merge-volumes', requireAuth, generalLimiter, kbMergeVolumesRoutes);
 
 // Rotas de Geração Multi-Step (Documentos >35 páginas)
 app.use('/api/generate/multi-step', multiStepGenerationRoutes);
