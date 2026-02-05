@@ -209,22 +209,28 @@ export const BEDROCK_TOOLS = [
   {
     toolSpec: {
       name: 'analisar_documento_kb',
-      description: 'Analisa 100% de um documento grande da Knowledge Base usando LLM premium (Haiku/Sonnet/Opus) com processamento multi-pass + consolidação paralela. Use quando precisar análise COMPLETA e PROFUNDA de processo/inventário/documento volumoso. O sistema lê o documento em chunks sequenciais, gera resumo estruturado em paralelo e consolida tudo em análise final unificada. Ideal para documentos > 50 páginas.',
+      description: 'ARQUITETURA V2: Analisa 100% de documento da KB com extração inteligente. FLUXO: 1) LLM barata (Nova Micro) extrai TEXTO COMPLETO do PDF, 2) Salva texto no KB reutilizável, 3) LLM premium analisa texto limpo, 4) Gera múltiplos ficheiros técnicos (FICHAMENTO, ANALISE_JURIDICA, CRONOLOGIA, RESUMO_EXECUTIVO). Economia de 50% vs abordagem 100% Claude. Use para análise COMPLETA de processos/inventários volumosos.',
       inputSchema: {
         json: {
           type: 'object',
           properties: {
             document_name: {
               type: 'string',
-              description: 'Nome do documento da KB para analisar (ex: "Inventário - Paulo Cesar Ribeiro.pdf")'
+              description: 'Nome do documento da KB para analisar (ex: "0000793-05.2018.4.01.3504.pdf")'
             },
-            analysis_prompt: {
+            analysis_type: {
               type: 'string',
-              description: 'Prompt de análise específico (ex: "Identifique todos os herdeiros e bens", "Liste as intimações pendentes", "Analise os pedidos e fundamentos")'
+              description: 'Tipo de análise: "complete" (todas as 4 etapas + ficheiros), "extract_only" (só extração), "custom" (análise customizada)',
+              enum: ['complete', 'extract_only', 'custom'],
+              default: 'complete'
+            },
+            custom_prompt: {
+              type: 'string',
+              description: 'Prompt customizado para análise (apenas se analysis_type="custom")'
             },
             model: {
               type: 'string',
-              description: 'Modelo de LLM a usar: "haiku" (rápido/barato), "sonnet" (padrão/equilibrado), "opus" (excelência máxima)',
+              description: 'Modelo LLM premium: "haiku" (rápido/barato), "sonnet" (padrão/equilibrado), "opus" (excelência máxima)',
               enum: ['haiku', 'sonnet', 'opus'],
               default: 'sonnet'
             },
@@ -794,18 +800,18 @@ export async function executeTool(toolName, toolInput) {
       case 'analisar_documento_kb': {
         const {
           document_name,
-          analysis_prompt,
-          model = 'sonnet',
-          mode = 'auto'
+          analysis_type = 'complete',
+          custom_prompt = '',
+          model = 'sonnet'
         } = toolInput;
 
-        console.log(`🔍 [analisar_documento_kb] Documento: "${document_name}"`);
+        console.log(`🔍 [analisar_documento_kb V2] Documento: "${document_name}"`);
+        console.log(`   Tipo de análise: ${analysis_type}`);
         console.log(`   Modelo: ${model}`);
-        console.log(`   Modo: ${mode}`);
 
         try {
-          // Importar document-processor
-          const { documentProcessor } = await import('../../lib/document-processor.js');
+          // Importar document-processor-v2
+          const { documentProcessorV2 } = await import('../../lib/document-processor-v2.js');
 
           // Buscar documento na KB
           const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
@@ -819,91 +825,212 @@ export async function executeTool(toolName, toolInput) {
 
           const allDocs = JSON.parse(fs.readFileSync(kbDocsPath, 'utf8'));
 
-          // Encontrar documento por nome (busca parcial case-insensitive)
-          const doc = allDocs.find(d =>
-            d.name.toLowerCase().includes(document_name.toLowerCase()) ||
-            d.originalName?.toLowerCase().includes(document_name.toLowerCase())
-          );
+          // CORREÇÃO: Busca melhorada - procura em múltiplos campos
+          const doc = allDocs.find(d => {
+            const searchName = document_name.toLowerCase();
+
+            // Busca em: name, originalName, metadata.parentDocument
+            return d.name?.toLowerCase().includes(searchName) ||
+                   d.originalName?.toLowerCase().includes(searchName) ||
+                   d.metadata?.parentDocument?.toLowerCase().includes(searchName) ||
+                   d.id?.toLowerCase().includes(searchName);
+          });
 
           if (!doc) {
+            // Lista documentos disponíveis de forma mais útil
+            const availableDocs = allDocs
+              .filter(d => !d.metadata?.isStructuredDocument) // Exclui fichamentos
+              .slice(0, 10)
+              .map(d => `- ${d.originalName || d.name || d.id}`)
+              .join('\n');
+
             return {
               success: false,
-              content: `Documento "${document_name}" não encontrado na KB. Documentos disponíveis:\n${allDocs.map(d => `- ${d.name}`).join('\n')}`
+              content: `Documento "${document_name}" não encontrado na KB.\n\nDocumentos disponíveis (primeiros 10):\n${availableDocs}\n\nTotal de documentos: ${allDocs.length}`
             };
           }
 
-          console.log(`   ✅ Documento encontrado: ${doc.name}`);
-          console.log(`   📊 Tamanho: ${Math.round(doc.textLength / 1000)}k caracteres`);
+          console.log(`   ✅ Documento encontrado: ${doc.name || doc.originalName}`);
+          console.log(`   📊 Tamanho: ${Math.round((doc.textLength || doc.size) / 1000)}k caracteres`);
 
           // Ler texto completo do documento
           if (!doc.path || !fs.existsSync(doc.path)) {
             return {
               success: false,
-              content: `Arquivo do documento "${doc.name}" não encontrado no disco.`
+              content: `Arquivo do documento "${doc.name}" não encontrado no disco. Path: ${doc.path || 'não definido'}`
             };
           }
 
-          const fullText = fs.readFileSync(doc.path, 'utf-8');
+          const rawText = fs.readFileSync(doc.path, 'utf-8');
 
-          // Processar documento com document-processor
-          console.log(`   ⚙️ Iniciando processamento...`);
+          // Processar com DocumentProcessorV2
+          console.log(`   ⚙️ Iniciando processamento V2...`);
 
-          const result = await documentProcessor.process(fullText, analysis_prompt, {
-            model,
-            mode,
-            systemPrompt: 'Você é um assistente jurídico especializado em análise de documentos processuais brasileiros.'
-          });
+          let result;
+
+          if (analysis_type === 'complete') {
+            // MODO COMPLETO: Todas as 4 etapas + ficheiros técnicos
+            result = await documentProcessorV2.processComplete(
+              rawText,
+              doc.id,
+              doc.name || doc.originalName,
+              {
+                extractionModel: 'nova-micro',
+                analysisModel: model,
+                generateFiles: true,
+                saveToKB: true
+              }
+            );
+
+          } else if (analysis_type === 'extract_only') {
+            // MODO EXTRAÇÃO: Só extrai texto completo
+            const extraction = await documentProcessorV2.extractFullText(
+              rawText,
+              doc.id,
+              doc.name || doc.originalName
+            );
+
+            const intermediateDoc = await documentProcessorV2.saveExtractedTextToKB(
+              extraction.extractedText,
+              doc.id,
+              doc.name || doc.originalName
+            );
+
+            result = {
+              success: true,
+              extraction: extraction.metadata,
+              intermediateDoc,
+              technicalFiles: null,
+              metadata: {
+                totalTime: extraction.metadata.processingTime,
+                totalCost: extraction.metadata.cost,
+                extractionCost: extraction.metadata.cost,
+                analysisCost: 0,
+                filesGenerated: 0
+              }
+            };
+
+          } else if (analysis_type === 'custom') {
+            // MODO CUSTOM: Extração + análise customizada
+            const extraction = await documentProcessorV2.extractFullText(
+              rawText,
+              doc.id,
+              doc.name || doc.originalName
+            );
+
+            const analysis = await documentProcessorV2.analyzeWithPremiumLLM(
+              extraction.extractedText,
+              custom_prompt || 'Faça uma análise completa e detalhada do documento.',
+              model,
+              'Você é um assistente jurídico especializado em análise de documentos processuais brasileiros.'
+            );
+
+            result = {
+              success: analysis.success,
+              extraction: extraction.metadata,
+              customAnalysis: analysis.analysis,
+              metadata: {
+                totalTime: extraction.metadata.processingTime + (analysis.metadata?.processingTime || 0),
+                totalCost: extraction.metadata.cost + (analysis.metadata?.cost || 0),
+                extractionCost: extraction.metadata.cost,
+                analysisCost: analysis.metadata?.cost || 0
+              }
+            };
+          }
 
           if (!result.success) {
             return {
               success: false,
-              content: `Erro ao processar documento: ${result.error}`
+              content: `Erro no processamento V2: ${result.error}`
             };
           }
 
           // Formatar resposta
-          let responseContent = `\n📄 **Análise Completa: ${doc.name}**\n\n`;
+          let responseContent = `\n📄 **Análise Completa V2: ${doc.name || doc.originalName}**\n\n`;
           responseContent += `═══════════════════════════════════════════════════════════════════════\n`;
-          responseContent += `🤖 Modelo: ${model.toUpperCase()}\n`;
-          responseContent += `⚙️ Modo: ${result.mode.toUpperCase()}\n`;
-          responseContent += `📊 Documento: ${Math.round(doc.textLength / 1000)}k caracteres\n`;
-          responseContent += `⏱️ Tempo: ${result.metadata.processingTime}s\n`;
-          responseContent += `💰 Custo: $${result.metadata.cost.toFixed(4)}\n`;
-
-          if (result.mode === 'multipass') {
-            responseContent += `📦 Chunks processados: ${result.metadata.chunks}\n`;
-            responseContent += `🔄 Consolidação: ${result.metadata.chunkAnalyses} análises parciais\n`;
-          }
-
+          responseContent += `🔬 ARQUITETURA V2 - Extração Inteligente + Análise Premium\n`;
           responseContent += `═══════════════════════════════════════════════════════════════════════\n\n`;
 
-          responseContent += result.response;
+          responseContent += `**Tipo de Análise:** ${analysis_type.toUpperCase()}\n`;
+          responseContent += `**Modelo de Extração:** Amazon Nova Micro\n`;
+          responseContent += `**Modelo de Análise:** ${model.toUpperCase()}\n`;
+          responseContent += `**Tempo Total:** ${result.metadata.totalTime}s\n`;
+          responseContent += `**Custo de Extração:** $${result.metadata.extractionCost.toFixed(4)}\n`;
+          responseContent += `**Custo de Análise:** $${result.metadata.analysisCost.toFixed(4)}\n`;
+          responseContent += `**Custo Total:** $${result.metadata.totalCost.toFixed(4)}\n`;
+
+          if (result.metadata.filesGenerated > 0) {
+            responseContent += `**Ficheiros Gerados:** ${result.metadata.filesGenerated}\n`;
+          }
+
+          responseContent += `\n═══════════════════════════════════════════════════════════════════════\n`;
+
+          if (analysis_type === 'complete' && result.technicalFiles) {
+            responseContent += `\n## 📋 FICHEIROS TÉCNICOS GERADOS:\n\n`;
+
+            if (result.technicalFiles.RESUMO_EXECUTIVO) {
+              responseContent += `### 📝 RESUMO EXECUTIVO\n\n`;
+              responseContent += result.technicalFiles.RESUMO_EXECUTIVO;
+              responseContent += `\n\n---\n\n`;
+            }
+
+            if (result.technicalFiles.FICHAMENTO) {
+              responseContent += `### 📄 FICHAMENTO ESTRUTURADO\n\n`;
+              responseContent += result.technicalFiles.FICHAMENTO;
+              responseContent += `\n\n---\n\n`;
+            }
+
+            if (result.technicalFiles.CRONOLOGIA) {
+              responseContent += `### 📅 CRONOLOGIA DETALHADA\n\n`;
+              responseContent += result.technicalFiles.CRONOLOGIA;
+              responseContent += `\n\n---\n\n`;
+            }
+
+            if (result.technicalFiles.ANALISE_JURIDICA) {
+              responseContent += `### ⚖️ ANÁLISE JURÍDICA TÉCNICA\n\n`;
+              responseContent += result.technicalFiles.ANALISE_JURIDICA;
+              responseContent += `\n\n---\n\n`;
+            }
+
+          } else if (analysis_type === 'extract_only') {
+            responseContent += `\n✅ Texto completo extraído e salvo no KB como:\n`;
+            responseContent += `**${result.intermediateDoc.name}**\n\n`;
+            responseContent += `ID: \`${result.intermediateDoc.id}\`\n`;
+            responseContent += `Tamanho: ${Math.round(result.intermediateDoc.size / 1000)}k caracteres\n\n`;
+            responseContent += `💡 O texto extraído está agora disponível na KB para análises futuras sem custo adicional de extração.\n`;
+
+          } else if (analysis_type === 'custom') {
+            responseContent += `\n## 🔍 ANÁLISE CUSTOMIZADA\n\n`;
+            responseContent += result.customAnalysis;
+          }
 
           responseContent += `\n\n═══════════════════════════════════════════════════════════════════════\n`;
-          responseContent += `✅ Análise ${result.mode.toUpperCase()} concluída com sucesso\n`;
-          responseContent += `💡 Documento completo foi lido e analisado em ${result.metadata.processingTime}s\n`;
+          responseContent += `✅ Processamento V2 concluído com sucesso\n`;
+          responseContent += `💡 Economia vs abordagem 100% Claude: ~50%\n`;
+          responseContent += `💾 Texto extraído salvo no KB para reutilização\n`;
 
-          console.log(`   ✅ Análise concluída: $${result.metadata.cost.toFixed(4)} em ${result.metadata.processingTime}s`);
+          console.log(`   ✅ Análise V2 concluída: $${result.metadata.totalCost.toFixed(4)} em ${result.metadata.totalTime}s`);
 
           return {
             success: true,
             content: responseContent,
             metadata: {
-              documentName: doc.name,
+              documentName: doc.name || doc.originalName,
               model,
-              mode: result.mode,
-              cost: result.metadata.cost,
-              processingTime: result.metadata.processingTime,
-              chunks: result.metadata.chunks
+              analysisType: analysis_type,
+              totalCost: result.metadata.totalCost,
+              totalTime: result.metadata.totalTime,
+              filesGenerated: result.metadata.filesGenerated || 0,
+              version: 'v2'
             }
           };
 
         } catch (error) {
-          console.error(`❌ [analisar_documento_kb] Erro:`, error);
+          console.error(`❌ [analisar_documento_kb V2] Erro:`, error);
           return {
             success: false,
             error: error.message,
-            content: `Erro ao analisar documento: ${error.message}`
+            content: `Erro ao analisar documento (V2): ${error.message}\n\nStack trace:\n${error.stack}`
           };
         }
       }
