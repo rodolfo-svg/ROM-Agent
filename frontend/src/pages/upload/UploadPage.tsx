@@ -406,13 +406,15 @@ export function UploadPage() {
         })
       })
 
-      if (response.success && response.jobId) {
-        console.log('[UploadPage] Analysis job created:', response.jobId)
+      console.log('[UploadPage] API response:', response)
+
+      if (response.success && response.data?.jobId) {
+        console.log('[UploadPage] Analysis job created:', response.data.jobId)
         // Add job ID to active jobs for progress tracking
-        setActiveExtractionJobs(prev => [...prev, response.jobId])
+        setActiveExtractionJobs(prev => [...prev, response.data.jobId])
       } else {
-        console.error('[UploadPage] Analysis failed:', response.error)
-        alert('Erro ao iniciar análise: ' + (response.error || 'Erro desconhecido'))
+        console.error('[UploadPage] Analysis failed. Full response:', response)
+        alert('Erro ao iniciar análise: ' + (response.error || JSON.stringify(response.data) || 'Erro desconhecido'))
       }
     } catch (error) {
       console.error('[UploadPage] Analysis error:', error)
