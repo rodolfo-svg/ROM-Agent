@@ -1,0 +1,42 @@
+# Aptfile - Dependências do sistema para Puppeteer/Chromium no Render
+# Documentação: https://render.com/docs/native-environments
+
+# Fontes e certificados
+ca-certificates
+fonts-liberation
+
+# Libs de áudio
+libasound2
+
+# Libs ATK (acessibilidade)
+libatk-bridge2.0-0
+libatk1.0-0
+libatspi2.0-0
+
+# Libs do sistema
+libcups2
+libdbus-1-3
+libdrm2
+libgbm1
+
+# GTK
+libgtk-3-0
+
+# NSS e NSPR (segurança)
+libnspr4
+libnss3
+
+# Wayland
+libwayland-client0
+
+# X11
+libxcomposite1
+libxdamage1
+libxfixes3
+libxkbcommon0
+libxrandr2
+
+# Utilitários
+xdg-utils
+libu2f-udev
+libvulkan1

@@ -10,8 +10,10 @@ echo "🔧 [1/6] Instalando dependências do backend..."
 npm ci
 
 echo ""
-echo "🌐 [2/6] Configurando Puppeteer/Chromium..."
-bash scripts/install-puppeteer-deps.sh
+echo "🌐 [2/6] Instalando Chrome do Puppeteer..."
+# Aptfile já instalou as libs do sistema automaticamente
+# Agora só precisamos instalar o Chrome
+npx puppeteer browsers install chrome
 
 echo ""
 echo "🧹 [3/6] Limpando build anterior do frontend..."
