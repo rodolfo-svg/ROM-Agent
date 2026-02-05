@@ -5175,154 +5175,20 @@ app.get('/api/dashboard/billing', (req, res) => {
 // ROTAS DE API PARA PROMPTS E CUSTOM INSTRUCTIONS
 // ====================================================================
 
-// Listar todos os prompts do sistema
-app.get('/api/prompts/system', (req, res) => {
-  try {
-    // TODO: Adicionar verificação de admin
-    const promptsDir = path.join(__dirname, '../config/system_prompts');
-
-    if (!fs.existsSync(promptsDir)) {
-      fs.mkdirSync(promptsDir, { recursive: true });
-    }
-
-    const files = fs.readdirSync(promptsDir).filter(f => f.endsWith('.txt') || f.endsWith('.md'));
-    const prompts = files.map(file => {
-      const content = fs.readFileSync(path.join(promptsDir, file), 'utf8');
-      return {
-        id: file,
-        name: file.replace(/\.(txt|md)$/, ''),
-        content,
-        filename: file
-      };
-    });
-
-    res.json({ prompts });
-  } catch (error) {
-    console.error('Erro ao listar prompts:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Obter um prompt específico
-app.get('/api/prompts/system/:promptId', (req, res) => {
-  try {
-    // TODO: Adicionar verificação de admin
-    const { promptId } = req.params;
-    const promptsDir = path.join(__dirname, '../config/system_prompts');
-    const filePath = path.join(promptsDir, promptId);
-
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: 'Prompt não encontrado' });
-    }
-
-    const content = fs.readFileSync(filePath, 'utf8');
-    res.json({
-      id: promptId,
-      name: promptId.replace(/\.(txt|md)$/, ''),
-      content,
-      filename: promptId
-    });
-  } catch (error) {
-    console.error('Erro ao obter prompt:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Atualizar um prompt
-app.put('/api/prompts/system/:promptId', (req, res) => {
-  try {
-    // TODO: Adicionar verificação de admin
-    const { promptId } = req.params;
-    const { content } = req.body;
-
-    if (!content) {
-      return res.status(400).json({ error: 'Conteúdo é obrigatório' });
-    }
-
-    const promptsDir = path.join(__dirname, '../config/system_prompts');
-
-    if (!fs.existsSync(promptsDir)) {
-      fs.mkdirSync(promptsDir, { recursive: true });
-    }
-
-    const filePath = path.join(promptsDir, promptId);
-    fs.writeFileSync(filePath, content, 'utf8');
-
-    res.json({
-      success: true,
-      prompt: {
-        id: promptId,
-        name: promptId.replace(/\.(txt|md)$/, ''),
-        content,
-        filename: promptId
-      }
-    });
-  } catch (error) {
-    console.error('Erro ao atualizar prompt:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Criar novo prompt
-app.post('/api/prompts/system', (req, res) => {
-  try {
-    // TODO: Adicionar verificação de admin
-    const { name, content } = req.body;
-
-    if (!name || !content) {
-      return res.status(400).json({ error: 'Nome e conteúdo são obrigatórios' });
-    }
-
-    const filename = name.endsWith('.txt') || name.endsWith('.md') ? name : `${name}.txt`;
-    const promptsDir = path.join(__dirname, '../config/system_prompts');
-
-    if (!fs.existsSync(promptsDir)) {
-      fs.mkdirSync(promptsDir, { recursive: true });
-    }
-
-    const filePath = path.join(promptsDir, filename);
-
-    if (fs.existsSync(filePath)) {
-      return res.status(409).json({ error: 'Prompt com esse nome já existe' });
-    }
-
-    fs.writeFileSync(filePath, content, 'utf8');
-
-    res.json({
-      success: true,
-      prompt: {
-        id: filename,
-        name: filename.replace(/\.(txt|md)$/, ''),
-        content,
-        filename
-      }
-    });
-  } catch (error) {
-    console.error('Erro ao criar prompt:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
-
-// Deletar um prompt
-app.delete('/api/prompts/system/:promptId', (req, res) => {
-  try {
-    // TODO: Adicionar verificação de admin
-    const { promptId } = req.params;
-    const promptsDir = path.join(__dirname, '../config/system_prompts');
-    const filePath = path.join(promptsDir, promptId);
-
-    if (!fs.existsSync(filePath)) {
-      return res.status(404).json({ error: 'Prompt não encontrado' });
-    }
-
-    fs.unlinkSync(filePath);
-
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Erro ao deletar prompt:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
+// ⚠️ ENDPOINTS LEGACY REMOVIDOS (2026-02-05)
+//
+// Os endpoints /api/prompts/system/* foram removidos para evitar conflitos.
+// Eles usavam a localização antiga: config/system_prompts/
+//
+// ✅ USE OS NOVOS ENDPOINTS:
+//    /api/system-prompts/*  (ver routes/system-prompts.js)
+//    Localização correta: data/prompts/global/ e data/prompts/partners/
+//
+// Histórico:
+// - Endpoints antigos salvavam em: config/system_prompts/
+// - PromptsManager lia de: data/prompts/
+// - Resultado: Prompts "desapareciam" após criação
+// - Solução: Migração completa para nova arquitetura (commit 03f6774)
 
 // ====================================================================
 // ROTAS DE API PARA GERENCIAMENTO MULTI-TENANT DE PROMPTS

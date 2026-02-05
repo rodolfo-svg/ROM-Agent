@@ -241,7 +241,7 @@ export const BEDROCK_TOOLS = [
               default: 'auto'
             }
           },
-          required: ['document_name', 'analysis_prompt']
+          required: ['document_name']
         }
       }
     }
