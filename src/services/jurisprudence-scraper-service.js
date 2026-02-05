@@ -17,9 +17,16 @@ import * as cheerio from 'cheerio';
 import { logger } from '../utils/logger.js';
 import NodeCache from 'node-cache';
 import pLimit from 'p-limit';
+import { getPuppeteerScraper } from './puppeteer-scraper-service.js';
 
 // Cache de ementas completas (24h TTL)
 const ementaCache = new NodeCache({ stdTTL: 86400, checkperiod: 3600 });
+
+// Tribunais conhecidos com Cloudflare/anti-bot
+const TRIBUNALS_WITH_CLOUDFLARE = new Set([
+  'TJGO', 'TJCE', 'TJBA', 'TJPE', 'TJAL', 'TJSE',
+  'TJAC', 'TJAP', 'TJRO', 'TJRR', 'TJTO', 'TJMA', 'TJPI'
+]);
 
 class JurisprudenceScraperService {
   constructor() {
@@ -40,6 +47,10 @@ class JurisprudenceScraperService {
 
   /**
    * Scrape múltiplas decisões em paralelo
+   * ESTRATÉGIA HÍBRIDA:
+   * 1. Tenta HTTP simples primeiro (rápido)
+   * 2. Usa Puppeteer para tribunais com Cloudflare ou que falharam
+   *
    * @param {Array} decisions - Array de { url, tribunal, titulo, snippet }
    * @returns {Promise<Array>} Decisões enriquecidas com ementas completas
    */
@@ -51,7 +62,8 @@ class JurisprudenceScraperService {
     logger.info(`[Scraper] Enriquecendo ${decisions.length} decisões com ementas completas`);
     const startTime = Date.now();
 
-    // Processar em paralelo com limite de concorrência
+    // FASE 1: Tentar HTTP simples para todas (rápido)
+    logger.info(`[Scraper] Fase 1/2: HTTP simples (rápido)`);
     const promises = decisions.map(decision =>
       this.limiter(() => this.scrapeEmenta(decision))
     );
@@ -62,19 +74,105 @@ class JurisprudenceScraperService {
       if (result.status === 'fulfilled' && result.value) {
         return result.value;
       } else {
-        // Manter decisão original se scraping falhar
-        logger.warn(`[Scraper] Falha em ${decisions[index].url?.substring(0, 80)}: ${result.reason?.message}`);
         return {
           ...decisions[index],
           ementaCompleta: decisions[index].ementa || decisions[index].snippet,
           scraped: false,
-          scrapeFailed: true
+          scrapeFailed: true,
+          httpError: result.reason?.message
         };
       }
     });
 
+    // FASE 2: Identificar decisões que precisam de Puppeteer
+    const needsPuppeteer = results
+      .map((result, index) => ({ result, index }))
+      .filter(({ result }) => {
+        // Usar Puppeteer se:
+        // 1. Scraping HTTP falhou
+        // 2. OU é tribunal conhecido com Cloudflare
+        const failed = !result.scraped || result.scrapeFailed;
+        const hasCloudflare = TRIBUNALS_WITH_CLOUDFLARE.has(result.tribunal?.toUpperCase());
+        return failed || hasCloudflare;
+      });
+
+    if (needsPuppeteer.length > 0) {
+      logger.info(`[Scraper] Fase 2/2: Puppeteer para ${needsPuppeteer.length} decisões (Cloudflare/falhas)`);
+
+      try {
+        const puppeteerScraper = getPuppeteerScraper();
+
+        // Preparar tasks para Puppeteer
+        const tasks = needsPuppeteer.map(({ result, index }) => ({
+          url: decisions[index].url,
+          tribunal: decisions[index].tribunal,
+          titulo: decisions[index].titulo,
+          originalIndex: index
+        }));
+
+        // Scrape em paralelo com Puppeteer
+        const puppeteerResults = await puppeteerScraper.scrapeMultiple(tasks);
+
+        // Processar resultados do Puppeteer
+        for (let i = 0; i < puppeteerResults.length; i++) {
+          const puppeteerResult = puppeteerResults[i];
+          const originalIndex = tasks[i].originalIndex;
+
+          if (puppeteerResult.success && puppeteerResult.html) {
+            try {
+              // Extrair ementa do HTML
+              const $ = cheerio.load(puppeteerResult.html);
+              const tribunal = decisions[originalIndex].tribunal;
+              let ementa = this.extractByTribunal($, tribunal, puppeteerResult.url);
+
+              if (!ementa || ementa.length < 100) {
+                ementa = this.extractGeneric($);
+              }
+
+              if (ementa && ementa.length >= 100) {
+                const enrichedDecision = {
+                  ...decisions[originalIndex],
+                  ementaCompleta: this.cleanText(ementa),
+                  ementaLength: ementa.length,
+                  scraped: true,
+                  scrapedAt: new Date().toISOString(),
+                  method: 'puppeteer',
+                  cloudflareBypass: puppeteerResult.cloudflareBypass || false
+                };
+
+                // Salvar no cache
+                const cacheKey = `ementa:${decisions[originalIndex].url}`;
+                ementaCache.set(cacheKey, enrichedDecision);
+
+                results[originalIndex] = enrichedDecision;
+                this.stats.scraped++;
+
+                logger.info(`[Puppeteer] ✅ Sucesso: ${decisions[originalIndex].url?.substring(0, 60)} (${ementa.length} chars)`);
+              } else {
+                logger.warn(`[Puppeteer] Ementa não encontrada no HTML de ${decisions[originalIndex].url?.substring(0, 60)}`);
+              }
+            } catch (parseError) {
+              logger.error(`[Puppeteer] Erro ao processar HTML: ${parseError.message}`);
+            }
+          } else {
+            logger.warn(`[Puppeteer] Falha: ${decisions[originalIndex].url?.substring(0, 60)} - ${puppeteerResult.error}`);
+          }
+        }
+
+        // Log de estatísticas do Puppeteer
+        const puppeteerStats = puppeteerScraper.getStats();
+        logger.info(`[Puppeteer] Stats: ${puppeteerStats.scraped} scraped, ${puppeteerStats.bypassed} Cloudflare bypass, ${puppeteerStats.successRate}% success rate`);
+
+      } catch (puppeteerError) {
+        logger.error(`[Puppeteer] Erro crítico: ${puppeteerError.message}`);
+      }
+    }
+
     const duration = Date.now() - startTime;
-    logger.info(`[Scraper] Concluído em ${duration}ms - Sucesso: ${this.stats.scraped}, Cache: ${this.stats.cached}, Falha: ${this.stats.failed}`);
+    const successCount = results.filter(r => r.scraped).length;
+    const failCount = results.filter(r => !r.scraped).length;
+
+    logger.info(`[Scraper] Concluído em ${duration}ms - Sucesso: ${successCount}, Falha: ${failCount}`);
 
     return results;
   }
