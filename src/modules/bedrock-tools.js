@@ -825,15 +825,36 @@ export async function executeTool(toolName, toolInput) {
 
           const allDocs = JSON.parse(fs.readFileSync(kbDocsPath, 'utf8'));
 
+          // LOG DETALHADO para debug
+          console.log(`\n   🔍 DEBUG - Buscando documento: "${document_name}"`);
+          console.log(`   📚 Total de documentos na KB: ${allDocs.length}`);
+          console.log(`   🔎 Primeiros 5 documentos:`);
+          allDocs.slice(0, 5).forEach((d, i) => {
+            console.log(`      ${i+1}. name: "${d.name}" | originalName: "${d.originalName}" | id: "${d.id}"`);
+          });
+
           // CORREÇÃO: Busca melhorada - procura em múltiplos campos
           const doc = allDocs.find(d => {
             const searchName = document_name.toLowerCase();
 
             // Busca em: name, originalName, metadata.parentDocument
-            return d.name?.toLowerCase().includes(searchName) ||
-                   d.originalName?.toLowerCase().includes(searchName) ||
-                   d.metadata?.parentDocument?.toLowerCase().includes(searchName) ||
-                   d.id?.toLowerCase().includes(searchName);
+            const matchName = d.name?.toLowerCase().includes(searchName);
+            const matchOriginal = d.originalName?.toLowerCase().includes(searchName);
+            const matchParent = d.metadata?.parentDocument?.toLowerCase().includes(searchName);
+            const matchId = d.id?.toLowerCase().includes(searchName);
+
+            const found = matchName || matchOriginal || matchParent || matchId;
+
+            // Log de cada tentativa
+            if (found) {
+              console.log(`   ✅ MATCH encontrado!`);
+              console.log(`      - matchName: ${matchName} (${d.name})`);
+              console.log(`      - matchOriginal: ${matchOriginal} (${d.originalName})`);
+              console.log(`      - matchParent: ${matchParent}`);
+              console.log(`      - matchId: ${matchId}`);
+            }
+
+            return found;
           });
 
           if (!doc) {
@@ -844,6 +865,8 @@ export async function executeTool(toolName, toolInput) {
               .map(d => `- ${d.originalName || d.name || d.id}`)
               .join('\n');
 
+            console.log(`   ❌ NENHUM MATCH encontrado para "${document_name}"`);
+
             return {
               success: false,
               content: `Documento "${document_name}" não encontrado na KB.\n\nDocumentos disponíveis (primeiros 10):\n${availableDocs}\n\nTotal de documentos: ${allDocs.length}`
@@ -852,14 +875,23 @@ export async function executeTool(toolName, toolInput) {
 
           console.log(`   ✅ Documento encontrado: ${doc.name || doc.originalName}`);
           console.log(`   📊 Tamanho: ${Math.round((doc.textLength || doc.size) / 1000)}k caracteres`);
+          console.log(`   📂 Path do documento: ${doc.path}`);
+          console.log(`   🔍 Estrutura completa do documento:`);
+          console.log(JSON.stringify(doc, null, 2));
 
           // Ler texto completo do documento
           if (!doc.path || !fs.existsSync(doc.path)) {
+            console.log(`   ❌ ERRO: Arquivo não encontrado!`);
+            console.log(`      - doc.path: ${doc.path}`);
+            console.log(`      - fs.existsSync: ${doc.path ? fs.existsSync(doc.path) : 'N/A'}`);
+
             return {
               success: false,
               content: `Arquivo do documento "${doc.name}" não encontrado no disco. Path: ${doc.path || 'não definido'}`
             };
           }
+
+          console.log(`   ✅ Arquivo existe no disco!`);
 
           const rawText = fs.readFileSync(doc.path, 'utf-8');
 

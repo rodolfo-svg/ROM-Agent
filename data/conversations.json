@@ -743,5 +743,97 @@
     "createdAt": "2026-02-03T06:14:02.085Z",
     "updatedAt": "2026-02-03T06:17:49.950Z",
     "messageCount": 2
+  },
+  "conv_1770181235443_59ut83": {
+    "id": "conv_1770181235443_59ut83",
+    "userId": "anonymous",
+    "sessionId": "B_buteBkV0VNp2d3UoJcZHW_upNkIWgR",
+    "projectId": null,
+    "title": "Teste Automático - Renomeado",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de sistema - responda apenas com OK",
+        "timestamp": "2026-02-04T05:00:35.444Z"
+      },
+      {
+        "role": "assistant",
+        "content": "OK",
+        "timestamp": "2026-02-04T05:00:37.801Z"
+      }
+    ],
+    "createdAt": "2026-02-04T05:00:35.443Z",
+    "updatedAt": "2026-02-04T05:00:37.815Z",
+    "messageCount": 2
+  },
+  "conv_1770181245593_wziky9": {
+    "id": "conv_1770181245593_wziky9",
+    "userId": "anonymous",
+    "sessionId": "X8qzAnZoNz0ivfg7ABZdCa0fVBElLRYo",
+    "projectId": null,
+    "title": "Teste automatizado - Sistema funcional",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste automatizado - Sistema funcional",
+        "timestamp": "2026-02-04T05:00:45.594Z"
+      },
+      {
+        "role": "assistant",
+        "content": "# TESTE AUTOMATIZADO - SISTEMA FUNCIONAL\n\n**Status**: ✅ **OPERACIONAL**\n\n---\n\n## VERIFICAÇÃO DE COMPONENTES\n\n**1. IDENTIDADE**\n✅ ROM Agent v3.0 - Assistente Jurídico Especializado\n✅ Direito Processual Civil, Penal e Trabalhista\n✅ Geração de peças jurídicas de alta qualidade\n\n**2. FORMATAÇÃO ABNT/OAB**\n✅ Calibri 12pt, espaçamento 1.5\n✅ Margens: 2,5cm (sup/inf), 3,0cm (esq/dir)\n✅ Recuo primeira linha: 1,25cm\n✅ Alinhamento: Justificado (exceto títulos centralizados)\n✅ Hierarquia: I, II, III → 1, 2, 3 → a, b, c\n✅ ZERO markdown, emojis ou decorações\n\n**3. FERRAMENTAS DISPONÍVEIS**\n✅ pesquisar_jurisprudencia (STF, STJ, TST, TSE)\n✅ pesquisar_sumulas (temas e teses consolidadas)\n✅ pesquisar_doutrina (artigos acadêmicos)\n✅ consultar_kb (documentos do usuário)\n✅ consultar_cnj_datajud (processos específicos)\n✅ create_artifact (geração de documentos para download)\n\n**4. REGRAS CRÍTICAS**\n✅ Streaming imediato (sem buffer)\n✅ Pesquisa obrigatória antes de citar precedentes\n✅ Formatação word-ready durante geração\n✅ PROIBIDO: **, ###, emojis, referências a IA\n✅ Citações com aspas curvas \" \"\n✅ Jurisprudência formato inline: (TRIBUNAL, TIPO n. XXX/UF, Rel. Min./Des. NOME, data)\n\n**5. QUALIDADE TÉCNICA**\n✅ Fundamentação tripla: lei + jurisprudência + doutrina\n✅ Mínimo 3 precedentes (STF/STJ prioritários)\n✅ Extensão adequada por tipo de peça:\n   - Petição Inicial: 10-35 páginas\n   - Contestação: 10-40 páginas\n   - Recursos: 15-50 páginas\n✅ Estrutura: FATOS → DIREITO → PEDIDOS\n✅ Ordem art. 337 CPC em contestações\n\n---\n\n## CONFIRMAÇÃO DE OPERAÇÃO\n\nO sistema está **plenamente funcional** e pronto para:\n\n• Elaborar petições iniciais\n• Redigir contestações e réplicas\n• Preparar recursos (apelação, especial, extraordinário)\n• Criar pareceres jurídicos\n• Gerar memoriais e alegações finais\n• Produzir qualquer peça processual civil, penal ou trabalhista\n\n**Aguardando instrução do usuário para início da produção jurídica.**\n\n---\n\n*Todos os sistemas verificados e operacionais.*\n*Pronto para atendimento profissional.*",
+        "timestamp": "2026-02-04T05:00:57.801Z"
+      }
+    ],
+    "createdAt": "2026-02-04T05:00:45.593Z",
+    "updatedAt": "2026-02-04T05:00:57.801Z",
+    "messageCount": 2
+  },
+  "conv_1770181605943_hetxvb": {
+    "id": "conv_1770181605943_hetxvb",
+    "userId": "anonymous",
+    "sessionId": "PQydFaUmYZJW4NOS33pVfg6bNtz65-rp",
+    "projectId": null,
+    "title": "Teste rápido",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste rápido",
+        "timestamp": "2026-02-04T05:06:45.946Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Olá! Sistema operacional e pronto para atendimento.\n\n**Status dos recursos:**\n- ✓ Pesquisa jurisprudencial (STF, STJ, TST, TSE)\n- ✓ Consulta CNJ DataJud\n- ✓ Pesquisa de súmulas e teses\n- ✓ Busca doutrinária\n- ✓ Geração de documentos jurídicos\n- ✓ Knowledge Base (documentos processados)\n\n**Posso auxiliar com:**\n- Elaboração de peças processuais (petições, contestações, recursos)\n- Pesquisa de jurisprudência e precedentes\n- Análise de casos e estratégias processuais\n- Consulta a súmulas e teses vinculantes\n- Fundamentação legal e doutrinária\n\nComo posso ajudar?",
+        "timestamp": "2026-02-04T05:06:51.703Z"
+      }
+    ],
+    "createdAt": "2026-02-04T05:06:45.943Z",
+    "updatedAt": "2026-02-04T05:06:51.703Z",
+    "messageCount": 2
+  },
+  "conv_1770184949342_d08s2j": {
+    "id": "conv_1770184949342_d08s2j",
+    "userId": "anonymous",
+    "sessionId": "UqhELgm-hrNQt08ljhD4p5uaoqKZ0WMu",
+    "projectId": "rom-agent",
+    "title": "Teste de conexão",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de conexão",
+        "timestamp": "2026-02-04T06:02:29.343Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Olá! Conexão estabelecida com sucesso.\n\nSistema ROM Agent v3.0 operacional e pronto para atendimento jurídico.\n\nPosso auxiliar com:\n\n• Elaboração de peças processuais (petições iniciais, contestações, recursos)\n• Pesquisa de jurisprudência atualizada (STF, STJ, tribunais regionais)\n• Análise de documentos jurídicos\n• Consulta a súmulas e teses fixadas\n• Fundamentação legal e doutrinária\n\nComo posso ajudar hoje?",
+        "timestamp": "2026-02-04T06:02:33.605Z"
+      }
+    ],
+    "createdAt": "2026-02-04T06:02:29.342Z",
+    "updatedAt": "2026-02-04T06:02:33.605Z",
+    "messageCount": 2
   }
 }

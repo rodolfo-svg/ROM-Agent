@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-02-03T05:00:39.433Z",
+  "timestamp": "2026-02-04T05:00:57.829Z",
   "summary": {
     "total": 26,
-    "passed": 12,
-    "failed": 7,
+    "passed": 13,
+    "failed": 6,
     "warnings": 7,
-    "successRate": 46.2,
-    "duration": 812
+    "successRate": 50,
+    "duration": 12283
   },
   "results": [
     {
@@ -29,8 +29,8 @@
         "averageResponseTime": 3,
         "unit": "seconds"
       },
-      "duration": 4,
-      "validation": "✓ Stats completas (29 conversas)"
+      "duration": 2,
+      "validation": "✓ Stats completas (37 conversas)"
     },
     {
       "category": "Sistema",
@@ -56,11 +56,11 @@
       "category": "Conversação",
       "name": "Enviar mensagem ao chat (/api/chat)",
       "url": "http://localhost:3000/api/chat",
-      "status": 500,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "duration": 741,
-      "validation": ""
+      "passed": true,
+      "duration": 12214,
+      "validation": "✓ Contém 'response'"
     },
     {
       "category": "Conversação",
@@ -79,8 +79,8 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 3,
-      "validation": "✓ KB com 4 documentos"
+      "duration": 2,
+      "validation": "✓ KB com 2 documentos"
     },
     {
       "category": "Knowledge Base",
@@ -89,7 +89,7 @@
       "status": 302,
       "expected": 401,
       "passed": false,
-      "duration": 3,
+      "duration": 2,
       "validation": ""
     },
     {
@@ -99,7 +99,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 3,
+      "duration": 2,
       "validation": ""
     },
     {
@@ -109,7 +109,7 @@
       "status": 404,
       "expected": 200,
       "passed": false,
-      "duration": 1,
+      "duration": 2,
       "validation": ""
     },
     {
@@ -119,7 +119,7 @@
       "status": 403,
       "expected": 200,
       "passed": false,
-      "duration": 1,
+      "duration": 2,
       "validation": ""
     },
     {
@@ -129,7 +129,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 1,
+      "duration": 2,
       "validation": "✓ É array com 0 itens"
     },
     {
@@ -139,8 +139,8 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 4,
-      "validation": "✓ É array com 3 itens"
+      "duration": 2,
+      "validation": "✓ É array com 4 itens"
     },
     {
       "category": "Ferramentas",
@@ -169,7 +169,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 1,
+      "duration": 4,
       "validation": "✓ Analytics HTML válido"
     }
   ]

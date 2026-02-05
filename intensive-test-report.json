@@ -9,121 +9,149 @@
   },
   "approved": false,
   "stats": {
-    "startTime": 1770094841794,
+    "startTime": 1770181258083,
     "tests": {
       "burst": {
         "total": 1500,
-        "success": 290,
-        "failed": 1210,
-        "avgLatency": 471.2253333333333
+        "success": 340,
+        "failed": 1160,
+        "avgLatency": 474.7806666666666
       },
       "sustained": {
-        "total": 12313,
-        "success": 960,
-        "failed": 11353,
-        "avgLatency": 249.62892877446578
+        "total": 12394,
+        "success": 1451,
+        "failed": 10943,
+        "avgLatency": 262.6375665644678
       },
       "concurrent": {
-        "total": 4440,
-        "success": 1192,
-        "failed": 3248,
-        "avgLatency": 333.04144144144215
+        "total": 4360,
+        "success": 1222,
+        "failed": 3138,
+        "avgLatency": 349.53325688073437
       },
       "apiStress": {
-        "total": 2442,
-        "success": 500,
-        "failed": 1942,
-        "avgLatency": 241.65888615888616
+        "total": 2398,
+        "success": 518,
+        "failed": 1880,
+        "avgLatency": 260.98248540450453
       },
       "database": {
-        "total": 222,
+        "total": 218,
         "success": 0,
-        "failed": 222,
-        "avgLatency": 251.0765765765766
+        "failed": 218,
+        "avgLatency": 258.0550458715596
       },
       "memory": {
-        "total": 222,
-        "success": 14,
-        "failed": 208,
-        "avgLatency": 246.14864864864865
+        "total": 218,
+        "success": 21,
+        "failed": 197,
+        "avgLatency": 254.91284403669732
       },
       "longOps": {
-        "total": 111,
-        "success": 7,
-        "failed": 104,
-        "avgLatency": 602.1351351351351
+        "total": 109,
+        "success": 10,
+        "failed": 99,
+        "avgLatency": 783.8899082568809
       },
       "pwa": {
-        "total": 222,
-        "success": 222,
+        "total": 218,
+        "success": 218,
         "failed": 0,
-        "avgLatency": 244.67567567567568
+        "avgLatency": 255.87614678899084
       }
     },
-    "totalRequests": 21472,
-    "totalSuccess": 3185,
-    "totalFailed": 18287,
-    "totalLatency": 6080893,
+    "totalRequests": 21415,
+    "totalSuccess": 3780,
+    "totalFailed": 17635,
+    "totalLatency": 6370154,
     "errors": [],
     "memorySnapshots": [
       {
-        "time": "2026-02-03T05:00:51.349Z",
-        "heapUsed": 166
+        "time": "2026-02-04T05:01:08.238Z",
+        "heapUsed": 169
       },
       {
-        "time": "2026-02-03T05:01:08.738Z",
-        "heapUsed": 162
-      },
-      {
-        "time": "2026-02-03T05:01:30.338Z",
-        "heapUsed": 159
-      },
-      {
-        "time": "2026-02-03T05:01:46.319Z",
-        "heapUsed": 164
-      },
-      {
-        "time": "2026-02-03T05:02:09.302Z",
-        "heapUsed": 160
-      },
-      {
-        "time": "2026-02-03T05:02:25.328Z",
-        "heapUsed": 165
-      },
-      {
-        "time": "2026-02-03T05:58:23.802Z",
-        "heapUsed": 159
-      },
-      {
-        "time": "2026-02-03T05:58:39.549Z",
-        "heapUsed": 163
-      },
-      {
-        "time": "2026-02-03T05:59:02.135Z",
-        "heapUsed": 163
-      },
-      {
-        "time": "2026-02-03T05:59:18.004Z",
-        "heapUsed": 157
-      },
-      {
-        "time": "2026-02-03T05:59:40.561Z",
-        "heapUsed": 165
-      },
-      {
-        "time": "2026-02-03T05:59:56.609Z",
-        "heapUsed": 160
-      },
-      {
-        "time": "2026-02-03T06:00:19.087Z",
+        "time": "2026-02-04T05:01:25.269Z",
         "heapUsed": 158
       },
       {
-        "time": "2026-02-03T06:00:34.889Z",
+        "time": "2026-02-04T05:01:47.750Z",
         "heapUsed": 162
+      },
+      {
+        "time": "2026-02-04T05:02:04.334Z",
+        "heapUsed": 165
+      },
+      {
+        "time": "2026-02-04T05:02:26.030Z",
+        "heapUsed": 159
+      },
+      {
+        "time": "2026-02-04T05:02:42.231Z",
+        "heapUsed": 162
+      },
+      {
+        "time": "2026-02-04T05:03:04.873Z",
+        "heapUsed": 167
+      },
+      {
+        "time": "2026-02-04T05:03:21.856Z",
+        "heapUsed": 159
+      },
+      {
+        "time": "2026-02-04T05:03:45.021Z",
+        "heapUsed": 162
+      },
+      {
+        "time": "2026-02-04T05:04:01.489Z",
+        "heapUsed": 165
+      },
+      {
+        "time": "2026-02-04T05:04:24.195Z",
+        "heapUsed": 158
+      },
+      {
+        "time": "2026-02-04T05:04:40.405Z",
+        "heapUsed": 161
+      },
+      {
+        "time": "2026-02-04T05:05:02.963Z",
+        "heapUsed": 166
+      },
+      {
+        "time": "2026-02-04T05:05:19.416Z",
+        "heapUsed": 157
+      },
+      {
+        "time": "2026-02-04T05:05:41.056Z",
+        "heapUsed": 161
+      },
+      {
+        "time": "2026-02-04T05:05:57.123Z",
+        "heapUsed": 163
+      },
+      {
+        "time": "2026-02-04T05:06:19.930Z",
+        "heapUsed": 157
+      },
+      {
+        "time": "2026-02-04T05:06:36.281Z",
+        "heapUsed": 159
+      },
+      {
+        "time": "2026-02-04T05:06:58.269Z",
+        "heapUsed": 163
+      },
+      {
+        "time": "2026-02-04T06:00:40.268Z",
+        "heapUsed": 168
+      },
+      {
+        "time": "2026-02-04T06:00:57.198Z",
+        "heapUsed": 158
       }
     ],
-    "peakLatency": 7209,
+    "peakLatency": 6620,
     "slowestEndpoint": "/chat/stream"
   }
 }

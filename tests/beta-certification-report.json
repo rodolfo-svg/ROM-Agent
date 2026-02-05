@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-02-03T06:02:09.132Z",
+  "timestamp": "2026-02-04T06:02:58.352Z",
   "environment": "http://localhost:3000",
-  "duration": "3.10s",
+  "duration": "3.06s",
   "summary": {
     "total": 20,
     "passed": 12,
@@ -13,20 +13,20 @@
     "health": {
       "Server responde": {
         "passed": true,
-        "duration": 55,
+        "duration": 28,
         "status": 200,
-        "responseTime": 54
+        "responseTime": 28
       },
       "Health check endpoint": {
         "passed": false,
-        "duration": 6,
+        "duration": 3,
         "error": "Expected status 200, got 404"
       }
     },
     "apis": {
       "KB Statistics API": {
         "passed": true,
-        "duration": 6,
+        "duration": 1,
         "stats": {
           "kb": {
             "totalDocuments": 0,
@@ -47,7 +47,7 @@
       },
       "KB Reindex API": {
         "passed": true,
-        "duration": 10,
+        "duration": 7,
         "success": true
       },
       "Feature Flags GET": {
@@ -81,7 +81,7 @@
       },
       "Paradigmas List": {
         "passed": true,
-        "duration": 2,
+        "duration": 1,
         "total": 0
       },
       "Paradigmas Stats": {
@@ -100,7 +100,7 @@
       },
       "Analytics Dashboard": {
         "passed": true,
-        "duration": 0,
+        "duration": 1,
         "metrics": []
       },
       "Analytics Usage": {
@@ -117,7 +117,7 @@
     "performance": {
       "Response time: /api/health": {
         "passed": false,
-        "duration": 2,
+        "duration": 1,
         "error": "Expected status 200, got 404"
       },
       "Response time: /api/feature-flags": {
@@ -133,9 +133,9 @@
       },
       "Response time: /api/paradigmas/categories": {
         "passed": true,
-        "duration": 0,
+        "duration": 1,
         "endpoint": "/api/paradigmas/categories",
-        "responseTime": 0
+        "responseTime": 1
       }
     },
     "logs": {
