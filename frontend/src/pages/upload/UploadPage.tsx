@@ -389,6 +389,37 @@ export function UploadPage() {
     }
   }
 
+  const handleAnalyze = async (doc: KBDocument) => {
+    try {
+      console.log('[UploadPage] Starting analysis for:', doc.name || doc.originalName)
+
+      // Call V2 analysis endpoint
+      const response = await apiFetch('/kb/analyze-v2', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          documentName: doc.name || doc.originalName,
+          analysisType: 'complete',
+          model: 'sonnet'
+        })
+      })
+
+      if (response.success && response.jobId) {
+        console.log('[UploadPage] Analysis job created:', response.jobId)
+        // Add job ID to active jobs for progress tracking
+        setActiveExtractionJobs(prev => [...prev, response.jobId])
+      } else {
+        console.error('[UploadPage] Analysis failed:', response.error)
+        alert('Erro ao iniciar análise: ' + (response.error || 'Erro desconhecido'))
+      }
+    } catch (error) {
+      console.error('[UploadPage] Analysis error:', error)
+      alert('Erro ao iniciar análise')
+    }
+  }
+
   // ============================================================
   // FILTERING
   // ============================================================
@@ -829,6 +860,15 @@ export function UploadPage() {
                           title="Download"
                         >
                           <Download className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleAnalyze(doc)}
+                          className="text-purple-600 hover:text-purple-700 hover:bg-purple-50"
+                          title="Analisar com IA"
+                        >
+                          <Brain className="w-4 h-4" />
                         </Button>
                         <Button
                           variant="ghost"
