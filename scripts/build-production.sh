@@ -6,24 +6,28 @@ echo "ROM AGENT - BUILD DE PRODUÇÃO"
 echo "════════════════════════════════════════════════════════════"
 
 echo ""
-echo "🔧 [1/5] Instalando dependências do backend..."
+echo "🔧 [1/6] Instalando dependências do backend..."
 npm ci
 
 echo ""
-echo "🧹 [2/5] Limpando build anterior do frontend..."
+echo "🌐 [2/6] Configurando Puppeteer/Chromium..."
+bash scripts/install-puppeteer-deps.sh
+
+echo ""
+echo "🧹 [3/6] Limpando build anterior do frontend..."
 rm -rf frontend/dist
 
 echo ""
-echo "📦 [3/5] Instalando dependências do frontend..."
+echo "📦 [4/6] Instalando dependências do frontend..."
 cd frontend
 npm ci
 
 echo ""
-echo "🏗️ [4/5] Buildando frontend React + PWA..."
+echo "🏗️ [5/6] Buildando frontend React + PWA..."
 npm run build
 
 echo ""
-echo "📊 [5/5] Verificando build..."
+echo "📊 [6/6] Verificando build..."
 cd ..
 
 if [ ! -d "frontend/dist" ]; then

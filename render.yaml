@@ -84,6 +84,17 @@ services:
       - key: GOOGLE_SEARCH_CX
         sync: false
 
+      # ═══════════════════════════════════════════════════════════════
+      # PUPPETEER - BYPASS DE CLOUDFLARE EM TRIBUNAIS
+      # ═══════════════════════════════════════════════════════════════
+      # Permite scraping de ementas completas em TJGO, TJCE, TJBA, etc
+      # Tribunais estaduais usam Cloudflare que bloqueia HTTP simples
+      # ═══════════════════════════════════════════════════════════════
+      - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+        value: "false"
+      - key: PUPPETEER_EXECUTABLE_PATH
+        value: ""  # Usa Chrome instalado pelo puppeteer browsers install
+
       # Session Secret (auto-gerado)
       - key: SESSION_SECRET
         generateValue: true
@@ -194,6 +205,17 @@ services:
         sync: false
       - key: GOOGLE_SEARCH_CX
         sync: false
+
+      # ═══════════════════════════════════════════════════════════════
+      # PUPPETEER - BYPASS DE CLOUDFLARE EM TRIBUNAIS
+      # ═══════════════════════════════════════════════════════════════
+      # Permite scraping de ementas completas em TJGO, TJCE, TJBA, etc
+      # Tribunais estaduais usam Cloudflare que bloqueia HTTP simples
+      # ═══════════════════════════════════════════════════════════════
+      - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
+        value: "false"
+      - key: PUPPETEER_EXECUTABLE_PATH
+        value: ""  # Usa Chrome instalado pelo puppeteer browsers install
 
       # Session Secret (auto-gerado)
       - key: SESSION_SECRET
