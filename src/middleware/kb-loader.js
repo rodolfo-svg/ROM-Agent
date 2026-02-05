@@ -87,6 +87,106 @@ async function searchDocumentsByProcessNumber(partnerId, processNumber) {
 }
 
 /**
+ * Busca genérica por palavras-chave nos documentos da KB
+ */
+async function searchDocumentsByKeywords(partnerId, message) {
+  try {
+    // Palavras-chave para buscar documentos
+    const keywords = [
+      'alessandro', 'ribeiro', 'monitoria', 'processo', 'emprestimo',
+      'extrações', 'extração', 'últimas', 'recentes', 'liste', 'listar'
+    ];
+
+    // Verificar se mensagem contém alguma palavra-chave
+    const messageLower = message.toLowerCase();
+    const hasKeyword = keywords.some(kw => messageLower.includes(kw));
+
+    if (!hasKeyword) {
+      return [];
+    }
+
+    logger.info(`🔍 [KB Loader] Busca genérica ativada por palavras-chave`);
+
+    const kbDir = path.join(ACTIVE_PATHS.data, 'knowledge-base', 'documents');
+
+    try {
+      await fs.access(kbDir);
+    } catch {
+      return [];
+    }
+
+    // Listar todos os arquivos .txt
+    const files = await fs.readdir(kbDir);
+    const txtFiles = files.filter(f => f.endsWith('.txt'));
+
+    const matchingDocs = [];
+
+    // Buscar documentos que correspondam às palavras-chave
+    for (const txtFile of txtFiles) {
+      const fileNameLower = txtFile.toLowerCase();
+
+      // Verificar se nome do arquivo contém alguma palavra-chave
+      const fileMatches = keywords.some(kw => fileNameLower.includes(kw));
+
+      if (fileMatches) {
+        try {
+          const baseName = txtFile.replace('.txt', '');
+          const metadataPath = path.join(kbDir, `${baseName}.metadata.json`);
+
+          try {
+            const metadataContent = await fs.readFile(metadataPath, 'utf-8');
+            const metadata = JSON.parse(metadataContent);
+
+            matchingDocs.push({
+              ...metadata,
+              txtFile,
+              txtPath: path.join(kbDir, txtFile),
+              matchedBy: 'filename'
+            });
+          } catch (metaErr) {
+            logger.debug(`   Metadata não encontrado para ${txtFile}`);
+          }
+        } catch (readErr) {
+          logger.debug(`   Erro ao processar ${txtFile}:`, readErr.message);
+        }
+      }
+    }
+
+    // Se não encontrou nada, buscar nos últimos 5 documentos estruturados
+    if (matchingDocs.length === 0 && messageLower.match(/últim|recent|list/)) {
+      logger.info(`   Buscando últimos 5 documentos estruturados`);
+
+      for (const txtFile of txtFiles.slice(-5)) {
+        try {
+          const baseName = txtFile.replace('.txt', '');
+          const metadataPath = path.join(kbDir, `${baseName}.metadata.json`);
+
+          const metadataContent = await fs.readFile(metadataPath, 'utf-8');
+          const metadata = JSON.parse(metadataContent);
+
+          // Apenas documentos que tenham ficheiros estruturados
+          if (metadata.structuredDocsInKB && metadata.structuredDocsInKB.length > 0) {
+            matchingDocs.push({
+              ...metadata,
+              txtFile,
+              txtPath: path.join(kbDir, txtFile),
+              matchedBy: 'recent'
+            });
+          }
+        } catch (err) {
+          // Ignorar erros
+        }
+      }
+    }
+
+    return matchingDocs;
+  } catch (error) {
+    logger.error(`❌ [KB Search] Erro na busca genérica:`, error.message);
+    return [];
+  }
+}
+
+/**
  * Middleware para carregar ficheiros estruturados do KB
  */
 export async function loadStructuredFilesFromKB(req, res, next) {
@@ -101,8 +201,50 @@ export async function loadStructuredFilesFromKB(req, res, next) {
     // Detectar números de processo na mensagem
     const processosMatch = message.match(PROCESSO_REGEX);
 
+    // Se não encontrou número de processo, tentar busca genérica
     if (!processosMatch || processosMatch.length === 0) {
-      // Nenhum processo detectado, continuar normalmente
+      // Tentar busca genérica por palavras-chave
+      const kbDocs = await searchDocumentsByKeywords(req.user?.partnerId || 'ROM', message);
+
+      if (kbDocs.length === 0) {
+        // Nenhum documento encontrado, continuar normalmente
+        return next();
+      }
+
+      logger.info(`✅ [KB Loader] Busca genérica encontrou ${kbDocs.length} documento(s)`);
+
+      // Carregar ficheiros estruturados dos documentos encontrados
+      let allStructuredFiles = [];
+
+      for (const doc of kbDocs) {
+        if (doc.structuredDocsInKB && Array.isArray(doc.structuredDocsInKB)) {
+          for (const structFile of doc.structuredDocsInKB) {
+            try {
+              const content = await fs.readFile(structFile.path, 'utf-8');
+
+              allStructuredFiles.push({
+                processNumber: doc.name || 'Sem número',
+                name: structFile.name,
+                type: structFile.type,
+                path: structFile.path,
+                content
+              });
+
+              logger.debug(`   📄 Carregado: ${structFile.name}`);
+            } catch (readErr) {
+              logger.warn(`⚠️ [KB Loader] Não foi possível ler ${structFile.name}:`, readErr.message);
+            }
+          }
+        }
+      }
+
+      // Se encontrou ficheiros, adicionar ao contexto
+      if (allStructuredFiles.length > 0) {
+        const kbContext = formatStructuredFilesContext(allStructuredFiles);
+        req.body.kbContext = kbContext;
+        logger.info(`✅ [KB Loader] ${allStructuredFiles.length} ficheiro(s) carregado(s) via busca genérica`);
+      }
+
       return next();
     }
 
