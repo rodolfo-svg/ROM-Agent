@@ -170,8 +170,15 @@ class JurisprudenceScraperService {
       validateStatus: (status) => status < 500
     });
 
-    if (response.status !== 200) {
-      throw new Error(`HTTP ${response.status}`);
+    // ✅ CORREÇÃO: Aceitar 403/401 se houver conteúdo HTML válido
+    // Muitos tribunais retornam 403 (anti-scraping) mas ainda enviam HTML
+    if (response.status >= 500) {
+      throw new Error(`HTTP ${response.status} - Server Error`);
+    }
+
+    // Verificar se há conteúdo válido
+    if (!response.data || response.data.length < 100) {
+      throw new Error(`HTTP ${response.status} - Conteúdo vazio ou inválido`);
     }
 
     const $ = cheerio.load(response.data);
