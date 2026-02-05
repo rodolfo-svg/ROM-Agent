@@ -81,6 +81,7 @@ import customInstructionsRoutes from './routes/custom-instructions.js';
 import multiStepGenerationRoutes from './routes/multi-step-generation.js';
 import { startCustomInstructionsCron } from './services/custom-instructions-cron.js';
 import { loadStructuredFilesFromKB } from './middleware/kb-loader.js';
+import kbAnalyzeV2Routes from './routes/kb-analyze-v2.js';
 
 // ═══════════════════════════════════════════════════════════════════════
 // PROMPT OPTIMIZATION v3.0 - Modular prompt builder with 79% token reduction
@@ -548,6 +549,9 @@ app.use('/api/conversations', conversationsRoutes);
 
 // Rotas de Custom Instructions (Sistema de Prompts Personalizados)
 app.use('/api/custom-instructions', requireAuth, customInstructionsRoutes);
+
+// Rotas de KB Analyze V2 (Análise Direta de Documentos - Bypass LLM)
+app.use('/api/kb/analyze-v2', requireAuth, kbAnalyzeV2Routes);
 
 // Rotas de Geração Multi-Step (Documentos >35 páginas)
 app.use('/api/generate/multi-step', multiStepGenerationRoutes);
