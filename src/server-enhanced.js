@@ -59,6 +59,7 @@ import caseProcessorSSE from './routes/case-processor-sse.js';
 import chatStreamRoutes from './routes/chat-stream.js';
 import diagnosticBedrockRoutes from './routes/diagnostic-bedrock.js';
 import diagnosticUsersRoutes from './routes/diagnostic-users.js';
+import diagnosticModelsRoutes from './routes/diagnostic-models.js';
 import exportRoutes from './routes/export.js';
 import uploadProgressRoutes from './routes/upload-progress.js';
 console.log('🔍 [IMPORT] uploadProgressRoutes carregado:', typeof uploadProgressRoutes);
@@ -568,6 +569,7 @@ app.use('/api/case-processor', caseProcessorSSE);
 // Rota de Diagnóstico Bedrock (para debug)
 app.use('/api/diagnostic/bedrock', diagnosticBedrockRoutes);
 app.use('/api/diagnostic/users', diagnosticUsersRoutes);
+app.use('/api/diagnostic/models', diagnosticModelsRoutes);
 
 // Rotas de Exportação (DOCX, PDF, HTML, Markdown, TXT)
 app.use('/api/export', exportRoutes);
