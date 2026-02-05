@@ -608,28 +608,25 @@ class JurisprudenceScraperService {
   /**
    * Verificar se URL é de página de listagem/busca (não decisão individual)
    * URLs de listagem não têm ementa completa
+   * ✅ APENAS padrões REALMENTE problemáticos (não bloquear decisões válidas)
    */
   isListingPage(url) {
     if (!url) return false;
 
     const urlLower = url.toLowerCase();
 
-    // Padrões de URLs de listagem/busca
+    // ✅ REFINADO: Apenas padrões que SÃO definitivamente listagens
     const listingPatterns = [
-      '/busca',
-      '/consulta',
-      '/pesquisa',
-      '/lista',
-      '/resultados',
-      '/search',
-      '/query',
-      'q=',           // Query string de busca
-      'buscar=',
-      'pesquisar=',
-      '/toc.jsp',     // STJ: table of contents
-      '/index.jsp',   // Páginas index
-      '/sumario',
-      '/indice'
+      '/toc.jsp',         // STJ: table of contents
+      '/index.jsp',       // Páginas index
+      '/sumario',         // Sumários
+      '/indice',          // Índices
+      'q=',               // Query string de busca (ex: ?q=termo)
+      'buscar=',          // Form de busca
+      'pesquisar=',       // Form de busca
+      '/resultados',      // Página de resultados
+      '/lista.php',       // Listas PHP
+      '/search.php'       // Páginas de busca PHP
     ];
 
     return listingPatterns.some(pattern => urlLower.includes(pattern));
