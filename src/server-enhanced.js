@@ -6149,41 +6149,129 @@ app.delete('/api/kb/documents/:id', requireAuth, generalLimiter, async (req, res
     const KBCleaner = require('../lib/kb-cleaner.cjs');
     const cleaner = new KBCleaner();
 
-    // Tentar remover do sistema antigo (KB/)
-    const cleanerResult = cleaner.removeDocument(id);
+    let totalFilesDeleted = 0;
+    let totalSpaceSaved = 0;
 
-    // Também remover de data/kb-documents.json (sistema novo)
+    // 1. Remover do sistema antigo (KB/)
+    const cleanerResult = cleaner.removeDocument(id);
+    totalFilesDeleted += cleanerResult.filesDeleted || 0;
+    totalSpaceSaved += cleanerResult.spaceSaved || 0;
+
+    // 2. Buscar documento em kb-documents.json para pegar referências de ficheiros estruturados
     const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
     let removedFromNew = false;
+    let structuredFiles = [];
 
     if (fs.existsSync(kbDocsPath)) {
       const kbDocs = JSON.parse(await fs.promises.readFile(kbDocsPath, 'utf8'));
+      const doc = kbDocs.find(d => d.id === id);
+
+      // Se documento tem ficheiros estruturados, pegar referências
+      if (doc && doc.metadata && doc.metadata.structuredDocsInKB) {
+        structuredFiles = doc.metadata.structuredDocsInKB;
+      }
+
+      // Remover documento principal do array
       const originalLength = kbDocs.length;
-      const filtered = kbDocs.filter(doc => doc.id !== id);
+      const filtered = kbDocs.filter(d => d.id !== id);
 
       if (filtered.length < originalLength) {
         await fs.promises.writeFile(kbDocsPath, JSON.stringify(filtered, null, 2));
         removedFromNew = true;
+        totalFilesDeleted += 1;
         logger.info(`✅ Documento ${id} removido de kb-documents.json`);
+      }
+
+      // Também remover ficheiros estruturados do array (01_FICHAMENTO, etc.)
+      const filteredStructured = filtered.filter(d => {
+        return !(d.metadata && d.metadata.isStructuredDocument && d.metadata.parentDocument === id);
+      });
+
+      if (filteredStructured.length < filtered.length) {
+        await fs.promises.writeFile(kbDocsPath, JSON.stringify(filteredStructured, null, 2));
+        const removedCount = filtered.length - filteredStructured.length;
+        totalFilesDeleted += removedCount;
+        logger.info(`✅ ${removedCount} ficheiro(s) estruturado(s) removido(s) de kb-documents.json`);
       }
     }
 
-    // Também remover de KB/documents/ (sistema de extração)
+    // 3. Deletar ficheiros estruturados físicos do disco (knowledge-base/documents/)
+    if (structuredFiles.length > 0) {
+      const kbDocsDir = path.join(ACTIVE_PATHS.data, 'knowledge-base', 'documents');
+      let structuredDeleted = 0;
+
+      for (const file of structuredFiles) {
+        try {
+          if (file.path && fs.existsSync(file.path)) {
+            const stats = fs.statSync(file.path);
+            await fs.promises.unlink(file.path);
+            totalSpaceSaved += stats.size;
+            structuredDeleted++;
+            logger.info(`   ✅ Ficheiro estruturado deletado: ${path.basename(file.path)}`);
+          }
+
+          // Deletar metadata .json correspondente
+          const metadataPath = file.path.replace(/\.(md|json)$/, '.metadata.json');
+          if (fs.existsSync(metadataPath)) {
+            const stats = fs.statSync(metadataPath);
+            await fs.promises.unlink(metadataPath);
+            totalSpaceSaved += stats.size;
+            structuredDeleted++;
+          }
+        } catch (fileError) {
+          logger.warn(`   ⚠️ Erro ao deletar ficheiro ${file.name}:`, fileError.message);
+        }
+      }
+
+      totalFilesDeleted += structuredDeleted;
+      logger.info(`✅ ${structuredDeleted} ficheiro(s) estruturado(s) deletado(s) do disco`);
+    }
+
+    // 4. Remover de KB/documents/ (sistema de extração)
     const extractedPath = path.join(ACTIVE_PATHS.kb, 'documents', `${id}.txt`);
     const extractedMetadata = extractedPath.replace('.txt', '.metadata.json');
     let removedExtracted = false;
 
     if (fs.existsSync(extractedPath)) {
+      const stats = fs.statSync(extractedPath);
       await fs.promises.unlink(extractedPath);
-      if (fs.existsSync(extractedMetadata)) {
-        await fs.promises.unlink(extractedMetadata);
-      }
+      totalSpaceSaved += stats.size;
+      totalFilesDeleted++;
       removedExtracted = true;
+
+      if (fs.existsSync(extractedMetadata)) {
+        const metaStats = fs.statSync(extractedMetadata);
+        await fs.promises.unlink(extractedMetadata);
+        totalSpaceSaved += metaStats.size;
+        totalFilesDeleted++;
+      }
       logger.info(`✅ Documento ${id} removido de KB/documents/`);
     }
 
+    // 5. Remover texto extraído (data/extracted-texts/)
+    const extractedTextsDir = path.join(ACTIVE_PATHS.data, 'extracted-texts');
+    if (fs.existsSync(extractedTextsDir)) {
+      const extractedFiles = fs.readdirSync(extractedTextsDir);
+      let extractedTextDeleted = 0;
+
+      for (const file of extractedFiles) {
+        if (file.includes(id) || file.startsWith(`kb-extracted-${id}`)) {
+          const filePath = path.join(extractedTextsDir, file);
+          const stats = fs.statSync(filePath);
+          await fs.promises.unlink(filePath);
+          totalSpaceSaved += stats.size;
+          extractedTextDeleted++;
+        }
+      }
+
+      if (extractedTextDeleted > 0) {
+        totalFilesDeleted += extractedTextDeleted;
+        logger.info(`✅ ${extractedTextDeleted} texto(s) extraído(s) deletado(s)`);
+      }
+    }
+
     // Verificar se removeu de algum lugar
-    if (!cleanerResult.success && !removedFromNew && !removedExtracted) {
+    if (!cleanerResult.success && !removedFromNew && !removedExtracted && structuredFiles.length === 0) {
       logger.warn(`⚠️ Documento ${id} não encontrado em nenhum sistema`);
       return res.status(404).json({
         success: false,
@@ -6193,17 +6281,18 @@ app.delete('/api/kb/documents/:id', requireAuth, generalLimiter, async (req, res
 
     const result = {
       success: true,
-      message: `Documento ${id} deletado com sucesso`,
+      message: `Documento ${id} deletado completamente`,
       details: {
         removedFromKBCleaner: cleanerResult.success,
         removedFromKBDocuments: removedFromNew,
         removedFromExtracted: removedExtracted,
-        filesDeleted: cleanerResult.filesDeleted || (removedExtracted ? 2 : 0),
-        spaceSaved: cleaner.formatBytes(cleanerResult.spaceSaved || 0)
+        structuredFilesDeleted: structuredFiles.length,
+        totalFilesDeleted,
+        spaceSaved: cleaner.formatBytes(totalSpaceSaved)
       }
     };
 
-    logger.info(`✅ Deleção completa concluída:`, result.details);
+    logger.info(`✅ Deleção COMPLETA concluída:`, result.details);
     res.json(result);
 
   } catch (error) {
