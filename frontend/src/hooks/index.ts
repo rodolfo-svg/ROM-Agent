@@ -40,3 +40,8 @@ export {
   type UseFileUploadOptions,
   type UseFileUploadReturn,
 } from './useFileUpload';
+
+// Extraction Progress Hook
+export {
+  useExtractionProgress,
+} from './useExtractionProgress';
