@@ -91,9 +91,9 @@ services:
       # Tribunais estaduais usam Cloudflare que bloqueia HTTP simples
       # ═══════════════════════════════════════════════════════════════
       - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
-        value: "false"
+        value: "true"  # Não baixar - usar Chromium do sistema (Aptfile)
       - key: PUPPETEER_EXECUTABLE_PATH
-        value: ""  # Usa Chrome instalado pelo puppeteer browsers install
+        value: /usr/bin/chromium-browser  # Chromium instalado via Aptfile
 
       # Session Secret (auto-gerado)
       - key: SESSION_SECRET
@@ -213,9 +213,9 @@ services:
       # Tribunais estaduais usam Cloudflare que bloqueia HTTP simples
       # ═══════════════════════════════════════════════════════════════
       - key: PUPPETEER_SKIP_CHROMIUM_DOWNLOAD
-        value: "false"
+        value: "true"  # Não baixar - usar Chromium do sistema (Aptfile)
       - key: PUPPETEER_EXECUTABLE_PATH
-        value: ""  # Usa Chrome instalado pelo puppeteer browsers install
+        value: /usr/bin/chromium-browser  # Chromium instalado via Aptfile
 
       # Session Secret (auto-gerado)
       - key: SESSION_SECRET

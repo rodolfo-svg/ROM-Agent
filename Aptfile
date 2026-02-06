@@ -1,6 +1,11 @@
 # Aptfile - Dependências do sistema para Puppeteer/Chromium no Render
 # Documentação: https://render.com/docs/native-environments
 
+# ═══════════════════════════════════════════════════════════════
+# CHROMIUM BROWSER - CRÍTICO PARA PUPPETEER
+# ═══════════════════════════════════════════════════════════════
+chromium-browser
+
 # Fontes e certificados
 ca-certificates
 fonts-liberation
