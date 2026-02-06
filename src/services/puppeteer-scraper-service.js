@@ -53,6 +53,12 @@ class PuppeteerScraperService {
       return;
     }
 
+    // ⚠️ DESABILITAR TEMPORARIAMENTE - chromium.executablePath() causa timeout
+    logger.warn(`[Puppeteer] DESABILITADO temporariamente - causava timeout no servidor`);
+    logger.warn(`[Puppeteer] Sistema continuará apenas com HTTP scraping`);
+    this.initFailed = true;
+    return;
+
     try {
       logger.info(`[Puppeteer] Inicializando pool com ${this.maxBrowsers} navegadores...`);
 
