@@ -224,8 +224,9 @@ class JurisprudenceScraperService {
         metadata = scraped.metadata;
       }
 
-      if (!ementaCompleta || ementaCompleta.length < 100) {
-        throw new Error('Ementa muito curta ou não encontrada');
+      // ✅ Threshold aumentado: 500 chars para forçar Puppeteer em snippets curtos
+      if (!ementaCompleta || ementaCompleta.length < 500) {
+        throw new Error(`Ementa muito curta (${ementaCompleta?.length || 0} chars) - tentando Puppeteer`);
       }
 
       this.stats.scraped++;

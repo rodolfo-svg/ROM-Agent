@@ -32,6 +32,7 @@ import { apiFetch, getCsrfToken } from '@/services/api'
 import { useFileUpload, type FileInfo } from '@/hooks'
 import { useUploadProgress } from '@/hooks/useUploadProgress'
 import { ExtractionProgressBar } from '@/components/extraction'
+import { VolumeUploader } from '@/components/kb/VolumeUploader'
 
 // ============================================================
 // TYPES
@@ -772,6 +773,27 @@ export function UploadPage() {
                   )}
                 </div>
               )}
+            </div>
+
+            {/* Volume Merger - Multi-PDF Upload */}
+            <div className="bg-white rounded-xl shadow-soft p-8 mb-6">
+              <div className="mb-4">
+                <h2 className="text-lg font-semibold text-stone-800 mb-2 flex items-center gap-2">
+                  <Brain className="w-5 h-5 text-purple-500" />
+                  Mesclar Múltiplos Volumes
+                </h2>
+                <p className="text-sm text-stone-600">
+                  Selecione múltiplos PDFs (Vol1, Vol2, Vol3...) para mesclar automaticamente antes da análise
+                </p>
+              </div>
+
+              <VolumeUploader
+                onUploadComplete={() => {
+                  console.log('[UploadPage] Volume merge completed, refreshing documents...')
+                  fetchDocuments()
+                  fetchActiveJobs()
+                }}
+              />
             </div>
 
             {/* Search and Filters */}
