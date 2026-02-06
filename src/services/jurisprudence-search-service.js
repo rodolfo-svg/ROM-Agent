@@ -119,19 +119,7 @@ class JurisprudenceSearchService {
       const DATAJUD_TIMEOUT = 12000; // 12s - fonte oficial (margem de 2s)
       const JUSBRASIL_TIMEOUT = 5000; // 5s - frequentemente falha (desabilitado)
 
-      // PRIORIDADE 1: Google Search (mais rápido e confiável)
-      if (this.config.websearch.enabled) {
-        sources.push('websearch');
-        searchPromises.push(
-          this.withTimeout(
-            this.searchWeb(tese, { limit, tribunal }),
-            GOOGLE_TIMEOUT,
-            'Google Search'
-          )
-        );
-      }
-
-      // PRIORIDADE 2: DataJud (oficial mas pode ser lenta)
+      // PRIORIDADE 1: DataJud (oficial - ementas completas e confiáveis)
       if (this.config.datajud.enabled && this.config.datajud.apiKey) {
         sources.push('datajud');
         searchPromises.push(
@@ -139,6 +127,18 @@ class JurisprudenceSearchService {
             this.searchDataJud(tese, { limit, tribunal, dataInicio, dataFim }),
             DATAJUD_TIMEOUT,
             'DataJud'
+          )
+        );
+      }
+
+      // PRIORIDADE 2: Google Search (fallback - pode retornar notícias)
+      if (this.config.websearch.enabled) {
+        sources.push('websearch');
+        searchPromises.push(
+          this.withTimeout(
+            this.searchWeb(tese, { limit, tribunal }),
+            GOOGLE_TIMEOUT,
+            'Google Search'
           )
         );
       }
