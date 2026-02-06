@@ -52,6 +52,7 @@ class PuppeteerScraperService {
     const browserPromises = Array(this.maxBrowsers).fill(null).map(() =>
       puppeteer.launch({
         headless: this.headless,
+        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,  // ✅ CRÍTICO: Usar Chromium do sistema
         args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
