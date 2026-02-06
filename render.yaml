@@ -28,7 +28,8 @@ services:
     # CRÍTICO: Iniciar servidor IMEDIATAMENTE para evitar port scan timeout
     # Frontend já foi buildado no buildCommand
     # Migrations rodam assíncronamente após servidor abrir porta
-    startCommand: npm run web:enhanced
+    # MEMÓRIA: 6GB para Node.js (Pro plan tem 8GB total, deixa 2GB para sistema)
+    startCommand: node --max-old-space-size=6144 scripts/ensure-frontend-build.js && node --max-old-space-size=6144 src/server-enhanced.js
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
