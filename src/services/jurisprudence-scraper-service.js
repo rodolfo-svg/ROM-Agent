@@ -200,11 +200,11 @@ class JurisprudenceScraperService {
     }
 
     try {
-      // ✅ NOVO: Validar se URL não é página de listagem
-      if (this.isListingPage(url)) {
-        logger.warn(`[Scraper] URL rejeitada (página de listagem): ${url.substring(0, 80)}`);
-        throw new Error('URL de listagem/busca - não contém decisão individual');
-      }
+      // ✅ TESTE: Comentado temporariamente para diagnóstico
+      // if (this.isListingPage(url)) {
+      //   logger.warn(`[Scraper] URL rejeitada (página de listagem): ${url.substring(0, 80)}`);
+      //   throw new Error('URL de listagem/busca - não contém decisão individual');
+      // }
 
       // Detectar tipo de documento
       const urlLower = url.toLowerCase();
