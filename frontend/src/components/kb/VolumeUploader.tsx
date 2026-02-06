@@ -56,34 +56,139 @@ export function VolumeUploader({ onUploadComplete }: { onUploadComplete?: () => 
     setError(null)
 
     try {
-      const formData = new FormData()
-      files.forEach(({ file }) => {
-        formData.append('files', file)
-      })
+      // ✅ DETECTAR SE PRECISA CHUNKED UPLOAD (arquivos >50MB ou soma >80MB)
+      const totalSize = files.reduce((acc, f) => acc + f.file.size, 0)
+      const hasLargeFile = files.some(f => f.file.size > 50 * 1024 * 1024)
+      const CHUNKED_THRESHOLD = 80 * 1024 * 1024 // 80MB
 
-      const processName = files[0].file.name.replace(/[_-]?vol.*$/i, '').replace(/\.[^.]+$/, '')
-      formData.append('processName', processName)
+      if (hasLargeFile || totalSize > CHUNKED_THRESHOLD) {
+        console.log(`[VolumeUploader] Arquivos grandes detectados (${(totalSize / 1024 / 1024).toFixed(1)} MB), usando CHUNKED UPLOAD`)
 
-      const response = await fetch('/api/kb/merge-volumes', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include'
-      })
+        // ✅ FASE 1: Upload de cada arquivo via chunked
+        const uploadedPaths: string[] = []
 
-      const result = await response.json()
+        for (const { file } of files) {
+          console.log(`📦 [VolumeUploader] Uploading: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`)
 
-      if (result.success) {
-        alert(`✅ ${files.length} volumes mesclados com sucesso!\n\n` +
-              `Documento: ${result.mergedDocument.name}\n` +
-              `Total de páginas: ${result.mergedDocument.totalPages}\n\n` +
-              `O documento já está disponível no Knowledge Base.`)
+          // Iniciar sessão chunked
+          const CHUNK_SIZE = 40 * 1024 * 1024 // 40MB
+          const totalChunks = Math.ceil(file.size / CHUNK_SIZE)
 
-        setFiles([])
-        onUploadComplete?.()
+          const initResponse = await fetch('/api/upload/chunked/init', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+              filename: file.name,
+              fileSize: file.size,
+              contentType: file.type,
+            }),
+          })
+
+          if (!initResponse.ok) {
+            throw new Error(`Falha ao iniciar chunked upload: ${initResponse.status}`)
+          }
+
+          const { uploadId } = await initResponse.json()
+
+          // Upload cada chunk
+          for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+            const start = chunkIndex * CHUNK_SIZE
+            const end = Math.min(start + CHUNK_SIZE, file.size)
+            const chunk = file.slice(start, end)
+
+            console.log(`   📤 Chunk ${chunkIndex + 1}/${totalChunks}`)
+
+            const chunkResponse = await fetch(`/api/upload/chunked/${uploadId}/chunk/${chunkIndex}`, {
+              method: 'POST',
+              body: chunk,
+              credentials: 'include',
+            })
+
+            if (!chunkResponse.ok) {
+              throw new Error(`Falha no chunk ${chunkIndex}: ${chunkResponse.status}`)
+            }
+          }
+
+          // Finalizar
+          const finalizeResponse = await fetch(`/api/upload/chunked/${uploadId}/finalize`, {
+            method: 'POST',
+            credentials: 'include',
+          })
+
+          if (!finalizeResponse.ok) {
+            throw new Error(`Falha ao finalizar chunked upload: ${finalizeResponse.status}`)
+          }
+
+          const finalResult = await finalizeResponse.json()
+          uploadedPaths.push(finalResult.path || finalResult.filePath)
+          console.log(`   ✅ Upload completo: ${file.name}`)
+        }
+
+        // ✅ FASE 2: Mesclar arquivos já uploadados
+        console.log(`[VolumeUploader] Mesclando ${uploadedPaths.length} volumes...`)
+
+        const processName = files[0].file.name.replace(/[_-]?vol.*$/i, '').replace(/\.[^.]+$/, '')
+
+        const mergeResponse = await fetch('/api/kb/merge-volumes/from-paths', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            paths: uploadedPaths,
+            processName,
+          }),
+        })
+
+        const mergeResult = await mergeResponse.json()
+
+        if (mergeResult.success) {
+          alert(`✅ ${files.length} volumes mesclados com sucesso!\n\n` +
+                `Documento: ${mergeResult.mergedDocument.name}\n` +
+                `Total de páginas: ${mergeResult.mergedDocument.totalPages}\n\n` +
+                `O documento já está disponível no Knowledge Base.`)
+
+          setFiles([])
+          onUploadComplete?.()
+        } else {
+          setError(mergeResult.error || 'Erro ao mesclar volumes')
+        }
+
       } else {
-        setError(result.error || 'Erro ao mesclar volumes')
+        // ✅ UPLOAD NORMAL (arquivos pequenos <80MB total)
+        console.log(`[VolumeUploader] Upload normal (${(totalSize / 1024 / 1024).toFixed(1)} MB)`)
+
+        const formData = new FormData()
+        files.forEach(({ file }) => {
+          formData.append('files', file)
+        })
+
+        const processName = files[0].file.name.replace(/[_-]?vol.*$/i, '').replace(/\.[^.]+$/, '')
+        formData.append('processName', processName)
+
+        const response = await fetch('/api/kb/merge-volumes', {
+          method: 'POST',
+          body: formData,
+          credentials: 'include'
+        })
+
+        const result = await response.json()
+
+        if (result.success) {
+          alert(`✅ ${files.length} volumes mesclados com sucesso!\n\n` +
+                `Documento: ${result.mergedDocument.name}\n` +
+                `Total de páginas: ${result.mergedDocument.totalPages}\n\n` +
+                `O documento já está disponível no Knowledge Base.`)
+
+          setFiles([])
+          onUploadComplete?.()
+        } else {
+          setError(result.error || 'Erro ao mesclar volumes')
+        }
       }
+
     } catch (err) {
+      console.error('[VolumeUploader] Erro:', err)
       setError(err instanceof Error ? err.message : 'Erro ao mesclar volumes')
     } finally {
       setMerging(false)

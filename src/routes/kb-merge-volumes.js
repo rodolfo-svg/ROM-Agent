@@ -270,6 +270,168 @@ function formatBytes(bytes) {
 }
 
 /**
+ * POST /api/kb/merge-volumes/from-paths
+ *
+ * Mescla PDFs a partir de paths de arquivos já uploadados
+ * (útil para arquivos que vieram via chunked upload)
+ *
+ * Body (JSON):
+ * - paths: Array de caminhos absolutos dos PDFs já uploadados
+ * - processName: Nome do processo (opcional)
+ *
+ * Response:
+ * {
+ *   success: true,
+ *   mergedDocument: {
+ *     id: "...",
+ *     name: "...",
+ *     path: "...",
+ *     size: 12345,
+ *     volumesCount: 3,
+ *     totalPages: 530
+ *   },
+ *   message: "3 volumes mesclados com sucesso"
+ * }
+ */
+router.post('/from-paths', async (req, res) => {
+  try {
+    const { paths, processName = 'Processo' } = req.body;
+
+    logger.info(`🔀 [Merge from Paths] Iniciando merge de ${paths.length} arquivo(s) já uploadados`);
+
+    // Validação
+    if (!paths || !Array.isArray(paths) || paths.length < 2) {
+      return res.status(400).json({
+        success: false,
+        error: 'É necessário pelo menos 2 arquivos para mesclar'
+      });
+    }
+
+    // Verificar se todos os arquivos existem
+    for (const filePath of paths) {
+      try {
+        await fs.access(filePath);
+      } catch (error) {
+        return res.status(400).json({
+          success: false,
+          error: `Arquivo não encontrado: ${path.basename(filePath)}`
+        });
+      }
+    }
+
+    // Ordenar arquivos por volume
+    const sortedFiles = paths
+      .map(filePath => ({
+        path: filePath,
+        name: path.basename(filePath),
+        volumeNumber: extractVolumeNumber(path.basename(filePath))
+      }))
+      .sort((a, b) => a.volumeNumber - b.volumeNumber);
+
+    logger.info(`   📋 Ordem dos volumes:`);
+    sortedFiles.forEach((f, i) => {
+      logger.info(`      ${i + 1}. ${f.name} (Vol ${f.volumeNumber || 'N/A'})`);
+    });
+
+    // Criar novo PDF mesclado
+    const mergedPdf = await PDFDocument.create();
+    let totalPages = 0;
+
+    for (const file of sortedFiles) {
+      logger.info(`   ⏳ Processando: ${file.name}`);
+
+      // Ler PDF
+      const pdfBytes = await fs.readFile(file.path);
+      const pdf = await PDFDocument.load(pdfBytes);
+
+      // Copiar todas as páginas
+      const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+      copiedPages.forEach(page => mergedPdf.addPage(page));
+
+      totalPages += pdf.getPageCount();
+      logger.info(`      ✅ ${pdf.getPageCount()} página(s) adicionada(s)`);
+    }
+
+    // Salvar PDF mesclado
+    const timestamp = Date.now();
+    const safeName = processName.replace(/[^a-zA-Z0-9\\s]/g, '_').replace(/\\s+/g, '_');
+    const mergedFilename = `${timestamp}_${safeName}_Completo.pdf`;
+    const mergedPath = path.join(ACTIVE_PATHS.data, 'uploads', mergedFilename);
+
+    // Garantir que diretório existe
+    await fs.mkdir(path.dirname(mergedPath), { recursive: true });
+
+    const mergedBytes = await mergedPdf.save();
+    await fs.writeFile(mergedPath, mergedBytes);
+
+    const mergedSize = (await fs.stat(mergedPath)).size;
+
+    logger.info(`   ✅ PDF mesclado criado: ${mergedFilename}`);
+    logger.info(`   📊 Total: ${totalPages} páginas, ${formatBytes(mergedSize)}`);
+
+    // Criar documento no KB
+    const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
+    let allDocs = [];
+
+    try {
+      const content = await fs.readFile(kbDocsPath, 'utf8');
+      allDocs = JSON.parse(content);
+    } catch (error) {
+      allDocs = [];
+    }
+
+    const documentId = `merged-${timestamp}`;
+    const newDoc = {
+      id: documentId,
+      name: mergedFilename,
+      originalName: mergedFilename,
+      type: 'application/pdf',
+      size: mergedSize,
+      path: mergedPath,
+      uploadedAt: new Date().toISOString(),
+      metadata: {
+        isMergedDocument: true,
+        volumesCount: sortedFiles.length,
+        totalPages,
+        sourceVolumes: sortedFiles.map(f => ({
+          originalName: f.name,
+          path: f.path
+        })),
+        processName
+      }
+    };
+
+    allDocs.push(newDoc);
+    await fs.writeFile(kbDocsPath, JSON.stringify(allDocs, null, 2));
+
+    logger.info(`   ✅ Documento adicionado ao KB: ${documentId}`);
+
+    res.json({
+      success: true,
+      mergedDocument: {
+        id: documentId,
+        name: mergedFilename,
+        path: mergedPath,
+        size: mergedSize,
+        volumesCount: sortedFiles.length,
+        totalPages,
+        processName
+      },
+      message: `${sortedFiles.length} volume(s) mesclado(s) com sucesso`
+    });
+
+  } catch (error) {
+    logger.error('❌ [Merge from Paths] Erro ao mesclar PDFs:', error);
+
+    res.status(500).json({
+      success: false,
+      error: error.message,
+      details: error.stack
+    });
+  }
+});
+
+/**
  * GET /api/kb/merge-volumes/status
  *
  * Retorna status do serviço de merge
@@ -284,7 +446,8 @@ router.get('/status', (req, res) => {
       maxFiles: 10,
       maxFileSize: '500 MB',
       supportedFormats: ['PDF'],
-      autoVolumeDetection: true
+      autoVolumeDetection: true,
+      chunkedUploadSupport: true
     }
   });
 });
