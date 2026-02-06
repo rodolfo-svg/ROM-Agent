@@ -140,6 +140,20 @@ export function VolumeUploader({ onUploadComplete }: { onUploadComplete?: () => 
           }),
         })
 
+        if (!mergeResponse.ok) {
+          // 502/504 = servidor processando ou deploy em andamento
+          if (mergeResponse.status === 502 || mergeResponse.status === 504) {
+            throw new Error(
+              'Servidor está processando ou em manutenção.\n\n' +
+              '⏳ Deploy pode estar em andamento.\n' +
+              '🔄 Aguarde 2-3 minutos e tente novamente.\n\n' +
+              'Os arquivos já foram enviados com sucesso,\n' +
+              'basta clicar em "Mesclar" novamente.'
+            )
+          }
+          throw new Error(`Erro HTTP ${mergeResponse.status}: ${mergeResponse.statusText}`)
+        }
+
         const mergeResult = await mergeResponse.json()
 
         if (mergeResult.success) {
