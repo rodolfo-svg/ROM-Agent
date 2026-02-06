@@ -44,29 +44,53 @@ class PuppeteerScraperService {
 
   /**
    * Inicializar pool de navegadores
+   * GRACEFUL DEGRADATION: Se falhar, continua sem Puppeteer
    */
   async initBrowserPool() {
     if (this.browserInitialized) return;
+    if (this.initFailed) {
+      logger.warn(`[Puppeteer] Inicialização falhou anteriormente - pulando`);
+      return;
+    }
 
-    logger.info(`[Puppeteer] Inicializando pool com ${this.maxBrowsers} navegadores...`);
+    try {
+      logger.info(`[Puppeteer] Inicializando pool com ${this.maxBrowsers} navegadores...`);
 
-    const browserPromises = Array(this.maxBrowsers).fill(null).map(async () =>
-      puppeteer.launch({
-        headless: chromium.headless,  // Usa config otimizada do @sparticuz/chromium
-        executablePath: await chromium.executablePath(),  // ✅ Chromium serverless
-        args: [
-          ...chromium.args,  // Args otimizados para serverless
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--window-size=1920x1080',
-          '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-        ]
-      })
-    );
+      // Timeout de 30s para inicialização
+      const initPromise = Promise.all(
+        Array(this.maxBrowsers).fill(null).map(async () =>
+          puppeteer.launch({
+            headless: chromium.headless,
+            executablePath: await chromium.executablePath(),
+            args: [
+              ...chromium.args,
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+              '--disable-dev-shm-usage',
+              '--window-size=1920x1080',
+              '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            ],
+            timeout: 30000  // 30s timeout
+          })
+        )
+      );
 
-    this.browserPool = await Promise.all(browserPromises);
-    this.browserInitialized = true;
+      // Race com timeout
+      this.browserPool = await Promise.race([
+        initPromise,
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Browser init timeout')), 30000)
+        )
+      ]);
+
+      this.browserInitialized = true;
+      logger.info(`[Puppeteer] ✅ Pool inicializado com sucesso`);
+
+    } catch (error) {
+      this.initFailed = true;
+      logger.warn(`[Puppeteer] ⚠️ Falha ao inicializar: ${error.message}`);
+      logger.warn(`[Puppeteer] Sistema continuará apenas com HTTP scraping (sem bypass Cloudflare)`);
+    }
 
     logger.info(`[Puppeteer] Pool inicializado com sucesso`);
   }
@@ -94,6 +118,16 @@ class PuppeteerScraperService {
 
     // Inicializar pool se necessário
     await this.initBrowserPool();
+
+    // Se inicialização falhou, retornar falhas para todas as tasks
+    if (this.initFailed || !this.browserInitialized) {
+      logger.warn(`[Puppeteer] Pool não inicializado - retornando falhas`);
+      return tasks.map(task => ({
+        url: task.url,
+        success: false,
+        error: 'Puppeteer não disponível (falha na inicialização do Chromium)'
+      }));
+    }
 
     // Processar em paralelo com limite de concorrência
     const promises = tasks.map(task =>
