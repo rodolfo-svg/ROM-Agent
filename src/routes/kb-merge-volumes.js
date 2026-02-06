@@ -159,6 +159,7 @@ router.post('/', upload.array('files', 10), async (req, res) => {
       type: 'application/pdf',
       size: mergedSize,
       path: mergedPath,
+      userId: req.session?.user?.id || 'web-upload', // ✅ FIX: Adicionar userId
       uploadedAt: new Date().toISOString(),
       metadata: {
         isMergedDocument: true,
@@ -388,6 +389,7 @@ router.post('/from-paths', async (req, res) => {
       type: 'application/pdf',
       size: mergedSize,
       path: mergedPath,
+      userId: req.session?.user?.id || 'web-upload', // ✅ FIX: Adicionar userId
       uploadedAt: new Date().toISOString(),
       metadata: {
         isMergedDocument: true,
