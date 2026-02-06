@@ -13,7 +13,8 @@
  * const results = await scraper.scrapeMultiple([url1, url2, url3]);
  */
 
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 import { logger } from '../utils/logger.js';
 import pLimit from 'p-limit';
 
@@ -49,16 +50,15 @@ class PuppeteerScraperService {
 
     logger.info(`[Puppeteer] Inicializando pool com ${this.maxBrowsers} navegadores...`);
 
-    const browserPromises = Array(this.maxBrowsers).fill(null).map(() =>
+    const browserPromises = Array(this.maxBrowsers).fill(null).map(async () =>
       puppeteer.launch({
-        headless: this.headless,
-        executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,  // ✅ CRÍTICO: Usar Chromium do sistema
+        headless: chromium.headless,  // Usa config otimizada do @sparticuz/chromium
+        executablePath: await chromium.executablePath(),  // ✅ Chromium serverless
         args: [
+          ...chromium.args,  // Args otimizados para serverless
           '--no-sandbox',
           '--disable-setuid-sandbox',
           '--disable-dev-shm-usage',
-          '--disable-accelerated-2d-canvas',
-          '--disable-gpu',
           '--window-size=1920x1080',
           '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
         ]

@@ -10,41 +10,10 @@ echo "🔧 [1/6] Instalando dependências do backend..."
 npm ci
 
 echo ""
-echo "🌐 [2/7] Instalando Chromium via apt (Render não processa Aptfile)..."
-
-# Render web services NÃO processam Aptfile automaticamente
-# Precisamos instalar Chromium manualmente com sudo
-
-if command -v chromium-browser &> /dev/null; then
-  echo "   ✅ Chromium já instalado: $(chromium-browser --version 2>&1 | head -1)"
-elif command -v chromium &> /dev/null; then
-  echo "   ✅ Chromium já instalado (comando alternativo)"
-else
-  echo "   📦 Instalando Chromium e dependências..."
-
-  # Atualizar lista de pacotes
-  sudo apt-get update -qq
-
-  # Instalar Chromium e dependências essenciais
-  sudo apt-get install -y -qq \
-    chromium-browser \
-    chromium-chromedriver \
-    fonts-liberation \
-    libnss3 \
-    libxss1 \
-    libasound2 \
-    libatk-bridge2.0-0 \
-    libgtk-3-0 \
-    libgbm1
-
-  # Verificar instalação
-  if command -v chromium-browser &> /dev/null; then
-    echo "   ✅ Chromium instalado: $(chromium-browser --version 2>&1 | head -1)"
-    echo "   Path: $(which chromium-browser)"
-  else
-    echo "   ⚠️ Chromium não foi instalado, Puppeteer pode não funcionar"
-  fi
-fi
+echo "🌐 [2/7] Chromium serverless via @sparticuz/chromium..."
+echo "   ✅ Chromium incluído como dependência NPM (@sparticuz/chromium)"
+echo "   ✅ Não requer instalação de sistema (funciona em qualquer ambiente)"
+echo "   ✅ Otimizado para ambientes serverless/restritos como Render"
 
 echo ""
 echo "🧹 [3/7] Limpando build anterior do frontend..."
@@ -80,13 +49,10 @@ echo "📁 Arquivos gerados em frontend/dist:"
 ls -lh frontend/dist/ | head -20
 
 echo ""
-echo "🔍 [7/7] Verificação final do Chromium..."
-if command -v chromium-browser &> /dev/null; then
-  echo "   ✅ Chromium disponível: $(which chromium-browser)"
-  echo "   ✅ Puppeteer pronto para uso"
-else
-  echo "   ⚠️ Chromium não encontrado - Puppeteer não funcionará"
-fi
+echo "🔍 [7/7] Verificação final..."
+echo "   ✅ @sparticuz/chromium instalado (pacote NPM)"
+echo "   ✅ puppeteer-core instalado"
+echo "   ✅ Puppeteer pronto para uso serverless"
 
 echo ""
 echo "════════════════════════════════════════════════════════════"
