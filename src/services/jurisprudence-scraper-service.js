@@ -200,11 +200,11 @@ class JurisprudenceScraperService {
     }
 
     try {
-      // ✅ TESTE: Comentado temporariamente para diagnóstico
-      // if (this.isListingPage(url)) {
-      //   logger.warn(`[Scraper] URL rejeitada (página de listagem): ${url.substring(0, 80)}`);
-      //   throw new Error('URL de listagem/busca - não contém decisão individual');
-      // }
+      // ✅ Filtro de páginas de listagem/notícias reativado
+      if (this.isListingPage(url)) {
+        logger.warn(`[Scraper] URL rejeitada (página de listagem/notícia): ${url.substring(0, 80)}`);
+        throw new Error('URL de listagem/busca/notícia - não contém decisão individual');
+      }
 
       // Detectar tipo de documento
       const urlLower = url.toLowerCase();
@@ -627,7 +627,9 @@ class JurisprudenceScraperService {
       'pesquisar=',       // Form de busca
       '/resultados',      // Página de resultados
       '/lista.php',       // Listas PHP
-      '/search.php'       // Páginas de busca PHP
+      '/search.php',      // Páginas de busca PHP
+      '/Noticias/',       // Páginas de notícias (STJ, TJs)
+      '/Comunicacao/'     // Páginas de comunicação/notícias
     ];
 
     return listingPatterns.some(pattern => urlLower.includes(pattern));
