@@ -12,13 +12,8 @@ services:
   - type: web
     name: rom-agent
     runtime: node
-    plan: pro  # ✅ 8GB RAM - suporta múltiplos usuários simultâneos
+    plan: pro  # ✅ 4GB RAM - suficiente para merge de PDFs grandes
     branch: main
-
-    # ═══ SCALING (PRO PLAN) ═══
-    scaling:
-      minInstances: 1
-      maxInstances: 3
 
     # ═══ BUILD ═══
     buildCommand: bash scripts/build-production.sh
@@ -27,8 +22,8 @@ services:
     # CRÍTICO: Iniciar servidor IMEDIATAMENTE para evitar port scan timeout
     # Frontend já foi buildado no buildCommand
     # Migrations rodam assíncronamente após servidor abrir porta
-    # MEMÓRIA: 4GB para Node.js (suficiente para merge 246MB, deixa 4GB para sistema)
-    startCommand: node --max-old-space-size=4096 scripts/ensure-frontend-build.js && node --max-old-space-size=4096 src/server-enhanced.js
+    # MEMÓRIA: 3GB para Node.js (Pro 4GB total, deixa 1GB para sistema)
+    startCommand: node --max-old-space-size=3072 scripts/ensure-frontend-build.js && node --max-old-space-size=3072 src/server-enhanced.js
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
