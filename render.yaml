@@ -64,9 +64,11 @@ services:
       - key: ANTHROPIC_API_KEY
         sync: false
 
-      # DataJud (consulta jurisprudência)
+      # DataJud (consulta jurisprudência) - TEMPORARIAMENTE DESABILITADO
+      # Motivo: URL/API key precisa ser validada antes de habilitar
+      # Causava timeout de 30s travando todo o sistema
       - key: DATAJUD_ENABLED
-        value: "true"
+        value: "false"
       - key: DATAJUD_API_KEY
         sync: false
 
@@ -188,9 +190,11 @@ services:
       - key: ANTHROPIC_API_KEY
         sync: false
 
-      # DataJud (consulta jurisprudência)
+      # DataJud (consulta jurisprudência) - TEMPORARIAMENTE DESABILITADO
+      # Motivo: URL/API key precisa ser validada antes de habilitar
+      # Causava timeout de 30s travando todo o sistema
       - key: DATAJUD_ENABLED
-        value: "true"
+        value: "false"
       - key: DATAJUD_API_KEY
         sync: false
 
