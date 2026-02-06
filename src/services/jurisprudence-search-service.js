@@ -119,8 +119,12 @@ class JurisprudenceSearchService {
       const DATAJUD_TIMEOUT = 12000; // 12s - fonte oficial (margem de 2s)
       const JUSBRASIL_TIMEOUT = 5000; // 5s - frequentemente falha (desabilitado)
 
-      // PRIORIDADE 1: DataJud (oficial - ementas completas e confiáveis)
-      if (this.config.datajud.enabled && this.config.datajud.apiKey) {
+      // ✅ LÓGICA CONDICIONAL: DataJud só funciona para tribunais SUPERIORES
+      const tribunaisSuperiores = ['STJ', 'STF', 'TST', 'TSE', 'STM'];
+      const isTribunalSuperior = tribunal ? tribunaisSuperiores.some(t => tribunal.toUpperCase().includes(t)) : false;
+
+      // PRIORIDADE 1A: DataJud (APENAS para tribunais superiores - STJ, STF, TST, TSE, STM)
+      if (this.config.datajud.enabled && this.config.datajud.apiKey && isTribunalSuperior) {
         sources.push('datajud');
         searchPromises.push(
           this.withTimeout(
@@ -131,7 +135,7 @@ class JurisprudenceSearchService {
         );
       }
 
-      // PRIORIDADE 2: Google Search (fallback - pode retornar notícias)
+      // PRIORIDADE 1B: Google Search (sempre - funciona para TODOS os tribunais)
       if (this.config.websearch.enabled) {
         sources.push('websearch');
         searchPromises.push(
