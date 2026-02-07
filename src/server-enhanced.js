@@ -4344,6 +4344,16 @@ app.get('/api/info', async (req, res) => {
         }
       },
 
+      // Puppeteer / Browserless.io diagnostic
+      puppeteer: {
+        useBrowserless: process.env.USE_BROWSERLESS === 'true',
+        useBrowserlessRaw: process.env.USE_BROWSERLESS,
+        useBrowserlessType: typeof process.env.USE_BROWSERLESS,
+        hasBrowserlessKey: !!process.env.BROWSERLESS_API_KEY,
+        browserlessKeyLength: process.env.BROWSERLESS_API_KEY?.length || 0,
+        configured: process.env.USE_BROWSERLESS === 'true' && !!process.env.BROWSERLESS_API_KEY
+      },
+
       // Timestamp
       timestamp: new Date().toISOString()
     };
