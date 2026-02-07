@@ -136,15 +136,90 @@ router.post('/', async (req, res) => {
 
     console.log(`   ✅ Arquivo existe no disco`);
 
-    // Ler texto completo (detectar tipo de arquivo)
+    // ═══════════════════════════════════════════════════════════
+    // MERGE-FIRST ANALYSIS: Detectar documentos mesclados
+    // ═══════════════════════════════════════════════════════════
+    const isMergedDocument = doc.metadata?.isMergedDocument === true;
+    const sourceVolumes = doc.metadata?.sourceVolumes || [];
+
     console.log(`   📖 Lendo arquivo do disco...`);
     let rawText;
     let isPDF = false;
+
     try {
       const fileExtension = path.extname(doc.path).toLowerCase();
 
-      if (fileExtension === '.pdf') {
-        // PDF: extrair texto com pdf-parse
+      if (fileExtension === '.pdf' && isMergedDocument && sourceVolumes.length > 0) {
+        // ═══════════════════════════════════════════════════════════
+        // DOCUMENTO MESCLADO: Processar volumes originais em PARALELO
+        // ═══════════════════════════════════════════════════════════
+        console.log(`\n   🔀 DOCUMENTO MESCLADO DETECTADO`);
+        console.log(`   📦 ${sourceVolumes.length} volumes originais encontrados`);
+        console.log(`   🚀 Estratégia: Extrair texto de cada volume em PARALELO`);
+        console.log(`   💡 Análise será ÚNICA e CONSOLIDADA (custo menor, 1 arquivo)`);
+
+        const pdfParse = (await import('pdf-parse/lib/pdf-parse.js')).default;
+
+        // Processar volumes em paralelo
+        const volumePromises = sourceVolumes.map(async (volume, index) => {
+          console.log(`\n   📄 Volume ${index + 1}/${sourceVolumes.length}: ${volume.originalName}`);
+
+          if (!volume.path || !fs.existsSync(volume.path)) {
+            console.log(`   ⚠️  Arquivo não encontrado: ${volume.path}`);
+            return {
+              index,
+              text: `\n\n═══════════════════════════════════════\nVOLUME ${index + 1}: ${volume.originalName}\n[ARQUIVO NÃO ENCONTRADO]\n═══════════════════════════════════════\n\n`,
+              pages: 0,
+              error: 'Arquivo não encontrado'
+            };
+          }
+
+          try {
+            const startTime = Date.now();
+            const dataBuffer = fs.readFileSync(volume.path);
+            const pdfData = await pdfParse(dataBuffer);
+            const elapsed = Math.round((Date.now() - startTime) / 1000);
+
+            console.log(`   ✅ Volume ${index + 1} processado em ${elapsed}s`);
+            console.log(`      Páginas: ${pdfData.numpages}`);
+            console.log(`      Texto: ${Math.round(pdfData.text.length / 1000)}k chars`);
+
+            return {
+              index,
+              text: `\n\n═══════════════════════════════════════\nVOLUME ${index + 1}: ${volume.originalName}\nPÁGINAS: ${pdfData.numpages}\n═══════════════════════════════════════\n\n${pdfData.text}`,
+              pages: pdfData.numpages,
+              size: pdfData.text.length
+            };
+          } catch (error) {
+            console.log(`   ❌ Erro no volume ${index + 1}: ${error.message}`);
+            return {
+              index,
+              text: `\n\n═══════════════════════════════════════\nVOLUME ${index + 1}: ${volume.originalName}\n[ERRO AO PROCESSAR: ${error.message}]\n═══════════════════════════════════════\n\n`,
+              pages: 0,
+              error: error.message
+            };
+          }
+        });
+
+        const volumeResults = await Promise.all(volumePromises);
+
+        // Concatenar textos na ordem correta
+        rawText = volumeResults
+          .sort((a, b) => a.index - b.index)
+          .map(v => v.text)
+          .join('\n\n');
+
+        const totalPages = volumeResults.reduce((sum, v) => sum + (v.pages || 0), 0);
+
+        console.log(`\n   ✅ MERGE-FIRST COMPLETO`);
+        console.log(`   📊 Total: ${totalPages} páginas, ${Math.round(rawText.length / 1000)}k caracteres`);
+        console.log(`   💰 Custo de extração: $0 (pdf-parse)`);
+        console.log(`   🎯 Próximo: Análise ÚNICA e CONSOLIDADA`);
+
+        isPDF = true;
+
+      } else if (fileExtension === '.pdf') {
+        // PDF simples (não mesclado)
         console.log(`   📄 Arquivo PDF detectado - extraindo texto...`);
         const pdfParse = (await import('pdf-parse/lib/pdf-parse.js')).default;
         const dataBuffer = fs.readFileSync(doc.path);
@@ -178,12 +253,13 @@ router.post('/', async (req, res) => {
       });
     }
 
-    // OTIMIZAÇÃO CRÍTICA: Para PDFs muito grandes (>100MB), não processar
-    if (isPDF && doc.size > 100 * 1024 * 1024) {
+    // LIMITE DE 100MB: Aplicar apenas a PDFs NÃO mesclados
+    // Documentos mesclados usam estratégia de volumes (sem limite)
+    if (isPDF && !isMergedDocument && doc.size > 100 * 1024 * 1024) {
       console.log(`   ⚠️ PDF muito grande (${Math.round(doc.size/1024/1024)}MB) - processamento pode falhar`);
       return res.status(400).json({
         success: false,
-        error: `PDF muito grande (${Math.round(doc.size/1024/1024)}MB). Limite: 100MB. Divida em volumes menores.`,
+        error: `PDF muito grande (${Math.round(doc.size/1024/1024)}MB). Limite: 100MB para PDFs únicos. Use função de merge de volumes para processar documentos grandes.`,
         size: doc.size,
         limit: 100 * 1024 * 1024
       });

@@ -123,9 +123,33 @@ router.post('/', requireAuth, upload.array('files', 10), async (req, res) => {
       logger.info(`      ✅ ${pdf.getPageCount()} página(s) adicionada(s)`);
     }
 
-    // Salvar PDF mesclado
+    // Salvar volumes individuais em diretório permanente (para merge-first analysis)
     const timestamp = Date.now();
     const safeName = processName.replace(/[^a-zA-Z0-9\s]/g, '_').replace(/\s+/g, '_');
+    const volumesDir = path.join(ACTIVE_PATHS.data, 'uploads', 'volumes', `${timestamp}_${safeName}`);
+
+    await fs.mkdir(volumesDir, { recursive: true });
+
+    logger.info(`   💾 Salvando volumes individuais para análise futura...`);
+    const permanentVolumes = [];
+
+    for (const file of sortedFiles) {
+      const volumeFilename = `${file.originalname}`;
+      const volumePath = path.join(volumesDir, volumeFilename);
+
+      // Copiar arquivo temporário para local permanente
+      await fs.copyFile(file.path, volumePath);
+
+      permanentVolumes.push({
+        originalName: file.originalname,
+        size: file.size,
+        path: volumePath  // ✅ FIX: Incluir path para merge-first analysis
+      });
+
+      logger.info(`      ✅ ${file.originalname} → volumes/${timestamp}_${safeName}/`);
+    }
+
+    // Salvar PDF mesclado
     const mergedFilename = `${timestamp}_${safeName}_Completo.pdf`;
     const mergedPath = path.join(ACTIVE_PATHS.data, 'uploads', mergedFilename);
 
@@ -171,10 +195,7 @@ router.post('/', requireAuth, upload.array('files', 10), async (req, res) => {
         isMergedDocument: true,
         volumesCount: sortedFiles.length,
         totalPages,
-        sourceVolumes: sortedFiles.map(f => ({
-          originalName: f.originalname,
-          size: f.size
-        })),
+        sourceVolumes: permanentVolumes,  // ✅ FIX: Usar volumes permanentes com paths
         processName
       }
     };
