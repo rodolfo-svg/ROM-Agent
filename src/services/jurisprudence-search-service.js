@@ -89,7 +89,8 @@ class JurisprudenceSearchService {
       tribunal = null,
       dataInicio = null,
       dataFim = null,
-      enableCache = true
+      enableCache = true,
+      forcarPuppeteer = false  // Modo de teste Browserless
     } = options;
 
     const searchStartTime = Date.now();
@@ -717,7 +718,7 @@ class JurisprudenceSearchService {
 
       // ETAPA 1: Scraping paralelo (3-5s por decisão)
       console.log('📥 [SCRAPING] Extraindo ementas completas...');
-      const scraped = await scraper.enrichDecisions(decisoes);
+      const scraped = await scraper.enrichDecisions(decisoes, { forcarPuppeteer });
 
       // ETAPA 2: Análise semântica com Bedrock (1-2s por decisão)
       console.log('🧠 [ANÁLISE] Extraindo teses e fundamentos com Bedrock...');

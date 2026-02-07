@@ -92,6 +92,11 @@ export const BEDROCK_TOOLS = [
               type: 'number',
               description: 'Número máximo de resultados a retornar (padrão: 5)',
               default: 5
+            },
+            forcar_puppeteer: {
+              type: 'boolean',
+              description: 'MODO TESTE: Força uso do Puppeteer/Browserless.io mesmo se HTTP funcionar. Use apenas para testar conexão Browserless.',
+              default: false
             }
           },
           required: ['termo']
@@ -319,13 +324,14 @@ export async function executeTool(toolName, toolInput) {
   try {
     switch (toolName) {
       case 'pesquisar_jurisprudencia': {
-        const { termo, tribunal, limite = 5 } = toolInput;
+        const { termo, tribunal, limite = 5, forcar_puppeteer = false } = toolInput;
 
         // ✅ ATUALIZADO: Usar serviço novo (Google Search + DataJud + JusBrasil)
         const resultado = await jurisprudenceService.searchAll(termo, {
           limit: limite,
           tribunal: tribunal || null,
-          enableCache: true
+          enableCache: true,
+          forcarPuppeteer: forcar_puppeteer  // Modo de teste Browserless
         });
 
         // ✅ DEDUPLICAÇÃO: Remover duplicatas de cada fonte

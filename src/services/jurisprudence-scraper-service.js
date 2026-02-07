@@ -94,37 +94,55 @@ class JurisprudenceScraperService {
    * - Adapta-se automaticamente se tribunal adicionar/remover Cloudflare
    *
    * @param {Array} decisions - Array de { url, tribunal, titulo, snippet }
+   * @param {Object} options - { forcarPuppeteer: boolean }
    * @returns {Promise<Array>} Decisões enriquecidas com ementas completas
    */
-  async enrichDecisions(decisions) {
+  async enrichDecisions(decisions, options = {}) {
     if (!decisions || decisions.length === 0) {
       return [];
     }
 
+    const { forcarPuppeteer = false } = options;
+
     logger.info(`[Scraper] Enriquecendo ${decisions.length} decisões com ementas completas`);
     const startTime = Date.now();
 
-    // FASE 1: Tentar HTTP simples para todas (rápido)
-    logger.info(`[Scraper] Fase 1/2: HTTP simples (rápido)`);
-    const promises = decisions.map(decision =>
-      this.limiter(() => this.scrapeEmenta(decision))
-    );
+    let results;
 
-    const enriched = await Promise.allSettled(promises);
+    // ✅ MODO TESTE: Pular Fase 1 se forcarPuppeteer=true
+    if (forcarPuppeteer) {
+      logger.info(`[Scraper] 🧪 MODO TESTE: Pulando HTTP, forçando Puppeteer/Browserless`);
+      // Marcar todas como "falhadas" para forçar Fase 2
+      results = decisions.map(decision => ({
+        ...decision,
+        ementaCompleta: decision.ementa || decision.snippet,
+        scraped: false,
+        scrapeFailed: true,
+        httpError: 'Forçado para teste Puppeteer'
+      }));
+    } else {
+      // FASE 1: Tentar HTTP simples para todas (rápido)
+      logger.info(`[Scraper] Fase 1/2: HTTP simples (rápido)`);
+      const promises = decisions.map(decision =>
+        this.limiter(() => this.scrapeEmenta(decision))
+      );
 
-    const results = enriched.map((result, index) => {
-      if (result.status === 'fulfilled' && result.value) {
-        return result.value;
-      } else {
-        return {
-          ...decisions[index],
-          ementaCompleta: decisions[index].ementa || decisions[index].snippet,
-          scraped: false,
-          scrapeFailed: true,
-          httpError: result.reason?.message
-        };
-      }
-    });
+      const enriched = await Promise.allSettled(promises);
+
+      results = enriched.map((result, index) => {
+        if (result.status === 'fulfilled' && result.value) {
+          return result.value;
+        } else {
+          return {
+            ...decisions[index],
+            ementaCompleta: decisions[index].ementa || decisions[index].snippet,
+            scraped: false,
+            scrapeFailed: true,
+            httpError: result.reason?.message
+          };
+        }
+      });
+    }
 
     // FASE 2: Identificar decisões que precisam de Puppeteer
     // ✅ DETECÇÃO AUTOMÁTICA: Usa Puppeteer apenas se HTTP falhou
