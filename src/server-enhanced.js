@@ -5958,6 +5958,7 @@ app.get('/api/kb/documents', requireAuth, (req, res) => {
       uploadedAt: doc.uploadedAt,
       textLength: doc.textLength,
       userId: doc.userId, // ✅ FIX: Incluir userId na resposta
+      path: doc.path, // ✅ FIX: Incluir path para análise V2 poder ler o arquivo
       metadata: doc.metadata
     }));
 
