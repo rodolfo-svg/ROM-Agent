@@ -563,49 +563,141 @@ class JurisprudenceScraperService {
    */
   extractMetadata($, tribunal) {
     const metadata = {};
+    const tribunalUpper = tribunal?.toUpperCase() || '';
 
-    // Número do processo
+    // ========================================
+    // Número do processo (busca global)
+    // ========================================
+    const numeroRegex = /\d{7}-?\d{2}\.\d{4}\.\d{1}\.\d{2}\.\d{4}/;
+
+    // Seletores específicos + busca no texto completo
     const numeroTexts = [
       $('[class*="processo"]').first().text(),
       $('[id*="processo"]').first().text(),
       $('.numero-processo').text(),
-      $('#numero-processo').text()
+      $('#numero-processo').text(),
+      $('strong:contains("Processo")').parent().text(),
+      $('span:contains("Processo")').parent().text(),
+      $('body').text() // Fallback: buscar no texto completo
     ];
 
     for (const text of numeroTexts) {
-      const match = text.match(/\d{7}-?\d{2}\.\d{4}\.\d{1}\.\d{2}\.\d{4}/);
+      const match = text.match(numeroRegex);
       if (match) {
         metadata.numeroProcesso = match[0];
         break;
       }
     }
 
-    // Relator
+    // ========================================
+    // Relator (busca por palavras-chave)
+    // ========================================
     const relatorTexts = [
       $('.relator').text(),
       $('[class*="relator"]').text(),
-      $('#relator').text()
+      $('[class*="Relator"]').text(),
+      $('#relator').text(),
+      $('strong:contains("Relator")').parent().text(),
+      $('strong:contains("RELATOR")').parent().text(),
+      $('span:contains("Relator")').parent().text(),
+      $('dt:contains("Relator")').next('dd').text(), // Para <dl><dt>Relator</dt><dd>Nome</dd></dl>
     ];
 
     for (const text of relatorTexts) {
-      if (text && text.length > 5 && text.length < 100) {
-        metadata.relator = this.cleanText(text);
+      if (text && text.length > 5 && text.length < 200) {
+        // Limpar "Relator:" ou "RELATOR:" do início
+        let cleaned = text.replace(/^\s*(RELATOR|Relator)\s*:?\s*/i, '');
+        cleaned = this.cleanText(cleaned);
+
+        if (cleaned.length > 5 && cleaned.length < 150) {
+          metadata.relator = cleaned;
+          break;
+        }
+      }
+    }
+
+    // ========================================
+    // Órgão Julgador / Câmara (TJSP específico)
+    // ========================================
+    if (tribunalUpper.includes('TJSP') || tribunalUpper.includes('TJ-SP')) {
+      const camaraTexts = [
+        $('[class*="camara"]').first().text(),
+        $('[class*="Camara"]').first().text(),
+        $('[class*="orgao"]').first().text(),
+        $('strong:contains("Câmara")').parent().text(),
+        $('strong:contains("CÂMARA")').parent().text(),
+        $('strong:contains("Órgão Julgador")').parent().text(),
+        $('dt:contains("Câmara")').next('dd').text(),
+        $('dt:contains("Órgão")').next('dd').text()
+      ];
+
+      for (const text of camaraTexts) {
+        if (text && text.length > 3 && text.length < 150) {
+          let cleaned = text.replace(/^\s*(CÂMARA|Câmara|Órgão Julgador)\s*:?\s*/i, '');
+          cleaned = this.cleanText(cleaned);
+
+          if (cleaned.length > 3 && cleaned.length < 100) {
+            metadata.orgaoJulgador = cleaned;
+            break;
+          }
+        }
+      }
+    }
+
+    // ========================================
+    // Data do julgamento
+    // ========================================
+    const dateRegex = /\d{1,2}\/\d{1,2}\/\d{4}/;
+    const julgamentoTexts = [
+      $('strong:contains("Data do Julgamento")').parent().text(),
+      $('strong:contains("Julgamento")').parent().text(),
+      $('dt:contains("Julgamento")').next('dd').text(),
+      $('[class*="data"]').text()
+    ];
+
+    for (const text of julgamentoTexts) {
+      const match = text.match(dateRegex);
+      if (match) {
+        metadata.dataJulgamento = match[0];
         break;
       }
     }
 
-    // Data do julgamento
-    const dateRegex = /\d{1,2}\/\d{1,2}\/\d{4}/;
-    $('body').find('*').each((i, el) => {
-      const text = $(el).text();
-      if (text.includes('Julgamento') || text.includes('julgamento')) {
-        const match = text.match(dateRegex);
-        if (match) {
-          metadata.dataJulgamento = match[0];
-          return false; // break
+    // Fallback: buscar "Julgamento" ou "julgamento" no texto
+    if (!metadata.dataJulgamento) {
+      $('body').find('*').each((i, el) => {
+        const text = $(el).text();
+        if ((text.includes('Julgamento') || text.includes('julgamento')) && text.length < 200) {
+          const match = text.match(dateRegex);
+          if (match) {
+            metadata.dataJulgamento = match[0];
+            return false; // break
+          }
         }
+      });
+    }
+
+    // ========================================
+    // Data de Publicação / DJE
+    // ========================================
+    const publicacaoTexts = [
+      $('strong:contains("Data de Publicação")').parent().text(),
+      $('strong:contains("Data da Publicação")').parent().text(),
+      $('strong:contains("Publicação")').parent().text(),
+      $('strong:contains("DJE")').parent().text(),
+      $('dt:contains("Publicação")').next('dd').text(),
+      $('dt:contains("DJE")').next('dd').text()
+    ];
+
+    for (const text of publicacaoTexts) {
+      const match = text.match(dateRegex);
+      if (match) {
+        metadata.dataPublicacao = match[0];
+        break;
       }
-    });
+    }
+
+    logger.info(`[Metadata] Extraídos ${Object.keys(metadata).length} campos: ${JSON.stringify(metadata)}`);
 
     return metadata;
   }
