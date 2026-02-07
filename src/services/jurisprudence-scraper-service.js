@@ -24,6 +24,7 @@ const ementaCache = new NodeCache({ stdTTL: 86400, checkperiod: 3600 });
 
 // Tribunais conhecidos com Cloudflare/anti-bot
 const TRIBUNALS_WITH_CLOUDFLARE = new Set([
+  'TJSP',  // ADICIONADO PARA TESTE - TJSP tem Cloudflare
   'TJGO', 'TJCE', 'TJBA', 'TJPE', 'TJAL', 'TJSE',
   'TJAC', 'TJAP', 'TJRO', 'TJRR', 'TJTO', 'TJMA', 'TJPI'
 ]);
