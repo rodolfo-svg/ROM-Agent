@@ -22,12 +22,48 @@ import { getPuppeteerScraper } from './puppeteer-scraper-service.js';
 // Cache de ementas completas (24h TTL)
 const ementaCache = new NodeCache({ stdTTL: 86400, checkperiod: 3600 });
 
-// Tribunais conhecidos com Cloudflare/anti-bot
-const TRIBUNALS_WITH_CLOUDFLARE = new Set([
-  'TJSP',  // ADICIONADO PARA TESTE - TJSP tem Cloudflare
-  'TJGO', 'TJCE', 'TJBA', 'TJPE', 'TJAL', 'TJSE',
-  'TJAC', 'TJAP', 'TJRO', 'TJRR', 'TJTO', 'TJMA', 'TJPI'
-]);
+/**
+ * Detectar Cloudflare automaticamente na resposta HTTP
+ * VANTAGENS:
+ * - Funciona com TODOS os tribunais (27 TJs + STJ/STF/TRFs)
+ * - Não precisa manter lista hardcoded
+ * - Se tribunal adicionar Cloudflare, sistema detecta automaticamente
+ */
+function detectCloudflare(html, statusCode, headers = {}) {
+  // Sinal 1: Headers específicos do Cloudflare
+  const hasCloudflareHeaders =
+    headers['cf-ray'] ||
+    headers['cf-cache-status'] ||
+    headers['cf-request-id'] ||
+    headers['server']?.toLowerCase().includes('cloudflare');
+
+  // Sinal 2: Status 403/503 típico de challenge
+  const isChallengeStatus = statusCode === 403 || statusCode === 503;
+
+  // Sinal 3: HTML contém sinais de Cloudflare challenge
+  if (html && typeof html === 'string') {
+    const htmlLower = html.toLowerCase();
+    const cloudflareSignals = [
+      'just a moment',           // Título da página de challenge
+      'checking your browser',   // Texto da página de challenge
+      'challenge-platform',      // ID da div de challenge
+      'cloudflare',              // Menção explícita
+      'cdn-cgi/challenge',       // URL de challenge
+      'cf-browser-verification', // Classe CSS do challenge
+      '__cf_chl_jschl_tk__',    // Token JavaScript do challenge
+      'ray id:'                  // ID de rastreamento Cloudflare
+    ];
+
+    const hasCloudflareHtml = cloudflareSignals.some(signal => htmlLower.includes(signal));
+
+    if (hasCloudflareHtml) {
+      return true;
+    }
+  }
+
+  // Cloudflare detectado se houver headers OU status de challenge
+  return hasCloudflareHeaders && isChallengeStatus;
+}
 
 class JurisprudenceScraperService {
   constructor() {
@@ -48,9 +84,14 @@ class JurisprudenceScraperService {
 
   /**
    * Scrape múltiplas decisões em paralelo
-   * ESTRATÉGIA HÍBRIDA:
-   * 1. Tenta HTTP simples primeiro (rápido)
-   * 2. Usa Puppeteer para tribunais com Cloudflare ou que falharam
+   * ESTRATÉGIA HÍBRIDA COM DETECÇÃO AUTOMÁTICA:
+   * 1. Fase 1: HTTP simples (rápido) - detecta Cloudflare automaticamente
+   * 2. Fase 2: Puppeteer apenas para falhas (Cloudflare, timeout, etc)
+   *
+   * VANTAGENS:
+   * - Funciona com TODOS os 27 TJs automaticamente
+   * - Não precisa manter lista hardcoded de tribunais
+   * - Adapta-se automaticamente se tribunal adicionar/remover Cloudflare
    *
    * @param {Array} decisions - Array de { url, tribunal, titulo, snippet }
    * @returns {Promise<Array>} Decisões enriquecidas com ementas completas
@@ -86,19 +127,22 @@ class JurisprudenceScraperService {
     });
 
     // FASE 2: Identificar decisões que precisam de Puppeteer
+    // ✅ DETECÇÃO AUTOMÁTICA: Usa Puppeteer apenas se HTTP falhou
+    // (Cloudflare já causa falha automática no scrapeHtml)
     const needsPuppeteer = results
       .map((result, index) => ({ result, index }))
       .filter(({ result }) => {
-        // Usar Puppeteer se:
-        // 1. Scraping HTTP falhou
-        // 2. OU é tribunal conhecido com Cloudflare
+        // Usar Puppeteer se scraping HTTP falhou por qualquer motivo:
+        // - Cloudflare detectado (já gera erro)
+        // - Timeout
+        // - 403/500/etc
+        // - Ementa não encontrada
         const failed = !result.scraped || result.scrapeFailed;
-        const hasCloudflare = TRIBUNALS_WITH_CLOUDFLARE.has(result.tribunal?.toUpperCase());
-        return failed || hasCloudflare;
+        return failed;
       });
 
     if (needsPuppeteer.length > 0) {
-      logger.info(`[Scraper] Fase 2/2: Puppeteer para ${needsPuppeteer.length} decisões (Cloudflare/falhas)`);
+      logger.info(`[Scraper] Fase 2/2: Puppeteer para ${needsPuppeteer.length} decisões (HTTP falhou - Cloudflare/timeout/etc)`);
 
       try {
         const puppeteerScraper = getPuppeteerScraper();
@@ -287,6 +331,14 @@ class JurisprudenceScraperService {
       throw new Error(`HTTP ${response.status} - Conteúdo vazio ou inválido`);
     }
 
+    // ✅ NOVO: Detectar Cloudflare automaticamente
+    const cloudflareDetected = detectCloudflare(response.data, response.status, response.headers);
+
+    if (cloudflareDetected) {
+      logger.warn(`[Scraper] ⚠️ Cloudflare detectado em ${url.substring(0, 60)} - será retentado com Puppeteer`);
+      throw new Error('Cloudflare challenge detectado - usar Puppeteer');
+    }
+
     const $ = cheerio.load(response.data);
 
     // Tentar parsers específicos do tribunal
@@ -306,7 +358,8 @@ class JurisprudenceScraperService {
 
     return {
       ementa: this.cleanText(ementa),
-      metadata
+      metadata,
+      cloudflareDetected: false  // Se chegou aqui, não tem Cloudflare
     };
   }
 
