@@ -99,7 +99,7 @@ export class CircuitBreaker {
     // Check circuit state
     if (this.state === CircuitState.OPEN) {
       this.stats.rejectedRequests++;
-      metricsCollector.incrementCircuitBreakerRejected(operation);
+      metricsCollector.incrementCircuitBreakerRejection(operation);
 
       const timeInOpen = Date.now() - this.lastStateChange;
       const remainingTime = Math.max(0, this.config.openStateTimeoutMs - timeInOpen);
