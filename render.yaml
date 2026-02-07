@@ -64,13 +64,25 @@ services:
       - key: ANTHROPIC_API_KEY
         sync: false
 
-      # DataJud (consulta jurisprudência) - TEMPORARIAMENTE DESABILITADO
-      # Motivo: URL/API key precisa ser validada antes de habilitar
-      # Causava timeout de 30s travando todo o sistema
+      # DataJud (consulta de processos por número CNJ)
+      # NOTA: DataJud NÃO serve para busca de jurisprudência por tema
+      # Serve apenas para: consulta de processo específico por número
+      # Mantido aqui para uso futuro em outras funcionalidades
       - key: DATAJUD_ENABLED
         value: "false"
       - key: DATAJUD_API_KEY
         sync: false
+
+      # ═══════════════════════════════════════════════════════════════
+      # BROWSERLESS.IO - PUPPETEER AS A SERVICE ($15/mês)
+      # ═══════════════════════════════════════════════════════════════
+      # Permite scraping com Puppeteer em todos os tribunais
+      # Bypass automático de Cloudflare (TJGO, TJCE, TJBA, etc)
+      # ═══════════════════════════════════════════════════════════════
+      - key: BROWSERLESS_API_KEY
+        sync: false
+      - key: USE_BROWSERLESS
+        value: "true"
 
       # ═══════════════════════════════════════════════════════════════
       # GOOGLE CUSTOM SEARCH API - CRÍTICO PARA JURISPRUDÊNCIA
@@ -190,13 +202,25 @@ services:
       - key: ANTHROPIC_API_KEY
         sync: false
 
-      # DataJud (consulta jurisprudência) - TEMPORARIAMENTE DESABILITADO
-      # Motivo: URL/API key precisa ser validada antes de habilitar
-      # Causava timeout de 30s travando todo o sistema
+      # DataJud (consulta de processos por número CNJ)
+      # NOTA: DataJud NÃO serve para busca de jurisprudência por tema
+      # Serve apenas para: consulta de processo específico por número
+      # Mantido aqui para uso futuro em outras funcionalidades
       - key: DATAJUD_ENABLED
         value: "false"
       - key: DATAJUD_API_KEY
         sync: false
+
+      # ═══════════════════════════════════════════════════════════════
+      # BROWSERLESS.IO - PUPPETEER AS A SERVICE ($15/mês)
+      # ═══════════════════════════════════════════════════════════════
+      # Permite scraping com Puppeteer em todos os tribunais
+      # Bypass automático de Cloudflare (TJGO, TJCE, TJBA, etc)
+      # ═══════════════════════════════════════════════════════════════
+      - key: BROWSERLESS_API_KEY
+        sync: false
+      - key: USE_BROWSERLESS
+        value: "true"
 
       # ═══════════════════════════════════════════════════════════════
       # GOOGLE CUSTOM SEARCH API - CRÍTICO PARA JURISPRUDÊNCIA

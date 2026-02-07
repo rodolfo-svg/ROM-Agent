@@ -21,10 +21,13 @@ class JurisprudenceSearchService {
     this.initialized = false;
     this.config = {
       datajud: {
-        enabled: process.env.DATAJUD_ENABLED === 'true' || false,
-        apiUrl: process.env.DATAJUD_API_URL || 'https://datajud.cnj.jus.br/api/v1',
+        // MANTIDO MAS DESABILITADO: DataJud serve para consulta de PROCESSO por número
+        // NÃO serve para busca de jurisprudência por tema/assunto
+        // Pode ser útil para outras funcionalidades no futuro
+        enabled: false, // Forçado false (não usar para jurisprudência)
+        apiUrl: process.env.DATAJUD_API_URL || 'https://api-publica.datajud.cnj.jus.br',
         apiKey: process.env.DATAJUD_API_KEY || null,
-        timeout: 30000 // 30 segundos
+        timeout: 30000
       },
       jusbrasil: {
         enabled: process.env.JUSBRASIL_ENABLED === 'true' || false, // Desabilitado: bloqueio anti-bot 100%
@@ -34,6 +37,11 @@ class JurisprudenceSearchService {
       websearch: {
         enabled: true,
         timeout: 30000
+      },
+      puppeteer: {
+        enabled: process.env.USE_BROWSERLESS === 'true',
+        provider: 'browserless.io',
+        timeout: 15000
       }
     };
   }

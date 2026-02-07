@@ -12,6 +12,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { ACTIVE_PATHS } from '../../lib/storage-config.js';
 import logger from '../../lib/logger.js';
+import { requireAuth } from '../middleware/auth.js';
 
 const router = express.Router();
 
@@ -71,7 +72,7 @@ const upload = multer({
  *   message: "3 volumes mesclados com sucesso"
  * }
  */
-router.post('/', upload.array('files', 10), async (req, res) => {
+router.post('/', requireAuth, upload.array('files', 10), async (req, res) => {
   const uploadedFiles = req.files || [];
   const tempFiles = [];
 
@@ -294,7 +295,7 @@ function formatBytes(bytes) {
  *   message: "3 volumes mesclados com sucesso"
  * }
  */
-router.post('/from-paths', async (req, res) => {
+router.post('/from-paths', requireAuth, async (req, res) => {
   try {
     const { paths, processName = 'Processo' } = req.body;
 

@@ -1,12 +1,17 @@
 /**
- * ROM Agent - Puppeteer Scraper com Pool de Agentes
+ * ROM Agent - Puppeteer Scraper via Browserless.io
  *
  * ARQUITETURA:
- * - Pool de navegadores reutilizáveis (evita overhead de lançamento)
+ * - Puppeteer-as-a-Service via Browserless.io ($15/mês)
+ * - Sem necessidade de Chromium local (funciona em qualquer ambiente)
  * - Orquestrador com controle de concorrência (3-5 páginas simultâneas)
  * - Retry automático em caso de falha
  * - Timeout por página (15s)
- * - Bypass de Cloudflare e outros anti-bots
+ * - Bypass automático de Cloudflare
+ *
+ * CONFIGURAÇÃO NECESSÁRIA:
+ * - BROWSERLESS_API_KEY no .env
+ * - USE_BROWSERLESS=true para habilitar
  *
  * USO:
  * const scraper = new PuppeteerScraperService();
@@ -14,7 +19,6 @@
  */
 
 import puppeteer from 'puppeteer-core';
-import chromium from '@sparticuz/chromium';
 import { logger } from '../utils/logger.js';
 import pLimit from 'p-limit';
 
@@ -43,7 +47,7 @@ class PuppeteerScraperService {
   }
 
   /**
-   * Inicializar pool de navegadores
+   * Inicializar pool de navegadores via Browserless.io
    * GRACEFUL DEGRADATION: Se falhar, continua sem Puppeteer
    */
   async initBrowserPool() {
@@ -53,30 +57,36 @@ class PuppeteerScraperService {
       return;
     }
 
-    // ⚠️ DESABILITAR TEMPORARIAMENTE - chromium.executablePath() causa timeout
-    logger.warn(`[Puppeteer] DESABILITADO temporariamente - causava timeout no servidor`);
-    logger.warn(`[Puppeteer] Sistema continuará apenas com HTTP scraping`);
-    this.initFailed = true;
-    return;
+    // Verificar se Browserless está habilitado
+    const useBrowserless = process.env.USE_BROWSERLESS === 'true';
+    const browserlessApiKey = process.env.BROWSERLESS_API_KEY;
+
+    if (!useBrowserless) {
+      logger.warn(`[Puppeteer] USE_BROWSERLESS=false - Puppeteer desabilitado`);
+      logger.warn(`[Puppeteer] Sistema continuará apenas com HTTP scraping`);
+      this.initFailed = true;
+      return;
+    }
+
+    if (!browserlessApiKey) {
+      logger.warn(`[Puppeteer] BROWSERLESS_API_KEY não configurada`);
+      logger.warn(`[Puppeteer] Configure em: https://www.browserless.io/`);
+      logger.warn(`[Puppeteer] Sistema continuará apenas com HTTP scraping`);
+      this.initFailed = true;
+      return;
+    }
 
     try {
-      logger.info(`[Puppeteer] Inicializando pool com ${this.maxBrowsers} navegadores...`);
+      logger.info(`[Puppeteer] Inicializando via Browserless.io...`);
 
-      // Timeout de 30s para inicialização
+      // Timeout de 10s para conexão inicial (Browserless é rápido)
+      const browserlessUrl = `wss://chrome.browserless.io?token=${browserlessApiKey}`;
+
       const initPromise = Promise.all(
         Array(this.maxBrowsers).fill(null).map(async () =>
-          puppeteer.launch({
-            headless: chromium.headless,
-            executablePath: await chromium.executablePath(),
-            args: [
-              ...chromium.args,
-              '--no-sandbox',
-              '--disable-setuid-sandbox',
-              '--disable-dev-shm-usage',
-              '--window-size=1920x1080',
-              '--user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-            ],
-            timeout: 30000  // 30s timeout
+          puppeteer.connect({
+            browserWSEndpoint: browserlessUrl,
+            timeout: 10000  // 10s timeout para conectar
           })
         )
       );
@@ -85,20 +95,20 @@ class PuppeteerScraperService {
       this.browserPool = await Promise.race([
         initPromise,
         new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Browser init timeout')), 30000)
+          setTimeout(() => reject(new Error('Browserless connection timeout')), 10000)
         )
       ]);
 
       this.browserInitialized = true;
-      logger.info(`[Puppeteer] ✅ Pool inicializado com sucesso`);
+      logger.info(`[Puppeteer] ✅ Pool inicializado com sucesso via Browserless.io`);
+      logger.info(`[Puppeteer] ${this.maxBrowsers} conexões ativas`);
 
     } catch (error) {
       this.initFailed = true;
-      logger.warn(`[Puppeteer] ⚠️ Falha ao inicializar: ${error.message}`);
+      logger.warn(`[Puppeteer] ⚠️ Falha ao conectar ao Browserless.io: ${error.message}`);
+      logger.warn(`[Puppeteer] Verifique: https://www.browserless.io/ (status da API)`);
       logger.warn(`[Puppeteer] Sistema continuará apenas com HTTP scraping (sem bypass Cloudflare)`);
     }
-
-    logger.info(`[Puppeteer] Pool inicializado com sucesso`);
   }
 
   /**
@@ -285,14 +295,14 @@ class PuppeteerScraperService {
   }
 
   /**
-   * Fechar pool de navegadores
+   * Fechar pool de navegadores (desconectar do Browserless.io)
    */
   async close() {
-    logger.info('[Puppeteer] Fechando pool de navegadores...');
+    logger.info('[Puppeteer] Fechando conexões com Browserless.io...');
 
     const closePromises = this.browserPool.map(browser =>
-      browser.close().catch(err =>
-        logger.error(`[Puppeteer] Erro ao fechar navegador: ${err.message}`)
+      browser.disconnect().catch(err =>
+        logger.error(`[Puppeteer] Erro ao desconectar: ${err.message}`)
       )
     );
 
@@ -301,7 +311,7 @@ class PuppeteerScraperService {
     this.browserPool = [];
     this.browserInitialized = false;
 
-    logger.info('[Puppeteer] Pool fechado');
+    logger.info('[Puppeteer] Conexões fechadas');
   }
 
   /**
