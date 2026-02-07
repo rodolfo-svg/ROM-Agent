@@ -139,18 +139,21 @@ router.post('/', async (req, res) => {
     // Ler texto completo (detectar tipo de arquivo)
     console.log(`   📖 Lendo arquivo do disco...`);
     let rawText;
+    let isPDF = false;
     try {
       const fileExtension = path.extname(doc.path).toLowerCase();
 
       if (fileExtension === '.pdf') {
-        // PDF: precisa extrair texto primeiro
+        // PDF: extrair texto com pdf-parse
         console.log(`   📄 Arquivo PDF detectado - extraindo texto...`);
         const pdfParse = (await import('pdf-parse/lib/pdf-parse.js')).default;
         const dataBuffer = fs.readFileSync(doc.path);
         const pdfData = await pdfParse(dataBuffer);
         rawText = pdfData.text;
+        isPDF = true;
         console.log(`   ✅ PDF parseado: ${pdfData.numpages} páginas`);
         console.log(`   📊 Texto extraído: ${Math.round(rawText.length / 1000)}k caracteres`);
+        console.log(`   💡 PDF já fornece texto limpo - pulando extração com IA`);
       } else {
         // Texto puro (.txt, .md, etc)
         rawText = fs.readFileSync(doc.path, 'utf-8');
@@ -209,7 +212,8 @@ router.post('/', async (req, res) => {
       rawText,
       analysisType,
       model,
-      req.session?.user?.id || 'anonymous'
+      req.session?.user?.id || 'anonymous',
+      isPDF  // Pass PDF flag to skip AI extraction
     ).catch(error => {
       console.error(`   ❌ Background extraction failed:`, error);
       if (job?.id) {
@@ -233,7 +237,7 @@ router.post('/', async (req, res) => {
 /**
  * Background extraction processing
  */
-async function processExtractionInBackground(jobId, doc, rawText, analysisType, model, userId) {
+async function processExtractionInBackground(jobId, doc, rawText, analysisType, model, userId, isPDF = false) {
   try {
     if (jobId) {
       // Definir número de etapas baseado no tipo de análise
@@ -265,6 +269,7 @@ async function processExtractionInBackground(jobId, doc, rawText, analysisType, 
           generateFiles: true,
           saveToKB: true,
           userId: userId,  // ✅ FIX: Pass userId for document creation
+          skipExtraction: isPDF,  // ✅ Skip AI extraction for PDFs (already clean)
           progressCallback: async (stage, progress, message) => {
             // Callback para atualizar progresso durante processamento
             if (jobId) {
@@ -305,17 +310,44 @@ async function processExtractionInBackground(jobId, doc, rawText, analysisType, 
     } else if (analysisType === 'extract_only') {
       console.log(`   ⚙️ Extração APENAS iniciada...`);
 
-      const extraction = await documentProcessorV2.extractFullText(
-        rawText,
-        doc.id,
-        doc.name || doc.originalName
-      );
+      let extraction;
+      let intermediateDoc;
 
-      const intermediateDoc = await documentProcessorV2.saveExtractedTextToKB(
-        extraction.extractedText,
-        doc.id,
-        doc.name || doc.originalName
-      );
+      if (isPDF) {
+        // PDF já tem texto limpo - pular extração com IA
+        console.log(`   💡 PDF detectado - pulando extração com IA`);
+        console.log(`   ✅ Usando texto extraído diretamente do pdf-parse`);
+
+        intermediateDoc = await documentProcessorV2.saveExtractedTextToKB(
+          rawText,  // Usar texto do pdf-parse diretamente
+          doc.id,
+          doc.name || doc.originalName
+        );
+
+        extraction = {
+          metadata: {
+            method: 'pdf-parse-direct',
+            processingTime: 0,
+            cost: 0,
+            originalSize: rawText.length,
+            extractedSize: rawText.length
+          }
+        };
+
+      } else {
+        // Texto precisa de extração com IA
+        extraction = await documentProcessorV2.extractFullText(
+          rawText,
+          doc.id,
+          doc.name || doc.originalName
+        );
+
+        intermediateDoc = await documentProcessorV2.saveExtractedTextToKB(
+          extraction.extractedText,
+          doc.id,
+          doc.name || doc.originalName
+        );
+      }
 
       result = {
         success: true,
@@ -323,9 +355,9 @@ async function processExtractionInBackground(jobId, doc, rawText, analysisType, 
         intermediateDoc,
         technicalFiles: null,
         metadata: {
-          totalTime: extraction.metadata.processingTime,
-          totalCost: extraction.metadata.cost,
-          extractionCost: extraction.metadata.cost,
+          totalTime: extraction.metadata.processingTime || 0,
+          totalCost: extraction.metadata.cost || 0,
+          extractionCost: extraction.metadata.cost || 0,
           analysisCost: 0,
           filesGenerated: 0
         }
