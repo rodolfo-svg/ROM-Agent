@@ -178,6 +178,17 @@ router.post('/', async (req, res) => {
       });
     }
 
+    // OTIMIZAÇÃO CRÍTICA: Para PDFs muito grandes (>100MB), não processar
+    if (isPDF && doc.size > 100 * 1024 * 1024) {
+      console.log(`   ⚠️ PDF muito grande (${Math.round(doc.size/1024/1024)}MB) - processamento pode falhar`);
+      return res.status(400).json({
+        success: false,
+        error: `PDF muito grande (${Math.round(doc.size/1024/1024)}MB). Limite: 100MB. Divida em volumes menores.`,
+        size: doc.size,
+        limit: 100 * 1024 * 1024
+      });
+    }
+
     // Create extraction job for progress tracking
     let job;
     try {
