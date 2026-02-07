@@ -153,6 +153,11 @@ router.post('/', requireAuth, upload.array('files', 10), async (req, res) => {
     }
 
     const documentId = `merged-${timestamp}`;
+
+    // DEBUG: Log session info
+    const userId = req.session?.user?.id || 'web-upload';
+    logger.info(`   🔐 Session check: hasSession=${!!req.session}, hasUser=${!!req.session?.user}, userId=${userId}`);
+
     const newDoc = {
       id: documentId,
       name: mergedFilename,
@@ -160,7 +165,7 @@ router.post('/', requireAuth, upload.array('files', 10), async (req, res) => {
       type: 'application/pdf',
       size: mergedSize,
       path: mergedPath,
-      userId: req.session?.user?.id || 'web-upload', // ✅ FIX: Adicionar userId
+      userId: userId,
       uploadedAt: new Date().toISOString(),
       metadata: {
         isMergedDocument: true,
@@ -383,6 +388,11 @@ router.post('/from-paths', requireAuth, async (req, res) => {
     }
 
     const documentId = `merged-${timestamp}`;
+
+    // DEBUG: Log session info
+    const userId = req.session?.user?.id || 'web-upload';
+    logger.info(`   🔐 Session check: hasSession=${!!req.session}, hasUser=${!!req.session?.user}, userId=${userId}`);
+
     const newDoc = {
       id: documentId,
       name: mergedFilename,
@@ -390,7 +400,7 @@ router.post('/from-paths', requireAuth, async (req, res) => {
       type: 'application/pdf',
       size: mergedSize,
       path: mergedPath,
-      userId: req.session?.user?.id || 'web-upload', // ✅ FIX: Adicionar userId
+      userId: userId,
       uploadedAt: new Date().toISOString(),
       metadata: {
         isMergedDocument: true,
