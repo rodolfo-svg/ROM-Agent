@@ -250,6 +250,7 @@ async function processExtractionInBackground(jobId, doc, rawText, analysisType, 
           analysisModel: model,
           generateFiles: true,
           saveToKB: true,
+          userId: userId,  // ✅ FIX: Pass userId for document creation
           progressCallback: async (stage, progress, message) => {
             // Callback para atualizar progresso durante processamento
             if (jobId) {
