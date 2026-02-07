@@ -136,13 +136,27 @@ router.post('/', async (req, res) => {
 
     console.log(`   ✅ Arquivo existe no disco`);
 
-    // Ler texto completo
+    // Ler texto completo (detectar tipo de arquivo)
     console.log(`   📖 Lendo arquivo do disco...`);
     let rawText;
     try {
-      rawText = fs.readFileSync(doc.path, 'utf-8');
-      console.log(`   ✅ Arquivo lido com sucesso`);
-      console.log(`   📊 Tamanho: ${Math.round(rawText.length / 1000)}k caracteres`);
+      const fileExtension = path.extname(doc.path).toLowerCase();
+
+      if (fileExtension === '.pdf') {
+        // PDF: precisa extrair texto primeiro
+        console.log(`   📄 Arquivo PDF detectado - extraindo texto...`);
+        const pdfParse = (await import('pdf-parse/lib/pdf-parse.js')).default;
+        const dataBuffer = fs.readFileSync(doc.path);
+        const pdfData = await pdfParse(dataBuffer);
+        rawText = pdfData.text;
+        console.log(`   ✅ PDF parseado: ${pdfData.numpages} páginas`);
+        console.log(`   📊 Texto extraído: ${Math.round(rawText.length / 1000)}k caracteres`);
+      } else {
+        // Texto puro (.txt, .md, etc)
+        rawText = fs.readFileSync(doc.path, 'utf-8');
+        console.log(`   ✅ Arquivo texto lido com sucesso`);
+        console.log(`   📊 Tamanho: ${Math.round(rawText.length / 1000)}k caracteres`);
+      }
     } catch (readError) {
       console.error(`   ❌ Erro ao ler arquivo:`, readError);
       return res.status(500).json({
