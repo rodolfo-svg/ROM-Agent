@@ -51,7 +51,10 @@ class PuppeteerScraperService {
    * GRACEFUL DEGRADATION: Se falhar, continua sem Puppeteer
    */
   async initBrowserPool() {
-    if (this.browserInitialized) return;
+    if (this.browserInitialized) {
+      logger.info(`[Puppeteer] Pool já inicializado - pulando`);
+      return;
+    }
     if (this.initFailed) {
       logger.warn(`[Puppeteer] Inicialização falhou anteriormente - pulando`);
       return;
@@ -60,6 +63,8 @@ class PuppeteerScraperService {
     // Verificar se Browserless está habilitado
     const useBrowserless = process.env.USE_BROWSERLESS === 'true';
     const browserlessApiKey = process.env.BROWSERLESS_API_KEY;
+
+    logger.info(`[Puppeteer] Verificando ENV: USE_BROWSERLESS=${process.env.USE_BROWSERLESS} (type: ${typeof process.env.USE_BROWSERLESS}), hasApiKey=${!!browserlessApiKey}`);
 
     if (!useBrowserless) {
       logger.warn(`[Puppeteer] USE_BROWSERLESS=false - Puppeteer desabilitado`);
