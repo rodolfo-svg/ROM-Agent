@@ -27,6 +27,7 @@ import chatStreamRoutes from './routes/chat-stream.js';
 import featureFlags from './utils/feature-flags.js';
 import { requestLogger } from './middleware/request-logger.js';
 import metricsCollector from './utils/metrics-collector-v2.js';
+import testPuppeteerRoutes from './routes/test-puppeteer.js';
 
 // Authentication imports
 import { createSessionMiddleware, sessionEnhancerMiddleware } from './config/session-store.js';
@@ -50,6 +51,9 @@ app.use(sessionEnhancerMiddleware);
 
 // Authentication routes
 app.use('/api/auth', authRoutes);
+
+// Test routes (no auth required for diagnostics)
+app.use('/api', testPuppeteerRoutes);
 
 // Serve static files (login.html, index.html, etc.)
 app.use(express.static(path.join(__dirname, '../public')));
