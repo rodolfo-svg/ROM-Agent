@@ -51,11 +51,16 @@ class PuppeteerScraperService {
    * GRACEFUL DEGRADATION: Se falhar, continua sem Puppeteer
    */
   async initBrowserPool() {
+    console.log(`[Puppeteer] ========== INIT BROWSER POOL CHAMADO ==========`);
+    console.log(`[Puppeteer] browserInitialized=${this.browserInitialized}, initFailed=${this.initFailed}`);
+
     if (this.browserInitialized) {
+      console.log(`[Puppeteer] Pool já inicializado - pulando`);
       logger.info(`[Puppeteer] Pool já inicializado - pulando`);
       return;
     }
     if (this.initFailed) {
+      console.log(`[Puppeteer] Inicialização falhou anteriormente - pulando`);
       logger.warn(`[Puppeteer] Inicialização falhou anteriormente - pulando`);
       return;
     }
@@ -64,9 +69,11 @@ class PuppeteerScraperService {
     const useBrowserless = process.env.USE_BROWSERLESS === 'true';
     const browserlessApiKey = process.env.BROWSERLESS_API_KEY;
 
+    console.log(`[Puppeteer] ENV: USE_BROWSERLESS=${process.env.USE_BROWSERLESS} (type: ${typeof process.env.USE_BROWSERLESS}), hasApiKey=${!!browserlessApiKey}`);
     logger.info(`[Puppeteer] Verificando ENV: USE_BROWSERLESS=${process.env.USE_BROWSERLESS} (type: ${typeof process.env.USE_BROWSERLESS}), hasApiKey=${!!browserlessApiKey}`);
 
     if (!useBrowserless) {
+      console.log(`[Puppeteer] ❌ USE_BROWSERLESS=false - Puppeteer desabilitado`);
       logger.warn(`[Puppeteer] USE_BROWSERLESS=false - Puppeteer desabilitado`);
       logger.warn(`[Puppeteer] Sistema continuará apenas com HTTP scraping`);
       this.initFailed = true;
@@ -74,6 +81,7 @@ class PuppeteerScraperService {
     }
 
     if (!browserlessApiKey) {
+      console.log(`[Puppeteer] ❌ BROWSERLESS_API_KEY não configurada`);
       logger.warn(`[Puppeteer] BROWSERLESS_API_KEY não configurada`);
       logger.warn(`[Puppeteer] Configure em: https://www.browserless.io/`);
       logger.warn(`[Puppeteer] Sistema continuará apenas com HTTP scraping`);
@@ -82,10 +90,12 @@ class PuppeteerScraperService {
     }
 
     try {
+      console.log(`[Puppeteer] 🚀 Inicializando via Browserless.io...`);
       logger.info(`[Puppeteer] Inicializando via Browserless.io...`);
 
       // Timeout de 10s para conexão inicial (Browserless é rápido)
       const browserlessUrl = `wss://chrome.browserless.io?token=${browserlessApiKey}`;
+      console.log(`[Puppeteer] WebSocket URL: wss://chrome.browserless.io?token=...${browserlessApiKey.slice(-10)}`);
 
       const initPromise = Promise.all(
         Array(this.maxBrowsers).fill(null).map(async () =>
@@ -97,6 +107,7 @@ class PuppeteerScraperService {
       );
 
       // Race com timeout
+      console.log(`[Puppeteer] Conectando ${this.maxBrowsers} browsers...`);
       this.browserPool = await Promise.race([
         initPromise,
         new Promise((_, reject) =>
@@ -105,11 +116,13 @@ class PuppeteerScraperService {
       ]);
 
       this.browserInitialized = true;
+      console.log(`[Puppeteer] ✅ Pool inicializado com sucesso! ${this.maxBrowsers} conexões ativas`);
       logger.info(`[Puppeteer] ✅ Pool inicializado com sucesso via Browserless.io`);
       logger.info(`[Puppeteer] ${this.maxBrowsers} conexões ativas`);
 
     } catch (error) {
       this.initFailed = true;
+      console.log(`[Puppeteer] ❌ ERRO ao conectar: ${error.message}`);
       logger.warn(`[Puppeteer] ⚠️ Falha ao conectar ao Browserless.io: ${error.message}`);
       logger.warn(`[Puppeteer] Verifique: https://www.browserless.io/ (status da API)`);
       logger.warn(`[Puppeteer] Sistema continuará apenas com HTTP scraping (sem bypass Cloudflare)`);
@@ -134,10 +147,12 @@ class PuppeteerScraperService {
       return [];
     }
 
+    console.log(`[Puppeteer Orchestrator] Processando ${tasks.length} URLs com ${this.maxConcurrency} agentes paralelos`);
     logger.info(`[Puppeteer Orchestrator] Processando ${tasks.length} URLs com ${this.maxConcurrency} agentes paralelos`);
     const startTime = Date.now();
 
     // Inicializar pool se necessário
+    console.log(`[Puppeteer Orchestrator] Chamando initBrowserPool()...`);
     await this.initBrowserPool();
 
     // Se inicialização falhou, retornar falhas para todas as tasks
