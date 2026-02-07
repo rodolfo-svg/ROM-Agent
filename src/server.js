@@ -28,6 +28,7 @@ import featureFlags from './utils/feature-flags.js';
 import { requestLogger } from './middleware/request-logger.js';
 import metricsCollector from './utils/metrics-collector-v2.js';
 import testPuppeteerRoutes from './routes/test-puppeteer.js';
+import testEnvRoutes from './routes/test-env.js';
 
 // Authentication imports
 import { createSessionMiddleware, sessionEnhancerMiddleware } from './config/session-store.js';
@@ -54,6 +55,7 @@ app.use('/api/auth', authRoutes);
 
 // Test routes (no auth required for diagnostics)
 app.use('/api', testPuppeteerRoutes);
+app.use('/api', testEnvRoutes);
 
 // Serve static files (login.html, index.html, etc.)
 app.use(express.static(path.join(__dirname, '../public')));
