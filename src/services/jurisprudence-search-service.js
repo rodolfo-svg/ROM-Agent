@@ -252,7 +252,7 @@ class JurisprudenceSearchService {
       console.log(`[ENRICHMENT] Iniciando enriquecimento de ${consolidated.allResults?.length || 0} decisões...`);
 
       try {
-        const enriched = await this.enrichWithCompleteEmentas(consolidated.allResults, tese);
+        const enriched = await this.enrichWithCompleteEmentas(consolidated.allResults, tese, { forcarPuppeteer });
 
         console.log(`[ENRICHMENT] Enriquecidas ${enriched.length} decisões`);
         const withEmentas = enriched.filter(r => r.ementaCompleta && r.ementaCompleta.length > 500).length;
@@ -700,10 +700,12 @@ class JurisprudenceSearchService {
    * 2. Análise semântica com Bedrock para extrair tese + fundamentos
    * 3. Cache agressivo para reutilização
    */
-  async enrichWithCompleteEmentas(decisoes, contextoUsuario = '') {
+  async enrichWithCompleteEmentas(decisoes, contextoUsuario = '', options = {}) {
     if (!decisoes || decisoes.length === 0) {
       return decisoes;
     }
+
+    const { forcarPuppeteer = false } = options;
 
     console.log(`🔬 [ENRIQUECIMENTO] Iniciando pipeline para ${decisoes.length} decisões`);
     const startTime = Date.now();
