@@ -193,6 +193,9 @@ class JurisprudenceScraperService {
               }
 
               if (ementa && ementa.length >= 100) {
+                // ✅ CORREÇÃO: Extrair metadata também para Puppeteer
+                const metadata = this.extractMetadata($, tribunal);
+
                 const enrichedDecision = {
                   ...decisions[originalIndex],
                   ementaCompleta: this.cleanText(ementa),
@@ -200,7 +203,8 @@ class JurisprudenceScraperService {
                   scraped: true,
                   scrapedAt: new Date().toISOString(),
                   method: 'puppeteer',
-                  cloudflareBypass: puppeteerResult.cloudflareBypass || false
+                  cloudflareBypass: puppeteerResult.cloudflareBypass || false,
+                  ...metadata  // ✅ Incluir metadados extraídos
                 };
 
                 // Salvar no cache
