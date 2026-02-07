@@ -194,7 +194,12 @@ class JurisprudenceScraperService {
 
               if (ementa && ementa.length >= 100) {
                 // ✅ CORREÇÃO: Extrair metadata também para Puppeteer
+                logger.info(`[Puppeteer] Extraindo metadata de ${puppeteerResult.url?.substring(0, 80)}`);
+                logger.info(`[Puppeteer] HTML size: ${puppeteerResult.html?.length || 0} chars`);
+
                 const metadata = this.extractMetadata($, tribunal);
+
+                logger.info(`[Puppeteer] Metadata extraído: ${JSON.stringify(metadata)}`);
 
                 const enrichedDecision = {
                   ...decisions[originalIndex],
@@ -565,6 +570,8 @@ class JurisprudenceScraperService {
     const metadata = {};
     const tribunalUpper = tribunal?.toUpperCase() || '';
 
+    logger.info(`[Metadata] Iniciando extração para tribunal: ${tribunal || 'desconhecido'}`);
+
     // ========================================
     // Número do processo (busca global)
     // ========================================
@@ -581,17 +588,29 @@ class JurisprudenceScraperService {
       $('body').text() // Fallback: buscar no texto completo
     ];
 
-    for (const text of numeroTexts) {
-      const match = text.match(numeroRegex);
-      if (match) {
-        metadata.numeroProcesso = match[0];
-        break;
+    logger.info(`[Metadata] Tentando extrair número do processo com ${numeroTexts.length} seletores...`);
+
+    for (let i = 0; i < numeroTexts.length; i++) {
+      const text = numeroTexts[i];
+      if (text && text.length > 0) {
+        const match = text.match(numeroRegex);
+        if (match) {
+          metadata.numeroProcesso = match[0];
+          logger.info(`[Metadata] ✅ Número do processo encontrado (seletor ${i}): ${match[0]}`);
+          break;
+        }
       }
+    }
+
+    if (!metadata.numeroProcesso) {
+      logger.warn(`[Metadata] ❌ Número do processo NÃO encontrado`);
     }
 
     // ========================================
     // Relator (busca por palavras-chave)
     // ========================================
+    logger.info(`[Metadata] Tentando extrair relator...`);
+
     const relatorTexts = [
       $('.relator').text(),
       $('[class*="relator"]').text(),
@@ -603,7 +622,8 @@ class JurisprudenceScraperService {
       $('dt:contains("Relator")').next('dd').text(), // Para <dl><dt>Relator</dt><dd>Nome</dd></dl>
     ];
 
-    for (const text of relatorTexts) {
+    for (let i = 0; i < relatorTexts.length; i++) {
+      const text = relatorTexts[i];
       if (text && text.length > 5 && text.length < 200) {
         // Limpar "Relator:" ou "RELATOR:" do início
         let cleaned = text.replace(/^\s*(RELATOR|Relator)\s*:?\s*/i, '');
@@ -611,9 +631,14 @@ class JurisprudenceScraperService {
 
         if (cleaned.length > 5 && cleaned.length < 150) {
           metadata.relator = cleaned;
+          logger.info(`[Metadata] ✅ Relator encontrado (seletor ${i}): ${cleaned.substring(0, 50)}`);
           break;
         }
       }
+    }
+
+    if (!metadata.relator) {
+      logger.warn(`[Metadata] ❌ Relator NÃO encontrado`);
     }
 
     // ========================================
