@@ -115,6 +115,7 @@ app.post('/api/chat', async (req, res) => {
 
         // Create new conversation if needed
         if (!conversationId) {
+          console.log('🔄 Creating new conversation...', { userId, messageLength: message.length });
           const title = message.length > 50 ? message.substring(0, 50) + '...' : message;
           const newConv = await ConversationRepository.createConversation({
             userId: userId,  // ✅ FIX: Corrigido de user_id para userId
@@ -122,21 +123,26 @@ app.post('/api/chat', async (req, res) => {
             model: agent.modelo || 'claude-sonnet-4.5'
           });
           finalConversationId = newConv.id;
+          console.log('✅ Conversation created:', finalConversationId, newConv.ephemeral ? '(EPHEMERAL)' : '(PERSISTED)');
         }
 
         // Save user message
-        await ConversationRepository.addMessage({
+        console.log('💾 Saving user message...', { conversationId: finalConversationId });
+        const userMsg = await ConversationRepository.addMessage({
           conversationId: finalConversationId,  // ✅ FIX: Corrigido de conversation_id para conversationId
           role: 'user',
           content: message
         });
+        console.log('✅ User message saved:', userMsg.id, userMsg.ephemeral ? '(EPHEMERAL)' : '(PERSISTED)');
 
         // Save assistant response
-        await ConversationRepository.addMessage({
+        console.log('💾 Saving assistant response...', { length: resposta.length });
+        const assistantMsg = await ConversationRepository.addMessage({
           conversationId: finalConversationId,  // ✅ FIX: Corrigido de conversation_id para conversationId
           role: 'assistant',
           content: resposta
         });
+        console.log('✅ Assistant message saved:', assistantMsg.id, assistantMsg.ephemeral ? '(EPHEMERAL)' : '(PERSISTED)');
 
         return res.json({
           response: resposta,
@@ -144,7 +150,9 @@ app.post('/api/chat', async (req, res) => {
         });
       } catch (saveError) {
         // Log error but don't fail the request
-        console.error('Error saving conversation:', saveError.message);
+        console.error('❌ ERROR SAVING CONVERSATION:', saveError.message);
+        console.error('Stack trace:', saveError.stack);
+        console.error('Context:', { userId, conversationId, messageLength: message?.length });
       }
     }
 
