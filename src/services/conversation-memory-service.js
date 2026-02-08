@@ -340,7 +340,7 @@ RESUMO COMPACTO (máximo ${Math.round(conversationText.length * 0.2)} caracteres
           currentMessage,
           conversationsWithMessages,
           {
-            threshold: 0.65,  // 65% de similaridade mínima
+            threshold: 0.60,  // 60% de similaridade mínima (reduzido de 65% para melhor recall)
             topK: 3,          // Máximo 3 conversas
             includeMessages: true
           }
@@ -360,7 +360,7 @@ RESUMO COMPACTO (máximo ${Math.round(conversationText.length * 0.2)} caracteres
                 currentMessage,
                 messages,
                 {
-                  threshold: 0.70,  // 70% para mensagens individuais
+                  threshold: 0.65,  // 65% para mensagens individuais (reduzido de 70% para melhor recall)
                   topK: 3
                 }
               );
@@ -518,6 +518,14 @@ RESUMO COMPACTO (máximo ${Math.round(conversationText.length * 0.2)} caracteres
       parts.push('═══════════════════════════════════════════════════════');
       parts.push('MEMÓRIA DE LONGO PRAZO - Contexto de Conversas Anteriores');
       parts.push('═══════════════════════════════════════════════════════\n');
+
+      // ⚠️ INSTRUÇÃO CRÍTICA: Dizer ao Claude para MENCIONAR EXPLICITAMENTE as conversas anteriores
+      parts.push('🔔 IMPORTANTE: As informações abaixo são de conversas anteriores do usuário.');
+      parts.push('Quando essas informações forem RELEVANTES para responder a pergunta atual:');
+      parts.push('  • MENCIONE EXPLICITAMENTE que são de conversas anteriores');
+      parts.push('  • Use frases como: "Como discutimos anteriormente...", "Em nossa conversa anterior sobre...", "Você já havia mencionado..."');
+      parts.push('  • Isso demonstra continuidade e memória de longo prazo ao usuário');
+      parts.push('  • Se as informações NÃO forem relevantes para a pergunta atual, ignore-as\n');
 
       hierarchicalContext.longTerm.relevantContext.forEach((conv, idx) => {
         // Incluir informação de similaridade se disponível
