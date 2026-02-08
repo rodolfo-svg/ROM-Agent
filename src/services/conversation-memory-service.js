@@ -19,6 +19,7 @@
 import { conversarStream } from '../modules/bedrock.js';
 import { logger } from '../utils/logger.js';
 import * as ConversationRepository from '../repositories/conversation-repository.js';
+import semanticSearchService from './semantic-search-service.js';
 
 /**
  * Configuração de limites de memória
@@ -310,19 +311,97 @@ RESUMO COMPACTO (máximo ${Math.round(conversationText.length * 0.2)} caracteres
   }
 
   /**
-   * Encontrar contexto relevante de conversas anteriores
+   * Encontrar contexto relevante de conversas anteriores usando BUSCA SEMÂNTICA REAL
    */
   async findRelevantContext(previousConversations, currentMessage, userId) {
     try {
-      // Buscar por palavras-chave e similaridade semântica
-      const keywords = this.extractKeywords(currentMessage);
+      // ESTRATÉGIA HÍBRIDA: Busca semântica (vetorial) + Keywords (fallback)
 
+      // 1. BUSCA SEMÂNTICA VETORIAL (Primary)
+      try {
+        logger.debug('[ConversationMemory] Iniciando busca semântica vetorial...');
+
+        // Preparar conversas com mensagens para embedding
+        const conversationsWithMessages = await Promise.all(
+          previousConversations.slice(0, 20).map(async (conv) => {
+            const messages = await ConversationRepository.getConversationMessages(conv.id, {
+              limit: 10,
+              offset: 0
+            });
+            return {
+              ...conv,
+              messages
+            };
+          })
+        );
+
+        // Buscar conversas semanticamente similares
+        const similarConversations = await semanticSearchService.searchSimilarConversations(
+          currentMessage,
+          conversationsWithMessages,
+          {
+            threshold: 0.65,  // 65% de similaridade mínima
+            topK: 3,          // Máximo 3 conversas
+            includeMessages: true
+          }
+        );
+
+        if (similarConversations.length > 0) {
+          // Sucesso! Encontrou conversas similares por busca vetorial
+          const relevantConvs = await Promise.all(
+            similarConversations.map(async (conv) => {
+              // Buscar mensagens mais similares dentro da conversa
+              const messages = await ConversationRepository.getConversationMessages(conv.id, {
+                limit: 20,
+                offset: 0
+              });
+
+              const similarMessages = await semanticSearchService.searchSimilarMessages(
+                currentMessage,
+                messages,
+                {
+                  threshold: 0.70,  // 70% para mensagens individuais
+                  topK: 3
+                }
+              );
+
+              return {
+                conversationId: conv.id,
+                title: conv.title,
+                date: conv.created_at,
+                similarity: conv.similarity,
+                similarityPercent: conv.similarityPercent,
+                relevantMessages: similarMessages,
+                searchType: 'semantic_vector'
+              };
+            })
+          );
+
+          logger.info('[ConversationMemory] Busca semântica vetorial bem-sucedida', {
+            conversationsFound: relevantConvs.length,
+            avgSimilarity: Math.round(
+              relevantConvs.reduce((sum, c) => sum + c.similarity, 0) / relevantConvs.length * 100
+            )
+          });
+
+          return relevantConvs;
+        }
+      } catch (semanticError) {
+        logger.warn('[ConversationMemory] Busca semântica falhou, usando fallback por keywords', {
+          error: semanticError.message
+        });
+        // Continuar para fallback por keywords
+      }
+
+      // 2. FALLBACK: BUSCA POR KEYWORDS (Secondary)
+      logger.debug('[ConversationMemory] Usando busca por keywords (fallback)...');
+
+      const keywords = this.extractKeywords(currentMessage);
       const relevantConvs = [];
 
-      for (const conv of previousConversations.slice(0, 10)) { // Limitar a 10 conversas mais recentes
-        // Buscar mensagens da conversa
+      for (const conv of previousConversations.slice(0, 10)) {
         const messages = await ConversationRepository.getConversationMessages(conv.id, {
-          limit: 20, // Últimas 20 mensagens de cada conversa
+          limit: 20,
           offset: 0
         });
 
@@ -336,14 +415,22 @@ RESUMO COMPACTO (máximo ${Math.round(conversationText.length * 0.2)} caracteres
             conversationId: conv.id,
             title: conv.title,
             date: conv.created_at,
+            similarity: 0,
+            similarityPercent: 0,
             relevantMessages: messages.filter(msg =>
               keywords.some(keyword => msg.content.toLowerCase().includes(keyword.toLowerCase()))
-            ).slice(0, 3) // Máximo 3 mensagens relevantes por conversa
+            ).slice(0, 3),
+            searchType: 'keyword_fallback'
           });
         }
 
-        // Limitar a 3 conversas relevantes para não explodir o contexto
         if (relevantConvs.length >= 3) break;
+      }
+
+      if (relevantConvs.length > 0) {
+        logger.info('[ConversationMemory] Busca por keywords retornou resultados', {
+          conversationsFound: relevantConvs.length
+        });
       }
 
       return relevantConvs;
@@ -433,9 +520,17 @@ RESUMO COMPACTO (máximo ${Math.round(conversationText.length * 0.2)} caracteres
       parts.push('═══════════════════════════════════════════════════════\n');
 
       hierarchicalContext.longTerm.relevantContext.forEach((conv, idx) => {
-        parts.push(`[CONVERSA ANTERIOR ${idx + 1}] ${conv.title || 'Sem título'} (${conv.date})`);
+        // Incluir informação de similaridade se disponível
+        const similarityInfo = conv.similarity > 0
+          ? ` [Similaridade: ${conv.similarityPercent}% - Busca ${conv.searchType === 'semantic_vector' ? 'SEMÂNTICA VETORIAL' : 'por Keywords'}]`
+          : '';
+
+        parts.push(`[CONVERSA ANTERIOR ${idx + 1}] ${conv.title || 'Sem título'} (${conv.date})${similarityInfo}`);
+
         conv.relevantMessages?.forEach(msg => {
-          parts.push(`  ${msg.role}: ${msg.content.substring(0, 300)}...`);
+          const msgSimilarity = msg.similarity > 0 ? ` [${msg.similarityPercent}%]` : '';
+          const preview = msg.content.length > 300 ? msg.content.substring(0, 300) + '...' : msg.content;
+          parts.push(`  ${msg.role}${msgSimilarity}: ${preview}`);
         });
         parts.push('');
       });
