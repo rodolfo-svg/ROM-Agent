@@ -328,7 +328,8 @@ async function processExtractionInBackground(jobId, doc, rawText, analysisType, 
   try {
     if (jobId) {
       // Definir número de etapas baseado no tipo de análise
-      const chunksTotal = analysisType === 'complete' ? 7 : (analysisType === 'extract_only' ? 2 : 3);
+      // complete: extraction + saving + persistence + 4 analysis + saving_files = 8
+      const chunksTotal = analysisType === 'complete' ? 8 : (analysisType === 'extract_only' ? 2 : 3);
       await extractionProgressService.startJob(jobId, 'multi-step', chunksTotal);
     }
 
@@ -357,17 +358,20 @@ async function processExtractionInBackground(jobId, doc, rawText, analysisType, 
           saveToKB: true,
           userId: userId,  // ✅ FIX: Pass userId for document creation
           skipExtraction: isPDF,  // ✅ Skip AI extraction for PDFs (already clean)
+          pdfPath: isPDF ? doc.path : null,  // ✅ Pass PDF path for image extraction
+          audioFiles: [],  // Future: audio transcription support
           progressCallback: async (stage, progress, message) => {
             // Callback para atualizar progresso durante processamento
             if (jobId) {
               const chunkMap = {
                 'extraction': 0,
                 'saving': 1,
-                'fichamento': 2,
-                'analise': 3,
-                'cronologia': 4,
-                'resumo': 5,
-                'saving_files': 6
+                'persistence': 2,  // ✅ Nova etapa: persistência completa
+                'fichamento': 3,
+                'analise': 4,
+                'cronologia': 5,
+                'resumo': 6,
+                'saving_files': 7
               };
               const chunkNumber = chunkMap[stage] || 0;
               await extractionProgressService.updateChunkProgress(jobId, chunkNumber, {
