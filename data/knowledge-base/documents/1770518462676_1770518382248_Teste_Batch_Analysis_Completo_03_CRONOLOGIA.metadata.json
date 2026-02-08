@@ -1,0 +1,19 @@
+{
+  "id": "1770518462676_1770518382248_Teste_Batch_Analysis_Completo_03_CRONOLOGIA",
+  "name": "03_CRONOLOGIA.md",
+  "originalName": "1770518382248_Teste_Batch_Analysis_Completo.pdf",
+  "type": "text/markdown",
+  "size": 399,
+  "uploadedAt": "2026-02-08T02:41:02.678Z",
+  "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770518462676_1770518382248_Teste_Batch_Analysis_Completo_03_CRONOLOGIA.md",
+  "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+  "metadata": {
+    "isStructuredDocument": true,
+    "parentDocument": "merged-1770518382248",
+    "intermediateDocument": "kb-extracted-merged-1770518382248-1770518401184",
+    "fileType": "CRONOLOGIA",
+    "order": 3,
+    "generatedBy": "document-processor-v2",
+    "analysisModel": "claude-sonnet"
+  }
+}

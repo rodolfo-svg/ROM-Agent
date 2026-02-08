@@ -1,0 +1,21 @@
+{
+  "documentId": "merged-1770524426823",
+  "extractionDate": "2026-02-08T04:21:19.776Z",
+  "version": "2.0",
+  "textSize": 12141,
+  "imagesCount": 0,
+  "audioCount": 0,
+  "attachmentsCount": 0,
+  "cost": 0.00065457,
+  "processingTime": 16,
+  "extractionMethod": "nova-micro",
+  "textPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/extractions/merged-1770524426823/full-text.md",
+  "images": [],
+  "structure": {
+    "fullText": "full-text.md",
+    "images": "images/",
+    "audio": "audio/",
+    "attachments": "attachments/",
+    "report": "extraction-report.md"
+  }
+}

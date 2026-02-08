@@ -1,0 +1,19 @@
+{
+  "id": "1770524554135_1770524426823_Test_Quick_Completo_15_MANIFESTACOES_POR_PARTE",
+  "name": "15_MANIFESTACOES_POR_PARTE.md",
+  "originalName": "1770524426823_Test_Quick_Completo.pdf",
+  "type": "text/markdown",
+  "size": 213,
+  "uploadedAt": "2026-02-08T04:22:35.677Z",
+  "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_15_MANIFESTACOES_POR_PARTE.md",
+  "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+  "metadata": {
+    "isStructuredDocument": true,
+    "parentDocument": "merged-1770524426823",
+    "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+    "fileType": "MANIFESTACOES_POR_PARTE",
+    "order": 15,
+    "generatedBy": "document-processor-v2",
+    "analysisModel": "claude-sonnet"
+  }
+}

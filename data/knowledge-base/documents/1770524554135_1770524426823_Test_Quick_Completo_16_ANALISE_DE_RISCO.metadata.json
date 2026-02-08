@@ -1,0 +1,19 @@
+{
+  "id": "1770524554135_1770524426823_Test_Quick_Completo_16_ANALISE_DE_RISCO",
+  "name": "16_ANALISE_DE_RISCO.md",
+  "originalName": "1770524426823_Test_Quick_Completo.pdf",
+  "type": "text/markdown",
+  "size": 303,
+  "uploadedAt": "2026-02-08T04:22:35.679Z",
+  "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_16_ANALISE_DE_RISCO.md",
+  "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+  "metadata": {
+    "isStructuredDocument": true,
+    "parentDocument": "merged-1770524426823",
+    "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+    "fileType": "ANALISE_DE_RISCO",
+    "order": 16,
+    "generatedBy": "document-processor-v2",
+    "analysisModel": "claude-sonnet"
+  }
+}

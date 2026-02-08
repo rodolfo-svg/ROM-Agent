@@ -1,0 +1,19 @@
+{
+  "id": "1770524554135_1770524426823_Test_Quick_Completo_09_PEDIDOS_E_DECISOES",
+  "name": "09_PEDIDOS_E_DECISOES.md",
+  "originalName": "1770524426823_Test_Quick_Completo.pdf",
+  "type": "text/markdown",
+  "size": 360,
+  "uploadedAt": "2026-02-08T04:22:35.662Z",
+  "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_09_PEDIDOS_E_DECISOES.md",
+  "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+  "metadata": {
+    "isStructuredDocument": true,
+    "parentDocument": "merged-1770524426823",
+    "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+    "fileType": "PEDIDOS_E_DECISOES",
+    "order": 9,
+    "generatedBy": "document-processor-v2",
+    "analysisModel": "claude-sonnet"
+  }
+}

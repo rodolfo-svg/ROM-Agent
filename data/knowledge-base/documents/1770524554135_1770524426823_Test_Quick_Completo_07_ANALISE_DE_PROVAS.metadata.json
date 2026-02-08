@@ -1,0 +1,19 @@
+{
+  "id": "1770524554135_1770524426823_Test_Quick_Completo_07_ANALISE_DE_PROVAS",
+  "name": "07_ANALISE_DE_PROVAS.md",
+  "originalName": "1770524426823_Test_Quick_Completo.pdf",
+  "type": "text/markdown",
+  "size": 391,
+  "uploadedAt": "2026-02-08T04:22:35.660Z",
+  "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_07_ANALISE_DE_PROVAS.md",
+  "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+  "metadata": {
+    "isStructuredDocument": true,
+    "parentDocument": "merged-1770524426823",
+    "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+    "fileType": "ANALISE_DE_PROVAS",
+    "order": 7,
+    "generatedBy": "document-processor-v2",
+    "analysisModel": "claude-sonnet"
+  }
+}

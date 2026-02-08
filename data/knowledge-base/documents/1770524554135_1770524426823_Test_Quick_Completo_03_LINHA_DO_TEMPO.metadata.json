@@ -1,0 +1,19 @@
+{
+  "id": "1770524554135_1770524426823_Test_Quick_Completo_03_LINHA_DO_TEMPO",
+  "name": "03_LINHA_DO_TEMPO.md",
+  "originalName": "1770524426823_Test_Quick_Completo.pdf",
+  "type": "text/markdown",
+  "size": 275,
+  "uploadedAt": "2026-02-08T04:22:35.651Z",
+  "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_03_LINHA_DO_TEMPO.md",
+  "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+  "metadata": {
+    "isStructuredDocument": true,
+    "parentDocument": "merged-1770524426823",
+    "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+    "fileType": "LINHA_DO_TEMPO",
+    "order": 3,
+    "generatedBy": "document-processor-v2",
+    "analysisModel": "claude-sonnet"
+  }
+}

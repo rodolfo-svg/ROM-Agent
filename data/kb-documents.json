@@ -2175,5 +2175,902 @@
       "documentType": "LEGISLACAO",
       "structuredType": "07_LEGISLACAO_CITADA.md"
     }
+  },
+  {
+    "id": "merged-1770515000824",
+    "name": "1770515000824_Teste_Batch_Analysis_Completo.pdf",
+    "originalName": "1770515000824_Teste_Batch_Analysis_Completo.pdf",
+    "type": "application/pdf",
+    "size": 784172,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/1770515000824_Teste_Batch_Analysis_Completo.pdf",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "uploadedAt": "2026-02-08T01:43:20.843Z",
+    "metadata": {
+      "isMergedDocument": true,
+      "volumesCount": 2,
+      "totalPages": 22,
+      "sourceVolumes": [
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770515000824_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        },
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770515000824_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        }
+      ],
+      "processName": "Teste_Batch_Analysis"
+    }
+  },
+  {
+    "id": "merged-1770515019763",
+    "name": "1770515019763_Teste_Batch_Analysis_Completo.pdf",
+    "originalName": "1770515019763_Teste_Batch_Analysis_Completo.pdf",
+    "type": "application/pdf",
+    "size": 784172,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/1770515019763_Teste_Batch_Analysis_Completo.pdf",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "uploadedAt": "2026-02-08T01:43:39.787Z",
+    "metadata": {
+      "isMergedDocument": true,
+      "volumesCount": 2,
+      "totalPages": 22,
+      "sourceVolumes": [
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770515019763_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        },
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770515019763_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        }
+      ],
+      "processName": "Teste_Batch_Analysis"
+    }
+  },
+  {
+    "id": "kb-extracted-merged-1770515019763-1770515036206",
+    "name": "1770515019763_Teste_Batch_Analysis_Completo.pdf - TEXTO_COMPLETO.md",
+    "originalName": "1770515019763_Teste_Batch_Analysis_Completo.pdf",
+    "type": "text/markdown",
+    "size": 12146,
+    "uploadedAt": "2026-02-08T01:43:56.206Z",
+    "textLength": 12146,
+    "metadata": {
+      "isExtractedText": true,
+      "parentDocument": "merged-1770515019763",
+      "extractionSource": "nova-micro",
+      "purpose": "intermediate-full-text"
+    },
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/extracted-texts/kb-extracted-merged-1770515019763-1770515036206.md"
+  },
+  {
+    "id": "merged-1770515378967",
+    "name": "1770515378967_Teste_Batch_Analysis_Completo.pdf",
+    "originalName": "1770515378967_Teste_Batch_Analysis_Completo.pdf",
+    "type": "application/pdf",
+    "size": 784172,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/1770515378967_Teste_Batch_Analysis_Completo.pdf",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "uploadedAt": "2026-02-08T01:49:38.977Z",
+    "metadata": {
+      "isMergedDocument": true,
+      "volumesCount": 2,
+      "totalPages": 22,
+      "sourceVolumes": [
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770515378967_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        },
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770515378967_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        }
+      ],
+      "processName": "Teste_Batch_Analysis"
+    }
+  },
+  {
+    "id": "kb-extracted-merged-1770515378967-1770515395568",
+    "name": "1770515378967_Teste_Batch_Analysis_Completo.pdf - TEXTO_COMPLETO.md",
+    "originalName": "1770515378967_Teste_Batch_Analysis_Completo.pdf",
+    "type": "text/markdown",
+    "size": 12148,
+    "uploadedAt": "2026-02-08T01:49:55.568Z",
+    "textLength": 12148,
+    "metadata": {
+      "isExtractedText": true,
+      "parentDocument": "merged-1770515378967",
+      "extractionSource": "nova-micro",
+      "purpose": "intermediate-full-text"
+    },
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/extracted-texts/kb-extracted-merged-1770515378967-1770515395568.md"
+  },
+  {
+    "id": "merged-1770515956369",
+    "name": "1770515956369_Teste_Batch_Analysis_Completo.pdf",
+    "originalName": "1770515956369_Teste_Batch_Analysis_Completo.pdf",
+    "type": "application/pdf",
+    "size": 784172,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/1770515956369_Teste_Batch_Analysis_Completo.pdf",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "uploadedAt": "2026-02-08T01:59:16.390Z",
+    "metadata": {
+      "isMergedDocument": true,
+      "volumesCount": 2,
+      "totalPages": 22,
+      "sourceVolumes": [
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770515956369_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        },
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770515956369_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        }
+      ],
+      "processName": "Teste_Batch_Analysis"
+    }
+  },
+  {
+    "id": "kb-extracted-merged-1770515956369-1770515972865",
+    "name": "1770515956369_Teste_Batch_Analysis_Completo.pdf - TEXTO_COMPLETO.md",
+    "originalName": "1770515956369_Teste_Batch_Analysis_Completo.pdf",
+    "type": "text/markdown",
+    "size": 12148,
+    "uploadedAt": "2026-02-08T01:59:32.865Z",
+    "textLength": 12148,
+    "metadata": {
+      "isExtractedText": true,
+      "parentDocument": "merged-1770515956369",
+      "extractionSource": "nova-micro",
+      "purpose": "intermediate-full-text"
+    },
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/extracted-texts/kb-extracted-merged-1770515956369-1770515972865.md"
+  },
+  {
+    "id": "merged-1770517006212",
+    "name": "1770517006212_Teste_Batch_Analysis_Completo.pdf",
+    "originalName": "1770517006212_Teste_Batch_Analysis_Completo.pdf",
+    "type": "application/pdf",
+    "size": 784172,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/1770517006212_Teste_Batch_Analysis_Completo.pdf",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "uploadedAt": "2026-02-08T02:16:46.234Z",
+    "metadata": {
+      "isMergedDocument": true,
+      "volumesCount": 2,
+      "totalPages": 22,
+      "sourceVolumes": [
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770517006212_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        },
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770517006212_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        }
+      ],
+      "processName": "Teste_Batch_Analysis"
+    }
+  },
+  {
+    "id": "kb-extracted-merged-1770517006212-1770517023098",
+    "name": "1770517006212_Teste_Batch_Analysis_Completo.pdf - TEXTO_COMPLETO.md",
+    "originalName": "1770517006212_Teste_Batch_Analysis_Completo.pdf",
+    "type": "text/markdown",
+    "size": 12146,
+    "uploadedAt": "2026-02-08T02:17:03.098Z",
+    "textLength": 12146,
+    "metadata": {
+      "isExtractedText": true,
+      "parentDocument": "merged-1770517006212",
+      "extractionSource": "nova-micro",
+      "purpose": "intermediate-full-text"
+    },
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/extracted-texts/kb-extracted-merged-1770517006212-1770517023098.md"
+  },
+  {
+    "id": "merged-1770517512966",
+    "name": "1770517512966_Teste_Batch_Analysis_Completo.pdf",
+    "originalName": "1770517512966_Teste_Batch_Analysis_Completo.pdf",
+    "type": "application/pdf",
+    "size": 784172,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/1770517512966_Teste_Batch_Analysis_Completo.pdf",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "uploadedAt": "2026-02-08T02:25:13.018Z",
+    "metadata": {
+      "isMergedDocument": true,
+      "volumesCount": 2,
+      "totalPages": 22,
+      "sourceVolumes": [
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770517512966_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        },
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770517512966_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        }
+      ],
+      "processName": "Teste_Batch_Analysis"
+    }
+  },
+  {
+    "id": "kb-extracted-merged-1770517512966-1770517530051",
+    "name": "1770517512966_Teste_Batch_Analysis_Completo.pdf - TEXTO_COMPLETO.md",
+    "originalName": "1770517512966_Teste_Batch_Analysis_Completo.pdf",
+    "type": "text/markdown",
+    "size": 12148,
+    "uploadedAt": "2026-02-08T02:25:30.051Z",
+    "textLength": 12148,
+    "metadata": {
+      "isExtractedText": true,
+      "parentDocument": "merged-1770517512966",
+      "extractionSource": "nova-micro",
+      "purpose": "intermediate-full-text"
+    },
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/extracted-texts/kb-extracted-merged-1770517512966-1770517530051.md"
+  },
+  {
+    "id": "merged-1770518382248",
+    "name": "1770518382248_Teste_Batch_Analysis_Completo.pdf",
+    "originalName": "1770518382248_Teste_Batch_Analysis_Completo.pdf",
+    "type": "application/pdf",
+    "size": 784172,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/1770518382248_Teste_Batch_Analysis_Completo.pdf",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "uploadedAt": "2026-02-08T02:39:42.306Z",
+    "metadata": {
+      "isMergedDocument": true,
+      "volumesCount": 2,
+      "totalPages": 22,
+      "sourceVolumes": [
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770518382248_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        },
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770518382248_Teste_Batch_Analysis/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        }
+      ],
+      "processName": "Teste_Batch_Analysis",
+      "structuredDocsInKB": [
+        {
+          "name": "01_FICHAMENTO.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770518462676_1770518382248_Teste_Batch_Analysis_Completo_01_FICHAMENTO.md",
+          "type": "FICHAMENTO",
+          "size": 954
+        },
+        {
+          "name": "03_CRONOLOGIA.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770518462676_1770518382248_Teste_Batch_Analysis_Completo_03_CRONOLOGIA.md",
+          "type": "CRONOLOGIA",
+          "size": 399
+        },
+        {
+          "name": "04_RESUMO_EXECUTIVO.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770518462676_1770518382248_Teste_Batch_Analysis_Completo_04_RESUMO_EXECUTIVO.md",
+          "type": "RESUMO_EXECUTIVO",
+          "size": 603
+        }
+      ],
+      "hasStructuredFiles": true,
+      "structuredFilesCount": 3
+    }
+  },
+  {
+    "id": "kb-extracted-merged-1770518382248-1770518401184",
+    "name": "1770518382248_Teste_Batch_Analysis_Completo.pdf - TEXTO_COMPLETO.md",
+    "originalName": "1770518382248_Teste_Batch_Analysis_Completo.pdf",
+    "type": "text/markdown",
+    "size": 12146,
+    "uploadedAt": "2026-02-08T02:40:01.185Z",
+    "textLength": 12146,
+    "metadata": {
+      "isExtractedText": true,
+      "parentDocument": "merged-1770518382248",
+      "extractionSource": "nova-micro",
+      "purpose": "intermediate-full-text"
+    },
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/extracted-texts/kb-extracted-merged-1770518382248-1770518401184.md"
+  },
+  {
+    "id": "1770518462676_1770518382248_Teste_Batch_Analysis_Completo_01_FICHAMENTO",
+    "name": "01_FICHAMENTO.md",
+    "originalName": "1770518382248_Teste_Batch_Analysis_Completo.pdf",
+    "type": "text/markdown",
+    "size": 954,
+    "uploadedAt": "2026-02-08T02:41:02.677Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770518462676_1770518382248_Teste_Batch_Analysis_Completo_01_FICHAMENTO.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770518382248",
+      "intermediateDocument": "kb-extracted-merged-1770518382248-1770518401184",
+      "fileType": "FICHAMENTO",
+      "order": 1,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770518462676_1770518382248_Teste_Batch_Analysis_Completo_03_CRONOLOGIA",
+    "name": "03_CRONOLOGIA.md",
+    "originalName": "1770518382248_Teste_Batch_Analysis_Completo.pdf",
+    "type": "text/markdown",
+    "size": 399,
+    "uploadedAt": "2026-02-08T02:41:02.678Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770518462676_1770518382248_Teste_Batch_Analysis_Completo_03_CRONOLOGIA.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770518382248",
+      "intermediateDocument": "kb-extracted-merged-1770518382248-1770518401184",
+      "fileType": "CRONOLOGIA",
+      "order": 3,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770518462676_1770518382248_Teste_Batch_Analysis_Completo_04_RESUMO_EXECUTIVO",
+    "name": "04_RESUMO_EXECUTIVO.md",
+    "originalName": "1770518382248_Teste_Batch_Analysis_Completo.pdf",
+    "type": "text/markdown",
+    "size": 603,
+    "uploadedAt": "2026-02-08T02:41:02.678Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770518462676_1770518382248_Teste_Batch_Analysis_Completo_04_RESUMO_EXECUTIVO.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770518382248",
+      "intermediateDocument": "kb-extracted-merged-1770518382248-1770518401184",
+      "fileType": "RESUMO_EXECUTIVO",
+      "order": 4,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "merged-1770524426823",
+    "name": "1770524426823_Test_Quick_Completo.pdf",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "application/pdf",
+    "size": 784171,
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/1770524426823_Test_Quick_Completo.pdf",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "uploadedAt": "2026-02-08T04:20:27.563Z",
+    "metadata": {
+      "isMergedDocument": true,
+      "volumesCount": 2,
+      "totalPages": 22,
+      "sourceVolumes": [
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770524426823_Test_Quick/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        },
+        {
+          "originalName": "01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf",
+          "size": 416304,
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/uploads/volumes/1770524426823_Test_Quick/01. ManifestaÃ§Ã£o. 5211157.86.2018.8.09.0051.pdf"
+        }
+      ],
+      "processName": "Test_Quick",
+      "structuredDocsInKB": [
+        {
+          "name": "01_FICHAMENTO.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_01_FICHAMENTO.md",
+          "type": "FICHAMENTO",
+          "size": 959
+        },
+        {
+          "name": "02_CRONOLOGIA.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_02_CRONOLOGIA.md",
+          "type": "CRONOLOGIA",
+          "size": 433
+        },
+        {
+          "name": "03_LINHA_DO_TEMPO.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_03_LINHA_DO_TEMPO.md",
+          "type": "LINHA_DO_TEMPO",
+          "size": 275
+        },
+        {
+          "name": "04_MAPA_DE_PARTES.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_04_MAPA_DE_PARTES.md",
+          "type": "MAPA_DE_PARTES",
+          "size": 467
+        },
+        {
+          "name": "05_RESUMO_EXECUTIVO.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_05_RESUMO_EXECUTIVO.md",
+          "type": "RESUMO_EXECUTIVO",
+          "size": 648
+        },
+        {
+          "name": "06_TESES_JURIDICAS.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_06_TESES_JURIDICAS.md",
+          "type": "TESES_JURIDICAS",
+          "size": 525
+        },
+        {
+          "name": "07_ANALISE_DE_PROVAS.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_07_ANALISE_DE_PROVAS.md",
+          "type": "ANALISE_DE_PROVAS",
+          "size": 391
+        },
+        {
+          "name": "08_QUESTOES_JURIDICAS.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_08_QUESTOES_JURIDICAS.md",
+          "type": "QUESTOES_JURIDICAS",
+          "size": 414
+        },
+        {
+          "name": "09_PEDIDOS_E_DECISOES.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_09_PEDIDOS_E_DECISOES.md",
+          "type": "PEDIDOS_E_DECISOES",
+          "size": 360
+        },
+        {
+          "name": "10_RECURSOS_INTERPOSTOS.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_10_RECURSOS_INTERPOSTOS.md",
+          "type": "RECURSOS_INTERPOSTOS",
+          "size": 228
+        },
+        {
+          "name": "11_PRAZOS_E_INTIMACOES.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_11_PRAZOS_E_INTIMACOES.md",
+          "type": "PRAZOS_E_INTIMACOES",
+          "size": 63
+        },
+        {
+          "name": "12_CUSTAS_E_VALORES.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_12_CUSTAS_E_VALORES.md",
+          "type": "CUSTAS_E_VALORES",
+          "size": 248
+        },
+        {
+          "name": "13_JURISPRUDENCIA_CITADA.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_13_JURISPRUDENCIA_CITADA.md",
+          "type": "JURISPRUDENCIA_CITADA",
+          "size": 309
+        },
+        {
+          "name": "14_HISTORICO_PROCESSUAL.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_14_HISTORICO_PROCESSUAL.md",
+          "type": "HISTORICO_PROCESSUAL",
+          "size": 271
+        },
+        {
+          "name": "15_MANIFESTACOES_POR_PARTE.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_15_MANIFESTACOES_POR_PARTE.md",
+          "type": "MANIFESTACOES_POR_PARTE",
+          "size": 213
+        },
+        {
+          "name": "16_ANALISE_DE_RISCO.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_16_ANALISE_DE_RISCO.md",
+          "type": "ANALISE_DE_RISCO",
+          "size": 303
+        },
+        {
+          "name": "17_ESTRATEGIA_E_PROXIMOS_PASSOS.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_17_ESTRATEGIA_E_PROXIMOS_PASSOS.md",
+          "type": "ESTRATEGIA_E_PROXIMOS_PASSOS",
+          "size": 303
+        },
+        {
+          "name": "18_PRECEDENTES_SIMILARES.md",
+          "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_18_PRECEDENTES_SIMILARES.md",
+          "type": "PRECEDENTES_SIMILARES",
+          "size": 251
+        }
+      ],
+      "hasStructuredFiles": true,
+      "structuredFilesCount": 18
+    }
+  },
+  {
+    "id": "kb-extracted-merged-1770524426823-1770524479642",
+    "name": "1770524426823_Test_Quick_Completo.pdf - TEXTO_COMPLETO.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 12141,
+    "uploadedAt": "2026-02-08T04:21:19.643Z",
+    "textLength": 12141,
+    "metadata": {
+      "isExtractedText": true,
+      "parentDocument": "merged-1770524426823",
+      "extractionSource": "nova-micro",
+      "purpose": "intermediate-full-text"
+    },
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/extracted-texts/kb-extracted-merged-1770524426823-1770524479642.md"
+  },
+  {
+    "id": "extraction-complete-merged-1770524426823",
+    "name": "1770524426823_Test_Quick_Completo.pdf - EXTRAÇÃO COMPLETA",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "extraction-package",
+    "uploadedAt": "2026-02-08T04:21:19.780Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/extractions/merged-1770524426823",
+    "metadata": {
+      "isExtractionPackage": true,
+      "parentDocument": "merged-1770524426823",
+      "extractionComplete": true,
+      "hasFullText": true,
+      "hasImages": false,
+      "hasAudio": false,
+      "components": {
+        "fullText": "extractions/merged-1770524426823/full-text.md",
+        "images": "extractions/merged-1770524426823/images/",
+        "audio": "extractions/merged-1770524426823/audio/",
+        "report": "extractions/merged-1770524426823/extraction-report.md",
+        "metadata": "extractions/merged-1770524426823/metadata.json"
+      },
+      "stats": {
+        "textSize": 12141,
+        "imagesCount": 0,
+        "audioCount": 0
+      }
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_01_FICHAMENTO",
+    "name": "01_FICHAMENTO.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 959,
+    "uploadedAt": "2026-02-08T04:22:35.620Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_01_FICHAMENTO.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "FICHAMENTO",
+      "order": 1,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_02_CRONOLOGIA",
+    "name": "02_CRONOLOGIA.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 433,
+    "uploadedAt": "2026-02-08T04:22:35.649Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_02_CRONOLOGIA.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "CRONOLOGIA",
+      "order": 2,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_03_LINHA_DO_TEMPO",
+    "name": "03_LINHA_DO_TEMPO.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 275,
+    "uploadedAt": "2026-02-08T04:22:35.651Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_03_LINHA_DO_TEMPO.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "LINHA_DO_TEMPO",
+      "order": 3,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_04_MAPA_DE_PARTES",
+    "name": "04_MAPA_DE_PARTES.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 467,
+    "uploadedAt": "2026-02-08T04:22:35.652Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_04_MAPA_DE_PARTES.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "MAPA_DE_PARTES",
+      "order": 4,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_05_RESUMO_EXECUTIVO",
+    "name": "05_RESUMO_EXECUTIVO.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 648,
+    "uploadedAt": "2026-02-08T04:22:35.652Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_05_RESUMO_EXECUTIVO.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "RESUMO_EXECUTIVO",
+      "order": 5,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_06_TESES_JURIDICAS",
+    "name": "06_TESES_JURIDICAS.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 525,
+    "uploadedAt": "2026-02-08T04:22:35.657Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_06_TESES_JURIDICAS.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "TESES_JURIDICAS",
+      "order": 6,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_07_ANALISE_DE_PROVAS",
+    "name": "07_ANALISE_DE_PROVAS.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 391,
+    "uploadedAt": "2026-02-08T04:22:35.660Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_07_ANALISE_DE_PROVAS.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "ANALISE_DE_PROVAS",
+      "order": 7,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_08_QUESTOES_JURIDICAS",
+    "name": "08_QUESTOES_JURIDICAS.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 414,
+    "uploadedAt": "2026-02-08T04:22:35.661Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_08_QUESTOES_JURIDICAS.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "QUESTOES_JURIDICAS",
+      "order": 8,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_09_PEDIDOS_E_DECISOES",
+    "name": "09_PEDIDOS_E_DECISOES.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 360,
+    "uploadedAt": "2026-02-08T04:22:35.662Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_09_PEDIDOS_E_DECISOES.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "PEDIDOS_E_DECISOES",
+      "order": 9,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_10_RECURSOS_INTERPOSTOS",
+    "name": "10_RECURSOS_INTERPOSTOS.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 228,
+    "uploadedAt": "2026-02-08T04:22:35.664Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_10_RECURSOS_INTERPOSTOS.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "RECURSOS_INTERPOSTOS",
+      "order": 10,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_11_PRAZOS_E_INTIMACOES",
+    "name": "11_PRAZOS_E_INTIMACOES.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 63,
+    "uploadedAt": "2026-02-08T04:22:35.667Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_11_PRAZOS_E_INTIMACOES.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "PRAZOS_E_INTIMACOES",
+      "order": 11,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_12_CUSTAS_E_VALORES",
+    "name": "12_CUSTAS_E_VALORES.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 248,
+    "uploadedAt": "2026-02-08T04:22:35.671Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_12_CUSTAS_E_VALORES.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "CUSTAS_E_VALORES",
+      "order": 12,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_13_JURISPRUDENCIA_CITADA",
+    "name": "13_JURISPRUDENCIA_CITADA.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 309,
+    "uploadedAt": "2026-02-08T04:22:35.673Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_13_JURISPRUDENCIA_CITADA.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "JURISPRUDENCIA_CITADA",
+      "order": 13,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_14_HISTORICO_PROCESSUAL",
+    "name": "14_HISTORICO_PROCESSUAL.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 271,
+    "uploadedAt": "2026-02-08T04:22:35.677Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_14_HISTORICO_PROCESSUAL.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "HISTORICO_PROCESSUAL",
+      "order": 14,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_15_MANIFESTACOES_POR_PARTE",
+    "name": "15_MANIFESTACOES_POR_PARTE.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 213,
+    "uploadedAt": "2026-02-08T04:22:35.677Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_15_MANIFESTACOES_POR_PARTE.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "MANIFESTACOES_POR_PARTE",
+      "order": 15,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_16_ANALISE_DE_RISCO",
+    "name": "16_ANALISE_DE_RISCO.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 303,
+    "uploadedAt": "2026-02-08T04:22:35.679Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_16_ANALISE_DE_RISCO.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "ANALISE_DE_RISCO",
+      "order": 16,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_17_ESTRATEGIA_E_PROXIMOS_PASSOS",
+    "name": "17_ESTRATEGIA_E_PROXIMOS_PASSOS.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 303,
+    "uploadedAt": "2026-02-08T04:22:35.681Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_17_ESTRATEGIA_E_PROXIMOS_PASSOS.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "ESTRATEGIA_E_PROXIMOS_PASSOS",
+      "order": 17,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
+  },
+  {
+    "id": "1770524554135_1770524426823_Test_Quick_Completo_18_PRECEDENTES_SIMILARES",
+    "name": "18_PRECEDENTES_SIMILARES.md",
+    "originalName": "1770524426823_Test_Quick_Completo.pdf",
+    "type": "text/markdown",
+    "size": 251,
+    "uploadedAt": "2026-02-08T04:22:35.684Z",
+    "path": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base/documents/1770524554135_1770524426823_Test_Quick_Completo_18_PRECEDENTES_SIMILARES.md",
+    "userId": "3a9c04c1-0510-4a11-ae71-dd8b4d733bef",
+    "metadata": {
+      "isStructuredDocument": true,
+      "parentDocument": "merged-1770524426823",
+      "intermediateDocument": "kb-extracted-merged-1770524426823-1770524479642",
+      "fileType": "PRECEDENTES_SIMILARES",
+      "order": 18,
+      "generatedBy": "document-processor-v2",
+      "analysisModel": "claude-sonnet"
+    }
   }
 ]
