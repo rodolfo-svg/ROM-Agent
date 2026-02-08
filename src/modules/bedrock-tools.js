@@ -352,6 +352,13 @@ export async function executeTool(toolName, toolInput) {
         respostaFormatada += '═══════════════════════════════════════════════════════════════════════\n';
         respostaFormatada += '⚠️ ATENÇÃO: NÃO RESUMA! COPIE AS EMENTAS COMPLETAS FORNECIDAS ABAIXO!\n';
         respostaFormatada += '⚠️ PROIBIDO escrever "Com base nas buscas, encontrei..." sem mostrar ementas\n';
+        respostaFormatada += '⚠️ OBRIGATÓRIO: Incluir TODOS os metadados disponíveis de cada decisão:\n';
+        respostaFormatada += '   • 📋 Processo (se disponível)\n';
+        respostaFormatada += '   • 👨‍⚖️ Relator (se disponível)\n';
+        respostaFormatada += '   • 🏛️ Órgão Julgador/Câmara (se disponível)\n';
+        respostaFormatada += '   • 📅 Data de Julgamento (se disponível)\n';
+        respostaFormatada += '   • 📰 Data de Publicação/DJE (se disponível)\n';
+        respostaFormatada += '⚠️ NÃO omita nenhum metadado que esteja presente nos resultados abaixo!\n';
         respostaFormatada += '═══════════════════════════════════════════════════════════════════════\n\n';
 
         // Informações gerais
