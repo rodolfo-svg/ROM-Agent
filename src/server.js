@@ -117,7 +117,7 @@ app.post('/api/chat', async (req, res) => {
         if (!conversationId) {
           const title = message.length > 50 ? message.substring(0, 50) + '...' : message;
           const newConv = await ConversationRepository.createConversation({
-            user_id: userId,
+            userId: userId,  // ✅ FIX: Corrigido de user_id para userId
             title: title,
             model: agent.modelo || 'claude-sonnet-4.5'
           });
@@ -126,14 +126,14 @@ app.post('/api/chat', async (req, res) => {
 
         // Save user message
         await ConversationRepository.addMessage({
-          conversation_id: finalConversationId,
+          conversationId: finalConversationId,  // ✅ FIX: Corrigido de conversation_id para conversationId
           role: 'user',
           content: message
         });
 
         // Save assistant response
         await ConversationRepository.addMessage({
-          conversation_id: finalConversationId,
+          conversationId: finalConversationId,  // ✅ FIX: Corrigido de conversation_id para conversationId
           role: 'assistant',
           content: resposta
         });

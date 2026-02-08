@@ -504,7 +504,7 @@ router.post('/stream', async (req, res) => {
             const title = message.length > 50 ? message.substring(0, 50) + '...' : message;
 
             const newConv = await ConversationRepository.createConversation({
-              user_id: userId,
+              userId: userId,  // ✅ FIX: Corrigido de user_id para userId
               title: title,
               model: resultado.modelo || selectedModel
             });
@@ -516,14 +516,14 @@ router.post('/stream', async (req, res) => {
 
           // Salvar mensagem do usuário
           await ConversationRepository.addMessage({
-            conversation_id: finalConversationId,
+            conversationId: finalConversationId,  // ✅ FIX: Corrigido de conversation_id para conversationId
             role: 'user',
             content: message
           });
 
           // Salvar resposta do assistente
           await ConversationRepository.addMessage({
-            conversation_id: finalConversationId,
+            conversationId: finalConversationId,  // ✅ FIX: Corrigido de conversation_id para conversationId
             role: 'assistant',
             content: fullResponse
           });
