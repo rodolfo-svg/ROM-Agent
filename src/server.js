@@ -102,8 +102,52 @@ app.post('/api/chat', async (req, res) => {
       }
     }
 
-    const { message } = req.body;
+    const { message, conversationId } = req.body;
+    const userId = req.session?.user?.id;
+
     const resposta = await agent.processar(message);
+
+    // Auto-save conversation and messages for long-term memory
+    if (userId && userId !== 'anonymous') {
+      try {
+        const ConversationRepository = await import('./repositories/conversation-repository.js');
+        let finalConversationId = conversationId;
+
+        // Create new conversation if needed
+        if (!conversationId) {
+          const title = message.length > 50 ? message.substring(0, 50) + '...' : message;
+          const newConv = await ConversationRepository.createConversation({
+            user_id: userId,
+            title: title,
+            model: agent.modelo || 'claude-sonnet-4.5'
+          });
+          finalConversationId = newConv.id;
+        }
+
+        // Save user message
+        await ConversationRepository.addMessage({
+          conversation_id: finalConversationId,
+          role: 'user',
+          content: message
+        });
+
+        // Save assistant response
+        await ConversationRepository.addMessage({
+          conversation_id: finalConversationId,
+          role: 'assistant',
+          content: resposta
+        });
+
+        return res.json({
+          response: resposta,
+          conversationId: finalConversationId
+        });
+      } catch (saveError) {
+        // Log error but don't fail the request
+        console.error('Error saving conversation:', saveError.message);
+      }
+    }
+
     res.json({ response: resposta });
   } catch (error) {
     res.status(500).json({ error: error.message });
