@@ -323,14 +323,46 @@ router.post('/stream', async (req, res) => {
     // ✅ AUTO-DETECÇÃO: Identificar se é pedido de redação de peça ou chat
     const detectIfPecaRequest = (msg) => {
       const lowerMessage = msg.toLowerCase();
-      const pecaKeywords = [
-        'redija', 'elabore', 'escreva', 'crie', 'draft',
+
+      // Verbos de ação para redação (prioridade alta) - incluir infinitivos
+      const actionVerbs = ['redija', 'redigir', 'elabore', 'elaborar', 'escreva', 'escrever', 'crie', 'criar', 'draft', 'faça', 'fazer', 'prepare', 'preparar'];
+      const hasActionVerb = actionVerbs.some(verb => lowerMessage.includes(verb));
+
+      // Tipos de peças jurídicas
+      const pecaTypes = [
         'petição', 'peça', 'contrato', 'recurso',
-        'apelação', 'agravo', 'contestação', 'inicial',
-        'mandado', 'habeas corpus', 'embargos', 'sentença',
-        'acórdão', 'despacho', 'decisão', 'parecer'
+        'apelação', 'agravo', 'inicial',
+        'mandado', 'habeas corpus', 'embargos',
+        'parecer', 'memorial'
       ];
-      return pecaKeywords.some(keyword => lowerMessage.includes(keyword));
+      const hasPecaType = pecaTypes.some(type => lowerMessage.includes(type));
+
+      // PRIORIDADE 1: Se tem verbo de ação + tipo de peça = definitivamente redação
+      if (hasActionVerb && hasPecaType) {
+        return true;
+      }
+
+      // PRIORIDADE 2: Se tem verbo de ação forte sozinho = redação
+      if (hasActionVerb) {
+        return true;
+      }
+
+      // PRIORIDADE 3: Se tem tipo de peça sem verbo = pode ser redação implícita
+      // Ex: "preciso de uma petição", "faça um contrato"
+      const implicitActionWords = ['preciso de', 'necessito', 'quero', 'gostaria de'];
+      const hasImplicitAction = implicitActionWords.some(word => lowerMessage.includes(word));
+      if (hasImplicitAction && hasPecaType) {
+        return true;
+      }
+
+      // Palavras de pergunta indicam chat (verificar depois das ações)
+      const questionWords = ['qual', 'como', 'quando', 'onde', 'por que', 'porque', 'o que', 'quem', 'explique'];
+      const isQuestion = questionWords.some(word => lowerMessage.startsWith(word));
+
+      // Se é claramente uma pergunta sem verbos de ação = chat
+      if (isQuestion) return false;
+
+      return false;
     };
 
     const isPecaRequest = detectIfPecaRequest(message);
