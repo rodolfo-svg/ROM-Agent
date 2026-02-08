@@ -380,11 +380,13 @@ router.post('/stream', async (req, res) => {
     let hierarchicalContext = null;
     let additionalContext = '';
 
-    if (conversationId && userId !== 'anonymous') {
+    // 🔥 CRÍTICO: Construir contexto mesmo para NOVAS conversas (conversationId null)
+    // Isso permite recuperar contexto de CONVERSAS ANTERIORES do mesmo usuário
+    if (userId !== 'anonymous') {
       try {
         logger.debug(`[${requestId}] Construindo contexto hierárquico...`);
         hierarchicalContext = await conversationMemoryService.buildHierarchicalContext(
-          conversationId,
+          conversationId,  // Pode ser null para novas conversas
           userId,
           message
         );

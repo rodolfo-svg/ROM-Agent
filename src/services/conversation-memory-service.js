@@ -122,6 +122,16 @@ export class ConversationMemoryService {
    */
   async getShortTermMemory(conversationId) {
     try {
+      // Para novas conversas (conversationId null), não há histórico curto prazo ainda
+      if (!conversationId) {
+        return {
+          messages: [],
+          count: 0,
+          estimatedTokens: 0,
+          type: 'full_context'
+        };
+      }
+
       const messages = await ConversationRepository.getConversationMessages(conversationId, {
         limit: MEMORY_LIMITS.shortTerm.maxMessages,
         offset: 0
@@ -159,6 +169,11 @@ export class ConversationMemoryService {
    */
   async getMediumTermMemory(conversationId) {
     try {
+      // Para novas conversas (conversationId null), não há histórico médio prazo ainda
+      if (!conversationId) {
+        return { messages: [], summary: null, count: 0, estimatedTokens: 0, type: 'compressed_summary' };
+      }
+
       // Verificar cache primeiro
       const cacheKey = `summary_${conversationId}`;
       if (this.summaryCache.has(cacheKey)) {
