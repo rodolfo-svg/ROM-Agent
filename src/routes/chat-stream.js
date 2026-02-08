@@ -24,6 +24,7 @@ import metricsCollector from '../utils/metrics-collector-v2.js';
 import { buildSystemPrompt } from '../server-enhanced.js';
 import { getSSEConnectionManager } from '../utils/sse-connection-manager.js';
 import conversationMemoryService from '../services/conversation-memory-service.js';
+import * as ConversationRepository from '../repositories/conversation-repository.js';
 
 const router = express.Router();
 const sseManager = getSSEConnectionManager();
@@ -491,6 +492,53 @@ router.post('/stream', async (req, res) => {
         modelo: resultado.modelo || 'unknown'
       });
       metricsCollector.recordLatency('chat_stream', totalTime, resultado.modelo || 'unknown');
+
+      // 🔥 CRÍTICO: Salvar conversa e mensagens no banco para memória de longo prazo
+      if (userId && userId !== 'anonymous') {
+        try {
+          let finalConversationId = conversationId;
+
+          // Se não existe conversationId, criar nova conversa
+          if (!conversationId) {
+            // Gerar título baseado na primeira mensagem
+            const title = message.length > 50 ? message.substring(0, 50) + '...' : message;
+
+            const newConv = await ConversationRepository.createConversation({
+              user_id: userId,
+              title: title,
+              model: resultado.modelo || selectedModel
+            });
+
+            finalConversationId = newConv.id;
+
+            logger.info(`[${requestId}] Nova conversa criada: ${finalConversationId}`);
+          }
+
+          // Salvar mensagem do usuário
+          await ConversationRepository.addMessage({
+            conversation_id: finalConversationId,
+            role: 'user',
+            content: message
+          });
+
+          // Salvar resposta do assistente
+          await ConversationRepository.addMessage({
+            conversation_id: finalConversationId,
+            role: 'assistant',
+            content: fullResponse
+          });
+
+          logger.debug(`[${requestId}] Mensagens salvas: conversationId=${finalConversationId}`);
+
+        } catch (saveError) {
+          // Log do erro mas não falhar o request
+          logger.error(`[${requestId}] Erro ao salvar conversa`, {
+            error: saveError.message,
+            userId,
+            conversationId
+          });
+        }
+      }
 
     } else {
       // Enviar evento de erro
