@@ -367,10 +367,17 @@ export async function executeTool(toolName, toolInput) {
           // ✅ CORREÇÃO: Mostrar TODOS os resultados, não apenas 3 (até limite de 10)
           resultado.sources.datajud.results.slice(0, Math.min(10, resultado.sources.datajud.results.length)).forEach((item, idx) => {
             respostaFormatada += `**[${idx + 1}] ${item.numero || item.titulo || 'Decisão'}**\n`;
-            if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
+            if (item.tribunal) respostaFormatada += `📍 Tribunal: ${item.tribunal}\n`;
             if (item.classe) respostaFormatada += `Classe: ${item.classe}\n`;
-            if (item.relator) respostaFormatada += `Relator: ${item.relator}\n`;
-            if (item.data) respostaFormatada += `Data: ${item.data}\n`;
+
+            // ✅ METADADOS (incluindo scraped metadata se disponível)
+            if (item.numeroProcesso) respostaFormatada += `📋 Processo: ${item.numeroProcesso}\n`;
+            if (item.relator) respostaFormatada += `👨‍⚖️ Relator: ${item.relator}\n`;
+            if (item.orgaoJulgador) respostaFormatada += `🏛️ Órgão Julgador: ${item.orgaoJulgador}\n`;
+            if (item.dataJulgamento) respostaFormatada += `📅 Data de Julgamento: ${item.dataJulgamento}\n`;
+            if (item.dataPublicacao) respostaFormatada += `📰 Data de Publicação (DJE): ${item.dataPublicacao}\n`;
+            if (item.data && !item.dataJulgamento) respostaFormatada += `Data: ${item.data}\n`;
+
             if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 400)}...\n`;
             if (item.link) respostaFormatada += `Link: ${item.link}\n`;
             respostaFormatada += '\n';
@@ -390,8 +397,16 @@ export async function executeTool(toolName, toolInput) {
           // ✅ CORREÇÃO: Mostrar TODOS os resultados, não apenas 3 (até limite de 10)
           resultado.sources.jusbrasil.results.slice(0, Math.min(10, resultado.sources.jusbrasil.results.length)).forEach((item, idx) => {
             respostaFormatada += `**[${idx + 1}] ${item.titulo || 'Documento'}**\n`;
-            if (item.tribunal) respostaFormatada += `Tribunal: ${item.tribunal}\n`;
-            if (item.data) respostaFormatada += `Data: ${item.data}\n`;
+            if (item.tribunal) respostaFormatada += `📍 Tribunal: ${item.tribunal}\n`;
+
+            // ✅ METADADOS (incluindo scraped metadata se disponível)
+            if (item.numeroProcesso) respostaFormatada += `📋 Processo: ${item.numeroProcesso}\n`;
+            if (item.relator) respostaFormatada += `👨‍⚖️ Relator: ${item.relator}\n`;
+            if (item.orgaoJulgador) respostaFormatada += `🏛️ Órgão Julgador: ${item.orgaoJulgador}\n`;
+            if (item.dataJulgamento) respostaFormatada += `📅 Data de Julgamento: ${item.dataJulgamento}\n`;
+            if (item.dataPublicacao) respostaFormatada += `📰 Data de Publicação (DJE): ${item.dataPublicacao}\n`;
+            if (item.data && !item.dataJulgamento) respostaFormatada += `Data: ${item.data}\n`;
+
             if (item.ementa) respostaFormatada += `Ementa: ${item.ementa.substring(0, 400)}...\n`;
             if (item.link) respostaFormatada += `Link: ${item.link}\n`;
             respostaFormatada += '\n';
@@ -412,6 +427,13 @@ export async function executeTool(toolName, toolInput) {
           resultado.sources.websearch.results.slice(0, Math.min(10, resultado.sources.websearch.results.length)).forEach((item, idx) => {
             respostaFormatada += `**[${idx + 1}] ${item.titulo || item.title || 'Resultado'}**\n`;
             if (item.tribunal) respostaFormatada += `📍 Tribunal: ${item.tribunal}\n`;
+
+            // ✅ METADADOS EXTRAÍDOS (processo, relator, câmara, datas)
+            if (item.numeroProcesso) respostaFormatada += `📋 Processo: ${item.numeroProcesso}\n`;
+            if (item.relator) respostaFormatada += `👨‍⚖️ Relator: ${item.relator}\n`;
+            if (item.orgaoJulgador) respostaFormatada += `🏛️ Órgão Julgador: ${item.orgaoJulgador}\n`;
+            if (item.dataJulgamento) respostaFormatada += `📅 Data de Julgamento: ${item.dataJulgamento}\n`;
+            if (item.dataPublicacao) respostaFormatada += `📰 Data de Publicação (DJE): ${item.dataPublicacao}\n`;
 
             // ✅ DIFERENCIAL: Mostrar ementa COMPLETA se disponível (scraping)
             if (item.ementaCompleta && item.ementaCompleta.length > 500) {
