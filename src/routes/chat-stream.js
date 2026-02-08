@@ -376,13 +376,37 @@ router.post('/stream', async (req, res) => {
 
     const isPecaRequest = detectIfPecaRequest(message);
 
+    // Detectar se usuário quer recuperar informações de conversas anteriores
+    const detectRecallIntent = (msg) => {
+      const lower = msg.toLowerCase();
+
+      // Palavras-chave que indicam intenção de recuperação
+      const recallKeywords = [
+        'lembr', 'relemb', 'record', // lembre, relembre, recordar
+        'mencionou', 'mencionei', 'mencionamos',
+        'falamos', 'discutimos', 'conversamos',
+        'aquele', 'aquela', 'aquilo', // referência a algo anterior
+        'anterior', 'passado', 'outro dia',
+        'já', 'antes', 'previamente',
+        'me ajude a', 'qual era', 'quem era',
+        'retomar', 'voltar', 'revisar'
+      ];
+
+      return recallKeywords.some(keyword => lower.includes(keyword));
+    };
+
+    const hasRecallIntent = detectRecallIntent(message);
+
     // ✅ SUPERIOR AO CLAUDE.AI: Construir contexto hierárquico com memória de 3 níveis
     let hierarchicalContext = null;
     let additionalContext = '';
 
-    // 🔥 CRÍTICO: Construir contexto mesmo para NOVAS conversas (conversationId null)
-    // Isso permite recuperar contexto de CONVERSAS ANTERIORES do mesmo usuário
-    if (userId !== 'anonymous') {
+    // 🔥 CRÍTICO: Construir contexto APENAS quando:
+    // 1. É continuação de conversa existente (conversationId exists)
+    // 2. OU usuário pede explicitamente para recuperar informações (hasRecallIntent)
+    const shouldBuildContext = (conversationId || hasRecallIntent);
+
+    if (userId !== 'anonymous' && shouldBuildContext) {
       try {
         logger.debug(`[${requestId}] Construindo contexto hierárquico...`);
         hierarchicalContext = await conversationMemoryService.buildHierarchicalContext(
