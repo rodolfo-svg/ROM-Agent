@@ -320,11 +320,28 @@ router.post('/stream', async (req, res) => {
       });
     };
 
+    // ✅ AUTO-DETECÇÃO: Identificar se é pedido de redação de peça ou chat
+    const detectIfPecaRequest = (msg) => {
+      const lowerMessage = msg.toLowerCase();
+      const pecaKeywords = [
+        'redija', 'elabore', 'escreva', 'crie', 'draft',
+        'petição', 'peça', 'contrato', 'recurso',
+        'apelação', 'agravo', 'contestação', 'inicial',
+        'mandado', 'habeas corpus', 'embargos', 'sentença',
+        'acórdão', 'despacho', 'decisão', 'parecer'
+      ];
+      return pecaKeywords.some(keyword => lowerMessage.includes(keyword));
+    };
+
+    const isPecaRequest = detectIfPecaRequest(message);
+
     // ✅ CRÍTICO: Usar systemPrompt com instruções de ferramentas se não vier do frontend
-    // 🔧 IMPORTANTE: Passar context para garantir que Custom Instructions sejam aplicadas
+    // 🔧 IMPORTANTE: Passar context correto para garantir que Custom Instructions sejam aplicadas
     const finalSystemPrompt = systemPrompt || buildSystemPrompt({
       userMessage: message,
-      context: { type: 'chat' },  // Garante que Custom Instructions sejam aplicadas em análises
+      context: {
+        type: isPecaRequest ? 'peca' : 'chat'  // ✅ Detecção automática do tipo
+      },
       partnerId: req.session?.user?.partnerId || 'rom'
     });
 
