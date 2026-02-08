@@ -4,13 +4,17 @@
  * Streaming de respostas AI para experiencia 5-8x mais rapida
  * Time to First Token: <1s (vs 5-10s sem streaming)
  *
- * Features v2.8.0:
+ * Features v3.0.0:
+ * - Sistema de Memória Hierárquica (3 níveis)
+ * - Timeouts expandidos (20 minutos)
+ * - Histórico expandido (100 mensagens)
+ * - Recuperação de contexto cross-conversacional
  * - Heartbeat seguro com verificacao de conexao
  * - Registro de latencia para metricas
  * - Cleanup automatico de conexoes
  *
- * @version 2.8.0
- * @since WS5 - SSE Streaming Optimization
+ * @version 3.0.0
+ * @since WS6 - Advanced Memory System
  */
 
 import express from 'express';
@@ -19,6 +23,7 @@ import { logger } from '../utils/logger.js';
 import metricsCollector from '../utils/metrics-collector-v2.js';
 import { buildSystemPrompt } from '../server-enhanced.js';
 import { getSSEConnectionManager } from '../utils/sse-connection-manager.js';
+import conversationMemoryService from '../services/conversation-memory-service.js';
 
 const router = express.Router();
 const sseManager = getSSEConnectionManager();
@@ -116,11 +121,15 @@ router.post('/stream', async (req, res) => {
       });
     }
 
+    // Extrair conversationId e userId do request
+    const conversationId = req.body.conversationId || req.body.conversation_id;
+    const userId = req.session?.user?.id || req.body.userId || 'anonymous';
+
     // Unificar histórico (aceitar messages ou historico)
     const conversationHistory = messages.length > 0 ? messages : historico;
 
-    // Limitar para últimas 30 mensagens (contexto otimizado)
-    const limitedHistory = conversationHistory.slice(-30);
+    // ✅ SUPERIOR AO CLAUDE.AI: Limitar para últimas 100 mensagens (vs 30 anterior, vs ~40 claude.ai)
+    const limitedHistory = conversationHistory.slice(-100);
 
     // Usar model ou modelo e mapear para ID completo do Bedrock
     const modelInput = model || modelo;
@@ -128,10 +137,10 @@ router.post('/stream', async (req, res) => {
 
     // Debug logging removido para producao - use LOG_LEVEL=debug se necessario
 
-    // ✅ CORREÇÃO CRÍTICA: Configurar timeouts para streaming longo (documentos grandes)
-    // Timeout de 10 minutos para permitir geração de peças jurídicas extensas
-    req.setTimeout(600000); // 10 minutos
-    res.setTimeout(600000); // 10 minutos
+    // ✅ SUPERIOR AO CLAUDE.AI: Configurar timeouts expandidos para streaming muito longo
+    // Timeout de 20 minutos (vs 10 min anterior) para permitir geração de documentos extensos
+    req.setTimeout(1200000); // 20 minutos
+    res.setTimeout(1200000); // 20 minutos
 
     // Configurar headers SSE
     res.setHeader('Content-Type', 'text/event-stream');
@@ -367,15 +376,47 @@ router.post('/stream', async (req, res) => {
 
     const isPecaRequest = detectIfPecaRequest(message);
 
+    // ✅ SUPERIOR AO CLAUDE.AI: Construir contexto hierárquico com memória de 3 níveis
+    let hierarchicalContext = null;
+    let additionalContext = '';
+
+    if (conversationId && userId !== 'anonymous') {
+      try {
+        logger.debug(`[${requestId}] Construindo contexto hierárquico...`);
+        hierarchicalContext = await conversationMemoryService.buildHierarchicalContext(
+          conversationId,
+          userId,
+          message
+        );
+
+        // Formatar contexto adicional para incluir no prompt
+        additionalContext = conversationMemoryService.formatContextForPrompt(hierarchicalContext);
+
+        logger.info(`[${requestId}] Contexto hierárquico construído`, {
+          stats: hierarchicalContext.stats
+        });
+      } catch (error) {
+        logger.error(`[${requestId}] Erro ao construir contexto hierárquico`, {
+          error: error.message
+        });
+        // Continuar sem contexto hierárquico em caso de erro
+      }
+    }
+
     // ✅ CRÍTICO: Usar systemPrompt com instruções de ferramentas se não vier do frontend
     // 🔧 IMPORTANTE: Passar context correto para garantir que Custom Instructions sejam aplicadas
-    const finalSystemPrompt = systemPrompt || buildSystemPrompt({
+    let finalSystemPrompt = systemPrompt || buildSystemPrompt({
       userMessage: message,
       context: {
         type: isPecaRequest ? 'peca' : 'chat'  // ✅ Detecção automática do tipo
       },
       partnerId: req.session?.user?.partnerId || 'rom'
     });
+
+    // Adicionar contexto hierárquico ao system prompt se disponível
+    if (additionalContext) {
+      finalSystemPrompt = `${finalSystemPrompt}\n\n${additionalContext}`;
+    }
 
     // Executar streaming (sem timeout - permitir documentos grandes)
     const resultado = await conversarStream(message, onChunk, {
@@ -407,6 +448,7 @@ router.post('/stream', async (req, res) => {
           ttft: firstTokenTime ? `${firstTokenTime - startTime}ms` : null,
           avgChunkTime: chunkCount > 0 ? `${Math.round((totalTime - (firstTokenTime - startTime)) / chunkCount)}ms` : null
         },
+        memory: hierarchicalContext?.stats || null,
         timestamp: new Date().toISOString()
       })}\n\n`);
 
