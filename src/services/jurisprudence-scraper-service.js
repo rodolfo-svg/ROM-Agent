@@ -447,21 +447,39 @@ class JurisprudenceScraperService {
     // TJSP - Tribunal de Justiça de São Paulo
     // ========================================
     if (tribunalUpper === 'TJSP' || urlLower.includes('tjsp.jus.br')) {
+      logger.info(`[TJSP Parser] Tentando extrair ementa de ${url.substring(0, 80)}`);
+
       // ✅ Seletores específicos para TJSP (sistema ESAJ)
-      return $('.ementaClass').text() ||
-             $('.ementa').text() ||
-             $('#ementa').text() ||
-             $('.acordaoEmenta').text() ||
-             $('.linhaTabela').text() ||
-             // Sistema ESAJ
-             $('[name="ementa"]').text() ||
-             $('[id*="Ementa"]').first().text() ||
-             // Inteiro teor
-             $('.texto-acordao').text() ||
-             $('.integra-texto').text() ||
-             // Fallback
-             $('[class*="ementa"]').first().text() ||
-             $('.decisao-texto').text();
+      const selectors = [
+        { name: '.ementaClass', text: $('.ementaClass').text() },
+        { name: '.ementa', text: $('.ementa').text() },
+        { name: '#ementa', text: $('#ementa').text() },
+        { name: '.acordaoEmenta', text: $('.acordaoEmenta').text() },
+        { name: '.linhaTabela', text: $('.linhaTabela').text() },
+        // Sistema ESAJ - getArquivo.do
+        { name: '[name="ementa"]', text: $('[name="ementa"]').text() },
+        { name: '[id*="Ementa"]', text: $('[id*="Ementa"]').first().text() },
+        { name: 'pre', text: $('pre').text() }, // ✅ NOVO: E-SAJ usa <pre> para texto formatado
+        { name: 'textarea[name="ementa"]', text: $('textarea[name="ementa"]').text() },
+        { name: '.textAreaEmenta', text: $('.textAreaEmenta').text() },
+        // Inteiro teor
+        { name: '.texto-acordao', text: $('.texto-acordao').text() },
+        { name: '.integra-texto', text: $('.integra-texto').text() },
+        { name: '.documento-texto', text: $('.documento-texto').text() },
+        // Fallback genérico
+        { name: '[class*="ementa"]', text: $('[class*="ementa"]').first().text() },
+        { name: '.decisao-texto', text: $('.decisao-texto').text() }
+      ];
+
+      for (const selector of selectors) {
+        if (selector.text && selector.text.length > 100) {
+          logger.info(`[TJSP Parser] ✅ Ementa encontrada com seletor: ${selector.name} (${selector.text.length} chars)`);
+          return selector.text;
+        }
+      }
+
+      logger.warn(`[TJSP Parser] ❌ Nenhum seletor retornou ementa válida para ${url.substring(0, 60)}`);
+      return null;
     }
 
     // ========================================
