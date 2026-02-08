@@ -280,13 +280,17 @@ class JurisprudenceScraperService {
 
       // Detectar tipo de documento
       const urlLower = url.toLowerCase();
-      const isPdf = urlLower.endsWith('.pdf') || urlLower.includes('.pdf?');
+      // ✅ CORREÇÃO: E-SAJ getArquivo.do retorna PDF!
+      const isPdf = urlLower.endsWith('.pdf') ||
+                    urlLower.includes('.pdf?') ||
+                    urlLower.includes('getarquivo.do'); // E-SAJ TJSP
 
       let ementaCompleta;
       let metadata = {};
 
       if (isPdf) {
         // Extrair texto de PDF
+        logger.info(`[Scraper] Detectado PDF: ${url.substring(0, 80)}`);
         ementaCompleta = await this.extractPdfText(url);
         this.stats.pdfExtracted++;
       } else {
