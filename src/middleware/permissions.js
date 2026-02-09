@@ -11,6 +11,8 @@ import auditService from '../services/audit-service.js';
  * Definição de roles disponíveis
  */
 export const ROLES = {
+  MASTER_ADMIN: 'master_admin',
+  PARTNER_ADMIN: 'partner_admin',
   ADMIN: 'admin',
   LAWYER: 'lawyer',
   USER: 'user'
@@ -24,6 +26,8 @@ export const ROLES = {
  * Ex: 'chat:use', 'projects:create', 'users:delete'
  */
 export const PERMISSIONS = {
+  [ROLES.MASTER_ADMIN]: ['*'], // Master Admin tem todas as permissões (acima de admin)
+  [ROLES.PARTNER_ADMIN]: ['*'], // Partner Admin tem todas as permissões (gerencia parceiros)
   [ROLES.ADMIN]: ['*'], // Admin tem todas as permissões
 
   [ROLES.LAWYER]: [
@@ -325,14 +329,14 @@ export const requireRole = (allowedRoles) => {
 };
 
 /**
- * Middleware para verificar se é admin
+ * Middleware para verificar se é admin (aceita master_admin, partner_admin ou admin)
  */
-export const requireAdmin = requireRole(ROLES.ADMIN);
+export const requireAdmin = requireRole([ROLES.MASTER_ADMIN, ROLES.PARTNER_ADMIN, ROLES.ADMIN]);
 
 /**
  * Middleware para verificar se é lawyer ou admin
  */
-export const requireLawyerOrAdmin = requireRole([ROLES.LAWYER, ROLES.ADMIN]);
+export const requireLawyerOrAdmin = requireRole([ROLES.LAWYER, ROLES.MASTER_ADMIN, ROLES.PARTNER_ADMIN, ROLES.ADMIN]);
 
 /**
  * Middleware para anexar permissões do usuário ao request
