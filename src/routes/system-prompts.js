@@ -45,11 +45,14 @@ router.get('/', async (req, res) => {
     });
 
     // Adicionar informações de debug sobre persistência
+    const autoMigrate = require('../../lib/prompts-auto-migrate.js');
+    const baseDir = autoMigrate.getPromptsDirectory();
+
     const debugInfo = {
-      baseDir: process.env.PROMPTS_FOLDER || path.join(__dirname, '../../data/prompts'),
-      isPersistent: !!process.env.PROMPTS_FOLDER,
+      baseDir,
+      isPersistent: baseDir.includes('/var/data'),
       environment: process.env.NODE_ENV || 'development',
-      promptsFolder: process.env.PROMPTS_FOLDER || 'não configurado (usando data/prompts)'
+      promptsFolder: baseDir
     };
 
     res.json({
@@ -127,8 +130,9 @@ router.put('/:type/:id', async (req, res) => {
       });
     }
 
-    // Determinar caminho do arquivo
-    const promptsDir = path.join(__dirname, '../../data/prompts');
+    // Determinar caminho do arquivo (usar diretório correto)
+    const autoMigrate = require('../../lib/prompts-auto-migrate.js');
+    const promptsDir = autoMigrate.getPromptsDirectory();
     const filePath = type === 'global'
       ? path.join(promptsDir, 'global', `${id}.md`)
       : path.join(promptsDir, 'partners', partnerId, `${id}.md`);
@@ -199,8 +203,9 @@ router.post('/', async (req, res) => {
     // Gerar ID a partir do nome
     const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
-    // Determinar caminho do arquivo
-    const promptsDir = path.join(__dirname, '../../data/prompts');
+    // Determinar caminho do arquivo (usar diretório correto)
+    const autoMigrate = require('../../lib/prompts-auto-migrate.js');
+    const promptsDir = autoMigrate.getPromptsDirectory();
     const filePath = type === 'global'
       ? path.join(promptsDir, 'global', `${id}.md`)
       : path.join(promptsDir, 'partners', partnerId, `${id}.md`);
@@ -267,8 +272,9 @@ router.delete('/:type/:id', async (req, res) => {
       });
     }
 
-    // Determinar caminho do arquivo
-    const promptsDir = path.join(__dirname, '../../data/prompts');
+    // Determinar caminho do arquivo (usar diretório correto)
+    const autoMigrate = require('../../lib/prompts-auto-migrate.js');
+    const promptsDir = autoMigrate.getPromptsDirectory();
     const filePath = type === 'global'
       ? path.join(promptsDir, 'global', `${id}.md`)
       : path.join(promptsDir, 'partners', partnerId, `${id}.md`);

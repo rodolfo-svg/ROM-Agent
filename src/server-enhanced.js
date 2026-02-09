@@ -143,6 +143,12 @@ integrador.inicializar().then(() => {
   console.error('❌ Erro ao inicializar sistema:', err);
 });
 
+// Executar migração automática de prompts (antes de inicializar PromptsManager)
+const promptsAutoMigrate = require('../lib/prompts-auto-migrate.js');
+promptsAutoMigrate.migrate().catch(err => {
+  console.error('⚠️  [Prompts] Erro na migração automática:', err);
+});
+
 // Inicializar gerenciador de prompts multi-tenant
 const promptsManager = PromptsManager; // Já é uma instância singleton
 const promptsVersioning = new PromptsVersioning();
