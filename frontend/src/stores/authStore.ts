@@ -34,6 +34,9 @@ export const useAuthStore = create<AuthState>()(
           })
 
           if (result.success && result.data?.user) {
+            // Limpar CSRF token após login - servidor gera novo token
+            clearCsrfToken()
+
             set({
               user: result.data.user,
               isAuthenticated: true,
