@@ -45,7 +45,7 @@ router.get('/', async (req, res) => {
     });
 
     // Adicionar informações de debug sobre persistência
-    const autoMigrate = require('../../lib/prompts-auto-migrate.js');
+    const autoMigrate = require('../../lib/prompts-auto-migrate.cjs');
     const baseDir = autoMigrate.getPromptsDirectory();
 
     const debugInfo = {
@@ -131,7 +131,7 @@ router.put('/:type/:id', async (req, res) => {
     }
 
     // Determinar caminho do arquivo (usar diretório correto)
-    const autoMigrate = require('../../lib/prompts-auto-migrate.js');
+    const autoMigrate = require('../../lib/prompts-auto-migrate.cjs');
     const promptsDir = autoMigrate.getPromptsDirectory();
     const filePath = type === 'global'
       ? path.join(promptsDir, 'global', `${id}.md`)
@@ -204,7 +204,7 @@ router.post('/', async (req, res) => {
     const id = name.toLowerCase().replace(/[^a-z0-9]+/g, '-');
 
     // Determinar caminho do arquivo (usar diretório correto)
-    const autoMigrate = require('../../lib/prompts-auto-migrate.js');
+    const autoMigrate = require('../../lib/prompts-auto-migrate.cjs');
     const promptsDir = autoMigrate.getPromptsDirectory();
     const filePath = type === 'global'
       ? path.join(promptsDir, 'global', `${id}.md`)
@@ -273,7 +273,7 @@ router.delete('/:type/:id', async (req, res) => {
     }
 
     // Determinar caminho do arquivo (usar diretório correto)
-    const autoMigrate = require('../../lib/prompts-auto-migrate.js');
+    const autoMigrate = require('../../lib/prompts-auto-migrate.cjs');
     const promptsDir = autoMigrate.getPromptsDirectory();
     const filePath = type === 'global'
       ? path.join(promptsDir, 'global', `${id}.md`)

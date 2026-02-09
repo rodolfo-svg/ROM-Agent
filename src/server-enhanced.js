@@ -144,7 +144,7 @@ integrador.inicializar().then(() => {
 });
 
 // Executar migração automática de prompts (antes de inicializar PromptsManager)
-const promptsAutoMigrate = require('../lib/prompts-auto-migrate.js');
+const promptsAutoMigrate = require('../lib/prompts-auto-migrate.cjs');
 promptsAutoMigrate.migrate().catch(err => {
   console.error('⚠️  [Prompts] Erro na migração automática:', err);
 });
