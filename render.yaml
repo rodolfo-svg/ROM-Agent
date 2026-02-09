@@ -23,8 +23,7 @@ services:
     # Frontend já foi buildado no buildCommand
     # Migrations rodam assíncronamente após servidor abrir porta
     # MEMÓRIA: 3GB para Node.js (Pro 4GB total, deixa 1GB para sistema)
-    # PROMPTS: Migração para disco persistente (primeira vez)
-    startCommand: bash scripts/migrate-prompts-to-persistent-disk.sh && node --max-old-space-size=3072 scripts/ensure-frontend-build.js && node --max-old-space-size=3072 src/server-enhanced.js
+    startCommand: node --max-old-space-size=3072 scripts/ensure-frontend-build.js && node --max-old-space-size=3072 src/server-enhanced.js
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
@@ -169,8 +168,7 @@ services:
     # CRÍTICO: Iniciar servidor IMEDIATAMENTE para evitar port scan timeout
     # Frontend já foi buildado no buildCommand
     # Migrations rodam assíncronamente após servidor abrir porta
-    # PROMPTS: Migração para disco persistente (primeira vez)
-    startCommand: bash scripts/migrate-prompts-to-persistent-disk.sh && npm run web:enhanced
+    startCommand: npm run web:enhanced
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:

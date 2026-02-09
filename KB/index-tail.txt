@@ -1,0 +1,23 @@
+oad/MOVER_PARA_CLIENTES.txt",
+      "uploadedAt": "2026-02-09T20:16:46.656Z",
+      "fileSize": 179,
+      "type": "txt",
+      "wordCount": 24,
+      "snippets": [
+        "Esta pasta ROM_Upload pode ser movida para:\n\n~/Desktop/_CLIENTES_PROCESSOS/ROM_Uploads/\n\nSe quiser manter o Desktop ainda mais limpo",
+        "Ou pode deixar aqui se usar frequentemente"
+      ],
+      "tags": [
+        "documento-curto"
+      ],
+      "metadata": {
+        "processNumbers": [],
+        "tribunals": [],
+        "articles": [],
+        "dates": []
+      }
+    }
+  ],
+  "lastUpdated": "2026-02-09T20:16:46.660Z",
+  "totalDocuments": 268
+}
