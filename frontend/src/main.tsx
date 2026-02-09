@@ -26,6 +26,10 @@ interface ServiceWorkerConfig {
 }
 
 async function registerServiceWorker(config?: ServiceWorkerConfig) {
+  // CRITICAL: Service Worker DISABLED - causing infinite loop blocking login
+  console.warn('[PWA] ⛔ Service Worker DESABILITADO (fix em andamento)')
+  return
+
   if (!('serviceWorker' in navigator)) {
     console.warn('[PWA] Service Worker nao suportado')
     return
