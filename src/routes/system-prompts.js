@@ -44,9 +44,18 @@ router.get('/', async (req, res) => {
       hasMetodo: prompts.global?.some(p => p.name.toLowerCase().includes('metodo')) || false
     });
 
+    // Adicionar informações de debug sobre persistência
+    const debugInfo = {
+      baseDir: process.env.PROMPTS_FOLDER || path.join(__dirname, '../../data/prompts'),
+      isPersistent: !!process.env.PROMPTS_FOLDER,
+      environment: process.env.NODE_ENV || 'development',
+      promptsFolder: process.env.PROMPTS_FOLDER || 'não configurado (usando data/prompts)'
+    };
+
     res.json({
       success: true,
-      prompts
+      prompts,
+      ...debugInfo  // Incluir info de debug na resposta
     });
   } catch (error) {
     console.error('Erro ao listar system prompts:', error);
