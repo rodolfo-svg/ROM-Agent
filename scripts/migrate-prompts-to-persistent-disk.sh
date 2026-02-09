@@ -51,15 +51,36 @@ echo "📦 [PROMPTS] Copiando prompts do Git para disco persistente..."
 
 # Copiar prompts globais
 if [ -d "$SOURCE_DIR/global" ]; then
-  cp -r "$SOURCE_DIR/global/"* "$PROMPTS_FOLDER/global/" 2>/dev/null || true
-  COPIED=$(ls -1 $PROMPTS_FOLDER/global | wc -l | tr -d ' ')
+  echo "📂 [PROMPTS] Listando arquivos em $SOURCE_DIR/global:"
+  ls -la "$SOURCE_DIR/global" | head -10
+
+  echo "📂 [PROMPTS] Executando cp -rv $SOURCE_DIR/global/* $PROMPTS_FOLDER/global/"
+  cp -rv "$SOURCE_DIR/global/"* "$PROMPTS_FOLDER/global/" || {
+    echo "❌ [PROMPTS] ERRO ao copiar arquivos globais! Exit code: $?"
+    exit 1
+  }
+
+  COPIED=$(ls -1 $PROMPTS_FOLDER/global 2>/dev/null | wc -l | tr -d ' ')
   echo "✅ [PROMPTS] Copiados $COPIED prompts globais"
+
+  if [ "$COPIED" -eq 0 ]; then
+    echo "❌ [PROMPTS] ERRO: 0 arquivos copiados!"
+    exit 1
+  fi
+else
+  echo "❌ [PROMPTS] Diretório $SOURCE_DIR/global NÃO EXISTE!"
+  exit 1
 fi
 
 # Copiar prompts de parceiros (se existirem)
 if [ -d "$SOURCE_DIR/partners" ] && [ "$(ls -A $SOURCE_DIR/partners 2>/dev/null)" ]; then
-  cp -r "$SOURCE_DIR/partners/"* "$PROMPTS_FOLDER/partners/" 2>/dev/null || true
+  echo "📂 [PROMPTS] Copiando prompts de parceiros..."
+  cp -rv "$SOURCE_DIR/partners/"* "$PROMPTS_FOLDER/partners/" || {
+    echo "⚠️  [PROMPTS] Falha ao copiar prompts de parceiros (pode ser normal se vazio)"
+  }
   echo "✅ [PROMPTS] Prompts de parceiros copiados"
+else
+  echo "⚠️  [PROMPTS] Nenhum prompt de parceiro para copiar (normal)"
 fi
 
 echo ""
