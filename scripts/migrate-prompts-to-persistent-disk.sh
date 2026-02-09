@@ -33,7 +33,13 @@ if [ "$(ls -A $PROMPTS_FOLDER/global 2>/dev/null)" ]; then
 fi
 
 # Copiar prompts do repositório Git para disco persistente
-SOURCE_DIR="data/prompts"
+# CRÍTICO: Usar caminho absoluto baseado na localização do script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
+SOURCE_DIR="$PROJECT_ROOT/data/prompts"
+
+echo "📂 [PROMPTS] Diretório do projeto: $PROJECT_ROOT"
+echo "📂 [PROMPTS] Diretório fonte: $SOURCE_DIR"
 
 if [ ! -d "$SOURCE_DIR/global" ]; then
   echo "⚠️  [PROMPTS] Diretório source $SOURCE_DIR/global não encontrado"
