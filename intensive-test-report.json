@@ -9,149 +9,292 @@
   },
   "approved": false,
   "stats": {
-    "startTime": 1770181258083,
+    "startTime": 1770527015730,
     "tests": {
       "burst": {
-        "total": 1500,
-        "success": 340,
-        "failed": 1160,
-        "avgLatency": 474.7806666666666
+        "total": 1450,
+        "success": 303,
+        "failed": 1147,
+        "avgLatency": 5170.704137931034
       },
       "sustained": {
-        "total": 12394,
-        "success": 1451,
-        "failed": 10943,
-        "avgLatency": 262.6375665644678
+        "total": 8730,
+        "success": 1457,
+        "failed": 7273,
+        "avgLatency": 682.9272623138598
       },
       "concurrent": {
-        "total": 4360,
-        "success": 1222,
-        "failed": 3138,
-        "avgLatency": 349.53325688073437
+        "total": 3040,
+        "success": 884,
+        "failed": 2156,
+        "avgLatency": 1848.1141447368402
       },
       "apiStress": {
-        "total": 2398,
-        "success": 518,
-        "failed": 1880,
-        "avgLatency": 260.98248540450453
+        "total": 1672,
+        "success": 389,
+        "failed": 1283,
+        "avgLatency": 391.91925837320605
       },
       "database": {
-        "total": 218,
+        "total": 152,
         "success": 0,
-        "failed": 218,
-        "avgLatency": 258.0550458715596
+        "failed": 152,
+        "avgLatency": 440.23026315789474
       },
       "memory": {
-        "total": 218,
-        "success": 21,
-        "failed": 197,
-        "avgLatency": 254.91284403669732
+        "total": 152,
+        "success": 22,
+        "failed": 130,
+        "avgLatency": 461.684210526316
       },
       "longOps": {
-        "total": 109,
+        "total": 76,
         "success": 10,
-        "failed": 99,
-        "avgLatency": 783.8899082568809
+        "failed": 66,
+        "avgLatency": 1200.4473684210523
       },
       "pwa": {
-        "total": 218,
-        "success": 218,
+        "total": 152,
+        "success": 152,
         "failed": 0,
-        "avgLatency": 255.87614678899084
+        "avgLatency": 690.8552631578951
       }
     },
-    "totalRequests": 21415,
-    "totalSuccess": 3780,
-    "totalFailed": 17635,
-    "totalLatency": 6370154,
-    "errors": [],
+    "totalRequests": 15424,
+    "totalSuccess": 3217,
+    "totalFailed": 12207,
+    "totalLatency": 20066367,
+    "errors": [
+      {
+        "type": "burst",
+        "endpoint": "/api/documents/supported-types",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.727Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/manifest.json",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.728Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/deploy/status",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.728Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.728Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.729Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/jurisprudencia/tribunais",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.731Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/documents/supported-types",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.731Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/manifest.json",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.732Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/deploy/status",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/jurisprudencia/tribunais",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/documents/supported-types",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/manifest.json",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/deploy/status",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/jurisprudencia/tribunais",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/documents/supported-types",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/manifest.json",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/deploy/status",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/info",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      },
+      {
+        "type": "burst",
+        "endpoint": "/api/conversations/list",
+        "error": "Timeout",
+        "time": "2026-02-08T05:46:24.733Z"
+      }
+    ],
     "memorySnapshots": [
       {
-        "time": "2026-02-04T05:01:08.238Z",
-        "heapUsed": 169
-      },
-      {
-        "time": "2026-02-04T05:01:25.269Z",
-        "heapUsed": 158
-      },
-      {
-        "time": "2026-02-04T05:01:47.750Z",
-        "heapUsed": 162
-      },
-      {
-        "time": "2026-02-04T05:02:04.334Z",
-        "heapUsed": 165
-      },
-      {
-        "time": "2026-02-04T05:02:26.030Z",
-        "heapUsed": 159
-      },
-      {
-        "time": "2026-02-04T05:02:42.231Z",
-        "heapUsed": 162
-      },
-      {
-        "time": "2026-02-04T05:03:04.873Z",
-        "heapUsed": 167
-      },
-      {
-        "time": "2026-02-04T05:03:21.856Z",
-        "heapUsed": 159
-      },
-      {
-        "time": "2026-02-04T05:03:45.021Z",
-        "heapUsed": 162
-      },
-      {
-        "time": "2026-02-04T05:04:01.489Z",
-        "heapUsed": 165
-      },
-      {
-        "time": "2026-02-04T05:04:24.195Z",
-        "heapUsed": 158
-      },
-      {
-        "time": "2026-02-04T05:04:40.405Z",
-        "heapUsed": 161
-      },
-      {
-        "time": "2026-02-04T05:05:02.963Z",
-        "heapUsed": 166
-      },
-      {
-        "time": "2026-02-04T05:05:19.416Z",
-        "heapUsed": 157
-      },
-      {
-        "time": "2026-02-04T05:05:41.056Z",
-        "heapUsed": 161
-      },
-      {
-        "time": "2026-02-04T05:05:57.123Z",
+        "time": "2026-02-08T05:03:45.801Z",
         "heapUsed": 163
       },
       {
-        "time": "2026-02-04T05:06:19.930Z",
-        "heapUsed": 157
+        "time": "2026-02-08T05:04:02.982Z",
+        "heapUsed": 165
       },
       {
-        "time": "2026-02-04T05:06:36.281Z",
+        "time": "2026-02-08T05:04:25.809Z",
         "heapUsed": 159
       },
       {
-        "time": "2026-02-04T05:06:58.269Z",
-        "heapUsed": 163
+        "time": "2026-02-08T05:04:49.948Z",
+        "heapUsed": 161
       },
       {
-        "time": "2026-02-04T06:00:40.268Z",
+        "time": "2026-02-08T05:05:26.328Z",
+        "heapUsed": 164
+      },
+      {
+        "time": "2026-02-08T05:05:45.099Z",
         "heapUsed": 168
       },
       {
-        "time": "2026-02-04T06:00:57.198Z",
+        "time": "2026-02-08T05:06:06.767Z",
+        "heapUsed": 160
+      },
+      {
+        "time": "2026-02-08T05:06:23.942Z",
+        "heapUsed": 163
+      },
+      {
+        "time": "2026-02-08T05:06:48.141Z",
+        "heapUsed": 166
+      },
+      {
+        "time": "2026-02-08T05:07:07.819Z",
         "heapUsed": 158
+      },
+      {
+        "time": "2026-02-08T05:07:30.022Z",
+        "heapUsed": 162
+      },
+      {
+        "time": "2026-02-08T05:07:46.626Z",
+        "heapUsed": 165
+      },
+      {
+        "time": "2026-02-08T05:08:09.562Z",
+        "heapUsed": 158
+      },
+      {
+        "time": "2026-02-08T05:08:34.728Z",
+        "heapUsed": 161
+      },
+      {
+        "time": "2026-02-08T05:09:10.206Z",
+        "heapUsed": 164
+      },
+      {
+        "time": "2026-02-08T05:09:30.769Z",
+        "heapUsed": 167
+      },
+      {
+        "time": "2026-02-08T05:09:55.339Z",
+        "heapUsed": 160
+      },
+      {
+        "time": "2026-02-08T05:10:11.826Z",
+        "heapUsed": 163
+      },
+      {
+        "time": "2026-02-08T05:10:33.157Z",
+        "heapUsed": 166
+      },
+      {
+        "time": "2026-02-08T05:10:53.533Z",
+        "heapUsed": 158
+      },
+      {
+        "time": "2026-02-08T06:03:09.987Z",
+        "heapUsed": 163
+      },
+      {
+        "time": "2026-02-08T06:03:37.563Z",
+        "heapUsed": 166
       }
     ],
-    "peakLatency": 6620,
-    "slowestEndpoint": "/chat/stream"
+    "peakLatency": 39468,
+    "slowestEndpoint": "user-4"
   }
 }

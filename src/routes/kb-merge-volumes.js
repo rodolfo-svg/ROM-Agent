@@ -37,14 +37,17 @@ const upload = multer({
   storage,
   limits: {
     fileSize: 500 * 1024 * 1024, // 500 MB
-    files: 10 // Máximo 10 volumes
+    files: 10 // Máximo 10 arquivos
   },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'application/pdf') {
-      cb(null, true);
-    } else {
-      cb(new Error('Apenas arquivos PDF são permitidos'));
-    }
+    // ✅ ACEITA QUALQUER FORMATO DE ARQUIVO
+    // - PDF (merge de volumes)
+    // - Imagens (JPG, PNG, GIF, BMP, TIFF, WebP) - OCR automático
+    // - Vídeos (MP4, AVI, MOV, WMV) - extração de frames + áudio
+    // - Áudio (MP3, WAV, OGG, M4A) - transcrição
+    // - Documentos (DOCX, XLSX, PPTX) - extração de texto
+    // - Texto (TXT, HTML, XML, JSON, MD, CSV) - leitura direta
+    cb(null, true); // Aceita tudo
   }
 });
 

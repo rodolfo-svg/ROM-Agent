@@ -358,8 +358,11 @@ async function processExtractionInBackground(jobId, doc, rawText, analysisType, 
           saveToKB: true,
           userId: userId,  // ✅ FIX: Pass userId for document creation
           skipExtraction: isPDF,  // ✅ Skip AI extraction for PDFs (already clean)
-          pdfPath: isPDF ? doc.path : null,  // ✅ Pass PDF path for image extraction
+          filePath: doc.path,  // ✅ UNIVERSAL: Pass file path for ANY format extraction
+          pdfPath: isPDF ? doc.path : null,  // ✅ LEGACY: Maintain PDF compatibility
           audioFiles: [],  // Future: audio transcription support
+          analyzeFrames: true,  // ✅ Analyze video frames with Claude Vision
+          fps: 1,  // ✅ Extract 1 frame per second from videos
           progressCallback: async (stage, progress, message) => {
             // Callback para atualizar progresso durante processamento
             if (jobId) {

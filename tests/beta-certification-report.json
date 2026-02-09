@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-02-04T06:02:58.352Z",
+  "timestamp": "2026-02-08T06:17:20.431Z",
   "environment": "http://localhost:3000",
-  "duration": "3.06s",
+  "duration": "47.79s",
   "summary": {
     "total": 20,
     "passed": 12,
@@ -13,20 +13,20 @@
     "health": {
       "Server responde": {
         "passed": true,
-        "duration": 28,
+        "duration": 5146,
         "status": 200,
-        "responseTime": 28
+        "responseTime": 5144
       },
       "Health check endpoint": {
         "passed": false,
-        "duration": 3,
+        "duration": 12079,
         "error": "Expected status 200, got 404"
       }
     },
     "apis": {
       "KB Statistics API": {
         "passed": true,
-        "duration": 1,
+        "duration": 961,
         "stats": {
           "kb": {
             "totalDocuments": 0,
@@ -47,27 +47,27 @@
       },
       "KB Reindex API": {
         "passed": true,
-        "duration": 7,
+        "duration": 12648,
         "success": true
       },
       "Feature Flags GET": {
         "passed": false,
-        "duration": 1,
+        "duration": 8494,
         "error": "Expected status 200, got 500"
       },
       "Feature Flags Validate": {
         "passed": false,
-        "duration": 2,
+        "duration": 273,
         "error": "Expected status 200, got 500"
       },
       "Feature Flags By Category": {
         "passed": false,
-        "duration": 1,
+        "duration": 67,
         "error": "Expected status 200, got 500"
       },
       "Spell Check Info": {
         "passed": true,
-        "duration": 1,
+        "duration": 155,
         "provider": null
       },
       "Spell Check Basic": {
@@ -76,17 +76,17 @@
       },
       "Paradigmas Categories": {
         "passed": false,
-        "duration": 1,
+        "duration": 44,
         "error": "Cannot read properties of undefined (reading 'length')"
       },
       "Paradigmas List": {
         "passed": true,
-        "duration": 1,
+        "duration": 875,
         "total": 0
       },
       "Paradigmas Stats": {
         "passed": true,
-        "duration": 1,
+        "duration": 194,
         "stats": {
           "total": 0,
           "byTipo": {},
@@ -100,48 +100,48 @@
       },
       "Analytics Dashboard": {
         "passed": true,
-        "duration": 1,
+        "duration": 116,
         "metrics": []
       },
       "Analytics Usage": {
         "passed": true,
-        "duration": 1,
+        "duration": 41,
         "dataPoints": 7
       },
       "Stats General": {
         "passed": true,
-        "duration": 1,
+        "duration": 256,
         "success": true
       }
     },
     "performance": {
       "Response time: /api/health": {
         "passed": false,
-        "duration": 1,
+        "duration": 356,
         "error": "Expected status 200, got 404"
       },
       "Response time: /api/feature-flags": {
         "passed": false,
-        "duration": 1,
+        "duration": 957,
         "error": "Expected status 200, got 500"
       },
       "Response time: /api/kb/statistics": {
         "passed": true,
-        "duration": 1,
+        "duration": 1077,
         "endpoint": "/api/kb/statistics",
-        "responseTime": 1
+        "responseTime": 1076
       },
       "Response time: /api/paradigmas/categories": {
         "passed": true,
-        "duration": 1,
+        "duration": 118,
         "endpoint": "/api/paradigmas/categories",
-        "responseTime": 1
+        "responseTime": 118
       }
     },
     "logs": {
       "Tracing system active": {
         "passed": false,
-        "duration": 1,
+        "duration": 464,
         "error": "Expected status 200, got 500"
       }
     },

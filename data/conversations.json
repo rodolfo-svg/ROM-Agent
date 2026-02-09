@@ -835,5 +835,51 @@
     "createdAt": "2026-02-04T06:02:29.342Z",
     "updatedAt": "2026-02-04T06:02:33.605Z",
     "messageCount": 2
+  },
+  "conv_1770527003820_eiadr": {
+    "id": "conv_1770527003820_eiadr",
+    "userId": "anonymous",
+    "sessionId": "BovsQixFU1wNZiOAlMrGzr_E9u9exJYo",
+    "projectId": null,
+    "title": "Teste automatizado - Sistema funcional",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste automatizado - Sistema funcional",
+        "timestamp": "2026-02-08T05:03:24.009Z"
+      },
+      {
+        "role": "assistant",
+        "content": "# TESTE DE SISTEMA ROM AGENT v3.0\n\n## STATUS OPERACIONAL\n\nSistema inicializado com sucesso.\nVersão: 3.0\nModo: Produção\nStreaming: Ativo\nFerramentas: Disponíveis\n\n## VERIFICAÇÃO DE COMPONENTES\n\nSTREAMING\n- Buffer: Desabilitado\n- Output: Imediato\n- Formatação: Integrada\n\nFORMATAÇÃO\n- Fonte: Calibri 12pt\n- Espaçamento: 1.5 linhas\n- Margens: 2.5cm/3cm\n- Recuo: 1.25cm\n- Alinhamento: Justificado\n\nESTRUTURA\n- Hierarquia: I -> 1 -> a\n- Ordem: Preliminares -> Mérito -> Pedidos\n- Seções: DOS FATOS -> DO DIREITO -> DOS PEDIDOS\n\nFERRAMENTAS\n- web_search: Operacional\n- execute_code: Operacional\n- pesquisar_jurisprudencia: Operacional\n- consultar_kb: Operacional\n- Limite: 5 chamadas por turno\n\nREGRAS CRÍTICAS\n- Zero markdown\n- Zero emojis\n- Zero referências a IA\n- Citações inline\n- Precedentes verificados\n\nQUALIDADE DE CONTEÚDO\n- Precedentes: 3-5 por peça\n- Citação: STJ/STF prioridade\n- Base legal: Arts + jurisprudência + doutrina\n- Extensão: Conforme tipo de documento\n\nPROIBIÇÕES ATIVAS\n- Asteriscos\n- Sintaxe markdown\n- Espaços duplos\n- Aspas retas\n- Decorações\n- Notas metodológicas\n\n## RESULTADO DO TESTE\n\nSISTEMA OPERACIONAL: VERDE\nSTREAMING: VERDE\nFORMATAÇÃO: VERDE\nFERRAMENTAS: VERDE\nREGRAS: VERDE\nQUALIDADE: VERDE\n\nPronto para produção de peças jurídicas.\n\nAguardando solicitação do usuário.",
+        "timestamp": "2026-02-08T05:03:34.167Z"
+      }
+    ],
+    "createdAt": "2026-02-08T05:03:23.821Z",
+    "updatedAt": "2026-02-08T05:03:34.167Z",
+    "messageCount": 2
+  },
+  "conv_1770531308846_zoslrb": {
+    "id": "conv_1770531308846_zoslrb",
+    "userId": "anonymous",
+    "sessionId": "rZnhTov2JTuEd-97p3NhGyPkUTx_O2r3",
+    "projectId": "rom-agent",
+    "title": "Teste de conexão",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de conexão",
+        "timestamp": "2026-02-08T06:15:09.180Z"
+      },
+      {
+        "role": "assistant",
+        "content": "# TESTE DE CONEXÃO - ROM AGENT v3.0\n\n**STATUS**: Operacional\n\n**MÓDULOS ATIVOS**:\n- Sistema de streaming: Ativo\n- Formatação Word-ready: Ativo\n- Ferramentas de pesquisa: Disponíveis\n- Base de conhecimento: Carregada\n- Prompts especializados: 86 carregados\n\n**CAPACIDADES VERIFICADAS**:\n- Redação de peças processuais (cível, criminal, trabalhista)\n- Análise de prazos (Lei 11.419/2006)\n- Pesquisa de jurisprudência (STF, STJ, tribunais)\n- Elaboração de contratos e documentos empresariais\n- Alterações contratuais DNRC (IN DREI 81/2020)\n- Cálculo de preclusão, prescrição e decadência\n\n**CONFIGURAÇÕES**:\n- Fonte: Calibri 12pt\n- Espaçamento: 1.5 linhas\n- Margens: 2.5cm (superior/inferior), 3cm (lateral)\n- Formatação: Word-ready (ZERO markdown)\n- Tom: Profissional jurídico\n\n**PRONTO PARA ATENDER**\n\nAguardando solicitação. Pode iniciar com:\n- Tipo de peça desejada\n- Análise de processo\n- Consulta jurisprudencial\n- Elaboração de contrato\n- Cálculo de prazos",
+        "timestamp": "2026-02-08T06:15:21.560Z"
+      }
+    ],
+    "createdAt": "2026-02-08T06:15:08.846Z",
+    "updatedAt": "2026-02-08T06:15:21.560Z",
+    "messageCount": 2
   }
 }

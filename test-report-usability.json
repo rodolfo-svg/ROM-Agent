@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-02-04T05:00:57.829Z",
+  "timestamp": "2026-02-08T05:03:34.687Z",
   "summary": {
     "total": 26,
     "passed": 13,
     "failed": 6,
     "warnings": 7,
     "successRate": 50,
-    "duration": 12283
+    "duration": 14338
   },
   "results": [
     {
@@ -16,7 +16,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 40,
+      "duration": 2580,
       "validation": "✓ Contém 'version'"
     },
     {
@@ -29,8 +29,8 @@
         "averageResponseTime": 3,
         "unit": "seconds"
       },
-      "duration": 2,
-      "validation": "✓ Stats completas (37 conversas)"
+      "duration": 437,
+      "validation": "✓ Stats completas (41 conversas)"
     },
     {
       "category": "Sistema",
@@ -39,7 +39,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 1,
+      "duration": 49,
       "validation": "✓ Contém 'authenticated'"
     },
     {
@@ -49,7 +49,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 1,
+      "duration": 106,
       "validation": ""
     },
     {
@@ -59,7 +59,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 12214,
+      "duration": 10674,
       "validation": "✓ Contém 'response'"
     },
     {
@@ -69,7 +69,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 3,
+      "duration": 20,
       "validation": ""
     },
     {
@@ -79,8 +79,8 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
-      "validation": "✓ KB com 2 documentos"
+      "duration": 161,
+      "validation": "✓ KB com 4 documentos"
     },
     {
       "category": "Knowledge Base",
@@ -89,7 +89,7 @@
       "status": 302,
       "expected": 401,
       "passed": false,
-      "duration": 2,
+      "duration": 20,
       "validation": ""
     },
     {
@@ -99,7 +99,7 @@
       "status": 503,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 29,
       "validation": ""
     },
     {
@@ -109,7 +109,7 @@
       "status": 404,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 55,
       "validation": ""
     },
     {
@@ -119,7 +119,7 @@
       "status": 403,
       "expected": 200,
       "passed": false,
-      "duration": 2,
+      "duration": 35,
       "validation": ""
     },
     {
@@ -129,7 +129,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
+      "duration": 31,
       "validation": "✓ É array com 0 itens"
     },
     {
@@ -139,8 +139,8 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 2,
-      "validation": "✓ É array com 4 itens"
+      "duration": 23,
+      "validation": "✓ É array com 6 itens"
     },
     {
       "category": "Ferramentas",
@@ -149,7 +149,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 1,
+      "duration": 51,
       "validation": "✓ Contém 'stats'"
     },
     {
@@ -159,7 +159,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 1,
+      "duration": 30,
       "validation": "✓ HTML válido"
     },
     {
@@ -169,7 +169,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 4,
+      "duration": 25,
       "validation": "✓ Analytics HTML válido"
     }
   ]
