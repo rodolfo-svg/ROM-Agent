@@ -6,7 +6,7 @@
 
 import { Router } from 'express';
 import analysisCache from '../utils/analysis-cache.js';
-import { isAuthenticated } from '../middleware/auth.js';
+import { requireAuth } from '../middleware/auth.js';
 
 const router = Router();
 
@@ -14,7 +14,7 @@ const router = Router();
  * GET /api/cache/stats
  * Obter estatísticas do cache de análises
  */
-router.get('/stats', isAuthenticated, async (req, res) => {
+router.get('/stats', requireAuth, async (req, res) => {
   try {
     const stats = analysisCache.getCacheStats();
 
@@ -36,7 +36,7 @@ router.get('/stats', isAuthenticated, async (req, res) => {
  * POST /api/cache/clear
  * Limpar todo o cache (apenas admin)
  */
-router.post('/clear', isAuthenticated, async (req, res) => {
+router.post('/clear', requireAuth, async (req, res) => {
   try {
     // Verificar se é admin
     if (req.session.user.role !== 'master_admin' && req.session.user.role !== 'admin') {
@@ -67,7 +67,7 @@ router.post('/clear', isAuthenticated, async (req, res) => {
  * POST /api/cache/clean-expired
  * Limpar apenas entradas expiradas
  */
-router.post('/clean-expired', isAuthenticated, async (req, res) => {
+router.post('/clean-expired', requireAuth, async (req, res) => {
   try {
     const cleaned = analysisCache.cleanExpiredEntries();
 
