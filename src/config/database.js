@@ -133,6 +133,21 @@ export async function initRedis() {
   console.log('[Redis] initRedis() INICIADO');
   console.log('[Redis] REDIS_URL existe:', !!process.env.REDIS_URL);
 
+  // 🚫 Skip Redis if explicitly disabled or not configured
+  if (process.env.DISABLE_REDIS === 'true') {
+    console.log('⚠️  [Redis] DESABILITADO via ENV (DISABLE_REDIS=true)');
+    logger.info('Redis desabilitado - sessions e cache usarão memória/file');
+    return null;
+  }
+
+  if (!process.env.REDIS_URL && !process.env.REDIS_HOST) {
+    console.log('⚠️  [Redis] NÃO CONFIGURADO (sem REDIS_URL ou REDIS_HOST)');
+    console.log('ℹ️  [Redis] Sistema continuará sem cache Redis (usando memory/file)');
+    console.log('ℹ️  [Redis] Para habilitar: adicione REDIS_URL ou DISABLE_REDIS=true para remover este aviso');
+    logger.info('Redis não configurado - usando fallback memory/file');
+    return null;
+  }
+
   try {
     // Enhanced retry strategy with exponential backoff
     const retryStrategy = (times) => {
