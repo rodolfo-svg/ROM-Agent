@@ -89,12 +89,17 @@ export function getModelLimit(model) {
  */
 export function getSafeContextLimit(model) {
   const maxTokens = getModelLimit(model);
-  // 🔥 OTIMIZAÇÃO v2.10.0: Reduzido de 70% para 25% (~50k tokens para Claude 200k)
-  // Motivo: Latências extremas (47-74s) causadas por contexto muito longo
-  // Impacto: Redução esperada de 40-60% na latência + economia de 60% nos custos
-  // Reservar 75% para a resposta do modelo
-  // Usar 25% para contexto (~50k tokens para Claude 200k)
-  return Math.floor(maxTokens * 0.25);
+  // ✅ CORRIGIDO: 25% → 60% para evitar truncamento excessivo
+  // 25% estava causando:
+  // - Respostas truncadas mesmo com arquivos pequenos
+  // - SSE streaming lento por falta de contexto
+  // - Timeouts por contexto insuficiente
+  //
+  // 60% do limite (120k de 200k tokens):
+  // - Suficiente para análises jurídicas completas
+  // - Reserva 40% (80k) para resposta do modelo
+  // - Equilibra performance e qualidade
+  return Math.floor(maxTokens * 0.60);
 }
 
 /**
@@ -229,10 +234,10 @@ export function manageMultiDocumentContext(documents, query, model) {
   logger.info(`📚 Gerenciando contexto de ${docsCount} documento(s)`);
   logger.info(`🎯 Limite seguro: ${safeLimit.toLocaleString()} tokens (~${Math.floor(safeLimit * 3.5 / 1000)}KB)`);
 
-  // 🔥 AJUSTE DINÂMICO: Reservar espaço para histórico e system prompt
-  // Para análises exaustivas, usar apenas 50% do limite para documentos (70K tokens)
-  // Deixar 50% para histórico + system prompt (70K tokens)
-  const kbBudget = Math.floor(safeLimit * 0.5); // 70K tokens para KB
+  // ✅ AJUSTE DINÂMICO: Reservar espaço para histórico e system prompt
+  // Para análises exaustivas, usar 70% do limite para documentos
+  // Deixar 30% para histórico + system prompt
+  const kbBudget = Math.floor(safeLimit * 0.70); // 70% para KB (mais generoso)
 
   logger.info(`💡 Orçamento ajustado para KB: ${kbBudget.toLocaleString()} tokens (50% do limite)`);
   logger.info(`   Reservado para histórico+system: ${(safeLimit - kbBudget).toLocaleString()} tokens`);
