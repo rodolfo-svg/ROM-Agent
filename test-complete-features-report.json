@@ -5,16 +5,16 @@
     "failed": 10,
     "warnings": 0,
     "successRate": 75.6,
-    "duration": 6.7,
-    "timestamp": "2026-02-08T05:02:51.692Z"
+    "duration": 0.09,
+    "timestamp": "2026-02-10T05:00:32.908Z"
   },
   "tests": [
     {
       "name": "Health Check (/api/info)",
       "passed": {
         "status": "healthy",
-        "uptime": "1h 12m",
-        "uptimeSeconds": 4369
+        "uptime": "7h 58m",
+        "uptimeSeconds": 28715
       },
       "details": "Status: 200, Version: 2.8.0, Health: healthy, Bedrock: connected"
     },
@@ -76,7 +76,7 @@
     {
       "name": "Listar Conversas para Export (/api/conversations/organized)",
       "passed": false,
-      "details": "Status: 503"
+      "details": "Status: 500"
     },
     {
       "name": "Página Principal HTML (/)",
@@ -211,7 +211,7 @@
     {
       "name": "Status de Backups (/api/backup/status)",
       "passed": true,
-      "details": "Status: 200, Backups: 6"
+      "details": "Status: 200, Backups: 7"
     },
     {
       "name": "Estatísticas de Cache (/api/cache/statistics)",

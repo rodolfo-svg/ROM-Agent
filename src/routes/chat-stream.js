@@ -182,6 +182,11 @@ router.post('/stream', async (req, res) => {
 
       try {
         res.write(data);
+        // ✅ FLUSH: Garantir que dados sejam enviados imediatamente ao cliente
+        // Crítico para SSE em análises longas e prevenir timeout de proxy
+        if (typeof res.flush === 'function') {
+          res.flush();
+        }
         resolve(true);
       } catch (err) {
         logger.error(`[${requestId}] Write failed:`, err.message);
@@ -204,7 +209,8 @@ router.post('/stream', async (req, res) => {
 
     // Heartbeat para manter conexao viva - COM VERIFICACAO DE CONEXAO
     // IMPORTANTE: Cloudflare tem timeout HTTP/2 de ~2min (120s)
-    // Enviar heartbeat frequente para evitar ERR_HTTP2_PROTOCOL_ERROR
+    // Render tem timeout de proxy HTTP de ~60s
+    // ✅ REDUZIDO: 10s → 5s para evitar timeout em análises longas
     heartbeatInterval = setInterval(() => {
       // SEGURANCA: Verificar se conexao ainda esta viva antes de escrever
       if (res.writableEnded || res.destroyed || res.socket?.destroyed) {
@@ -220,7 +226,7 @@ router.post('/stream', async (req, res) => {
         clearInterval(heartbeatInterval);
         heartbeatInterval = null;
       });
-    }, 10000); // A cada 10s (antes era 15s)
+    }, 5000); // ✅ A cada 5s (reduzido de 10s para prevenir timeout de proxy)
 
     // Cleanup heartbeat ao finalizar
     const cleanupHeartbeat = () => {

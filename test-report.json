@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-02-08T05:02:59.980Z",
+  "timestamp": "2026-02-10T05:00:37.399Z",
   "summary": {
     "total": 18,
-    "passed": 10,
-    "failed": 8,
-    "successRate": 55.6
+    "passed": 11,
+    "failed": 7,
+    "successRate": 61.1
   },
   "results": [
     {
@@ -13,7 +13,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 1718,
+      "duration": 35,
       "data": {
         "nome": "ROM",
         "versao": "2.8.0",
@@ -30,8 +30,8 @@
         ],
         "health": {
           "status": "healthy",
-          "uptime": "1h 12m",
-          "uptimeSeconds": 4376
+          "uptime": "7h 58m",
+          "uptimeSeconds": 28715
         },
         "bedrock": {
           "status": "connected",
@@ -50,14 +50,14 @@
           "nodeVersion": "v25.2.1",
           "platform": "darwin",
           "arch": "arm64",
-          "pid": 63839,
-          "gitCommit": "ff96386"
+          "pid": 96359,
+          "gitCommit": "ed10505"
         },
         "memory": {
-          "rss": "42 MB",
-          "heapTotal": "177 MB",
-          "heapUsed": "173 MB",
-          "external": "22 MB"
+          "rss": "129 MB",
+          "heapTotal": "181 MB",
+          "heapUsed": "177 MB",
+          "external": "23 MB"
         },
         "storage": {
           "isRender": false,
@@ -187,7 +187,7 @@
           "browserlessKeyLength": 0,
           "configured": false
         },
-        "timestamp": "2026-02-08T05:02:53.713Z"
+        "timestamp": "2026-02-10T05:00:32.885Z"
       }
     },
     {
@@ -196,12 +196,12 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 88,
+      "duration": 2,
       "data": {
         "success": true,
         "conversations": {
-          "total": 40,
-          "totalMessages": 64
+          "total": 42,
+          "totalMessages": 68
         },
         "cache": {
           "activeSessions": 0,
@@ -214,19 +214,19 @@
           "averageResponseTime": 3,
           "unit": "seconds"
         },
-        "timestamp": "2026-02-08T05:02:53.871Z"
+        "timestamp": "2026-02-10T05:00:32.899Z"
       }
     },
     {
       "name": "2.1 Listar Conversas Organizadas",
       "url": "http://localhost:3000/api/conversations/organized",
-      "status": 503,
+      "status": 500,
       "expected": 200,
       "passed": false,
-      "duration": 76,
+      "duration": 13,
       "data": {
         "success": false,
-        "error": "Banco de dados indisponível"
+        "error": "Erro ao buscar conversa"
       }
     },
     {
@@ -235,10 +235,10 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 5106,
+      "duration": 4185,
       "data": {
         "response": "OK",
-        "conversationId": "conv_1770526974171_t7z7nc",
+        "conversationId": "conv_1770699632915_tzw92a",
         "metadados": {},
         "recomendacoes": [],
         "verificacaoRealizada": false
@@ -246,23 +246,23 @@
     },
     {
       "name": "2.3 Obter Conversa Específica",
-      "url": "http://localhost:3000/api/conversations/conv_1770526974171_t7z7nc",
-      "status": 503,
+      "url": "http://localhost:3000/api/conversations/conv_1770699632915_tzw92a",
+      "status": 500,
       "expected": 200,
       "passed": false,
-      "duration": 189,
+      "duration": 8,
       "data": {
         "success": false,
-        "error": "Banco de dados indisponível"
+        "error": "Erro ao buscar conversa"
       }
     },
     {
       "name": "2.4 Renomear Conversa",
-      "url": "http://localhost:3000/api/conversations/conv_1770526974171_t7z7nc/rename",
+      "url": "http://localhost:3000/api/conversations/conv_1770699632915_tzw92a/rename",
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 127,
+      "duration": 3,
       "data": {
         "success": true
       }
@@ -270,13 +270,18 @@
     {
       "name": "2.5 Criar Nova Conversa",
       "url": "http://localhost:3000/api/conversations",
-      "status": 503,
+      "status": 200,
       "expected": 200,
-      "passed": false,
-      "duration": 30,
+      "passed": true,
+      "duration": 26,
       "data": {
-        "success": false,
-        "error": "Banco de dados indisponível"
+        "success": true,
+        "conversation": {
+          "id": "8ee187a6-b8d6-4738-90ce-a573d574f480",
+          "title": "Nova Conversa de Teste",
+          "created_at": "2026-02-10T05:00:37.111Z",
+          "updated_at": "2026-02-10T05:00:37.111Z"
+        }
       }
     },
     {
@@ -285,7 +290,7 @@
       "status": 302,
       "expected": 200,
       "passed": false,
-      "duration": 40,
+      "duration": 2,
       "data": "Found. Redirecting to /login.html"
     },
     {
@@ -294,14 +299,14 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 229,
+      "duration": 1,
       "data": {
         "success": true,
         "status": "active",
         "totalDocuments": 4,
-        "totalSize": 5657,
+        "totalSize": 5945,
         "totalSizeFormatted": "0.01 MB",
-        "lastUpdate": "2026-02-08T05:02:49.896Z",
+        "lastUpdate": "2026-02-10T05:00:32.857Z",
         "kbPath": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/data/knowledge-base"
       }
     },
@@ -311,7 +316,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 40,
+      "duration": 1,
       "data": {
         "authenticated": false,
         "username": null,
@@ -321,13 +326,13 @@
     {
       "name": "4.2 Login",
       "url": "http://localhost:3000/api/auth/login",
-      "status": 503,
+      "status": 500,
       "expected": 200,
       "passed": false,
-      "duration": 33,
+      "duration": 246,
       "data": {
         "success": false,
-        "error": "Banco de dados temporariamente indisponível"
+        "error": "Erro ao processar login"
       }
     },
     {
@@ -336,7 +341,7 @@
       "status": 404,
       "expected": 200,
       "passed": false,
-      "duration": 13,
+      "duration": 1,
       "data": {
         "error": "Projeto não encontrado",
         "message": "Projeto não encontrado"
@@ -348,7 +353,7 @@
       "status": 403,
       "expected": 200,
       "passed": false,
-      "duration": 17,
+      "duration": 5,
       "data": {
         "success": false,
         "error": "CSRF token inválido",
@@ -361,7 +366,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 35,
+      "duration": 1,
       "data": []
     },
     {
@@ -370,8 +375,18 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 15,
+      "duration": 1,
       "data": [
+        {
+          "filename": "backup-2026-02-09.zip",
+          "size": 10249019,
+          "timestamp": "2026-02-09T15:58:27.281Z"
+        },
+        {
+          "filename": "backup-2026-02-08.zip",
+          "size": 10246827,
+          "timestamp": "2026-02-08T06:01:48.454Z"
+        },
         {
           "filename": "backup-2026-02-07.zip",
           "size": 543583,
@@ -396,11 +411,6 @@
           "filename": "backup-2026-01-29.zip",
           "size": 344993,
           "timestamp": "2026-01-29T06:00:03.125Z"
-        },
-        {
-          "filename": "backup-2026-01-28.zip",
-          "size": 334497,
-          "timestamp": "2026-01-28T06:00:02.094Z"
         }
       ]
     },
@@ -410,7 +420,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 6,
+      "duration": 0,
       "data": {
         "success": true,
         "stats": {
@@ -428,7 +438,7 @@
       "status": 403,
       "expected": 404,
       "passed": false,
-      "duration": 7,
+      "duration": 5,
       "data": {
         "success": false,
         "error": "CSRF token inválido",
@@ -441,7 +451,7 @@
       "status": 200,
       "expected": 200,
       "passed": true,
-      "duration": 105,
+      "duration": 0,
       "data": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n  <head>\n    <meta charset=\"UTF-8\" />\n\n    <!-- Viewport with iOS notch support -->\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover\" />\n\n    <!-- PWA Meta Tags -->\n    <meta name=\"theme-color\" content=\"#D97706\" />\n    <meta name=\"theme-color\" media=\"(prefers-color-scheme: light)\" content=\"#D97706\" />\n    <meta name=\"theme-color\" media=\"(prefers-color-scheme: dark)\" content=\"#78716C\" />\n\n    <!-- iOS PWA Meta Tags -->\n    <meta name=\"apple-mobile-web-app-capable\" content=\"yes\" />\n    <meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\" />\n    <meta name=\"apple-mobile-web-app-title\" content=\"ROM Agent\" />\n    <meta name=\"mobile-web-app-capable\" content=\"yes\" />\n\n    <!-- iOS Status Bar -->\n    <meta name=\"apple-touch-fullscreen\" content=\"yes\" />\n\n    <!-- Disable iOS phone number detection -->\n    <meta name=\"format-detection\" content=\"telephone=no\" />\n\n    <!-- Standard Icons -->\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/favicon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.json\" />\n\n    <!-- Apple Touch Icons (iOS Home Screen) -->\n    <link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/icons/icon-180x180.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"192x192\" href=\"/icons/icon-192x192.png\" />\n    <link rel=\"apple-touch-icon\" sizes=\"512x512\" href=\"/icons/icon-512x512.png\" />\n\n    <!-- iOS Splash Screens -->\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-14-pro-max-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-14-pro-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-13-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)\" href=\"/splash/iphone-x-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)\" href=\"/splash/iphone-11-portrait.png\" />\n    <link rel=\"apple-touch-startup-image\" media=\"screen and (device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)\" href=\"/splash/iphone-8-portrait.png\" />\n\n    <!-- SEO -->\n    <meta name=\"description\" content=\"Assistente Jurídico Inteligente com IA - Análise Processual Completa\" />\n    <meta name=\"keywords\" content=\"assistente jurídico, IA, análise processual, direito, advocacia\" />\n\n    <title>ROM Agent - Assistente Jurídico Inteligente</title>\n    <script type=\"module\" crossorigin src=\"/assets/index-9SKvAMoh.js\"></script>\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-hdwKGDTI.css\">\n  </head>\n  <body>\n    <div id=\"root\"></div>\n  </body>\n</html>\n"
     }
   ]
