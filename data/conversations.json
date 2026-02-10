@@ -950,5 +950,28 @@
     "createdAt": "2026-02-10T06:06:09.960Z",
     "updatedAt": "2026-02-10T06:06:16.737Z",
     "messageCount": 2
+  },
+  "conv_1770711028063_ly574o": {
+    "id": "conv_1770711028063_ly574o",
+    "userId": "anonymous",
+    "sessionId": "WszaG9SUcUcFULXEPkwAEvtt7_4KFUWq",
+    "projectId": "rom-agent",
+    "title": "Teste de conexão",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "Teste de conexão",
+        "timestamp": "2026-02-10T08:10:28.065Z"
+      },
+      {
+        "role": "assistant",
+        "content": "# TESTE DE CONEXÃO - ROM AGENT v3.0\n\n**STATUS**: Operacional\n\n**CONFIGURAÇÃO ATIVA**:\n- Streaming: Habilitado\n- Formatação: Calibri 12pt, 1.5 linhas\n- Ferramentas: 5 disponíveis\n- Knowledge Base: Pronta\n- Jurisprudência: Acesso ativo\n\n**CAPACIDADES**:\n1. Redação de peças processuais (cível, criminal, trabalhista)\n2. Contratos e documentos empresariais\n3. Pesquisa jurisprudencial (STF, STJ, tribunais)\n4. Análise de prazos processuais\n5. Consulta à base de conhecimento\n\n**PRONTO PARA ATENDER**\n\nAguardando solicitação de peça jurídica ou consulta.",
+        "timestamp": "2026-02-10T08:10:35.721Z"
+      }
+    ],
+    "createdAt": "2026-02-10T08:10:28.063Z",
+    "updatedAt": "2026-02-10T08:10:35.721Z",
+    "messageCount": 2
   }
 }

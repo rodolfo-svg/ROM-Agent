@@ -131,14 +131,19 @@ class JurisprudenceAnalyzerService {
   getSystemPrompt() {
     return `Você é um assistente jurídico especializado em análise de jurisprudência brasileira.
 
-Sua tarefa é extrair informações estruturadas de ementas de decisões judiciais.
+Sua tarefa é extrair informações estruturadas de ementas de decisões judiciais, incluindo:
+- Ementa integral (texto completo)
+- Dados catalogográficos (tribunal, número, relator, órgão julgador, data)
+- Tese/ratio decidendi (fundamento central da decisão)
+- Vigência (se a decisão foi superada, reformada ou revisada posteriormente)
 
 IMPORTANTE:
 - Seja preciso e objetivo
 - Extraia apenas informações presentes no texto
 - Use formatação JSON válida
 - Não invente informações
-- Cite artigos de lei exatamente como aparecem`;
+- Cite artigos de lei exatamente como aparecem
+- Identifique se há menção a superação, reforma ou revisão da decisão`;
   }
 
   /**
@@ -157,17 +162,24 @@ ${contexto ? `\nCONTEXTO DO CASO DO USUÁRIO: ${contexto}` : ''}
 Retorne APENAS um JSON válido (sem markdown) com a seguinte estrutura:
 
 {
-  "teseJuridica": "Tese central da decisão em 1-2 frases",
+  "teseJuridica": "Tese central da decisão (ratio decidendi) em 1-2 frases",
   "resultado": "PROVIDO|NEGADO|PARCIALMENTE_PROVIDO|EXTINTO",
   "fundamentosLegais": ["Art. 5º CF", "Lei 8.078/90 art. 6º"],
   "sumulas": ["Súmula 123 STJ"],
   "precedentes": ["REsp 123456", "HC 987654"],
   "palavrasChave": ["habeas corpus", "prisão preventiva"],
   "resumoExecutivo": "Resumo em 2-3 parágrafos",
-  "relevanciaParaCaso": 85
+  "relevanciaParaCaso": 85,
+  "vigencia": {
+    "status": "VIGENTE|SUPERADO|REFORMADO|REVISADO",
+    "observacao": "Informação sobre superação, reforma ou revisão (se houver menção no texto)"
+  }
 }
 
-IMPORTANTE: Retorne APENAS o JSON, sem texto antes ou depois.`;
+IMPORTANTE:
+- Retorne APENAS o JSON, sem texto antes ou depois
+- Para vigência, procure por menções como "superado por", "reformado em", "revisado pelo"
+- Se não houver menção, use status "VIGENTE" e observacao null`;
 
     return prompt;
   }
@@ -196,7 +208,8 @@ IMPORTANTE: Retorne APENAS o JSON, sem texto antes ou depois.`;
         precedentes: Array.isArray(parsed.precedentes) ? parsed.precedentes : [],
         palavrasChave: Array.isArray(parsed.palavrasChave) ? parsed.palavrasChave : [],
         resumoExecutivo: parsed.resumoExecutivo || null,
-        relevanciaParaCaso: this.normalizeRelevancia(parsed.relevanciaParaCaso)
+        relevanciaParaCaso: this.normalizeRelevancia(parsed.relevanciaParaCaso),
+        vigencia: this.normalizeVigencia(parsed.vigencia)
       };
 
     } catch (error) {
@@ -232,6 +245,23 @@ IMPORTANTE: Retorne APENAS o JSON, sem texto antes ou depois.`;
   }
 
   /**
+   * Normalizar vigência
+   */
+  normalizeVigencia(vigencia) {
+    if (!vigencia || typeof vigencia !== 'object') {
+      return { status: 'VIGENTE', observacao: null };
+    }
+
+    const status = (vigencia.status || 'VIGENTE').toUpperCase();
+    const validStatus = ['VIGENTE', 'SUPERADO', 'REFORMADO', 'REVISADO'];
+
+    return {
+      status: validStatus.includes(status) ? status : 'VIGENTE',
+      observacao: vigencia.observacao || null
+    };
+  }
+
+  /**
    * Extração básica com regex (fallback)
    */
   extractBasicInfo(texto) {
@@ -258,6 +288,24 @@ IMPORTANTE: Retorne APENAS o JSON, sem texto antes ou depois.`;
       precedentes.push(`${match[1]} ${match[2]}`);
     }
 
+    // Detectar vigência no texto (fallback simples)
+    let vigenciaStatus = 'VIGENTE';
+    let vigenciaObs = null;
+
+    if (/superado/i.test(texto)) {
+      vigenciaStatus = 'SUPERADO';
+      const match = texto.match(/superado\s+(?:por|pelo|pela)\s+([^.]+)/i);
+      vigenciaObs = match ? match[0] : 'Decisão superada (mencionado no texto)';
+    } else if (/reformado/i.test(texto)) {
+      vigenciaStatus = 'REFORMADO';
+      const match = texto.match(/reformado\s+(?:por|pelo|pela|em)\s+([^.]+)/i);
+      vigenciaObs = match ? match[0] : 'Decisão reformada (mencionado no texto)';
+    } else if (/revisado/i.test(texto)) {
+      vigenciaStatus = 'REVISADO';
+      const match = texto.match(/revisado\s+(?:por|pelo|pela|em)\s+([^.]+)/i);
+      vigenciaObs = match ? match[0] : 'Decisão revisada (mencionado no texto)';
+    }
+
     return {
       teseJuridica: null,
       resultado: 'DESCONHECIDO',
@@ -266,7 +314,11 @@ IMPORTANTE: Retorne APENAS o JSON, sem texto antes ou depois.`;
       precedentes: [...new Set(precedentes)].slice(0, 5),
       palavrasChave: [],
       resumoExecutivo: null,
-      relevanciaParaCaso: 50
+      relevanciaParaCaso: 50,
+      vigencia: {
+        status: vigenciaStatus,
+        observacao: vigenciaObs
+      }
     };
   }
 }

@@ -1,0 +1,7 @@
+Esta pasta ROM_Upload pode ser movida para:
+
+~/Desktop/_CLIENTES_PROCESSOS/ROM_Uploads/
+
+Se quiser manter o Desktop ainda mais limpo.
+
+Ou pode deixar aqui se usar frequentemente.

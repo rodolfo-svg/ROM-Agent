@@ -21,13 +21,13 @@ class JurisprudenceSearchService {
     this.initialized = false;
     this.config = {
       datajud: {
-        // MANTIDO MAS DESABILITADO: DataJud serve para consulta de PROCESSO por número
-        // NÃO serve para busca de jurisprudência por tema/assunto
-        // Pode ser útil para outras funcionalidades no futuro
-        enabled: false, // Forçado false (não usar para jurisprudência)
+        // ✅ HABILITADO: DataJud CNJ suporta busca semântica completa via ElasticSearch
+        // Busca em: ementa (boost x3), textoIntegral, palavrasChave (boost x2)
+        // Fallback inteligente: Google primeiro, DataJud se ementa incompleta
+        enabled: process.env.DATAJUD_ENABLED === 'true' || false,
         apiUrl: process.env.DATAJUD_API_URL || 'https://api-publica.datajud.cnj.jus.br',
         apiKey: process.env.DATAJUD_API_KEY || null,
-        timeout: 30000
+        timeout: 12000 // Reduzido de 30s para 12s (fallback mais rápido)
       },
       jusbrasil: {
         enabled: process.env.JUSBRASIL_ENABLED === 'true' || false, // Desabilitado: bloqueio anti-bot 100%
@@ -115,36 +115,21 @@ class JurisprudenceSearchService {
       const sources = [];
 
       // ═══════════════════════════════════════════════════════════════
-      // ESTRATÉGIA DE TIMEOUT ADAPTATIVA PARA PRODUÇÃO
+      // ESTRATÉGIA DE BUSCA INTELIGENTE COM FALLBACK
       // ═══════════════════════════════════════════════════════════════
-      // Google Search: 8s (tribunais superiores) / 15s (estaduais)
-      // DataJud: 10s (API oficial mas pode ser lenta)
-      // JusBrasil: 5s (frequentemente bloqueado/lento - menor prioridade)
+      // 1. Google Search PRIMEIRO (rápido, 90+ tribunais, boa cobertura)
+      // 2. DataJud FALLBACK (quando Google não retorna ementas completas)
+      //    - ElasticSearch Query DSL com busca semântica
+      //    - multi_match em: ementa^3, textoIntegral, palavrasChave^2
+      //    - Fuzziness AUTO para tolerância a erros
       // ═══════════════════════════════════════════════════════════════
 
       // Timeout adaptativo: tribunais estaduais precisam mais tempo
       const isEstadual = tribunal && tribunal.toLowerCase().startsWith('tj');
-      const GOOGLE_TIMEOUT = isEstadual ? 18000 : 12000;  // 18s para TJGO/TJSP, 12s para STF/STJ (margem +2-3s sobre cliente)
-      const DATAJUD_TIMEOUT = 12000; // 12s - fonte oficial (margem de 2s)
-      const JUSBRASIL_TIMEOUT = 5000; // 5s - frequentemente falha (desabilitado)
+      const GOOGLE_TIMEOUT = isEstadual ? 18000 : 12000;  // 18s para TJGO/TJSP, 12s para STF/STJ
+      const DATAJUD_TIMEOUT = 12000; // 12s - fonte oficial CNJ
 
-      // ✅ LÓGICA CONDICIONAL: DataJud só funciona para tribunais SUPERIORES
-      const tribunaisSuperiores = ['STJ', 'STF', 'TST', 'TSE', 'STM'];
-      const isTribunalSuperior = tribunal ? tribunaisSuperiores.some(t => tribunal.toUpperCase().includes(t)) : false;
-
-      // PRIORIDADE 1A: DataJud (APENAS para tribunais superiores - STJ, STF, TST, TSE, STM)
-      if (this.config.datajud.enabled && this.config.datajud.apiKey && isTribunalSuperior) {
-        sources.push('datajud');
-        searchPromises.push(
-          this.withTimeout(
-            this.searchDataJud(tese, { limit, tribunal, dataInicio, dataFim }),
-            DATAJUD_TIMEOUT,
-            'DataJud'
-          )
-        );
-      }
-
-      // PRIORIDADE 1B: Google Search (sempre - funciona para TODOS os tribunais)
+      // PRIORIDADE 1: Google Search (sempre - funciona para TODOS os tribunais)
       if (this.config.websearch.enabled) {
         sources.push('websearch');
         searchPromises.push(
@@ -156,21 +141,44 @@ class JurisprudenceSearchService {
         );
       }
 
-      // ❌ PRIORIDADE 3: JusBrasil - DESABILITADO (100% bloqueio anti-bot)
-      // Google Custom Search já indexa JusBrasil sem bloqueios
-      // if (this.config.jusbrasil.enabled) {
-      //   sources.push('jusbrasil');
-      //   searchPromises.push(
-      //     this.withTimeout(
-      //       this.searchJusBrasil(tese, { limit, tribunal }),
-      //       JUSBRASIL_TIMEOUT,
-      //       'JusBrasil'
-      //     )
-      //   );
-      // }
-
-      // Executar todas as buscas em paralelo
+      // Executar Google Search primeiro
       const results = await Promise.allSettled(searchPromises);
+
+      // ✅ FALLBACK INTELIGENTE: Se Google não retornar ementas completas, usar DataJud
+      let usedDataJudFallback = false;
+      if (this.config.datajud.enabled && this.config.datajud.apiKey) {
+        // Verificar se Google Search retornou resultados com ementas completas
+        const googleResult = results.find((_, idx) => sources[idx] === 'websearch');
+        const googleSuccess = googleResult?.status === 'fulfilled' && googleResult.value?.success;
+        const googleResults = googleResult?.value?.results || [];
+
+        // Considerar ementa completa se > 500 caracteres
+        const hasCompleteEmentas = googleResults.some(r =>
+          (r.ementa?.length || 0) > 500 || (r.ementaCompleta?.length || 0) > 500
+        );
+
+        if (!hasCompleteEmentas || googleResults.length === 0) {
+          console.log('🔄 [FALLBACK] Google Search sem ementas completas, ativando DataJud...');
+
+          sources.push('datajud');
+          try {
+            const datajudResult = await this.withTimeout(
+              this.searchDataJud(tese, { limit, tribunal, dataInicio, dataFim }),
+              DATAJUD_TIMEOUT,
+              'DataJud (Fallback)'
+            );
+            results.push({ status: 'fulfilled', value: datajudResult });
+            usedDataJudFallback = true;
+
+            console.log(`✅ [FALLBACK] DataJud retornou ${datajudResult.results?.length || 0} resultado(s)`);
+          } catch (error) {
+            console.error(`❌ [FALLBACK] DataJud falhou: ${error.message}`);
+            results.push({ status: 'rejected', reason: error });
+          }
+        } else {
+          console.log(`✅ [GOOGLE] Encontrou ${googleResults.length} resultado(s) com ementas completas`);
+        }
+      }
 
       // Consolidar resultados
       const consolidated = {
@@ -291,7 +299,8 @@ class JurisprudenceSearchService {
       consolidated.performance = {
         duration: searchDuration,
         sourcesUsed: sources.length,
-        successfulSources: sources.filter((_, i) => results[i].status === 'fulfilled').length
+        successfulSources: sources.filter((_, i) => results[i].status === 'fulfilled').length,
+        ...(usedDataJudFallback && { usedDataJudFallback: true })
       };
 
       // Resumo de performance

@@ -1,5 +1,28 @@
 {
-  "documents": [],
-  "lastUpdated": "2026-02-09T17:35:21.045Z",
-  "totalDocuments": 0
+  "documents": [
+    {
+      "id": "doc-1770715478106-jo8d5y1cf",
+      "fileName": "MOVER_PARA_CLIENTES.txt",
+      "filePath": "/Users/rodolfootaviopereiradamotaoliveira/Desktop/ROM_Upload/MOVER_PARA_CLIENTES.txt",
+      "uploadedAt": "2026-02-10T09:24:38.106Z",
+      "fileSize": 179,
+      "type": "txt",
+      "wordCount": 24,
+      "snippets": [
+        "Esta pasta ROM_Upload pode ser movida para:\n\n~/Desktop/_CLIENTES_PROCESSOS/ROM_Uploads/\n\nSe quiser manter o Desktop ainda mais limpo",
+        "Ou pode deixar aqui se usar frequentemente"
+      ],
+      "tags": [
+        "documento-curto"
+      ],
+      "metadata": {
+        "processNumbers": [],
+        "tribunals": [],
+        "articles": [],
+        "dates": []
+      }
+    }
+  ],
+  "lastUpdated": "2026-02-10T09:24:38.108Z",
+  "totalDocuments": 1
 }
