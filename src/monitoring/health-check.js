@@ -1,4 +1,4 @@
-import { getPostgresPool } from '../config/database.js';
+import { getPostgresPool, checkDatabaseHealth } from '../config/database.js';
 
 export class HealthMonitor {
   constructor() {
@@ -50,14 +50,23 @@ export class HealthMonitor {
   }
 
   async getFullStatus() {
-    await this.checkDatabase();
+    // ✅ FASE 3: Usar checkDatabaseHealth que inicializa conexões lazy
+    const dbHealth = await checkDatabaseHealth();
+
     this.getMemoryUsage();
     this.getUptime();
 
+    // Determinar status geral
+    const isHealthy = dbHealth.postgres.available;
+    const status = isHealthy ? 'healthy' : 'degraded';
+
     return {
-      status: this.metrics.database.status === 'healthy' ? 'healthy' : 'degraded',
+      status,
       timestamp: new Date(),
-      metrics: this.metrics,
+      postgres: dbHealth.postgres,
+      redis: dbHealth.redis,
+      memory: this.metrics.memory,
+      uptime: this.metrics.uptime
     };
   }
 }
