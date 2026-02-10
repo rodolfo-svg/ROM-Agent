@@ -22,6 +22,7 @@ import { Server as SocketIOServer } from 'socket.io';
 import { createServer } from 'http';
 import { initPostgres, initRedis, checkDatabaseHealth, closeDatabaseConnections, getPostgresPool } from './config/database.js';
 import { createSessionMiddleware, sessionEnhancerMiddleware } from './config/session-store.js';
+import { healthMonitor } from './monitoring/health-check.js';
 import { ROMAgent, CONFIG } from './index.js';
 import { BedrockAgent } from './modules/bedrock.js';
 import partnersBranding from '../lib/partners-branding.js';
@@ -10343,14 +10344,19 @@ logger.info('✅ Pricing API endpoints configured');
 // PR#2: OBSERVABILITY ENDPOINTS
 // ============================================================================
 
-// Health check endpoint
+// Health check endpoint - ✅ FASE 3: Usar healthMonitor.getFullStatus()
 app.get('/health', async (req, res) => {
-  const dbHealth = await checkDatabaseHealth();
-  res.json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    database: dbHealth
-  });
+  try {
+    const healthStatus = await healthMonitor.getFullStatus();
+    res.json(healthStatus);
+  } catch (error) {
+    logger.error('Erro no health check:', error);
+    res.status(500).json({
+      status: 'error',
+      timestamp: new Date(),
+      error: error.message
+    });
+  }
 });
 
 // WebSocket health check endpoint
