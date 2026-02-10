@@ -815,6 +815,45 @@ export function UploadPage() {
                 <Brain className="w-4 h-4" />
                 Docs IA
               </Button>
+              <Button
+                variant="secondary"
+                onClick={async () => {
+                  const filter = prompt('Digite o termo para filtrar e deletar (ex: ernesto):');
+                  if (!filter) return;
+
+                  const toDelete = kbDocuments.filter(d =>
+                    d.name?.toLowerCase().includes(filter.toLowerCase())
+                  );
+
+                  if (toDelete.length === 0) {
+                    alert('Nenhum documento encontrado com esse filtro');
+                    return;
+                  }
+
+                  if (!confirm(`Deletar ${toDelete.length} documentos que contém "${filter}"?`)) {
+                    return;
+                  }
+
+                  let deleted = 0;
+                  for (const doc of toDelete) {
+                    try {
+                      const response = await apiFetch(`/kb/documents/${doc.id}`, {
+                        method: 'DELETE',
+                      });
+                      if (response.success) deleted++;
+                    } catch (err) {
+                      console.error('Erro ao deletar:', doc.id, err);
+                    }
+                  }
+
+                  alert(`${deleted} de ${toDelete.length} documentos deletados`);
+                  fetchDocuments();
+                }}
+                className="text-red-600 hover:text-red-700"
+              >
+                <Trash2 className="w-4 h-4" />
+                Limpar Filtro
+              </Button>
             </div>
 
             {/* Files List */}

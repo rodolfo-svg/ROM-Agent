@@ -542,38 +542,23 @@ router.delete('/documents/:id', requireAuth, async (req, res) => {
     const { id } = req.params;
     const kbPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
 
-    // Ler KB atual (é um array direto, não objeto)
-    const kbData = await fs.readFile(kbPath, 'utf8');
-    const allDocs = JSON.parse(kbData);
+    // Ler KB atual (é um array direto)
+    const allDocs = JSON.parse(await fs.readFile(kbPath, 'utf8'));
 
-    // Encontrar documento
-    const docIndex = allDocs.findIndex(d => d.id === id);
+    // Filtrar removendo o documento
+    const filtered = allDocs.filter(d => d.id !== id);
 
-    if (docIndex === -1) {
+    if (filtered.length === allDocs.length) {
       return res.status(404).json({
         success: false,
         error: 'Documento não encontrado'
       });
     }
 
-    const doc = allDocs[docIndex];
+    // Salvar
+    await fs.writeFile(kbPath, JSON.stringify(filtered, null, 2));
 
-    // Remover do array
-    allDocs.splice(docIndex, 1);
-
-    // Salvar KB atualizado
-    await fs.writeFile(kbPath, JSON.stringify(allDocs, null, 2));
-
-    // Tentar deletar arquivo físico (se existir)
-    if (doc.path) {
-      try {
-        await fs.unlink(doc.path);
-      } catch (err) {
-        logger.warn(`Arquivo físico não encontrado: ${doc.path}`);
-      }
-    }
-
-    logger.info(`Documento deletado do KB: ${id}`);
+    console.log(`[KB] Documento ${id} deletado`);
 
     res.json({
       success: true,
@@ -581,7 +566,7 @@ router.delete('/documents/:id', requireAuth, async (req, res) => {
       deletedId: id
     });
   } catch (error) {
-    logger.error('Erro ao deletar documento:', error);
+    console.error('[KB] Erro ao deletar:', error);
     res.status(500).json({
       success: false,
       error: error.message
