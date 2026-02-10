@@ -131,41 +131,81 @@ export function ExtractionProgressBar({
         </div>
 
         <div className="flex items-center gap-1 flex-shrink-0 ml-2">
-          {/* Botão deletar documento */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={async () => {
-              if (!job?.documentId) return;
-              if (!confirm(`Deletar documento "${job.documentName}"?`)) return;
+          {/* Botão cancelar extração (só aparece quando em andamento) */}
+          {isProcessing && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={async () => {
+                if (!job?.id) return;
+                if (!confirm(`Cancelar extração de "${job.documentName}"?`)) return;
 
-              setDeleting(true);
-              try {
-                const response = await fetch(`/api/kb/documents/${job.documentId}`, {
-                  method: 'DELETE',
-                  credentials: 'include'
-                });
-                const data = await response.json();
+                setDeleting(true);
+                try {
+                  const response = await fetch(`/api/extraction-jobs/${job.id}/cancel`, {
+                    method: 'POST',
+                    credentials: 'include'
+                  });
+                  const data = await response.json();
 
-                if (data.success) {
-                  onDismiss?.();
+                  if (data.success) {
+                    onDismiss?.();
+                  }
+                } catch (err) {
+                  console.error('Erro ao cancelar:', err);
+                } finally {
+                  setDeleting(false);
                 }
-              } catch (err) {
-                console.error('Erro ao deletar:', err);
-              } finally {
-                setDeleting(false);
-              }
-            }}
-            disabled={deleting}
-            className="text-red-400 hover:text-red-600"
-            title="Deletar documento"
-          >
-            {deleting ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Trash2 className="w-4 h-4" />
-            )}
-          </Button>
+              }}
+              disabled={deleting}
+              className="text-orange-400 hover:text-orange-600"
+              title="Cancelar extração"
+            >
+              {deleting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <X className="w-4 h-4" />
+              )}
+            </Button>
+          )}
+
+          {/* Botão deletar documento (só aparece quando completou ou falhou) */}
+          {(isComplete || isFailed) && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={async () => {
+                if (!job?.documentId) return;
+                if (!confirm(`Deletar documento "${job.documentName}"?`)) return;
+
+                setDeleting(true);
+                try {
+                  const response = await fetch(`/api/kb/documents/${job.documentId}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                  });
+                  const data = await response.json();
+
+                  if (data.success) {
+                    onDismiss?.();
+                  }
+                } catch (err) {
+                  console.error('Erro ao deletar:', err);
+                } finally {
+                  setDeleting(false);
+                }
+              }}
+              disabled={deleting}
+              className="text-red-400 hover:text-red-600"
+              title="Deletar documento"
+            >
+              {deleting ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Trash2 className="w-4 h-4" />
+              )}
+            </Button>
+          )}
 
           {/* Botão fechar/ocultar */}
           {isComplete && (
