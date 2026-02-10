@@ -498,27 +498,27 @@ router.delete('/documents/:id', requireAuth, async (req, res) => {
     const { id } = req.params;
     const kbPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
 
-    // Ler KB atual
+    // Ler KB atual (é um array direto, não objeto)
     const kbData = await fs.readFile(kbPath, 'utf8');
-    const kb = JSON.parse(kbData);
+    const allDocs = JSON.parse(kbData);
 
     // Encontrar documento
-    const docIndex = kb.documents?.findIndex(d => d.id === id);
+    const docIndex = allDocs.findIndex(d => d.id === id);
 
-    if (docIndex === -1 || docIndex === undefined) {
+    if (docIndex === -1) {
       return res.status(404).json({
         success: false,
         error: 'Documento não encontrado'
       });
     }
 
-    const doc = kb.documents[docIndex];
+    const doc = allDocs[docIndex];
 
     // Remover do array
-    kb.documents.splice(docIndex, 1);
+    allDocs.splice(docIndex, 1);
 
     // Salvar KB atualizado
-    await fs.writeFile(kbPath, JSON.stringify(kb, null, 2));
+    await fs.writeFile(kbPath, JSON.stringify(allDocs, null, 2));
 
     // Tentar deletar arquivo físico (se existir)
     if (doc.path) {
