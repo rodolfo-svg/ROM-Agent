@@ -60,7 +60,7 @@ class JurisprudenceAnalyzerService {
   async analyze(decisao, contextoUsuario = '') {
     const { ementaCompleta, titulo, tribunal } = decisao;
 
-    if (!ementaCompleta || ementaCompleta.length < 100) {
+    if (!ementaCompleta || ementaCompleta.length < 300) {
       return { ...decisao, analise: null };
     }
 
@@ -71,7 +71,7 @@ class JurisprudenceAnalyzerService {
       const prompt = this.buildAnalysisPrompt(ementaCompleta, titulo, tribunal, contextoUsuario);
 
       const response = await bedrock.conversar(prompt, {
-        model: 'haiku',  // Rápido + barato
+        modelo: 'us.anthropic.claude-haiku-4-5-20251001-v1:0',  // Haiku 4.5: rápido + barato
         maxTokens: 1000,
         temperature: 0.3, // Mais determinístico para análise
         systemPrompt: this.getSystemPrompt()

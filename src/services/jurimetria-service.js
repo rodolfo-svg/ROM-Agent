@@ -422,7 +422,7 @@ ANÁLISE SOLICITADA:
 Forneça uma análise estruturada e objetiva.`;
 
     const analise = await conversar(promptAnalise, {
-      modelo: 'global.anthropic.claude-sonnet-4-5-20250929-v1:0',
+      modelo: 'us.anthropic.claude-haiku-4-5-20251001-v1:0',  // Haiku: 66% economia vs Sonnet
       maxTokens: 16384,
       systemPrompt: 'Você é um especialista em jurimetria e análise de decisões judiciais.'
     });
@@ -626,7 +626,7 @@ COTEJAMENTO SOLICITADO:
 Apresente em formato estruturado com tabelas onde apropriado.`;
 
     const cotejamento = await conversar(promptCotejo, {
-      modelo: 'anthropic.claude-opus-4-5-20250514-v1:0', // Usar Opus para análise complexa
+      modelo: 'us.anthropic.claude-haiku-4-5-20251001-v1:0',  // Haiku: cotejamento estruturado
       maxTokens: 32000,
       systemPrompt: 'Você é um especialista em cotejamento analítico e distinguishing.'
     });
