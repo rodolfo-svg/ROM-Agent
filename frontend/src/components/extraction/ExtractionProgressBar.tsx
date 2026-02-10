@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { AlertCircle, CheckCircle, Loader2, X } from 'lucide-react'
+import { AlertCircle, CheckCircle, Loader2, X, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui'
 
 interface ExtractionProgressBarProps {
@@ -34,6 +34,7 @@ export function ExtractionProgressBar({
 }: ExtractionProgressBarProps) {
   const [job, setJob] = useState<JobStatus | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState(false)
 
   const fetchJobStatus = useCallback(async () => {
     try {
@@ -129,16 +130,56 @@ export function ExtractionProgressBar({
           </div>
         </div>
 
-        {isComplete && (
+        <div className="flex items-center gap-1 flex-shrink-0 ml-2">
+          {/* Botão deletar documento */}
           <Button
             variant="ghost"
             size="sm"
-            onClick={onDismiss}
-            className="text-stone-400 hover:text-stone-600 flex-shrink-0 ml-2"
+            onClick={async () => {
+              if (!job?.documentId) return;
+              if (!confirm(`Deletar documento "${job.documentName}"?`)) return;
+
+              setDeleting(true);
+              try {
+                const response = await fetch(`/api/kb/documents/${job.documentId}`, {
+                  method: 'DELETE',
+                  credentials: 'include'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                  onDismiss?.();
+                }
+              } catch (err) {
+                console.error('Erro ao deletar:', err);
+              } finally {
+                setDeleting(false);
+              }
+            }}
+            disabled={deleting}
+            className="text-red-400 hover:text-red-600"
+            title="Deletar documento"
           >
-            <X className="w-4 h-4" />
+            {deleting ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              <Trash2 className="w-4 h-4" />
+            )}
           </Button>
-        )}
+
+          {/* Botão fechar/ocultar */}
+          {isComplete && (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={onDismiss}
+              className="text-stone-400 hover:text-stone-600"
+              title="Ocultar"
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
       </div>
 
       {isProcessing && (
