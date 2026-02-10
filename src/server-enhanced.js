@@ -6162,12 +6162,17 @@ app.delete('/api/kb/extracted-documents/:id', async (req, res) => {
  * Deleta documento do sistema antigo (KB/) e também de data/kb-documents.json
  */
 app.delete('/api/kb/documents/:id', requireAuth, generalLimiter, async (req, res) => {
+  console.log('[KB DELETE] Handler iniciado');
   try {
     const { id } = req.params;
+    console.log(`[KB DELETE] ID recebido: ${id}`);
     logger.info(`🗑️ Iniciando deleção completa do documento: ${id}`);
 
+    console.log('[KB DELETE] Carregando KBCleaner...');
     const KBCleaner = require('../lib/kb-cleaner.cjs');
+    console.log('[KB DELETE] KBCleaner carregado, instanciando...');
     const cleaner = new KBCleaner();
+    console.log('[KB DELETE] KBCleaner instanciado');
 
     let totalFilesDeleted = 0;
     let totalSpaceSaved = 0;
@@ -6316,10 +6321,13 @@ app.delete('/api/kb/documents/:id', requireAuth, generalLimiter, async (req, res
     res.json(result);
 
   } catch (error) {
+    console.error('[KB DELETE] ERRO:', error);
+    console.error('[KB DELETE] Stack:', error.stack);
     logger.error('❌ Erro ao deletar documento do KB:', error);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });
