@@ -231,8 +231,31 @@ function getBedrockManagementClient() {
  * @returns {Promise<object>} Resposta do modelo
  */
 export async function conversar(prompt, options = {}) {
+  // 🤖 AUTO-SELEÇÃO DE MODELO (Fase 2: Model Selector Inteligente)
+  // Se modelo não foi explicitamente passado, seleciona automaticamente baseado na tarefa
+  const hasExplicitModel = options.hasOwnProperty('modelo') || options.hasOwnProperty('model');
+
+  let modeloInferido = null;
+  if (!hasExplicitModel) {
+    try {
+      const { selectModelWithValidation } = await import('../utils/model-selector.js');
+      const selection = selectModelWithValidation(prompt, {
+        maxTokens: options.maxTokens || CONFIG.maxTokens,
+        systemPrompt: options.systemPrompt,
+        images: options.images,
+        enableTools: options.enableTools !== false
+      });
+
+      modeloInferido = selection.modelId;
+
+      console.log(`🤖 [Auto-Select] ${selection.modelName} (${selection.reasoning})`);
+    } catch (error) {
+      console.warn('[Auto-Select] Failed, using default:', error.message);
+    }
+  }
+
   const {
-    modelo = CONFIG.defaultModel,
+    modelo = modeloInferido || CONFIG.defaultModel,
     systemPrompt = null,
     historico = [],
     maxTokens = CONFIG.maxTokens,
