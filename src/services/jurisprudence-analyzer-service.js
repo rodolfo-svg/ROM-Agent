@@ -292,17 +292,18 @@ IMPORTANTE:
     let vigenciaStatus = 'VIGENTE';
     let vigenciaObs = null;
 
-    if (/superado/i.test(texto)) {
+    // Regex aprimorados para detectar menções de alteração de vigência
+    if (/(?:foi\s+)?superad[oa]/i.test(texto)) {
       vigenciaStatus = 'SUPERADO';
-      const match = texto.match(/superado\s+(?:por|pelo|pela)\s+([^.]+)/i);
+      const match = texto.match(/(?:foi\s+)?superad[oa]\s+(?:por|pelo|pela)\s+([^.,]+)/i);
       vigenciaObs = match ? match[0] : 'Decisão superada (mencionado no texto)';
-    } else if (/reformado/i.test(texto)) {
+    } else if (/reformad[oa]/i.test(texto)) {
       vigenciaStatus = 'REFORMADO';
-      const match = texto.match(/reformado\s+(?:por|pelo|pela|em)\s+([^.]+)/i);
+      const match = texto.match(/reformad[oa]\s+(?:por|pelo|pela|em)\s+([^.,]+)/i);
       vigenciaObs = match ? match[0] : 'Decisão reformada (mencionado no texto)';
-    } else if (/revisado/i.test(texto)) {
+    } else if (/(?:foi\s+)?revisad[oa]/i.test(texto)) {
       vigenciaStatus = 'REVISADO';
-      const match = texto.match(/revisado\s+(?:por|pelo|pela|em)\s+([^.]+)/i);
+      const match = texto.match(/(?:foi\s+)?revisad[oa]\s+(?:por|pelo|pela|em)\s+([^.,]+)/i);
       vigenciaObs = match ? match[0] : 'Decisão revisada (mencionado no texto)';
     }
 
