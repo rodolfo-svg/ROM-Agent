@@ -540,15 +540,35 @@ router.post('/cleanup', requireAuth, async (req, res) => {
 router.delete('/documents/:id', requireAuth, async (req, res) => {
   try {
     const { id } = req.params;
+    console.log(`[KB DELETE] Iniciando deleção: ${id}`);
+
     const kbPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
+    console.log(`[KB DELETE] Path: ${kbPath}`);
+
+    // Verificar se arquivo existe
+    try {
+      await fs.access(kbPath);
+    } catch {
+      console.error(`[KB DELETE] Arquivo não existe: ${kbPath}`);
+      return res.status(500).json({
+        success: false,
+        error: 'Arquivo kb-documents.json não encontrado'
+      });
+    }
 
     // Ler KB atual (é um array direto)
-    const allDocs = JSON.parse(await fs.readFile(kbPath, 'utf8'));
+    const fileContent = await fs.readFile(kbPath, 'utf8');
+    console.log(`[KB DELETE] Arquivo lido: ${fileContent.length} bytes`);
+
+    const allDocs = JSON.parse(fileContent);
+    console.log(`[KB DELETE] Total docs: ${allDocs.length}`);
 
     // Filtrar removendo o documento
     const filtered = allDocs.filter(d => d.id !== id);
+    console.log(`[KB DELETE] Após filtro: ${filtered.length}`);
 
     if (filtered.length === allDocs.length) {
+      console.log(`[KB DELETE] Documento não encontrado: ${id}`);
       return res.status(404).json({
         success: false,
         error: 'Documento não encontrado'
@@ -557,8 +577,7 @@ router.delete('/documents/:id', requireAuth, async (req, res) => {
 
     // Salvar
     await fs.writeFile(kbPath, JSON.stringify(filtered, null, 2));
-
-    console.log(`[KB] Documento ${id} deletado`);
+    console.log(`[KB DELETE] Arquivo salvo com sucesso`);
 
     res.json({
       success: true,
@@ -566,10 +585,12 @@ router.delete('/documents/:id', requireAuth, async (req, res) => {
       deletedId: id
     });
   } catch (error) {
-    console.error('[KB] Erro ao deletar:', error);
+    console.error('[KB DELETE] Erro:', error);
+    console.error('[KB DELETE] Stack:', error.stack);
     res.status(500).json({
       success: false,
-      error: error.message
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
   }
 });
