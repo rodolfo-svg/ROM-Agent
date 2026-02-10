@@ -490,6 +490,50 @@ router.get('/status', (req, res) => {
 });
 
 /**
+ * POST /api/kb/cleanup
+ * Limpa documentos do KB por filtro (admin only)
+ */
+router.post('/cleanup', requireAuth, async (req, res) => {
+  try {
+    const { filter } = req.body; // Ex: "ernesto"
+    const kbPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
+
+    // Ler KB
+    const kbData = await fs.readFile(kbPath, 'utf8');
+    const allDocs = JSON.parse(kbData);
+
+    const before = allDocs.length;
+
+    // Filtrar
+    const cleaned = allDocs.filter(doc => {
+      const shouldRemove = doc.name?.toLowerCase().includes(filter.toLowerCase());
+      if (shouldRemove) {
+        logger.info(`Removendo: ${doc.id} - ${doc.name}`);
+      }
+      return !shouldRemove;
+    });
+
+    const removed = before - cleaned.length;
+
+    // Salvar
+    await fs.writeFile(kbPath, JSON.stringify(cleaned, null, 2));
+
+    res.json({
+      success: true,
+      message: `${removed} documentos removidos`,
+      before,
+      after: cleaned.length
+    });
+  } catch (error) {
+    logger.error('Erro no cleanup:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+/**
  * DELETE /api/kb/documents/:id
  * Deleta um documento do KB
  */
