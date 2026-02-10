@@ -37,7 +37,13 @@
     "test:persistence": "node scripts/test-database-persistence.js",
     "create-admin": "node scripts/create-admin-user.js",
     "user:create": "node scripts/create-user.js",
-    "user:list": "node scripts/list-users.js"
+    "user:list": "node scripts/list-users.js",
+    "extract:v2": "node scripts/test-extraction-v2.js",
+    "validate:system": "node scripts/validar-sistema-completo.js",
+    "package:whatsapp": "bash scripts/criar-pacote-whatsapp.sh",
+    "setup:windows": "powershell -ExecutionPolicy Bypass -File scripts/setup-extracao-v2.ps1",
+    "setup:mac": "bash scripts/setup-extracao-v2.sh",
+    "setup:linux": "bash scripts/setup-extracao-v2-linux.sh"
   },
   "keywords": [
     "juridico",

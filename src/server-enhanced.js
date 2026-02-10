@@ -3208,11 +3208,30 @@ app.post('/api/upload/chunked/:uploadId/chunk/:chunkIndex', requireAuth, uploadL
     const { uploadId, chunkIndex } = req.params;
     const chunks = [];
 
+    // ✅ Controle de backpressure para evitar memory pressure
+    const MAX_BUFFER_SIZE = 50 * 1024 * 1024; // 50MB (maior que chunk de 40MB)
+    let totalSize = 0;
+
     console.log(`📦 [Chunk ${chunkIndex}] Recebendo chunk para uploadId: ${uploadId}`);
 
-    // Receber dados binários
+    // Receber dados binários com controle de backpressure
     req.on('data', chunk => {
       chunks.push(chunk);
+      totalSize += chunk.length;
+
+      // ✅ Pausar stream se buffer estiver muito grande (backpressure)
+      if (totalSize > MAX_BUFFER_SIZE) {
+        console.warn(`⚠️ [Chunk ${chunkIndex}] Buffer excedeu ${(MAX_BUFFER_SIZE / 1024 / 1024).toFixed(0)}MB, pausando stream`);
+        req.pause();
+
+        // Retornar erro se o chunk for maior que o esperado
+        res.status(413).json({
+          error: 'Chunk muito grande',
+          message: `Chunk excedeu o tamanho máximo de ${(MAX_BUFFER_SIZE / 1024 / 1024).toFixed(0)}MB`
+        });
+        req.destroy();
+        return;
+      }
     });
 
     req.on('end', async () => {
@@ -3227,7 +3246,8 @@ app.post('/api/upload/chunked/:uploadId/chunk/:chunkIndex', requireAuth, uploadL
         logger.info('Chunk recebido', {
           uploadId,
           chunkIndex,
-          progress: result.progress + '%'
+          progress: result.progress + '%',
+          sizeMB: (chunkData.length / 1024 / 1024).toFixed(2)
         });
 
         res.json({
@@ -3244,7 +3264,9 @@ app.post('/api/upload/chunked/:uploadId/chunk/:chunkIndex', requireAuth, uploadL
 
     req.on('error', (error) => {
       console.error(`❌ [Chunk ${chunkIndex}] Erro no stream:`, error.message);
-      res.status(500).json({ error: error.message });
+      if (!res.headersSent) {
+        res.status(500).json({ error: error.message });
+      }
     });
 
   } catch (error) {

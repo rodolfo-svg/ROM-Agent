@@ -1243,7 +1243,7 @@ export function useFileUpload<T = DefaultUploadResponse>(
         const { uploadId, chunkSize } = await initResponse.json();
         console.log('✅ [useFileUpload] Chunked session initialized:', { uploadId, chunkSize });
 
-        // 2. Enviar cada chunk
+        // 2. Enviar cada chunk com retry
         for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
           if (cancelledRef.current) {
             throw createUploadError('CANCELLED', file, undefined, undefined, attempt);
@@ -1259,35 +1259,64 @@ export function useFileUpload<T = DefaultUploadResponse>(
             size: `${(chunk.size / 1024 / 1024).toFixed(2)} MB`,
           });
 
-          const chunkResponse = await fetch(`/api/upload/chunked/${uploadId}/chunk/${chunkIndex}`, {
-            method: 'POST',
-            body: chunk,
-            credentials: withCredentials ? 'include' : 'same-origin',
-          });
+          // ✅ Retry logic para cada chunk individual (3 tentativas com backoff exponencial)
+          let chunkAttempt = 0;
+          const maxChunkRetries = 3;
+          let chunkDelay = 1000; // 1s inicial
+          let lastChunkError: any = null;
 
-          if (!chunkResponse.ok) {
-            throw createUploadError('SERVER_ERROR', file, undefined, chunkResponse.status, attempt);
+          while (chunkAttempt < maxChunkRetries) {
+            chunkAttempt++;
+
+            try {
+              const chunkResponse = await fetch(`/api/upload/chunked/${uploadId}/chunk/${chunkIndex}`, {
+                method: 'POST',
+                body: chunk,
+                credentials: withCredentials ? 'include' : 'same-origin',
+              });
+
+              if (!chunkResponse.ok) {
+                throw new Error(`HTTP ${chunkResponse.status}`);
+              }
+
+              const { progress } = await chunkResponse.json();
+
+              // Atualizar progresso real
+              setState((prev) => ({
+                ...prev,
+                progress,
+                bytesUploaded: Math.floor((progress / 100) * file.size),
+                bytesTotal: file.size,
+              }));
+
+              setAttachedFiles((prev) =>
+                prev.map((af) =>
+                  af.fileInfo.id === fileId ? { ...af, fileInfo: { ...af.fileInfo, progress } } : af
+                )
+              );
+
+              onProgress?.(progress, Math.floor((progress / 100) * file.size), file.size);
+
+              console.log(`✅ [useFileUpload] Chunk ${chunkIndex + 1}/${totalChunks} uploaded (${progress}%)`);
+
+              // Sucesso, sair do loop de retry
+              break;
+
+            } catch (chunkError: any) {
+              lastChunkError = chunkError;
+              console.error(`❌ [useFileUpload] Chunk ${chunkIndex + 1} failed (attempt ${chunkAttempt}/${maxChunkRetries}):`, chunkError);
+
+              if (chunkAttempt < maxChunkRetries) {
+                console.log(`⏳ [useFileUpload] Retrying chunk ${chunkIndex + 1} in ${chunkDelay}ms...`);
+                await sleep(chunkDelay);
+                chunkDelay *= 2; // Exponential backoff: 1s → 2s → 4s
+              } else {
+                // Esgotou tentativas para este chunk
+                console.error(`💥 [useFileUpload] Chunk ${chunkIndex + 1} failed after ${maxChunkRetries} attempts`);
+                throw createUploadError('SERVER_ERROR', file, lastChunkError, undefined, attempt);
+              }
+            }
           }
-
-          const { progress } = await chunkResponse.json();
-
-          // Atualizar progresso real
-          setState((prev) => ({
-            ...prev,
-            progress,
-            bytesUploaded: Math.floor((progress / 100) * file.size),
-            bytesTotal: file.size,
-          }));
-
-          setAttachedFiles((prev) =>
-            prev.map((af) =>
-              af.fileInfo.id === fileId ? { ...af, fileInfo: { ...af.fileInfo, progress } } : af
-            )
-          );
-
-          onProgress?.(progress, Math.floor((progress / 100) * file.size), file.size);
-
-          console.log(`✅ [useFileUpload] Chunk ${chunkIndex + 1}/${totalChunks} uploaded (${progress}%)`);
         }
 
         // 3. Finalizar upload

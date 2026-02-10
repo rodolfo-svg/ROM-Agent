@@ -171,7 +171,8 @@ async function extractPDF(filePath, options = {}) {
     };
 
     // Timeout interno para operação de parsing
-    const parseTimeout = options.parseTimeout || 60000; // 60s default
+    // ✅ AUMENTADO: 5 minutos para PDFs grandes (100MB+ ou 1000+ páginas)
+    const parseTimeout = options.parseTimeout || 300000; // 300s (5 minutos) - aumentado de 60s
 
     const parsePromise = pdfParse(dataBuffer, parseOptions);
     const timeoutPromise = new Promise((_, reject) => {

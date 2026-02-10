@@ -1,5 +1,7 @@
 /**
- * ROM Agent - Serviço de Extração de Documentos Gerais
+ * ROM Agent - Serviço de Extração de Documentos Gerais v2.0
+ *
+ * NOVO PIPELINE: 18 Ficheiros Completos com Análise Profunda
  *
  * Extrai e organiza qualquer tipo de documento:
  * - PDFs (com OCR se necessário)
@@ -8,39 +10,122 @@
  * - Documentos Office (DOCX, XLSX, PPTX)
  * - Arquivos de texto
  *
- * Funcionalidades:
- * - Pasta customizável (usuário escolhe o nome)
- * - Extração automática de conteúdo
- * - OCR para documentos sem texto
- * - Transcrição de vídeos com timestamps
- * - Análise de imagens
- * - Upload automático para KB do projeto
- * - Exportação em JSON e TXT
+ * Funcionalidades v2.0:
+ * - Pipeline completo de 18 ficheiros estruturados
+ * - Análise jurídica profunda com IA
+ * - Extração de entidades (partes, valores, datas, leis)
+ * - Resumos executivos em múltiplos níveis
+ * - Análise de risco e recomendações
+ * - Classificação documental automática
+ * - Cronologia de eventos
+ * - Estratégia de custos (Haiku vs Sonnet)
  */
 
 import fs from 'fs/promises';
+import fsSync from 'fs';
 import path from 'path';
 import os from 'os';
 import { extractTextFromPDF } from '../modules/textract.js';
 // OCR é import dinâmico (opcional - pode não estar disponível)
 import { uploadToKnowledgeBase } from '../modules/knowledgeBase.js';
+import gerador18Ficheiros from './gerador-18-ficheiros.js';
+import logger from '../../lib/logger.js';
 
 // Detectar sistema operacional
 const IS_MAC = os.platform() === 'darwin';
 const IS_WINDOWS = os.platform() === 'win32';
+const IS_LINUX = os.platform() === 'linux';
 
-const BASE_EXTRACTION_FOLDER = 'ROM-Extractions';
+const BASE_EXTRACTION_FOLDER = 'ROM-Extractions-v2';
 
 /**
- * Obter caminho do Desktop cross-platform
+ * Obter caminho para saída de extrações (cross-platform)
+ * Detecta automaticamente o melhor diretório baseado no SO
+ */
+export function getOutputBasePath() {
+  const homeDir = os.homedir();
+
+  // Se definido no .env, usar esse caminho
+  if (process.env.OUTPUT_BASE_DIR) {
+    return process.env.OUTPUT_BASE_DIR;
+  }
+
+  // Windows
+  if (IS_WINDOWS) {
+    const desktopPath = path.join(homeDir, 'Desktop');
+    const documentsPath = path.join(homeDir, 'Documents');
+
+    try {
+      if (fsSync.existsSync(desktopPath)) {
+        return path.join(desktopPath, BASE_EXTRACTION_FOLDER);
+      } else if (fsSync.existsSync(documentsPath)) {
+        return path.join(documentsPath, BASE_EXTRACTION_FOLDER);
+      }
+    } catch (e) {
+      // Fallback
+    }
+
+    return path.join(homeDir, BASE_EXTRACTION_FOLDER);
+  }
+
+  // macOS
+  if (IS_MAC) {
+    const desktopPath = path.join(homeDir, 'Desktop');
+    const documentsPath = path.join(homeDir, 'Documents');
+
+    try {
+      if (fsSync.existsSync(desktopPath)) {
+        return path.join(desktopPath, BASE_EXTRACTION_FOLDER);
+      } else if (fsSync.existsSync(documentsPath)) {
+        return path.join(documentsPath, BASE_EXTRACTION_FOLDER);
+      }
+    } catch (e) {
+      // Fallback
+    }
+
+    return path.join(homeDir, BASE_EXTRACTION_FOLDER);
+  }
+
+  // Linux
+  if (IS_LINUX) {
+    const desktopPaths = [
+      path.join(homeDir, 'Desktop'),
+      path.join(homeDir, 'Área de Trabalho'),
+      path.join(homeDir, 'Escritorio')
+    ];
+
+    for (const desktopPath of desktopPaths) {
+      try {
+        if (fsSync.existsSync(desktopPath)) {
+          return path.join(desktopPath, BASE_EXTRACTION_FOLDER);
+        }
+      } catch (e) {
+        continue;
+      }
+    }
+
+    const documentsPath = path.join(homeDir, 'Documents');
+    try {
+      if (fsSync.existsSync(documentsPath)) {
+        return path.join(documentsPath, BASE_EXTRACTION_FOLDER);
+      }
+    } catch (e) {
+      // Fallback
+    }
+
+    return path.join(homeDir, BASE_EXTRACTION_FOLDER);
+  }
+
+  // Fallback genérico
+  return path.join(homeDir, BASE_EXTRACTION_FOLDER);
+}
+
+/**
+ * @deprecated Use getOutputBasePath() instead
+ * Mantido para compatibilidade com código antigo
  */
 export function getDesktopPath() {
-  const homeDir = os.homedir();
-  if (IS_MAC || IS_WINDOWS) {
-    return path.join(homeDir, 'Desktop');
-  } else {
-    return path.join(homeDir, 'Área de Trabalho'); // Linux
-  }
+  return getOutputBasePath();
 }
 
 /**
@@ -660,8 +745,155 @@ Total de caracteres: ${documentoCompleto.fullText.length}
   }
 }
 
+/**
+ * NOVO: Extrair documento com pipeline de 18 ficheiros completos
+ *
+ * Esta é a versão v2.0 que gera análise profunda
+ */
+export async function extractDocumentWithFullAnalysis(options = {}) {
+  const {
+    filePath,          // Caminho do arquivo PDF
+    outputFolderName,  // Nome da pasta de saída
+    projectName = 'ROM',
+    uploadToKB = false,
+    useHaikuForExtraction = true,  // Usar Haiku para extração inicial (barato)
+    useSonnetForAnalysis = true     // Usar Sonnet para análises (premium)
+  } = options;
+
+  if (!filePath) {
+    throw new Error('Caminho do arquivo (filePath) é obrigatório');
+  }
+
+  if (!outputFolderName) {
+    throw new Error('Nome da pasta de saída (outputFolderName) é obrigatório');
+  }
+
+  const inicioGeral = Date.now();
+
+  try {
+    logger.info('🚀 Iniciando extração com pipeline de 18 ficheiros', {
+      arquivo: filePath,
+      pastaOutput: outputFolderName
+    });
+
+    // PASSO 1: Extrair texto do PDF
+    logger.info('📄 Extraindo texto do PDF...');
+    const extractionResult = await extractTextFromPDF(filePath);
+
+    if (!extractionResult || !extractionResult.text) {
+      throw new Error('Falha ao extrair texto do PDF');
+    }
+
+    const textoOriginal = extractionResult.text;
+    logger.info('✅ Texto extraído', {
+      caracteres: textoOriginal.length,
+      paginas: extractionResult.pages || 0
+    });
+
+    // PASSO 2: Definir pasta de saída (detecta automaticamente o SO)
+    const outputBasePath = getOutputBasePath();
+    const pastaBase = path.join(outputBasePath, outputFolderName);
+
+    // Garantir que pasta base existe
+    await fs.mkdir(pastaBase, { recursive: true });
+
+    // PASSO 3: Gerar 18 ficheiros completos
+    logger.info('🎯 Gerando 18 ficheiros com análise profunda...');
+
+    const documentId = `doc-${Date.now()}`;
+    const resultado = await gerador18Ficheiros.gerar18FicheirosCompletos(textoOriginal, {
+      pastaBase,
+      documentId,
+      nomeDocumento: path.basename(filePath, path.extname(filePath)),
+      modeloOverride: null  // Usar configuração padrão de modelos
+    });
+
+    // PASSO 4: Upload para KB (opcional)
+    if (uploadToKB && resultado.metadata) {
+      logger.info('☁️ Fazendo upload para Knowledge Base...');
+
+      try {
+        // Upload do resumo executivo
+        const resumoPath = path.join(resultado.estrutura.resumos, '03_resumo_executivo.md');
+        const resumoConteudo = await fs.readFile(resumoPath, 'utf-8');
+
+        await uploadToKnowledgeBase({
+          projectName,
+          fileName: `${outputFolderName}-resumo-executivo.md`,
+          content: resumoConteudo,
+          type: 'resumo-executivo-v2'
+        });
+
+        // Upload do texto normalizado
+        const textoNormalizadoPath = path.join(resultado.estrutura.nucleo, '02_texto_normalizado.txt');
+        const textoNormalizado = await fs.readFile(textoNormalizadoPath, 'utf-8');
+
+        await uploadToKnowledgeBase({
+          projectName,
+          fileName: `${outputFolderName}-texto-completo.txt`,
+          content: textoNormalizado,
+          type: 'texto-completo-v2'
+        });
+
+        logger.info('✅ Upload para KB concluído');
+      } catch (uploadError) {
+        logger.warn('⚠️ Falha no upload para KB', { erro: uploadError.message });
+      }
+    }
+
+    const duracaoTotal = Math.round((Date.now() - inicioGeral) / 1000);
+
+    logger.info('🎉 Extração completa finalizada!', {
+      arquivosGerados: resultado.totalArquivos,
+      pastaBase: resultado.pastaBase,
+      duracaoSegundos: duracaoTotal
+    });
+
+    return {
+      success: true,
+      versao: '2.0',
+      pipeline: '18_ficheiros_completos',
+
+      // Caminhos
+      pastaBase: resultado.pastaBase,
+      estrutura: resultado.estrutura,
+
+      // Estatísticas
+      totalArquivos: resultado.totalArquivos,
+      duracaoSegundos: duracaoTotal,
+
+      // Metadados
+      metadata: resultado.metadata,
+      estatisticas: resultado.estatisticas,
+
+      // Log completo
+      log: resultado.log,
+
+      // Atalhos para arquivos principais
+      arquivosPrincipais: {
+        resumoExecutivo: path.join(resultado.estrutura.resumos, '03_resumo_executivo.md'),
+        resumoUltraCurto: path.join(resultado.estrutura.resumos, '04_resumo_ultra_curto.md'),
+        pontosCriticos: path.join(resultado.estrutura.resumos, '05_pontos_criticos.md'),
+        analiseCompleta: path.join(resultado.estrutura.analises, '06_analise_completa.md'),
+        analiseRisco: path.join(resultado.estrutura.juridico, '15_analise_risco.md'),
+        indiceNavegacao: path.join(resultado.estrutura.metadados, '18_indice_navegacao.md')
+      }
+    };
+
+  } catch (error) {
+    logger.error('❌ Erro na extração com pipeline de 18 ficheiros', {
+      erro: error.message,
+      stack: error.stack
+    });
+
+    throw new Error(`Erro na extração: ${error.message}`);
+  }
+}
+
 export default {
-  getDesktopPath,
+  getDesktopPath,  // deprecated
+  getOutputBasePath,  // NOVO: v2.0 - cross-platform
   createCustomFolderStructure,
-  extractGeneralDocuments
+  extractGeneralDocuments,
+  extractDocumentWithFullAnalysis  // NOVO: v2.0
 };

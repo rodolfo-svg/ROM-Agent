@@ -421,11 +421,37 @@ export async function pipelineCompleto(caminhoArquivo, opcoes = {}) {
   };
 }
 
+/**
+ * NOVO v2.0: Pipeline completo com 18 ficheiros e análise profunda
+ *
+ * Wrapper convenience para usar o novo sistema
+ */
+export async function pipelineCompletoV2(caminhoArquivo, opcoes = {}) {
+  const { extractDocumentWithFullAnalysis } = await import('../services/document-extraction-service.js');
+
+  // Extrair nome base do arquivo
+  const nomeBase = path.basename(caminhoArquivo, path.extname(caminhoArquivo));
+
+  // Gerar nome de pasta baseado no arquivo
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);
+  const nomePasta = opcoes.outputFolderName || `${nomeBase}_${timestamp}`;
+
+  return await extractDocumentWithFullAnalysis({
+    filePath: caminhoArquivo,
+    outputFolderName: nomePasta,
+    projectName: opcoes.projectName || 'ROM',
+    uploadToKB: opcoes.uploadToKB || false,
+    useHaikuForExtraction: opcoes.useHaikuForExtraction !== false,  // default true
+    useSonnetForAnalysis: opcoes.useSonnetForAnalysis !== false    // default true
+  });
+}
+
 export default {
   extrairTextoPDF,
   aplicarFerramentas,
   aplicarProcessadores,
   pipelineCompleto,
+  pipelineCompletoV2,  // NOVO: v2.0 com 18 ficheiros
   FERRAMENTAS_PROCESSAMENTO,
   PROCESSADORES_OTIMIZACAO
 };
