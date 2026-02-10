@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { AlertCircle, CheckCircle, Loader2, X, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui'
-import { apiFetch } from '@/lib/api'
+import { apiFetch } from '@/services/api'
 
 interface ExtractionProgressBarProps {
   jobId: string
