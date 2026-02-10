@@ -6188,7 +6188,42 @@ app.delete('/api/kb/documents/:id', requireAuth, generalLimiter, async (req, res
     let structuredFiles = [];
 
     if (fs.existsSync(kbDocsPath)) {
-      const kbDocs = JSON.parse(await fs.promises.readFile(kbDocsPath, 'utf8'));
+      console.log('[KB DELETE] Lendo kb-documents.json...');
+      const fileContent = await fs.promises.readFile(kbDocsPath, 'utf8');
+      console.log(`[KB DELETE] Arquivo lido: ${fileContent.length} bytes`);
+
+      let kbDocs;
+      try {
+        kbDocs = JSON.parse(fileContent);
+        console.log(`[KB DELETE] JSON parseado: ${kbDocs.length} documentos`);
+      } catch (parseError) {
+        console.error('[KB DELETE] ERRO ao parsear JSON:', parseError.message);
+        console.log('[KB DELETE] Tentando corrigir JSON corrompido...');
+
+        // Tentar limpar e reparar o JSON
+        let cleanedContent = fileContent.trim();
+
+        // Remover múltiplos arrays concatenados (][ -> ,)
+        cleanedContent = cleanedContent.replace(/\]\s*\[/g, ',');
+
+        // Garantir que começa com [ e termina com ]
+        if (!cleanedContent.startsWith('[')) cleanedContent = '[' + cleanedContent;
+        if (!cleanedContent.endsWith(']')) cleanedContent = cleanedContent + ']';
+
+        try {
+          kbDocs = JSON.parse(cleanedContent);
+          console.log(`[KB DELETE] JSON corrigido! ${kbDocs.length} documentos`);
+
+          // Salvar versão corrigida
+          await fs.promises.writeFile(kbDocsPath + '.backup', fileContent);
+          await fs.promises.writeFile(kbDocsPath, JSON.stringify(kbDocs, null, 2));
+          console.log('[KB DELETE] Arquivo corrigido salvo');
+        } catch (secondError) {
+          console.error('[KB DELETE] Falha ao corrigir JSON:', secondError.message);
+          throw new Error('kb-documents.json está corrompido e não pode ser reparado automaticamente');
+        }
+      }
+
       const doc = kbDocs.find(d => d.id === id);
 
       // Se documento tem ficheiros estruturados, pegar referências
