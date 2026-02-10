@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { AlertCircle, CheckCircle, Loader2, X, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui'
+import { apiFetch } from '@/lib/api'
 
 interface ExtractionProgressBarProps {
   jobId: string
@@ -142,11 +143,9 @@ export function ExtractionProgressBar({
 
                 setDeleting(true);
                 try {
-                  const response = await fetch(`/api/extraction-jobs/${job.id}/cancel`, {
-                    method: 'POST',
-                    credentials: 'include'
+                  const data = await apiFetch(`/extraction-jobs/${job.id}/cancel`, {
+                    method: 'POST'
                   });
-                  const data = await response.json();
 
                   if (data.success) {
                     onDismiss?.();
@@ -180,11 +179,9 @@ export function ExtractionProgressBar({
 
                 setDeleting(true);
                 try {
-                  const response = await fetch(`/api/kb/documents/${job.documentId}`, {
-                    method: 'DELETE',
-                    credentials: 'include'
+                  const data = await apiFetch(`/kb/documents/${job.documentId}`, {
+                    method: 'DELETE'
                   });
-                  const data = await response.json();
 
                   if (data.success) {
                     onDismiss?.();
