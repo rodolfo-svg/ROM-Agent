@@ -13,6 +13,7 @@
  */
 
 import { logger } from '../utils/logger.js';
+import analysisCache from '../utils/analysis-cache.js';
 
 class JurisprudenceAnalyzerService {
   constructor() {
@@ -64,6 +65,21 @@ class JurisprudenceAnalyzerService {
       return { ...decisao, analise: null };
     }
 
+    // 💾 CACHE CHECK (Fase 3: evita reprocessar ementas idênticas)
+    const ementaHash = analysisCache.generateHash(ementaCompleta);
+    const cached = analysisCache.getCachedAnalysis(ementaHash);
+
+    if (cached) {
+      logger.info('[Analyzer] Cache HIT', { hash: ementaHash.substring(0, 8) });
+      return {
+        ...decisao,
+        analise: cached,
+        analyzedAt: new Date().toISOString(),
+        analyzed: true,
+        fromCache: true
+      };
+    }
+
     try {
       const bedrock = await this.getBedrockModule();
 
@@ -84,11 +100,19 @@ class JurisprudenceAnalyzerService {
       // Parse da resposta estruturada
       const analise = this.parseAnalysisResponse(response.resposta);
 
+      // 💾 CACHE WRITE (salvar para uso futuro)
+      analysisCache.setCachedAnalysis(ementaHash, analise, {
+        titulo,
+        tribunal,
+        analyzedAt: new Date().toISOString()
+      });
+
       return {
         ...decisao,
         analise,
         analyzedAt: new Date().toISOString(),
-        analyzed: true
+        analyzed: true,
+        fromCache: false
       };
 
     } catch (error) {
