@@ -489,4 +489,60 @@ router.get('/status', (req, res) => {
   });
 });
 
+/**
+ * DELETE /api/kb/documents/:id
+ * Deleta um documento do KB
+ */
+router.delete('/documents/:id', requireAuth, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const kbPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
+
+    // Ler KB atual
+    const kbData = await fs.readFile(kbPath, 'utf8');
+    const kb = JSON.parse(kbData);
+
+    // Encontrar documento
+    const docIndex = kb.documents?.findIndex(d => d.id === id);
+
+    if (docIndex === -1 || docIndex === undefined) {
+      return res.status(404).json({
+        success: false,
+        error: 'Documento não encontrado'
+      });
+    }
+
+    const doc = kb.documents[docIndex];
+
+    // Remover do array
+    kb.documents.splice(docIndex, 1);
+
+    // Salvar KB atualizado
+    await fs.writeFile(kbPath, JSON.stringify(kb, null, 2));
+
+    // Tentar deletar arquivo físico (se existir)
+    if (doc.path) {
+      try {
+        await fs.unlink(doc.path);
+      } catch (err) {
+        logger.warn(`Arquivo físico não encontrado: ${doc.path}`);
+      }
+    }
+
+    logger.info(`Documento deletado do KB: ${id}`);
+
+    res.json({
+      success: true,
+      message: 'Documento deletado',
+      deletedId: id
+    });
+  } catch (error) {
+    logger.error('Erro ao deletar documento:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 export default router;
