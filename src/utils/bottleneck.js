@@ -17,10 +17,15 @@ import featureFlags from './feature-flags.js';
 
 /**
  * Configuração padrão do bottleneck
+ *
+ * ✅ AJUSTADO: Aumentados limites para suportar análise de peça jurídica
+ * - Análise de peça gera dezenas de buscas de jurisprudência em paralelo
+ * - Cada busca chama Bedrock para analisar decisões
+ * - Fila antiga (20) saturava rapidamente com erro "queue full"
  */
 const DEFAULT_CONFIG = {
-  maxConcurrent: parseInt(process.env.MAX_CONCURRENT || '5', 10),
-  maxQueue: parseInt(process.env.MAX_QUEUE || '20', 10),
+  maxConcurrent: parseInt(process.env.MAX_CONCURRENT || '10', 10), // 5 → 10 (dobrado)
+  maxQueue: parseInt(process.env.MAX_QUEUE || '100', 10), // 20 → 100 (5x maior)
   enabled: true
 };
 
