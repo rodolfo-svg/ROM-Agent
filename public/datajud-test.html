@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROM Agent - Teste DataJud CNJ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .test-section h2::before {
+            content: '🔍';
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .results {
+            margin-top: 20px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .results h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .result-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #667eea;
+        }
+
+        .result-item h4 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .result-item p {
+            color: #666;
+            margin: 5px 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #fee;
+            border-left-color: #f44;
+            color: #c33;
+        }
+
+        .success {
+            background: #efe;
+            border-left-color: #4f4;
+            color: #3c3;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            opacity: 0.9;
+        }
+
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ ROM Agent - DataJud CNJ</h1>
+            <p>Interface de Teste - API Pública de Consulta de Processos Judiciais</p>
+        </div>
+
+        <div class="content">
+            <div class="stats" id="stats">
+                <div class="stat-card">
+                    <h3>38</h3>
+                    <p>Tribunais Disponíveis</p>
+                </div>
+                <div class="stat-card">
+                    <h3>✓</h3>
+                    <p>API Configurada</p>
+                </div>
+                <div class="stat-card">
+                    <h3>100%</h3>
+                    <p>Cobertura Nacional</p>
+                </div>
+            </div>
+
+            <!-- Teste 1: Buscar Processos -->
+            <div class="test-section">
+                <h2>Buscar Processos</h2>
+                <div class="form-group">
+                    <label>Tribunal:</label>
+                    <select id="tribunal1">
+                        <option value="TJSP">TJSP - São Paulo</option>
+                        <option value="TJRJ">TJRJ - Rio de Janeiro</option>
+                        <option value="TJMG">TJMG - Minas Gerais</option>
+                        <option value="TJGO">TJGO - Goiás</option>
+                        <option value="STJ">STJ - Superior Tribunal de Justiça</option>
+                        <option value="TRF3">TRF3 - Tribunal Regional Federal 3</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Número do Processo (formato CNJ):</label>
+                    <input type="text" id="numero" placeholder="0000832-35.2018.4.01.3202">
+                </div>
+                <button onclick="buscarProcessos()">🔍 Buscar Processo</button>
+                <div id="resultProcessos" class="results" style="display: none;"></div>
+            </div>
+
+            <!-- Teste 2: Buscar em Múltiplos Tribunais -->
+            <div class="test-section">
+                <h2>Buscar em Múltiplos Tribunais</h2>
+                <div class="form-group">
+                    <label>Número do Processo:</label>
+                    <input type="text" id="numeroMulti" placeholder="0000832-35.2018.4.01.3202">
+                </div>
+                <div class="form-group">
+                    <label>Selecione os Tribunais:</label>
+                    <select id="tribunaisMulti" multiple size="5">
+                        <option value="TJSP" selected>TJSP - São Paulo</option>
+                        <option value="TJRJ" selected>TJRJ - Rio de Janeiro</option>
+                        <option value="TJMG" selected>TJMG - Minas Gerais</option>
+                        <option value="STJ" selected>STJ</option>
+                        <option value="TRF3">TRF3</option>
+                    </select>
+                </div>
+                <button onclick="buscarMultiplosTribunais()">🌐 Buscar em Todos</button>
+                <div id="resultMulti" class="results" style="display: none;"></div>
+            </div>
+
+            <!-- Teste 3: Buscar Decisões -->
+            <div class="test-section">
+                <h2>Buscar Decisões/Acórdãos</h2>
+                <div class="form-group">
+                    <label>Tribunal:</label>
+                    <select id="tribunal3">
+                        <option value="STJ">STJ - Superior Tribunal de Justiça</option>
+                        <option value="TJSP">TJSP - São Paulo</option>
+                        <option value="TJRJ">TJRJ - Rio de Janeiro</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Termo de Busca:</label>
+                    <input type="text" id="termo" placeholder="responsabilidade civil dano moral">
+                </div>
+                <button onclick="buscarDecisoes()">📚 Buscar Decisões</button>
+                <div id="resultDecisoes" class="results" style="display: none;"></div>
+            </div>
+
+            <!-- Teste 4: Listar Tribunais -->
+            <div class="test-section">
+                <h2>Listar Todos os Tribunais</h2>
+                <button onclick="listarTribunais()">📋 Ver Tribunais Disponíveis</button>
+                <div id="resultTribunais" class="results" style="display: none;"></div>
+            </div>
+
+            <!-- Teste 5: Validar Número de Processo -->
+            <div class="test-section">
+                <h2>Validar Número de Processo</h2>
+                <div class="form-group">
+                    <label>Número do Processo:</label>
+                    <input type="text" id="numeroValidar" placeholder="0000832-35.2018.4.01.3202">
+                </div>
+                <button onclick="validarNumero()">✓ Validar Número CNJ</button>
+                <div id="resultValidar" class="results" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '/api/datajud';
+
+        async function buscarProcessos() {
+            const tribunal = document.getElementById('tribunal1').value;
+            const numero = document.getElementById('numero').value;
+            const resultDiv = document.getElementById('resultProcessos');
+
+            if (!numero) {
+                alert('Digite o número do processo');
+                return;
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Buscando...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/processos/buscar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tribunal, numero, limit: 50 })
+                });
+
+                const data = await response.json();
+
+                if (data.erro) {
+                    resultDiv.innerHTML = `<div class="result-item error"><h4>Erro</h4><p>${data.mensagem}</p></div>`;
+                    return;
+                }
+
+                let html = `<h3>✅ Encontrados: ${data.totalEncontrado} processo(s)</h3>`;
+                html += `<p><strong>Fonte:</strong> ${data.fonte}</p>`;
+                html += `<p><strong>Tribunal:</strong> ${data.tribunal}</p>`;
+
+                data.processos.forEach(p => {
+                    html += `
+                        <div class="result-item">
+                            <h4>📄 Processo ${p.numero}</h4>
+                            <p><strong>Classe:</strong> ${p.classe || 'N/A'}</p>
+                            <p><strong>Assunto:</strong> ${p.assunto || 'N/A'}</p>
+                            <p><strong>Órgão Julgador:</strong> ${p.orgaoJulgador || 'N/A'}</p>
+                            <p><strong>Data:</strong> ${p.dataDistribuicao || 'N/A'}</p>
+                        </div>
+                    `;
+                });
+
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result-item error"><h4>Erro de Conexão</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        async function buscarMultiplosTribunais() {
+            const numero = document.getElementById('numeroMulti').value;
+            const select = document.getElementById('tribunaisMulti');
+            const tribunais = Array.from(select.selectedOptions).map(opt => opt.value);
+            const resultDiv = document.getElementById('resultMulti');
+
+            if (!numero || tribunais.length === 0) {
+                alert('Digite o número e selecione pelo menos um tribunal');
+                return;
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Buscando em múltiplos tribunais...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/processos/buscar-todos`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tribunais, numero, limit: 20 })
+                });
+
+                const data = await response.json();
+
+                let html = `<h3>🌐 Busca Multi-Tribunal</h3>`;
+                html += `<p><strong>Total de processos:</strong> ${data.totalProcessos}</p>`;
+                html += `<p><strong>Tribunais com sucesso:</strong> ${data.tribunaisSucesso}/${data.totalTribunais}</p>`;
+
+                data.processos.forEach(p => {
+                    html += `
+                        <div class="result-item success">
+                            <h4>📄 ${p.tribunal} - ${p.numero}</h4>
+                            <p><strong>Classe:</strong> ${p.classe || 'N/A'}</p>
+                            <p><strong>Assunto:</strong> ${p.assunto || 'N/A'}</p>
+                        </div>
+                    `;
+                });
+
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result-item error"><h4>Erro</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        async function buscarDecisoes() {
+            const tribunal = document.getElementById('tribunal3').value;
+            const termo = document.getElementById('termo').value;
+            const resultDiv = document.getElementById('resultDecisoes');
+
+            if (!termo) {
+                alert('Digite um termo de busca');
+                return;
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Buscando decisões...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/decisoes/buscar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ tribunal, termo, limit: 30 })
+                });
+
+                const data = await response.json();
+
+                if (data.erro) {
+                    resultDiv.innerHTML = `<div class="result-item error"><h4>Erro</h4><p>${data.mensagem}</p></div>`;
+                    return;
+                }
+
+                let html = `<h3>📚 Decisões Encontradas: ${data.totalEncontrado}</h3>`;
+
+                (data.decisoes || []).forEach(d => {
+                    html += `
+                        <div class="result-item">
+                            <h4>⚖️ ${d.tipo} - ${d.numero}</h4>
+                            <p><strong>Tribunal:</strong> ${d.tribunal}</p>
+                            <p><strong>Relator:</strong> ${d.relator || 'N/A'}</p>
+                            <p><strong>Ementa:</strong> ${d.ementa?.substring(0, 200)}...</p>
+                            <p><strong>Data:</strong> ${d.data || 'N/A'}</p>
+                        </div>
+                    `;
+                });
+
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result-item error"><h4>Erro</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        async function listarTribunais() {
+            const resultDiv = document.getElementById('resultTribunais');
+            resultDiv.style.display = 'block';
+            resultDiv.innerHTML = '<div class="loading"><div class="spinner"></div><p>Carregando...</p></div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/tribunais`);
+                const data = await response.json();
+
+                let html = `<h3>📋 Total: ${data.total} tribunais</h3>`;
+
+                const categorias = {
+                    'Tribunais Superiores': data.categorias.superiores,
+                    'Justiça Federal': data.categorias.federais,
+                    'Justiça Estadual': data.categorias.estaduais
+                };
+
+                for (const [categoria, tribunais] of Object.entries(categorias)) {
+                    html += `<h4 style="margin-top: 20px; color: #667eea;">${categoria}</h4>`;
+                    tribunais.forEach(t => {
+                        html += `<div class="result-item"><strong>${t.sigla}</strong> - ${t.alias}</div>`;
+                    });
+                }
+
+                resultDiv.innerHTML = html;
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result-item error"><h4>Erro</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        async function validarNumero() {
+            const numero = document.getElementById('numeroValidar').value;
+            const resultDiv = document.getElementById('resultValidar');
+
+            if (!numero) {
+                alert('Digite o número do processo');
+                return;
+            }
+
+            resultDiv.style.display = 'block';
+
+            try {
+                const response = await fetch(`${API_BASE}/validar-processo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ numero })
+                });
+
+                const data = await response.json();
+
+                if (data.valido) {
+                    let html = `<div class="result-item success">`;
+                    html += `<h4>✓ Número Válido</h4>`;
+                    html += `<p><strong>Sequencial:</strong> ${data.sequencial}</p>`;
+                    html += `<p><strong>Ano:</strong> ${data.ano}</p>`;
+                    html += `<p><strong>Segmento:</strong> ${data.segmentoDescricao}</p>`;
+                    html += `<p><strong>Tribunal:</strong> ${data.tribunal}</p>`;
+                    html += `</div>`;
+                    resultDiv.innerHTML = html;
+                } else {
+                    resultDiv.innerHTML = `<div class="result-item error"><h4>✗ Número Inválido</h4><p>${data.mensagem}</p></div>`;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result-item error"><h4>Erro</h4><p>${error.message}</p></div>`;
+            }
+        }
+
+        // Verificar status da API ao carregar
+        async function checkHealth() {
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                const data = await response.json();
+                console.log('DataJud API Health:', data);
+            } catch (error) {
+                console.error('Erro ao verificar API:', error);
+            }
+        }
+
+        checkHealth();
+    </script>
+</body>
+</html>

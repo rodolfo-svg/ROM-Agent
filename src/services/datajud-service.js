@@ -21,30 +21,53 @@ const cnjClient = new CNJApiClient();
 // ✅ Base URL oficial do DataJud (CORRIGIDO - fonte: https://datajud-wiki.cnj.jus.br/)
 const DATAJUD_BASE_URL = 'https://api-publica.datajud.cnj.jus.br';
 
-// ✅ Mapeamento de tribunais para aliases da API DataJud
+// ✅ Mapeamento COMPLETO de tribunais para aliases da API DataJud
+// Fonte: https://datajud-wiki.cnj.jus.br/api-publica/endpoints/
 const TRIBUNAL_ALIASES = {
+  // Tribunais Superiores
   STF: 'stf',
   STJ: 'stj',
   STM: 'stm',
   TSE: 'tse',
   TST: 'tst',
+
+  // Justiça Federal (TRFs)
   TRF1: 'trf1',
   TRF2: 'trf2',
   TRF3: 'trf3',
   TRF4: 'trf4',
   TRF5: 'trf5',
   TRF6: 'trf6',
-  TJGO: 'tjgo',  // Tribunal de Justiça de Goiás
-  TJSP: 'tjsp',
-  TJRJ: 'tjrj',
-  TJMG: 'tjmg',
-  TJRS: 'tjrs',
-  TJPR: 'tjpr',
-  TJSC: 'tjsc',
-  TJBA: 'tjba',
-  TJPE: 'tjpe',
-  TJCE: 'tjce'
-  // Adicionar outros conforme necessário
+
+  // Justiça Estadual - TODOS os 27 estados + DF
+  TJAC: 'tjac',  // Acre
+  TJAL: 'tjal',  // Alagoas
+  TJAM: 'tjam',  // Amazonas
+  TJAP: 'tjap',  // Amapá
+  TJBA: 'tjba',  // Bahia
+  TJCE: 'tjce',  // Ceará
+  TJDFT: 'tjdft', // Distrito Federal
+  TJDF: 'tjdft',  // Alias para DF
+  TJES: 'tjes',  // Espírito Santo
+  TJGO: 'tjgo',  // Goiás
+  TJMA: 'tjma',  // Maranhão
+  TJMG: 'tjmg',  // Minas Gerais
+  TJMS: 'tjms',  // Mato Grosso do Sul
+  TJMT: 'tjmt',  // Mato Grosso
+  TJPA: 'tjpa',  // Pará
+  TJPB: 'tjpb',  // Paraíba
+  TJPE: 'tjpe',  // Pernambuco
+  TJPI: 'tjpi',  // Piauí
+  TJPR: 'tjpr',  // Paraná
+  TJRJ: 'tjrj',  // Rio de Janeiro
+  TJRN: 'tjrn',  // Rio Grande do Norte
+  TJRO: 'tjro',  // Rondônia
+  TJRR: 'tjrr',  // Roraima
+  TJRS: 'tjrs',  // Rio Grande do Sul
+  TJSC: 'tjsc',  // Santa Catarina
+  TJSE: 'tjse',  // Sergipe
+  TJSP: 'tjsp',  // São Paulo
+  TJTO: 'tjto'   // Tocantins
 };
 
 // ✅ Endpoint padrão: /api_publica_[tribunal]/_search
@@ -108,6 +131,59 @@ const TRIBUNAIS_DATAJUD = {
   TJSE: 151,
   TJTO: 153
 };
+
+/**
+ * Buscar em TODOS os tribunais simultaneamente
+ * @param {Object} filtros - Filtros de busca
+ * @param {Object} options - Opções adicionais
+ * @returns {Promise<Object>} Resultados agregados de todos os tribunais
+ */
+export async function buscarTodosTribunais(filtros = {}, options = {}) {
+  const tribunaisParaBuscar = filtros.tribunais || Object.keys(TRIBUNAL_ALIASES);
+  const limite = filtros.limit || 10;
+
+  logger.info(`[DataJud] Buscando em ${tribunaisParaBuscar.length} tribunais`);
+
+  const resultadosPromises = tribunaisParaBuscar.map(async (tribunal) => {
+    try {
+      const resultado = await buscarProcessos(
+        { ...filtros, tribunal, limit: limite },
+        options
+      );
+      return {
+        tribunal,
+        sucesso: true,
+        ...resultado
+      };
+    } catch (error) {
+      logger.warn(`[DataJud] Erro ao buscar em ${tribunal}:`, error.message);
+      return {
+        tribunal,
+        sucesso: false,
+        erro: error.message,
+        processos: []
+      };
+    }
+  });
+
+  const resultados = await Promise.all(resultadosPromises);
+
+  // Agregar todos os processos
+  const todosProcessos = resultados
+    .filter(r => r.sucesso)
+    .flatMap(r => r.processos || []);
+
+  return {
+    fonte: 'DataJud (CNJ) - Busca Multi-Tribunal',
+    totalTribunais: tribunaisParaBuscar.length,
+    tribunaisSucesso: resultados.filter(r => r.sucesso).length,
+    tribunaisErro: resultados.filter(r => !r.sucesso).length,
+    totalProcessos: todosProcessos.length,
+    processos: todosProcessos,
+    detalhes: resultados,
+    timestamp: new Date().toISOString()
+  };
+}
 
 /**
  * Buscar processos no DataJud
@@ -747,6 +823,7 @@ export { fallbackToGoogleSearch };
 export default {
   buscarProcessos,
   buscarDecisoes,
+  buscarTodosTribunais,
   buscarMovimentacoes,
   listarClasses,
   listarAssuntos,
@@ -756,5 +833,6 @@ export default {
   estatisticasCache,
   fallbackToGoogleSearch,
   cnjClient,
-  TRIBUNAIS_DATAJUD
+  TRIBUNAIS_DATAJUD,
+  TRIBUNAL_ALIASES
 };

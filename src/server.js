@@ -34,6 +34,9 @@ import testEnvRoutes from './routes/test-env.js';
 import { createSessionMiddleware, sessionEnhancerMiddleware } from './config/session-store.js';
 import authRoutes from './routes/auth.js';
 
+// DataJud API routes
+import datajudRoutes from './routes/datajud.js';
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -74,6 +77,9 @@ app.use('/api/case-processor', caseProcessorSSE);
 
 // Rotas de Streaming SSE para Chat em Tempo Real (v2.7.0)
 app.use('/api/chat-stream', chatStreamRoutes);
+
+// Rotas DataJud CNJ - Consulta de Processos Judiciais
+app.use('/api/datajud', datajudRoutes);
 
 // Instância do agente
 let agent = null;
