@@ -19,6 +19,16 @@ import cacheService from '../utils/cache/cache-service.js';
 class JurisprudenceSearchService {
   constructor() {
     this.initialized = false;
+
+    // ⚡ CIRCUIT BREAKER: Para parar de tentar se DataJud falhar muito
+    this.circuitBreaker = {
+      failures: 0,
+      lastFailure: null,
+      threshold: 3,          // Após 3 falhas consecutivas, abre o circuito
+      timeout: 60000,        // Após 60s, tenta novamente (half-open)
+      isOpen: false
+    };
+
     this.config = {
       datajud: {
         // ✅ HABILITADO: DataJud CNJ suporta busca semântica completa via ElasticSearch
@@ -27,7 +37,7 @@ class JurisprudenceSearchService {
         enabled: process.env.DATAJUD_ENABLED === 'true' || false,
         apiUrl: process.env.DATAJUD_API_URL || 'https://api-publica.datajud.cnj.jus.br',
         apiKey: process.env.DATAJUD_API_KEY || null,
-        timeout: 12000 // Reduzido de 30s para 12s (fallback mais rápido)
+        timeout: 5000 // ⚡ AGRESSIVO: 5s (era 12s) - não bloquear chat
       },
       jusbrasil: {
         enabled: process.env.JUSBRASIL_ENABLED === 'true' || false, // Desabilitado: bloqueio anti-bot 100%
@@ -115,68 +125,91 @@ class JurisprudenceSearchService {
       const sources = [];
 
       // ═══════════════════════════════════════════════════════════════
-      // ESTRATÉGIA DE BUSCA INTELIGENTE COM FALLBACK
+      // ⚡ NOVA ESTRATÉGIA: FONTE OFICIAL PRIMEIRO
       // ═══════════════════════════════════════════════════════════════
-      // 1. Google Search PRIMEIRO (rápido, 90+ tribunais, boa cobertura)
-      // 2. DataJud FALLBACK (quando Google não retorna ementas completas)
+      // 1. DataJud CNJ PRIMEIRO (5s timeout) - FONTE OFICIAL
       //    - ElasticSearch Query DSL com busca semântica
       //    - multi_match em: ementa^3, textoIntegral, palavrasChave^2
-      //    - Fuzziness AUTO para tolerância a erros
+      //    - Top 5 tribunais: STF, STJ, TJSP, TJRJ, TJMG
+      //    - Circuit Breaker: para se falhar muito
+      // 2. Google Search FALLBACK (se DataJud falhar ou retornar vazio)
+      //    - Backup confiável, 90+ tribunais
+      //    - Mais lento mas boa cobertura
       // ═══════════════════════════════════════════════════════════════
 
-      // Timeout adaptativo: tribunais estaduais precisam mais tempo
-      const isEstadual = tribunal && tribunal.toLowerCase().startsWith('tj');
-      const GOOGLE_TIMEOUT = isEstadual ? 18000 : 12000;  // 18s para TJGO/TJSP, 12s para STF/STJ
-      const DATAJUD_TIMEOUT = 12000; // 12s - fonte oficial CNJ
+      // ⚡ Timeouts AGRESSIVOS: Não bloquear chat
+      const DATAJUD_TIMEOUT = 5000;  // ⚡ 5s MAX - fonte oficial CNJ
+      const GOOGLE_TIMEOUT = 10000;  // 10s - fallback (era 18s)
 
-      // PRIORIDADE 1: Google Search (sempre - funciona para TODOS os tribunais)
-      if (this.config.websearch.enabled) {
-        sources.push('websearch');
-        searchPromises.push(
-          this.withTimeout(
-            this.searchWeb(tese, { limit, tribunal }),
-            GOOGLE_TIMEOUT,
-            'Google Search'
-          )
-        );
+      const results = [];
+      let usedGoogleFallback = false;
+
+      // PRIORIDADE 1: DataJud CNJ (Fonte Oficial)
+      // ⚡ CIRCUIT BREAKER: Verificar se DataJud está disponível
+      const canUseDataJud = this.config.datajud.enabled &&
+                            this.config.datajud.apiKey &&
+                            !this.isCircuitOpen();
+
+      if (canUseDataJud) {
+        console.log('🔍 [DATAJUD] Buscando na fonte oficial do CNJ...');
+        sources.push('datajud');
+
+        try {
+          const datajudResult = await this.withTimeout(
+            this.searchDataJud(tese, { limit, tribunal, dataInicio, dataFim }),
+            DATAJUD_TIMEOUT,
+            'DataJud CNJ (Oficial)'
+          );
+
+          results.push({ status: 'fulfilled', value: datajudResult });
+
+          // ✅ Sucesso no DataJud: resetar circuit breaker
+          this.recordSuccess();
+
+          const resultCount = datajudResult.results?.length || 0;
+          console.log(`✅ [DATAJUD] Retornou ${resultCount} resultado(s)`);
+
+          // Se DataJud retornou resultados, não precisa Google
+          if (resultCount > 0) {
+            console.log('✅ [DATAJUD] Resultados suficientes, não precisa fallback');
+          } else {
+            console.log('🔄 [FALLBACK] DataJud sem resultados, ativando Google Search...');
+            usedGoogleFallback = true;
+          }
+
+        } catch (error) {
+          console.error(`❌ [DATAJUD] Falhou: ${error.message}`);
+
+          // ❌ Falha no DataJud: registrar no circuit breaker
+          this.recordFailure();
+
+          results.push({ status: 'rejected', reason: error });
+          usedGoogleFallback = true;
+        }
+      } else {
+        if (this.isCircuitOpen()) {
+          console.warn('⚠️ [CIRCUIT BREAKER] DataJud temporariamente desabilitado (muitas falhas)');
+        }
+        console.log('🔄 [FALLBACK] DataJud não disponível, usando Google Search...');
+        usedGoogleFallback = true;
       }
 
-      // Executar Google Search primeiro
-      const results = await Promise.allSettled(searchPromises);
+      // FALLBACK: Google Search (se DataJud falhou ou não retornou resultados)
+      if (usedGoogleFallback && this.config.websearch.enabled) {
+        sources.push('websearch');
 
-      // ✅ FALLBACK INTELIGENTE: Se Google não retornar ementas completas, usar DataJud
-      let usedDataJudFallback = false;
-      if (this.config.datajud.enabled && this.config.datajud.apiKey) {
-        // Verificar se Google Search retornou resultados com ementas completas
-        const googleResult = results.find((_, idx) => sources[idx] === 'websearch');
-        const googleSuccess = googleResult?.status === 'fulfilled' && googleResult.value?.success;
-        const googleResults = googleResult?.value?.results || [];
+        try {
+          const googleResult = await this.withTimeout(
+            this.searchWeb(tese, { limit, tribunal }),
+            GOOGLE_TIMEOUT,
+            'Google Search (Fallback)'
+          );
+          results.push({ status: 'fulfilled', value: googleResult });
 
-        // Considerar ementa completa se > 500 caracteres
-        const hasCompleteEmentas = googleResults.some(r =>
-          (r.ementa?.length || 0) > 500 || (r.ementaCompleta?.length || 0) > 500
-        );
-
-        if (!hasCompleteEmentas || googleResults.length === 0) {
-          console.log('🔄 [FALLBACK] Google Search sem ementas completas, ativando DataJud...');
-
-          sources.push('datajud');
-          try {
-            const datajudResult = await this.withTimeout(
-              this.searchDataJud(tese, { limit, tribunal, dataInicio, dataFim }),
-              DATAJUD_TIMEOUT,
-              'DataJud (Fallback)'
-            );
-            results.push({ status: 'fulfilled', value: datajudResult });
-            usedDataJudFallback = true;
-
-            console.log(`✅ [FALLBACK] DataJud retornou ${datajudResult.results?.length || 0} resultado(s)`);
-          } catch (error) {
-            console.error(`❌ [FALLBACK] DataJud falhou: ${error.message}`);
-            results.push({ status: 'rejected', reason: error });
-          }
-        } else {
-          console.log(`✅ [GOOGLE] Encontrou ${googleResults.length} resultado(s) com ementas completas`);
+          console.log(`✅ [GOOGLE] Fallback retornou ${googleResult.results?.length || 0} resultado(s)`);
+        } catch (error) {
+          console.error(`❌ [GOOGLE] Fallback falhou: ${error.message}`);
+          results.push({ status: 'rejected', reason: error });
         }
       }
 
@@ -752,6 +785,53 @@ class JurisprudenceSearchService {
 
       req.end();
     });
+  }
+
+  /**
+   * ⚡ CIRCUIT BREAKER: Verificar se circuito está aberto
+   */
+  isCircuitOpen() {
+    if (!this.circuitBreaker.isOpen) {
+      return false;
+    }
+
+    // Verificar se passou o timeout (tentar novamente - half-open state)
+    const timeSinceLastFailure = Date.now() - (this.circuitBreaker.lastFailure || 0);
+    if (timeSinceLastFailure > this.circuitBreaker.timeout) {
+      console.log('⚡ [CIRCUIT BREAKER] Tentando novamente (half-open)...');
+      this.circuitBreaker.isOpen = false;
+      this.circuitBreaker.failures = Math.floor(this.circuitBreaker.failures / 2); // Reduzir pela metade
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * ⚡ CIRCUIT BREAKER: Registrar sucesso
+   */
+  recordSuccess() {
+    if (this.circuitBreaker.failures > 0) {
+      console.log(`⚡ [CIRCUIT BREAKER] Sucesso! Resetando contador (estava em ${this.circuitBreaker.failures})`);
+    }
+    this.circuitBreaker.failures = 0;
+    this.circuitBreaker.isOpen = false;
+    this.circuitBreaker.lastFailure = null;
+  }
+
+  /**
+   * ⚡ CIRCUIT BREAKER: Registrar falha
+   */
+  recordFailure() {
+    this.circuitBreaker.failures++;
+    this.circuitBreaker.lastFailure = Date.now();
+
+    console.warn(`⚠️ [CIRCUIT BREAKER] Falha ${this.circuitBreaker.failures}/${this.circuitBreaker.threshold}`);
+
+    if (this.circuitBreaker.failures >= this.circuitBreaker.threshold) {
+      this.circuitBreaker.isOpen = true;
+      console.error(`🔴 [CIRCUIT BREAKER] ABERTO! DataJud desabilitado por ${this.circuitBreaker.timeout / 1000}s`);
+    }
   }
 
   /**
