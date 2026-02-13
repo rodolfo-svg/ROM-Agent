@@ -236,11 +236,14 @@ O erro **SÓ acontece** quando:
 | Método | LLM Barata | LLM Premium | Busca Jurisp. | Fichamentos | Tempo | Custo |
 |--------|-----------|-------------|---------------|-------------|-------|-------|
 | **❌ Chat: "Analise X"** | ✅ | ✅ | ⚠️ Pode chamar | ✅ | ~5-10min | $$$ + erros |
-| **✅ API: complete (V2)** | ✅ Nova Micro | ✅ Claude | ❌ Não | ✅ 20 tipos | ~3-5min | ~$4.55 |
+| **✅ API: complete (V2 Opus)** | ✅ Nova Micro | ✅ Opus 4 | ❌ Não | ✅ 18 tipos | ~3-5min | ~$6-8 |
+| **✅ API: complete (V2 Split)** | ✅ Nova Micro | ✅ Sonnet | ❌ Não | ✅ 18 tipos | ~4-6min | ~$5-6 |
 | **API: extract_only** | ✅ Nova Micro | ❌ Não | ❌ Não | ❌ Não | ~30s | ~$0.05 |
 | **API: custom** | ✅ Nova Micro | ✅ Claude | ❌ Não | 🔧 Custom | ~2-5min | Variável |
 
 **Recomendação:** Use `API: complete` para obter o melhor custo-benefício com fluxo V2!
+
+**IMPORTANTE:** Sistema agora usa **Claude Opus 4** automaticamente para batch analysis (16K token limit) quando modelo é Sonnet. Se Opus não disponível, divide em 2 batches menores. Isso corrige o problema de fichamentos vazios (0KB) causado por truncamento de resposta.
 
 ---
 
