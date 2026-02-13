@@ -1,3 +1,4 @@
+// ArtifactPanel - Modern Design with Blue/Indigo gradients (Updated 2026-02-13)
 import { useState, useEffect } from 'react'
 import {
   X,
