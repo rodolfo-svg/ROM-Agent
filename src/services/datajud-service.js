@@ -820,6 +820,9 @@ export function estatisticasCache() {
 // Exportar funcao de fallback para uso externo
 export { fallbackToGoogleSearch };
 
+// Exportar TRIBUNAL_ALIASES para uso nas rotas
+export { TRIBUNAL_ALIASES };
+
 export default {
   buscarProcessos,
   buscarDecisoes,
