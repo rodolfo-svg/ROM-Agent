@@ -8,9 +8,15 @@
  */
 
 import axios from 'axios';
+import https from 'https';
 import NodeCache from 'node-cache';
 import { CNJApiClient } from './cnj-api-client.js';
 import { logger } from '../utils/logger.js';
+
+// Agente HTTPS que ignora erros de certificado (necessário para alguns sites de tribunais)
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false
+});
 
 // Cache de 1 hora para consultas
 const cache = new NodeCache({ stdTTL: 3600 });

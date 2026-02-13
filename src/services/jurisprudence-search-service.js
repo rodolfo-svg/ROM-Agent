@@ -40,7 +40,7 @@ class JurisprudenceSearchService {
         timeout: 5000 // ⚡ AGRESSIVO: 5s (era 12s) - não bloquear chat
       },
       jusbrasil: {
-        enabled: process.env.JUSBRASIL_ENABLED === 'true' || false, // Desabilitado: bloqueio anti-bot 100%
+        enabled: process.env.JUSBRASIL_ENABLED === 'true' || false, // Terceiro corredor: HTTP scraping (pode ser bloqueado)
         apiUrl: 'https://www.jusbrasil.com.br/busca',
         timeout: 30000
       },
@@ -125,16 +125,22 @@ class JurisprudenceSearchService {
       const sources = [];
 
       // ═══════════════════════════════════════════════════════════════
-      // ⚡ NOVA ESTRATÉGIA: FONTE OFICIAL PRIMEIRO
+      // ⚡ ESTRATÉGIA DE 3 CORREDORES: OFICIAL → FALLBACK → ENRIQUECIMENTO
       // ═══════════════════════════════════════════════════════════════
-      // 1. DataJud CNJ PRIMEIRO (5s timeout) - FONTE OFICIAL
-      //    - ElasticSearch Query DSL com busca semântica
-      //    - multi_match em: ementa^3, textoIntegral, palavrasChave^2
+      // 1. DataJud CNJ (5s timeout) - CORREDOR OFICIAL
+      //    - ElasticSearch Query DSL em metadados oficiais CNJ
+      //    - multi_match em: assuntos.nome^3, classe.nome^2, orgaoJulgador.nome
       //    - Top 5 tribunais: STF, STJ, TJSP, TJRJ, TJMG
       //    - Circuit Breaker: para se falhar muito
-      // 2. Google Search FALLBACK (se DataJud falhar ou retornar vazio)
+      //    - STF: 404 esperado (não está no DataJud por limitação constitucional)
+      // 2. Google Search (10s timeout) - CORREDOR FALLBACK
+      //    - Ativa apenas se DataJud falhar ou retornar vazio
       //    - Backup confiável, 90+ tribunais
-      //    - Mais lento mas boa cobertura
+      //    - Indexa sites oficiais + agregadores (incluindo JusBrasil público)
+      // 3. JusBrasil Scraping (8s timeout) - TERCEIRO CORREDOR
+      //    - HTTP scraping direto (pode ser bloqueado por anti-bot)
+      //    - Enriquece resultados com ementas de agregador
+      //    - Opcional: ativa apenas se JUSBRASIL_ENABLED=true
       // ═══════════════════════════════════════════════════════════════
 
       // ⚡ Timeouts AGRESSIVOS: Não bloquear chat
@@ -209,6 +215,38 @@ class JurisprudenceSearchService {
           console.log(`✅ [GOOGLE] Fallback retornou ${googleResult.results?.length || 0} resultado(s)`);
         } catch (error) {
           console.error(`❌ [GOOGLE] Fallback falhou: ${error.message}`);
+          results.push({ status: 'rejected', reason: error });
+        }
+      }
+
+      // TERCEIRO CORREDOR: JusBrasil (busca adicional para enriquecer resultados)
+      // ⚡ Tentativa de scraping HTTP do JusBrasil (pode ser bloqueado por anti-bot)
+      const JUSBRASIL_TIMEOUT = 8000; // 8s MAX - pode ser bloqueado
+      const canUseJusbrasil = this.config.jusbrasil.enabled;
+
+      if (canUseJusbrasil) {
+        sources.push('jusbrasil');
+        console.log('🔍 [JUSBRASIL] Buscando no terceiro corredor (HTTP scraping)...');
+
+        try {
+          const jusbrasilResult = await this.withTimeout(
+            this.searchJusBrasil(tese, { limit: 5, tribunal }), // Limitar a 5 para não sobrecarregar
+            JUSBRASIL_TIMEOUT,
+            'JusBrasil (Terceiro Corredor)'
+          );
+          results.push({ status: 'fulfilled', value: jusbrasilResult });
+
+          const resultCount = jusbrasilResult.results?.length || 0;
+          if (resultCount > 0) {
+            console.log(`✅ [JUSBRASIL] Terceiro corredor retornou ${resultCount} resultado(s)`);
+          } else if (jusbrasilResult.isBlockedOrUnavailable) {
+            console.log('⚠️ [JUSBRASIL] Bloqueado ou indisponível (esperado - anti-bot)');
+          } else {
+            console.log('ℹ️ [JUSBRASIL] Sem resultados');
+          }
+        } catch (error) {
+          const isTimeout = error.message?.includes('Timeout') || error.message?.includes('timeout');
+          console.warn(`⚠️ [JUSBRASIL] ${isTimeout ? 'TIMEOUT' : 'ERRO'}: ${error.message}`);
           results.push({ status: 'rejected', reason: error });
         }
       }

@@ -311,18 +311,27 @@ IMPORTANTE:
  * Gerar análise temporal (cronologia)
  */
 export async function gerarAnaliseTemporal(texto, entidades, opcoes = {}) {
-  const { modelo = 'haiku' } = opcoes;
+  const { modelo = 'sonnet' } = opcoes;
 
-  const datas = entidades.datas.slice(0, 20).map(d => d.dataFormatada).join(', ');
+  const datas = entidades.datas
+    .filter(d => d.ano >= 2015)  // Only relevant recent dates
+    .slice(0, 30)
+    .map(d => `${d.dataFormatada}: ${d.contexto.substring(0, 90)}`)
+    .join('\n');
 
-  const prompt = `Você é um organizador de informações jurídicas especializado em cronologia processual.
-
-TAREFA: Gere uma CRONOLOGIA DE EVENTOS do documento jurídico.
+  const prompt = `Gere uma cronologia jurídica completa do processo abaixo. Comece DIRETAMENTE com o conteúdo, sem introduções.
 
 DOCUMENTO:
-${texto.substring(0, 80000)}
+${texto.substring(0, 50000)}
 
-DATAS IDENTIFICADAS: ${datas}
+DATAS:
+${datas}
+
+INSTRUÇÕES:
+- Comece com "# CRONOLOGIA DE EVENTOS"
+- NÃO escreva frases como "Vou gerar", "Perfeito", etc.
+- Organize por ano em ordem cronológica
+- Use emojis: 📄 (documentos), ⚖️ (decisões), 💰 (valores), 📋 (petições)
 
 ESTRUTURA OBRIGATÓRIA:
 

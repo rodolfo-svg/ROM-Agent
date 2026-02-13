@@ -42,7 +42,7 @@ const CONFIG_MODELOS = {
 
   // Tarefas médias (Haiku com atenção)
   resumo_ultra_curto: 'haiku',
-  analise_temporal: 'haiku'
+  analise_temporal: 'sonnet'  // Changed to Sonnet - Haiku was giving conversational responses
 };
 
 /**
