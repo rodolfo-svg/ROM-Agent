@@ -224,12 +224,6 @@ class JurisprudenceSearchService {
       const JUSBRASIL_TIMEOUT = 8000; // 8s MAX - pode ser bloqueado
       const canUseJusbrasil = this.config.jusbrasil.enabled;
 
-      console.log(`🔍 [DEBUG] JusBrasil config:`, {
-        enabled: this.config.jusbrasil.enabled,
-        canUse: canUseJusbrasil,
-        env: process.env.JUSBRASIL_ENABLED
-      });
-
       if (canUseJusbrasil) {
         sources.push('jusbrasil');
         console.log('🔍 [JUSBRASIL] Buscando no terceiro corredor (HTTP scraping)...');
