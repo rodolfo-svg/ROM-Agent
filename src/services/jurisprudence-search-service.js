@@ -353,6 +353,7 @@ class JurisprudenceSearchService {
 
   /**
    * Buscar no DataJud (API oficial do CNJ)
+   * ✅ ATUALIZADO: Usa datajud-service.js com busca em múltiplos tribunais
    */
   async searchDataJud(tese, options = {}) {
     if (!this.config.datajud.apiKey) {
@@ -362,37 +363,48 @@ class JurisprudenceSearchService {
     const { limit = 10, tribunal = null, dataInicio = null, dataFim = null } = options;
 
     try {
-      // Construir query
-      const params = new URLSearchParams({
-        q: tese,
-        limite: limit.toString()
-      });
+      // ✅ Importar nosso serviço DataJud real
+      const datajudService = await import('./datajud-service.js');
 
-      if (tribunal) params.append('tribunal', tribunal);
-      if (dataInicio) params.append('dataInicio', dataInicio);
-      if (dataFim) params.append('dataFim', dataFim);
+      console.log(`🔍 [DATAJUD] Buscando "${tese.substring(0, 50)}..." ${tribunal ? `no ${tribunal}` : 'em múltiplos tribunais'}`);
 
-      const url = `${this.config.datajud.apiUrl}/jurisprudencia?${params.toString()}`;
+      let result;
 
-      const response = await this.makeHttpRequest(url, {
-        headers: {
-          'Authorization': `Bearer ${this.config.datajud.apiKey}`,
-          'Content-Type': 'application/json'
-        },
-        timeout: this.config.datajud.timeout
-      });
+      if (tribunal) {
+        // Busca em tribunal específico
+        result = await datajudService.buscarDecisoes({
+          tribunal: tribunal,
+          termo: tese,
+          limit: limit,
+          dataInicio: dataInicio,
+          dataFim: dataFim
+        });
+      } else {
+        // Busca inteligente: Top 5 tribunais mais relevantes (STF, STJ, TJSP, TJRJ, TJMG)
+        const top5Tribunais = ['STF', 'STJ', 'TJSP', 'TJRJ', 'TJMG'];
+        console.log(`🔍 [DATAJUD] Buscando nos Top 5 tribunais: ${top5Tribunais.join(', ')}`);
 
-      const data = JSON.parse(response);
+        result = await datajudService.buscarTodosTribunais({
+          tribunais: top5Tribunais,
+          numero: null,  // Busca por termo, não por número
+          limit: Math.ceil(limit / top5Tribunais.length)  // Dividir limite entre tribunais
+        });
+      }
+
+      // Parsear resultados
+      const parsedResults = this.parseDataJudServiceResults(result, tese);
+
+      console.log(`✅ [DATAJUD] Encontrados ${parsedResults.length} resultado(s)`);
 
       return {
         success: true,
         source: 'datajud',
-        results: this.parseDataJudResults(data),
-        totalFound: data.total || 0
+        results: parsedResults,
+        totalFound: parsedResults.length
       };
 
     } catch (error) {
-      console.error('Erro ao buscar no DataJud:', error.message);
+      console.error('❌ [DATAJUD] Erro:', error.message);
       return {
         success: false,
         source: 'datajud',
@@ -503,7 +515,7 @@ class JurisprudenceSearchService {
   }
 
   /**
-   * Parser de resultados do DataJud
+   * Parser de resultados do DataJud (formato antigo - deprecado)
    */
   parseDataJudResults(data) {
     if (!data.resultados || !Array.isArray(data.resultados)) {
@@ -521,6 +533,76 @@ class JurisprudenceSearchService {
       url: item.url || null,
       relevancia: this.calculateRelevanceFromMatch(item.score || 0)
     }));
+  }
+
+  /**
+   * ✅ Parser de resultados do datajud-service.js (NOVO)
+   * Transforma resultados do nosso serviço DataJud para formato jurisprudence-search
+   */
+  parseDataJudServiceResults(data, tese) {
+    const results = [];
+
+    // Caso 1: Resultado de buscarTodosTribunais (múltiplos tribunais)
+    if (data.resultados && Array.isArray(data.resultados)) {
+      data.resultados.forEach(tribunalResult => {
+        if (tribunalResult.processos && Array.isArray(tribunalResult.processos)) {
+          tribunalResult.processos.forEach(proc => {
+            results.push({
+              tribunal: tribunalResult.tribunal || proc.tribunal || 'Não informado',
+              tipo: proc.classe || 'Processo',
+              numero: proc.numeroProcesso || proc.numero || 'N/A',
+              ementa: proc.ementa || proc.assunto || tese.substring(0, 200),
+              data: proc.dataAjuizamento || proc.dataPublicacao || null,
+              relator: proc.relator || null,
+              orgaoJulgador: proc.orgaoJulgador || null,
+              url: proc.url || null,
+              relevancia: 'medium',
+              movimentacoes: proc.movimentacoes || [],
+              fonte: 'DataJud CNJ'
+            });
+          });
+        }
+      });
+    }
+
+    // Caso 2: Resultado de buscarDecisoes (busca por termo)
+    if (data.decisoes && Array.isArray(data.decisoes)) {
+      data.decisoes.forEach(decisao => {
+        results.push({
+          tribunal: decisao.tribunal || 'Não informado',
+          tipo: decisao.tipo || 'Decisão',
+          numero: decisao.numeroProcesso || decisao.id || 'N/A',
+          ementa: decisao.ementa || decisao.texto || '',
+          data: decisao.dataPublicacao || decisao.data || null,
+          relator: decisao.relator || null,
+          orgaoJulgador: decisao.orgaoJulgador || null,
+          url: decisao.url || null,
+          relevancia: this.calculateRelevanceScore(decisao, tese) > 15 ? 'high' : 'medium',
+          fonte: 'DataJud CNJ'
+        });
+      });
+    }
+
+    // Caso 3: Resultado de buscarProcessos (tribunal único)
+    if (data.processos && Array.isArray(data.processos)) {
+      data.processos.forEach(proc => {
+        results.push({
+          tribunal: proc.tribunal || data.tribunal || 'Não informado',
+          tipo: proc.classe || 'Processo',
+          numero: proc.numeroProcesso || proc.numero || 'N/A',
+          ementa: proc.ementa || proc.assunto || proc.descricao || '',
+          data: proc.dataAjuizamento || proc.dataPublicacao || null,
+          relator: proc.relator || null,
+          orgaoJulgador: proc.orgaoJulgador || null,
+          url: proc.url || null,
+          relevancia: 'medium',
+          movimentacoes: proc.movimentacoes || [],
+          fonte: 'DataJud CNJ'
+        });
+      });
+    }
+
+    return results;
   }
 
   /**
