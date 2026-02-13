@@ -148,13 +148,15 @@ router.post('/analyze', async (req, res) => {
       // Extração + Análise
       console.log(`   🧠 Modo: complete (extração + análise)`);
 
-      result = await processor.processDocument(
+      result = await processor.processComplete(
         pdfData.text,
         fileName.replace('.pdf', ''),
         fileName,
-        analysisType,
-        model,
-        null
+        {
+          analysisType,
+          model,
+          jobId: null
+        }
       );
     }
 
