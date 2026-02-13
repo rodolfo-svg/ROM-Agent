@@ -278,7 +278,7 @@ export async function buscarProcessos(filtros = {}, options = {}) {
 
       const response = await axios.post(url, queryBody, {
         headers: {
-          'Authorization': `ApiKey ${DATAJUD_TOKEN}`,
+          'Authorization': `APIKey ${DATAJUD_TOKEN}`,
           'Content-Type': 'application/json',
           'User-Agent': 'ROM-Agent/2.8.0'
         },
@@ -410,7 +410,7 @@ export async function buscarDecisoes(filtros = {}, options = {}) {
 
     const response = await axios.post(url, queryBody, {
       headers: {
-        'Authorization': `ApiKey ${DATAJUD_TOKEN}`,
+        'Authorization': `APIKey ${DATAJUD_TOKEN}`,
         'Content-Type': 'application/json',
         'User-Agent': 'ROM-Agent/2.8.0'
       },
