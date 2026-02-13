@@ -37,9 +37,9 @@ function deduplicateResults(results) {
 
   return results.filter(result => {
     // Hash baseado em: número do processo + tribunal + tipo
-    const numero = (result.numero || '').toLowerCase().trim();
-    const tribunal = (result.tribunal || '').toLowerCase().trim();
-    const tipo = (result.tipo || '').toLowerCase().trim();
+    const numero = String(result.numero || '').toLowerCase().trim();
+    const tribunal = String(result.tribunal || '').toLowerCase().trim();
+    const tipo = String(result.tipo || '').toLowerCase().trim();
     const hashKey = `${numero}_${tribunal}_${tipo}`;
 
     if (seen.has(hashKey)) {
