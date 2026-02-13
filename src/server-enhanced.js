@@ -53,6 +53,7 @@ import logsRoutes from '../lib/api-routes-logs.js';
 import jurisprudenciaRoutes from '../lib/api-routes-jurisprudencia.js';
 import documentsRoutes from '../lib/api-routes-documents.js';
 import pipelineRoutes from '../lib/api-routes-pipeline.js';
+import datajudRoutes from './routes/datajud.js';
 import romProjectService from './services/rom-project-service.js';
 import romProjectRouter from './routes/rom-project.js';
 import systemPromptsRouter from './routes/system-prompts.js';
@@ -549,6 +550,7 @@ app.use('/api', logsRoutes);
 app.use('/api', jurisprudenciaRoutes);
 app.use('/api', documentsRoutes);
 app.use('/api', pipelineRoutes);
+app.use('/api/datajud', datajudRoutes);
 app.use('/api/rom-project', romProjectRouter);
 app.use('/api/system-prompts', requireAuth, systemPromptsRouter); // ✅ Adicionar auth
 
