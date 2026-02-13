@@ -2,18 +2,19 @@ import { useState, memo } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeHighlight from 'rehype-highlight'
-import { 
-  Copy, 
-  Check, 
-  ThumbsUp, 
-  ThumbsDown, 
+import {
+  Copy,
+  Check,
+  ThumbsUp,
+  ThumbsDown,
   RefreshCw,
   FileText,
   Code,
   Table,
   BarChart3,
   Eye,
-  Sparkles
+  Sparkles,
+  Paperclip
 } from 'lucide-react'
 import type { Message, Artifact } from '@/types'
 import { useChatStore } from '@/stores/chatStore'
@@ -65,6 +66,24 @@ export const MessageItem = memo(function MessageItem({
           <p className="text-[15px] leading-relaxed whitespace-pre-wrap">
             {message.content}
           </p>
+          {/* Attached files indicator */}
+          {message.attachedFiles && message.attachedFiles.length > 0 && (
+            <div className="mt-2 pt-2 border-t border-white/20">
+              <div className="flex items-center gap-2 text-xs text-white/90">
+                <Paperclip className="w-3.5 h-3.5" />
+                <span>
+                  {message.attachedFiles.length} arquivo{message.attachedFiles.length > 1 ? 's' : ''} anexado{message.attachedFiles.length > 1 ? 's' : ''}
+                </span>
+              </div>
+              <div className="mt-1.5 space-y-1">
+                {message.attachedFiles.map((file, idx) => (
+                  <div key={idx} className="text-xs text-white/80 truncate">
+                    📄 {file.name}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     )

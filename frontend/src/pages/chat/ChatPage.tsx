@@ -292,8 +292,26 @@ export function ChatPage() {
     // Prepare attached files for API
     const attachedFilesForApi = getAttachedFilesForChat()
 
-    // Add user message
-    addMessage({ role: 'user', content: messageContent })
+    // Convert AttachedFile to complete FileInfo for message persistence
+    // Backend expects: id, name, size, type, path, uploadedAt, extractedText, textLength, wordCount
+    const attachedFilesForMessage = completedFiles.map(af => ({
+      id: af.fileInfo.id,
+      name: af.fileInfo.name,
+      size: af.fileInfo.size,
+      type: af.fileInfo.type,
+      path: af.fileInfo.url,
+      uploadedAt: af.fileInfo.uploadedAt,
+      extractedText: af.fileInfo.extractedText,
+      textLength: af.fileInfo.textLength,
+      wordCount: af.fileInfo.wordCount,
+    }))
+
+    // Add user message with attached files
+    addMessage({
+      role: 'user',
+      content: messageContent,
+      attachedFiles: attachedFilesForMessage.length > 0 ? attachedFilesForMessage : undefined,
+    })
 
     // Add placeholder for assistant
     const assistantMsg = addMessage({

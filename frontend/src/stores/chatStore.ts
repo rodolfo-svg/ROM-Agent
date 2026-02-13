@@ -216,16 +216,28 @@ export const useChatStore = create<ChatState>()(
               console.log('   API response:', data.success, 'messages count:', data.conversation?.messages?.length)
 
               if (data.success && data.conversation) {
-                const messages = data.conversation.messages.map((m: any) => ({
-                  id: m.id,
-                  role: m.role,
-                  content: m.content,
-                  model: m.model,
-                  createdAt: m.created_at,
-                  isStreaming: false,
-                }))
+                const messages = data.conversation.messages.map((m: any) => {
+                  // Parse metadata to extract attachedFiles
+                  let attachedFiles: FileInfo[] | undefined
+                  if (m.metadata && typeof m.metadata === 'object') {
+                    if (m.metadata.attachedFiles && Array.isArray(m.metadata.attachedFiles)) {
+                      attachedFiles = m.metadata.attachedFiles
+                    }
+                  }
+
+                  return {
+                    id: m.id,
+                    role: m.role,
+                    content: m.content,
+                    model: m.model,
+                    createdAt: m.created_at,
+                    isStreaming: false,
+                    attachedFiles: attachedFiles,
+                  }
+                })
 
                 console.log('   ✅ Loaded messages:', messages.length)
+                console.log('   📎 Messages with files:', messages.filter((m: any) => m.attachedFiles?.length > 0).length)
 
                 set(state => ({
                   conversations: state.conversations.map(c =>
@@ -359,6 +371,7 @@ export const useChatStore = create<ChatState>()(
         console.log('   role:', message.role)
         console.log('   content length:', message.content?.length || 0)
         console.log('   content preview:', message.content?.substring(0, 50))
+        console.log('   attachedFiles count:', message.attachedFiles?.length || 0)
 
         const activeId = get().activeConversationId
         if (!activeId) {
@@ -383,6 +396,7 @@ export const useChatStore = create<ChatState>()(
               role: message.role,
               content: message.content,
               model: message.model,
+              attachedFiles: message.attachedFiles || [],
             }),
           })
 

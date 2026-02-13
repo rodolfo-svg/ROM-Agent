@@ -255,9 +255,9 @@ router.get('/:id', async (req, res) => {
       });
     }
 
-    // Buscar mensagens
+    // Buscar mensagens com metadata (inclui arquivos anexados)
     const messagesResult = await pool.query(
-      `SELECT id, role, content, model, created_at
+      `SELECT id, role, content, model, metadata, created_at
        FROM messages
        WHERE conversation_id = $1
        ORDER BY created_at ASC`,
@@ -393,7 +393,7 @@ router.delete('/:id', requireAuth, async (req, res) => {
 router.post('/:id/messages', async (req, res) => {
   const userId = req.session?.user?.id || null;
   const { id } = req.params;
-  const { role, content, model } = req.body;
+  const { role, content, model, attachedFiles } = req.body;
 
   // Validar role e content
   if (!role || typeof role !== 'string' || role.trim() === '') {
@@ -440,12 +440,28 @@ router.post('/:id/messages', async (req, res) => {
       });
     }
 
-    // Inserir mensagem
+    // Preparar metadata com informações dos arquivos
+    const metadata = {};
+    if (attachedFiles && Array.isArray(attachedFiles) && attachedFiles.length > 0) {
+      metadata.attachedFiles = attachedFiles.map(file => ({
+        id: file.id || file.fileInfo?.id,
+        name: file.name || file.fileInfo?.name,
+        size: file.size || file.fileInfo?.size,
+        type: file.type || file.fileInfo?.type,
+        path: file.path || file.fileInfo?.path,
+        uploadedAt: file.uploadedAt || file.fileInfo?.uploadedAt || new Date().toISOString(),
+        extractedText: file.extractedText || file.fileInfo?.extractedText,
+        textLength: file.textLength || file.fileInfo?.textLength,
+        wordCount: file.wordCount || file.fileInfo?.wordCount
+      }));
+    }
+
+    // Inserir mensagem com metadata
     const result = await pool.query(
-      `INSERT INTO messages (conversation_id, role, content, model, created_at)
-       VALUES ($1, $2, $3, $4, NOW())
-       RETURNING id, role, content, model, created_at`,
-      [id, role, content, model || null]
+      `INSERT INTO messages (conversation_id, role, content, model, metadata, created_at)
+       VALUES ($1, $2, $3, $4, $5, NOW())
+       RETURNING id, role, content, model, metadata, created_at`,
+      [id, role, content, model || null, JSON.stringify(metadata)]
     );
 
     // Atualizar timestamp da conversa

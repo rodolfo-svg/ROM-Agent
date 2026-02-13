@@ -14,9 +14,17 @@ export interface FileInfo {
   /** Tamanho do arquivo em bytes */
   size: number
   /** Tipo MIME do arquivo (ex: application/pdf) */
-  mimeType: string
+  type: string
+  /** Caminho do arquivo no servidor */
+  path?: string
   /** Data de upload (ISO 8601) */
   uploadedAt?: string
+  /** Texto extraído do arquivo (se disponível) */
+  extractedText?: string
+  /** Tamanho do texto extraído */
+  textLength?: number
+  /** Número de palavras do texto extraído */
+  wordCount?: number
 }
 
 /**
@@ -54,7 +62,7 @@ export interface AttachedFile {
   /** Tamanho em bytes */
   size: number
   /** Tipo MIME */
-  mimeType: string
+  type: string
   /** Status do upload */
   status?: 'pending' | 'uploading' | 'uploaded' | 'error'
   /** Progresso do upload (0-100) */
