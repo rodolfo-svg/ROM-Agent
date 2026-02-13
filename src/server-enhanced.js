@@ -91,6 +91,7 @@ import { loadStructuredFilesFromKB } from './middleware/kb-loader.js';
 import kbAnalyzeV2Routes from './routes/kb-analyze-v2.js';
 import kbMergeVolumesRoutes from './routes/kb-merge-volumes.js';
 import extractionJobsRoutes from './routes/extraction-jobs.js';
+import kbEmergencyRoutes from './routes/kb-emergency.js';
 
 // ═══════════════════════════════════════════════════════════════════════
 // PROMPT OPTIMIZATION v3.0 - Modular prompt builder with 79% token reduction
@@ -569,6 +570,9 @@ app.use('/api/custom-instructions', requireAuth, customInstructionsRoutes);
 // Rotas de KB Analyze V2 (Análise Direta de Documentos - Bypass LLM)
 app.use('/api/kb/analyze-v2', requireAuth, kbAnalyzeV2Routes);
 app.use('/api/kb/merge-volumes', requireAuth, generalLimiter, kbMergeVolumesRoutes);
+
+// Rotas de Emergência do KB (quando kb-documents.json está corrompido)
+app.use('/api/kb/emergency', requireAuth, kbEmergencyRoutes);
 
 // Rotas de Geração Multi-Step (Documentos >35 páginas)
 app.use('/api/generate/multi-step', multiStepGenerationRoutes);
@@ -1283,44 +1287,49 @@ function buildContextualSystemPrompt(options = {}) {
 
 ---
 
-## 📄 INSTRUÇÕES PARA GERAÇÃO DE DOCUMENTOS EXTENSOS
+## ⚠️ CRITICAL: EVITAR TIMEOUT EM DOCUMENTOS
 
-**IMPORTANTE - EVITAR TIMEOUT:**
+**ATENÇÃO - REGRA OBRIGATÓRIA PARA DOCUMENTOS JURÍDICOS:**
 
-Para documentos grandes (análises, memoriais, pareceres, petições >5 páginas):
+Para QUALQUER documento de texto (petições, análises, memoriais, pareceres, contestações, recursos, contratos):
 
-1. **NÃO USE create_artifact** durante a geração
-2. **GERE O CONTEÚDO COMPLETO** como texto formatado em Markdown
-3. **O SISTEMA CRIARÁ AUTOMATICAMENTE** um artifact para download em Word
+❌ **PROIBIDO: NUNCA use a tool create_artifact**
+✅ **OBRIGATÓRIO: Sempre gere Markdown direto na resposta**
 
-**Estrutura da resposta:**
+**RAZÃO:** create_artifact causa TIMEOUT em documentos >5 páginas. O sistema detecta automaticamente Markdown iniciado com # e cria artifact para download.
+
+**ESTRUTURA OBRIGATÓRIA:**
+
+1. Breve introdução (opcional, 1-2 linhas)
+2. Documento completo em Markdown começando com # TÍTULO
+3. NUNCA mencione "vou criar artifact" ou "usando create_artifact"
+4. NUNCA chame a função create_artifact para documentos de texto
+
+**EXEMPLO CORRETO:**
 \`\`\`
-[Breve introdução opcional]
+Seguem a análise solicitada:
 
-# TÍTULO DO DOCUMENTO
+# ANÁLISE JURÍDICA PORMENORIZADA
 
-## Seção 1
+## I. INTRODUÇÃO
 [conteúdo completo...]
 
-## Seção 2
+## II. FUNDAMENTAÇÃO LEGAL
 [conteúdo completo...]
 
-[... todo o documento ...]
-
-## Seção Final
-[conteúdo completo...]
+[... todas as seções do documento ...]
 \`\`\`
 
-**Use create_artifact APENAS para:**
-- ✅ Códigos de programação
-- ✅ Tabelas de dados (>20 linhas)
-- ✅ Gráficos/diagramas
-- ✅ Documentos curtos (<3 páginas)
+**EXCEÇÕES (use create_artifact APENAS para):**
+- Códigos de programação (Python, JavaScript, SQL, etc.)
+- Tabelas com >30 linhas de dados puros
+- HTML/CSS interativo
+- **NUNCA para documentos jurídicos ou análises de texto**
 
-**Formato do Word:**
-- O documento será automaticamente convertido para Word (.docx)
-- Formatação profissional será aplicada automaticamente
-- Templates e timbrados serão incluídos conforme configuração
+**RESULTADO AUTOMÁTICO:**
+- Sistema converte Markdown → Word (.docx) com formatação profissional
+- Templates e timbrados aplicados automaticamente
+- Usuário recebe download sem você precisar fazer nada
 
 **Se o usuário solicitar formato específico:**
 - Mencione no início: "Documento será gerado em [formato solicitado]"

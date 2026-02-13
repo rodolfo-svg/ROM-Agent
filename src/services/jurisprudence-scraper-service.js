@@ -13,11 +13,17 @@
  */
 
 import axios from 'axios';
+import https from 'https';
 import * as cheerio from 'cheerio';
 import { logger } from '../utils/logger.js';
 import NodeCache from 'node-cache';
 import pLimit from 'p-limit';
 import { getPuppeteerScraper } from './puppeteer-scraper-service.js';
+
+// Agente HTTPS que ignora erros de certificado (necessário para sites de tribunais)
+const httpsAgent = new https.Agent({
+  rejectUnauthorized: false
+});
 
 // Cache de ementas completas (24h TTL)
 const ementaCache = new NodeCache({ stdTTL: 86400, checkperiod: 3600 });
@@ -341,6 +347,7 @@ class JurisprudenceScraperService {
   async scrapeHtml(url, tribunal) {
     const response = await axios.get(url, {
       timeout: this.timeout,
+      httpsAgent,
       headers: {
         'User-Agent': this.userAgent,
         'Accept': 'text/html,application/xhtml+xml',
@@ -757,6 +764,7 @@ class JurisprudenceScraperService {
       // ✅ OTIMIZAÇÃO: Verificar tamanho antes de baixar
       const headResponse = await axios.head(url, {
         timeout: 5000,
+        httpsAgent,
         headers: { 'User-Agent': this.userAgent }
       }).catch(() => null);
 
@@ -778,6 +786,7 @@ class JurisprudenceScraperService {
       const response = await axios.get(url, {
         responseType: 'arraybuffer',
         timeout: this.timeout,
+        httpsAgent,
         headers: { 'User-Agent': this.userAgent },
         maxContentLength: 5 * 1024 * 1024 // Máximo 5MB (otimizado)
       });

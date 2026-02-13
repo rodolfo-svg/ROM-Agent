@@ -288,6 +288,7 @@ export async function buscarProcessos(filtros = {}, options = {}) {
           'Content-Type': 'application/json',
           'User-Agent': 'ROM-Agent/2.8.0'
         },
+        httpsAgent,
         timeout: 30000
       });
 
@@ -432,6 +433,7 @@ export async function buscarDecisoes(filtros = {}, options = {}) {
         'Content-Type': 'application/json',
         'User-Agent': 'ROM-Agent/2.8.0'
       },
+      httpsAgent,
       timeout: 30000
     });
 
