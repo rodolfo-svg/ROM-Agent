@@ -129,8 +129,8 @@ class JurisprudenceSearchService {
       // ═══════════════════════════════════════════════════════════════
       // 1. DataJud CNJ PRIMEIRO (5s timeout) - FONTE OFICIAL
       //    - ElasticSearch Query DSL com busca semântica
-      //    - multi_match em: assuntos.nome^3, classe.nome^2, orgaoJulgador.nome
-      //    - Top 5 tribunais: STJ, TJSP, TJRJ, TJMG, TRF1 (STF não disponível)
+      //    - multi_match em: ementa^3, textoIntegral, palavrasChave^2
+      //    - Top 5 tribunais: STF, STJ, TJSP, TJRJ, TJMG
       //    - Circuit Breaker: para se falhar muito
       // 2. Google Search FALLBACK (se DataJud falhar ou retornar vazio)
       //    - Backup confiável, 90+ tribunais
@@ -413,9 +413,8 @@ class JurisprudenceSearchService {
           dataFim: dataFim
         });
       } else {
-        // Busca inteligente: Top 5 tribunais mais relevantes (STJ, TJSP, TJRJ, TJMG, TRF1)
-        // Nota: STF não está disponível na API pública do DataJud
-        const top5Tribunais = ['STJ', 'TJSP', 'TJRJ', 'TJMG', 'TRF1'];
+        // Busca inteligente: Top 5 tribunais mais relevantes (STF, STJ, TJSP, TJRJ, TJMG)
+        const top5Tribunais = ['STF', 'STJ', 'TJSP', 'TJRJ', 'TJMG'];
         console.log(`🔍 [DATAJUD] Buscando nos Top 5 tribunais: ${top5Tribunais.join(', ')}`);
 
         result = await datajudService.buscarTodosTribunais({
