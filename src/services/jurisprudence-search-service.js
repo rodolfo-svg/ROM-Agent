@@ -333,7 +333,7 @@ class JurisprudenceSearchService {
         duration: searchDuration,
         sourcesUsed: sources.length,
         successfulSources: sources.filter((_, i) => results[i].status === 'fulfilled').length,
-        ...(usedDataJudFallback && { usedDataJudFallback: true })
+        ...(usedGoogleFallback && { usedGoogleFallback: true })
       };
 
       // Resumo de performance
