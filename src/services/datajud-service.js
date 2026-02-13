@@ -373,18 +373,26 @@ export async function buscarDecisoes(filtros = {}, options = {}) {
         }
       },
       from: offset,
-      size: limit
-      // Não incluir sort por dataPublicacao (campo não existe em alguns tribunais)
-      // ElasticSearch ordenará por relevância (_score) por padrão
+      size: limit,
+      sort: [
+        {'_score': 'desc'},           // Ordenar por relevância primeiro
+        {'dataAjuizamento': 'desc'}   // Depois por data de ajuizamento
+      ]
     };
 
     // Adicionar termo de busca
+    // ✅ CORRIGIDO: Usar campos que EXISTEM na API (baseado em exemplos oficiais)
     if (termo) {
       queryBody.query.bool.must.push({
         multi_match: {
           query: termo,
-          fields: ['ementa^3', 'textoIntegral', 'palavrasChave^2'],
+          fields: [
+            'assuntos.nome^3',      // Maior peso para assunto
+            'classe.nome^2',        // Peso médio para classe
+            'orgaoJulgador.nome'    // Peso menor para órgão julgador
+          ],
           type: 'best_fields',
+          operator: 'and',
           fuzziness: 'AUTO'
         }
       });
@@ -400,10 +408,14 @@ export async function buscarDecisoes(filtros = {}, options = {}) {
 
     // Filtros adicionais
     if (orgaoJulgador) {
-      queryBody.query.bool.must.push({ match: { orgaoJulgador } });
+      queryBody.query.bool.must.push({
+        match: { 'orgaoJulgador.nome': orgaoJulgador }
+      });
     }
     if (relator) {
-      queryBody.query.bool.must.push({ match: { relator } });
+      queryBody.query.bool.must.push({
+        match: { 'relator.nome': relator }
+      });
     }
 
     logger.info(`[DataJud] Buscando decisões em ${url}`);
@@ -422,7 +434,7 @@ export async function buscarDecisoes(filtros = {}, options = {}) {
       tribunal,
       termo,
       filtros,
-      totalEncontrado: response.data.total || 0,
+      totalEncontrado: response.data.hits?.total?.value || response.data.hits?.total || 0,
       decisoes: parseDecisoes(response.data),
       fromCache: false,
       timestamp: new Date().toISOString()
