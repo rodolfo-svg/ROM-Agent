@@ -9,7 +9,7 @@ import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { ACTIVE_PATHS } from '../../lib/storage-config.js';
-import { documentProcessorV2 } from '../../lib/document-processor-v2.js';
+import { DocumentProcessorV2 } from '../../lib/document-processor-v2.js';
 
 const router = express.Router();
 
@@ -108,7 +108,7 @@ router.post('/analyze', async (req, res) => {
     console.log(`   ✅ PDF parseado: ${pdfData.numpages} páginas, ${Math.round(pdfData.text.length / 1000)}k chars`);
 
     // Processar com V2
-    const processor = new documentProcessorV2();
+    const processor = new DocumentProcessorV2();
 
     let result;
 
