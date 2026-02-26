@@ -16,6 +16,27 @@ import logger from '../../lib/logger.js';
 let pgPool = null;
 let redisClient = null;
 
+// ✅ FIX 1.1: Database ready state tracking
+// Allows server to start immediately while DB connects in background
+let pgReady = false;
+let redisReady = false;
+
+/**
+ * Check if PostgreSQL is ready
+ * @returns {boolean} True if connected and ready
+ */
+export function isDatabaseReady() {
+  return pgReady;
+}
+
+/**
+ * Check if Redis is ready
+ * @returns {boolean} True if connected and ready
+ */
+export function isRedisReady() {
+  return redisReady;
+}
+
 /**
  * Inicializa conexão PostgreSQL
  * @returns {pg.Pool|null} Pool de conexões ou null se falhar
@@ -79,24 +100,42 @@ export async function initPostgres() {
       });
     }
 
-    console.log('🔍 [PG] Testando conexão com SELECT NOW()...');
-    const startTime = Date.now();
-    await pgPool.query('SELECT NOW()');
-    const latency = Date.now() - startTime;
+    // ✅ FIX 1.1: Test connection in background (non-blocking)
+    // Server starts immediately, DB connects asynchronously
+    console.log('🔍 [PG] Testando conexão em background (não bloqueia startup)...');
 
-    // Criar schema se não existir
-    if (schema !== 'public') {
-      console.log(`🔍 [PG] Criando e configurando schema: ${schema}`);
-      await pgPool.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
-      await pgPool.query(`SET search_path TO ${schema}, public`);
-      console.log(`✅ [PG] Schema ${schema} configurado`);
-    }
+    const testConnection = async (retryCount = 0) => {
+      try {
+        const startTime = Date.now();
+        await pgPool.query('SELECT NOW()');
+        const latency = Date.now() - startTime;
 
-    console.log('✅ [PG] PostgreSQL CONECTADO em ' + latency + 'ms');
-    logger.info('PostgreSQL conectado', {
-      latency: `${latency}ms`,
-      poolSize: config.max
-    });
+        // Criar schema se não existir
+        if (schema !== 'public') {
+          console.log(`🔍 [PG] Criando e configurando schema: ${schema}`);
+          await pgPool.query(`CREATE SCHEMA IF NOT EXISTS ${schema}`);
+          await pgPool.query(`SET search_path TO ${schema}, public`);
+          console.log(`✅ [PG] Schema ${schema} configurado`);
+        }
+
+        pgReady = true;
+        console.log('✅ [PG] PostgreSQL CONECTADO em ' + latency + 'ms');
+        logger.info('PostgreSQL conectado', {
+          latency: `${latency}ms`,
+          poolSize: config.max,
+          retries: retryCount
+        });
+      } catch (error) {
+        console.error(`❌ [PG] Erro ao testar conexão (tentativa ${retryCount + 1}), tentando novamente em 5s...`);
+        logger.error('PostgreSQL connection test failed, retrying', {
+          error: error.message,
+          attempt: retryCount + 1
+        });
+        setTimeout(() => testConnection(retryCount + 1), 5000);
+      }
+    };
+
+    setImmediate(testConnection);
 
     pgPool.on('error', (err) => {
       console.error('❌ [PG] Pool error:', err.message);
@@ -215,30 +254,50 @@ export async function initRedis() {
       logger.error('Redis error', { error: err.message });
     });
 
-    // Connect and test
-    const startTime = Date.now();
-    await redisClient.connect();
-    await redisClient.ping();
-    const latency = Date.now() - startTime;
-
-    console.log('[Redis] Redis CONECTADO em ' + latency + 'ms');
-    logger.info('Redis conectado (otimizado)', {
-      latency: `${latency}ms`,
-      autoPipelining: true,
-      commandTimeout: '5000ms'
-    });
-
     redisClient.on('reconnecting', (delay) => {
       logger.info('Redis reconnecting', { delay });
     });
 
     redisClient.on('ready', () => {
+      redisReady = true;
       logger.info('Redis ready');
     });
 
     redisClient.on('close', () => {
+      redisReady = false;
       logger.warn('Redis connection closed');
     });
+
+    // ✅ FIX 1.1: Connect and test in background (non-blocking)
+    // Server starts immediately, Redis connects asynchronously
+    console.log('[Redis] Conectando em background (não bloqueia startup)...');
+
+    const testRedisConnection = async (retryCount = 0) => {
+      try {
+        const startTime = Date.now();
+        await redisClient.connect();
+        await redisClient.ping();
+        const latency = Date.now() - startTime;
+
+        redisReady = true;
+        console.log('[Redis] Redis CONECTADO em ' + latency + 'ms');
+        logger.info('Redis conectado (otimizado)', {
+          latency: `${latency}ms`,
+          autoPipelining: true,
+          commandTimeout: '5000ms',
+          retries: retryCount
+        });
+      } catch (error) {
+        console.error(`[Redis] Erro ao conectar (tentativa ${retryCount + 1}), tentando novamente em 5s...`);
+        logger.error('Redis connection failed, retrying', {
+          error: error.message,
+          attempt: retryCount + 1
+        });
+        setTimeout(() => testRedisConnection(retryCount + 1), 5000);
+      }
+    };
+
+    setImmediate(testRedisConnection);
 
     return redisClient;
   } catch (error) {

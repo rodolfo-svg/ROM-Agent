@@ -192,32 +192,30 @@ export const INFERENCE_PROFILES = {
 // ============================================================
 // CLIENTE BEDROCK
 // ============================================================
+// ✅ FIX 1.3: Eager initialization - Pre-warm clients at startup
+// Elimina 100-500ms de latência na primeira request
+// ============================================================
 
-let runtimeClient = null;
-let managementClient = null;
+let runtimeClient = new BedrockRuntimeClient({
+  region: CONFIG.region,
+  requestHandler: {
+    requestTimeout: 300000  // 300 segundos (5 min) - necessário para peças muito grandes (25-30 páginas)
+  }
+});
+
+let managementClient = new BedrockClient({
+  region: CONFIG.region,
+  requestHandler: {
+    requestTimeout: 300000  // 300 segundos (5 min) - necessário para peças muito grandes (25-30 páginas)
+  }
+});
 
 function getBedrockRuntimeClient() {
-  if (!runtimeClient) {
-    runtimeClient = new BedrockRuntimeClient({
-      region: CONFIG.region,
-      requestHandler: {
-        requestTimeout: 300000  // 300 segundos (5 min) - necessário para peças muito grandes (25-30 páginas)
-      }
-    });
-  }
-  return runtimeClient;
+  return runtimeClient;  // Already initialized at startup
 }
 
 function getBedrockManagementClient() {
-  if (!managementClient) {
-    managementClient = new BedrockClient({
-      region: CONFIG.region,
-      requestHandler: {
-        requestTimeout: 300000  // 300 segundos (5 min) - necessário para peças muito grandes (25-30 páginas)
-      }
-    });
-  }
-  return managementClient;
+  return managementClient;  // Already initialized at startup
 }
 
 // ============================================================

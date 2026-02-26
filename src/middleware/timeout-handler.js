@@ -35,6 +35,15 @@ function classifyRoute(path) {
  * Middleware: Aplica timeout baseado no tipo de rota
  */
 export function timeoutMiddleware(req, res, next) {
+  // ✅ FIX 1.5: Bypass timeout for SSE streaming routes
+  // SSE routes have their own timeout management (20 minutes)
+  // Applying middleware timeout would kill the stream prematurely
+  if (req.path === '/api/chat/stream' || req.path.includes('/stream')) {
+    req._bypassTimeout = true;
+    logger.debug('Timeout middleware bypassed for SSE route', { path: req.path });
+    return next();
+  }
+
   // Classificar rota
   const routeType = classifyRoute(req.path);
   const timeout = getTimeout('http', routeType);

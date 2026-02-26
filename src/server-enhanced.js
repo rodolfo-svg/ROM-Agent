@@ -241,16 +241,17 @@ function extractValue(text) {
 // ═══════════════════════════════════════════════════════════
 // INICIALIZAÇÃO DO BANCO DE DADOS (CRÍTICO - ANTES DE TUDO!)
 // ═══════════════════════════════════════════════════════════
-console.log('🔌 [STARTUP] Inicializando banco de dados ANTES de criar Express app...');
+// ✅ FIX 1.1: Non-blocking initialization - server starts immediately
+// DB connects in background while server opens port
+console.log('🔌 [STARTUP] Inicializando banco de dados em background (não bloqueia startup)...');
 console.log('🔌 [STARTUP] DATABASE_URL configurada:', !!process.env.DATABASE_URL);
 
-try {
-  await initPostgres();
-  console.log('✅ [STARTUP] PostgreSQL inicializado com sucesso');
-} catch (error) {
+// Fire and forget - connects in background
+initPostgres().catch(error => {
   console.error('❌ [STARTUP] Erro ao inicializar PostgreSQL:', error.message);
   console.error('⚠️  [STARTUP] Sessões usarão MemoryStore (dados perdidos em restart)');
-}
+});
+console.log('🔌 [STARTUP] PostgreSQL inicialização iniciada em background...');
 
 // ============================================================
 // HEALTH CHECK - MIGRATIONS
@@ -298,15 +299,19 @@ checkMigrations().catch(err => {
 });
 
 
-try {
-  await initRedis();
-  console.log('✅ [STARTUP] Redis inicializado com sucesso');
-} catch (error) {
+// Fire and forget - connects in background
+initRedis().catch(error => {
   console.error('❌ [STARTUP] Erro ao inicializar Redis:', error.message);
-}
+});
+console.log('🔌 [STARTUP] Redis inicialização iniciada em background...');
 
-const dbHealth = await checkDatabaseHealth();
-console.log('🔌 [STARTUP] Database Health:', JSON.stringify(dbHealth));
+// Check health in background (non-blocking)
+checkDatabaseHealth().then(dbHealth => {
+  console.log('🔌 [STARTUP] Database Health:', JSON.stringify(dbHealth));
+}).catch(error => {
+  console.warn('⚠️  [STARTUP] Database health check failed:', error.message);
+});
+
 console.log('━'.repeat(70));
 
 const app = express();
@@ -10667,7 +10672,14 @@ io.on('connection', (socket) => {
 extractionProgressService.initialize(io);
 console.log('[WebSocket] Extraction progress service initialized');
 
-httpServer.listen(PORT, HOST, async () => {
+/**
+ * Start the HTTP server with all initializations
+ * Exported for explicit control in cluster mode
+ */
+async function startServer() {
+  return new Promise((resolve, reject) => {
+    httpServer.listen(PORT, HOST, async () => {
+      try {
   // Database já foi inicializado no início do arquivo (antes de criar session middleware)
   console.log(`✅ [SERVER] Servidor iniciado em ${HOST}:${PORT}`);
   console.log(`✅ [SERVER] WebSocket server inicializado`);
@@ -10986,9 +10998,36 @@ Acesse: https://iarom.com.br/kb-documents.html
     logger.error('❌ Erro ao criar pasta de emergência:', error);
   }
 
-  // Pré-carregar modelos
-  await preloadModelos();
-});
+        // Pré-carregar modelos
+        await preloadModelos();
+
+        // Resolve the promise with server info
+        resolve({ httpServer, io, port: PORT, host: HOST });
+      } catch (error) {
+        logger.error('Erro durante inicialização do servidor:', error);
+        reject(error);
+      }
+    });
+
+    // Handle listen errors (EADDRINUSE, etc)
+    httpServer.on('error', (error) => {
+      if (error.code === 'EADDRINUSE') {
+        logger.error(`Porta ${PORT} já está em uso!`);
+        logger.error('Possíveis causas:');
+        logger.error('  1. Outra instância do servidor está rodando');
+        logger.error('  2. Outro aplicativo está usando a porta ${PORT}');
+        logger.error('  3. Processo anterior não foi encerrado corretamente');
+        logger.error('');
+        logger.error('Soluções:');
+        logger.error(`  - Use 'lsof -ti:${PORT} | xargs kill' para matar processos na porta`);
+        logger.error('  - Ou defina PORT diferente no .env');
+      } else {
+        logger.error('Erro ao iniciar servidor:', error);
+      }
+      reject(error);
+    });
+  });
+}
 
 // ═══════════════════════════════════════════════════════════════════════
 // ERROR HANDLERS v2.8.0 - Devem vir APÓS todas as rotas
@@ -11053,4 +11092,17 @@ async function gracefulShutdown(signal) {
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
+// ============================================================================
+// AUTO-START SERVER
+// ============================================================================
+// Note: In cluster mode, server-cluster.js explicitly calls startServer()
+// So we disable auto-start to prevent double initialization
+// For single-server mode (npm run web:single), the server must be started explicitly
+
+// Don't auto-start - let caller (server-cluster.js or scripts) start explicitly
+console.log('[Server] Server initialized - waiting for explicit startServer() call');
+console.log('[Server] Export: startServer(), app, httpServer, io');
+
+// Export both app and startServer for flexibility
 export default app;
+export { startServer, httpServer, io };

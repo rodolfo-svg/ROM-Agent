@@ -312,6 +312,55 @@ export const BEDROCK_TOOLS = [
 // EXECUTOR DE TOOLS
 // ============================================================
 
+// ✅ FIX 1.4: Tool execution timeout wrapper
+// Prevents tools from hanging indefinitely
+const TOOL_TIMEOUTS = {
+  pesquisar_jurisprudencia: 45000,      // 45s - complex searches
+  consultar_cnj_datajud: 30000,         // 30s - API call
+  pesquisar_sumulas: 30000,             // 30s - database search
+  consultar_kb: 45000,                  // 45s - semantic search
+  pesquisar_doutrina: 45000,            // 45s - complex searches
+  analisar_documento_kb: 60000,         // 60s - document analysis
+  create_artifact: 5000,                 // 5s - local operation
+  default: 30000                         // 30s default
+};
+
+/**
+ * Wrapper that adds timeout to tool execution
+ * @param {Function} toolExecutionFn - Function that executes the tool
+ * @param {string} toolName - Name of the tool
+ * @param {number} timeoutMs - Timeout in milliseconds
+ * @returns {Promise<object>} Result or timeout error
+ */
+async function executeWithTimeout(toolExecutionFn, toolName, timeoutMs) {
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => {
+      const error = new Error(`Tool execution timeout após ${timeoutMs}ms`);
+      error.code = 'TOOL_TIMEOUT';
+      reject(error);
+    }, timeoutMs);
+  });
+
+  try {
+    const result = await Promise.race([
+      toolExecutionFn(),
+      timeoutPromise
+    ]);
+    return result;
+  } catch (error) {
+    if (error.code === 'TOOL_TIMEOUT') {
+      console.error(`⏱️ [Tool Timeout] ${toolName} excedeu ${timeoutMs}ms`);
+      return {
+        success: false,
+        error: 'timeout',
+        message: `A pesquisa está demorando mais que o esperado (timeout: ${timeoutMs/1000}s). Tente refinar a busca ou consultar diretamente o site do tribunal.`,
+        tool: toolName
+      };
+    }
+    throw error;
+  }
+}
+
 /**
  * Executa uma tool chamada pela IA
  * @param {string} toolName - Nome da tool
@@ -321,8 +370,13 @@ export const BEDROCK_TOOLS = [
 export async function executeTool(toolName, toolInput) {
   console.log(`🔧 [Tool Use] Executando: ${toolName}`, toolInput);
 
-  try {
-    switch (toolName) {
+  const timeoutMs = TOOL_TIMEOUTS[toolName] || TOOL_TIMEOUTS.default;
+  console.log(`⏱️ [Tool Timeout] ${toolName} configurado para ${timeoutMs}ms`);
+
+  // Wrap tool execution with timeout
+  return executeWithTimeout(async () => {
+    try {
+      switch (toolName) {
       case 'pesquisar_jurisprudencia': {
         const { termo, tribunal, limite = 5, forcar_puppeteer = false } = toolInput;
 
@@ -1157,6 +1211,7 @@ export async function executeTool(toolName, toolInput) {
       content: `Erro ao executar a ferramenta ${toolName}: ${error.message}`
     };
   }
+  }, toolName, timeoutMs);  // ✅ FIX 1.4: Close executeWithTimeout wrapper
 }
 
 // ============================================================

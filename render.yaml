@@ -22,8 +22,9 @@ services:
     # CRÍTICO: Iniciar servidor IMEDIATAMENTE para evitar port scan timeout
     # Frontend já foi buildado no buildCommand
     # Migrations rodam assíncronamente após servidor abrir porta
-    # MEMÓRIA: 3GB para Node.js (Pro 4GB total, deixa 1GB para sistema)
-    startCommand: node --max-old-space-size=3072 scripts/ensure-frontend-build.js && node --max-old-space-size=3072 src/server-enhanced.js
+    # MEMÓRIA: 2 workers × 1.5GB = 3GB (Pro 4GB total: 3GB app + 1GB sistema)
+    # CLUSTER MODE: Usa server-cluster.js para aproveitar múltiplos cores
+    startCommand: node --max-old-space-size=1536 scripts/ensure-frontend-build.js && node --max-old-space-size=1536 src/server-cluster.js
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
@@ -34,9 +35,10 @@ services:
         value: 25.2.1
 
       # ═══ CONCORRÊNCIA - PRO PLAN ═══
-      # Permite múltiplos workers para processar uploads simultâneos
+      # 2 workers × 1.5GB = 3GB total (fits in 4GB RAM with system overhead)
+      # Previne OOM kills mantendo workers estáveis
       - key: WEB_CONCURRENCY
-        value: 4  # 4 workers = suporta 4-8 uploads simultâneos processando
+        value: 2  # 2 workers estáveis > 4 workers com OOM kills
 
       # Porta (Render usa 10000)
       - key: PORT
