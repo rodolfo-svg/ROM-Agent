@@ -4191,6 +4191,23 @@ function getGitCommit() {
   }
 }
 
+// ============================================================================
+// HEALTH CHECK SIMPLIFICADO para Render
+// ============================================================================
+// Este endpoint responde IMEDIATAMENTE (< 100ms) para que o Render considere
+// o deploy como sucesso SEM aguardar o preload de modelos (que pode levar 5-10s).
+//
+// O /api/info continua existindo para health checks completos, mas o Render
+// deve usar /health para validação de deploy.
+// ============================================================================
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: Math.floor(process.uptime())
+  });
+});
+
 // API - Info do sistema com health check completo
 app.get('/api/info', async (req, res) => {
   try {

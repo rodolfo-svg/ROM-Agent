@@ -138,7 +138,9 @@ services:
         value: 1800000  # 30 minutos - suporta uploads lentos de 500MB-1GB
 
     # ═══ HEALTH CHECK ═══
-    healthCheckPath: /api/info
+    # Usando /health (responde imediatamente) ao invés de /api/info (aguarda preload)
+    # Isso permite que o Render considere o deploy como sucesso SEM aguardar preload de modelos
+    healthCheckPath: /health
 
     # ═══ RECURSOS ═══
     # Disco persistente - 100 GB para múltiplos uploads simultâneos
@@ -279,7 +281,9 @@ services:
         value: 1800000  # 30 minutos - consistente com produção
 
     # ═══ HEALTH CHECK ═══
-    healthCheckPath: /api/info
+    # Usando /health (responde imediatamente) ao invés de /api/info (aguarda preload)
+    # Isso permite que o Render considere o deploy como sucesso SEM aguardar preload de modelos
+    healthCheckPath: /health
 
     # ═══ RECURSOS ═══
     # Disco persistente separado para staging
