@@ -22,9 +22,9 @@ services:
     # CRÍTICO: Iniciar servidor IMEDIATAMENTE para evitar port scan timeout
     # Frontend já foi buildado no buildCommand
     # Migrations rodam assíncronamente após servidor abrir porta
-    # MEMÓRIA: 2 workers × 1.5GB = 3GB (Pro 4GB total: 3GB app + 1GB sistema)
-    # CLUSTER MODE: Usa server-cluster.js para aproveitar múltiplos cores
-    startCommand: node --max-old-space-size=1536 scripts/ensure-frontend-build.js && node --max-old-space-size=1536 src/server-cluster.js
+    # TEMPORÁRIO: Desabilitando cluster mode para diagnosticar problema de deploy
+    # Depois de funcionar, voltaremos para server-cluster.js
+    startCommand: node --max-old-space-size=3072 scripts/ensure-frontend-build.js && node --max-old-space-size=3072 src/server-enhanced.js
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:

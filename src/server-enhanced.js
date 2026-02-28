@@ -325,11 +325,8 @@ app.set('trust proxy', true);
 // CRÍTICO: Este endpoint DEVE vir ANTES de CORS, rate limiting, e qualquer outro middleware
 // para que o Render consiga fazer health check durante deploy sem ser bloqueado
 app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    uptime: Math.floor(process.uptime())
-  });
+  console.error('[HEALTH-CHECK] ★★★ HEALTH CHECK CHAMADO ★★★');
+  res.status(200).json({ status: 'ok', uptime: Math.floor(process.uptime()) });
 });
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -11165,13 +11162,22 @@ process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 // ============================================================================
 // AUTO-START SERVER
 // ============================================================================
-// Note: In cluster mode, server-cluster.js explicitly calls startServer()
-// So we disable auto-start to prevent double initialization
-// For single-server mode (npm run web:single), the server must be started explicitly
+// TEMPORÁRIO: Auto-start quando executado diretamente (não via cluster)
+// Detecta se está sendo executado diretamente comparando import.meta.url com process.argv
 
-// Don't auto-start - let caller (server-cluster.js or scripts) start explicitly
-console.log('[Server] Server initialized - waiting for explicit startServer() call');
-console.log('[Server] Export: startServer(), app, httpServer, io');
+// Se executado diretamente (node src/server-enhanced.js), inicia servidor
+const currentFilePath = fileURLToPath(import.meta.url);
+if (process.argv[1] === currentFilePath) {
+  console.log('[Server] Executado diretamente - iniciando servidor automaticamente');
+  startServer().then(() => {
+    console.log('[Server] Servidor iniciado com sucesso');
+  }).catch((error) => {
+    console.error('[Server] Erro ao iniciar servidor:', error);
+    process.exit(1);
+  });
+} else {
+  console.log('[Server] Importado como módulo - aguardando chamada explícita de startServer()');
+}
 
 // Export both app and startServer for flexibility
 export default app;
