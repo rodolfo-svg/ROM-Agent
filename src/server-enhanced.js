@@ -320,6 +320,19 @@ const app = express();
 app.set('trust proxy', true);
 
 // ═══════════════════════════════════════════════════════════════════════
+// HEALTH CHECK - ANTES DE QUALQUER MIDDLEWARE (para Render deploy health check)
+// ═══════════════════════════════════════════════════════════════════════
+// CRÍTICO: Este endpoint DEVE vir ANTES de CORS, rate limiting, e qualquer outro middleware
+// para que o Render consiga fazer health check durante deploy sem ser bloqueado
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    uptime: Math.floor(process.uptime())
+  });
+});
+
+// ═══════════════════════════════════════════════════════════════════════
 // CORS - CRÍTICO PARA SSE (Server-Sent Events)
 // ═══════════════════════════════════════════════════════════════════════
 // IMPORTANTE: SSE com EventSource requer credentials: true
@@ -10359,19 +10372,6 @@ logger.info('✅ Pricing API endpoints configured');
 // ============================================================================
 // PR#2: OBSERVABILITY ENDPOINTS
 // ============================================================================
-
-// Health check endpoint - SIMPLIFICADO para Render deploy health check
-// Responde IMEDIATAMENTE (< 1ms) sem await para evitar timeout do Render
-// O Render precisa de resposta rápida durante deploy, health check completo
-// está disponível em /api/info para monitoramento detalhado
-app.get('/health', (req, res) => {
-  // Resposta imediata - sem async/await
-  res.status(200).json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    uptime: Math.floor(process.uptime())
-  });
-});
 
 // WebSocket health check endpoint
 app.get('/api/health/websocket', (req, res) => {
