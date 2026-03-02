@@ -6235,6 +6235,9 @@ app.get('/api/kb/documents', requireAuth, (req, res) => {
     // Filtrar documentos do usuário atual + documentos compartilhados (web-upload)
     const userDocs = allDocs.filter(doc => doc.userId === userId || doc.userId === 'web-upload');
 
+    // Log para debug
+    logger.info(`📚 [KB] Listando documentos: total=${allDocs.length}, userId=${userId}, filtered=${userDocs.length}`);
+
     // Retornar documentos formatados
     const documents = userDocs.map(doc => ({
       id: doc.id,
@@ -6247,6 +6250,11 @@ app.get('/api/kb/documents', requireAuth, (req, res) => {
       path: doc.path, // ✅ FIX: Incluir path para análise V2 poder ler o arquivo
       metadata: doc.metadata
     }));
+
+    // 🔥 FIX: No-cache headers para sempre pegar dados frescos
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
 
     res.json({ documents });
   } catch (error) {
