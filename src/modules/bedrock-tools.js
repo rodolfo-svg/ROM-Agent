@@ -990,21 +990,33 @@ export async function executeTool(toolName, toolInput) {
           console.log(`   🔍 Estrutura completa do documento:`);
           console.log(JSON.stringify(doc, null, 2));
 
-          // Ler texto completo do documento
-          if (!doc.path || !fs.existsSync(doc.path)) {
-            console.log(`   ❌ ERRO: Arquivo não encontrado!`);
-            console.log(`      - doc.path: ${doc.path}`);
+          // Ler texto completo do documento (com fallback)
+          let rawText;
+
+          // Tentar ler do path físico primeiro
+          if (doc.path && fs.existsSync(doc.path)) {
+            console.log(`   ✅ Arquivo existe no disco: ${doc.path}`);
+            rawText = fs.readFileSync(doc.path, 'utf-8');
+          }
+          // Fallback: usar extractedText do registro (documentos estruturados têm texto no KB)
+          else if (doc.extractedText) {
+            console.log(`   ⚠️  Path não existe, usando extractedText do registro KB`);
+            console.log(`      - doc.path: ${doc.path || 'não definido'}`);
+            console.log(`      - extractedText length: ${doc.extractedText.length} chars`);
+            rawText = doc.extractedText;
+          }
+          // Nenhuma fonte de texto disponível
+          else {
+            console.log(`   ❌ ERRO: Nenhuma fonte de texto disponível!`);
+            console.log(`      - doc.path: ${doc.path || 'não definido'}`);
             console.log(`      - fs.existsSync: ${doc.path ? fs.existsSync(doc.path) : 'N/A'}`);
+            console.log(`      - doc.extractedText: ${doc.extractedText ? 'exists' : 'undefined'}`);
 
             return {
               success: false,
-              content: `Arquivo do documento "${doc.name}" não encontrado no disco. Path: ${doc.path || 'não definido'}`
+              content: `Erro ao acessar documento "${doc.name}".\n\nPath: ${doc.path || 'não definido'}\nArquivo existe: ${doc.path ? fs.existsSync(doc.path) : 'N/A'}\nTexto no registro: ${doc.extractedText ? 'Sim' : 'Não'}\n\nPor favor, faça upload do documento novamente.`
             };
           }
-
-          console.log(`   ✅ Arquivo existe no disco!`);
-
-          const rawText = fs.readFileSync(doc.path, 'utf-8');
 
           // Processar com DocumentProcessorV2
           console.log(`   ⚙️ Iniciando processamento V2...`);

@@ -125,28 +125,22 @@ router.post('/', async (req, res) => {
     console.log(`   ✅ Documento encontrado: ${doc.name || doc.originalName}`);
     console.log(`   📂 Path: ${doc.path}`);
 
-    // Verificar se arquivo existe no disco
-    if (!doc.path || !fs.existsSync(doc.path)) {
-      return res.status(404).json({
-        success: false,
-        error: `Arquivo do documento "${doc.name}" não encontrado no disco`,
-        path: doc.path || 'não definido'
-      });
-    }
-
-    console.log(`   ✅ Arquivo existe no disco`);
-
     // ═══════════════════════════════════════════════════════════
     // MERGE-FIRST ANALYSIS: Detectar documentos mesclados
     // ═══════════════════════════════════════════════════════════
     const isMergedDocument = doc.metadata?.isMergedDocument === true;
     const sourceVolumes = doc.metadata?.sourceVolumes || [];
 
-    console.log(`   📖 Lendo arquivo do disco...`);
+    // Obter texto do documento (com fallback)
     let rawText;
     let isPDF = false;
 
-    try {
+    // Tentar ler do path físico primeiro
+    if (doc.path && fs.existsSync(doc.path)) {
+      console.log(`   ✅ Arquivo existe no disco: ${doc.path}`);
+      console.log(`   📖 Lendo arquivo do disco...`);
+
+      try {
       const fileExtension = path.extname(doc.path).toLowerCase();
 
       if (fileExtension === '.pdf' && isMergedDocument && sourceVolumes.length > 0) {
@@ -241,6 +235,32 @@ router.post('/', async (req, res) => {
         success: false,
         error: `Erro ao ler arquivo: ${readError.message}`,
         path: doc.path
+      });
+    }
+  }
+  // Fallback: usar extractedText do registro KB (documentos estruturados)
+  else if (doc.extractedText) {
+      console.log(`   ⚠️  Path não existe, usando extractedText do registro KB`);
+      console.log(`      - doc.path: ${doc.path || 'não definido'}`);
+      console.log(`      - extractedText length: ${doc.extractedText.length} chars`);
+      rawText = doc.extractedText;
+    }
+    // Nenhuma fonte de texto disponível
+    else {
+      console.log(`   ❌ ERRO: Nenhuma fonte de texto disponível!`);
+      console.log(`      - doc.path: ${doc.path || 'não definido'}`);
+      console.log(`      - fs.existsSync: ${doc.path ? fs.existsSync(doc.path) : 'N/A'}`);
+      console.log(`      - doc.extractedText: ${doc.extractedText ? 'exists' : 'undefined'}`);
+
+      return res.status(404).json({
+        success: false,
+        error: `Erro ao acessar documento "${doc.name}"`,
+        details: {
+          path: doc.path || 'não definido',
+          fileExists: doc.path ? fs.existsSync(doc.path) : false,
+          hasExtractedText: !!doc.extractedText
+        },
+        message: 'Por favor, faça upload do documento novamente.'
       });
     }
 
