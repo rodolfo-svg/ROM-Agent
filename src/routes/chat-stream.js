@@ -459,7 +459,8 @@ router.post('/stream', async (req, res) => {
       kbContext,
       maxTokens,
       temperature,
-      enableTools: true  // ✅ CRÍTICO: Habilitar ferramentas (jurisprudência, KB, CNJ, súmulas)
+      enableTools: true,  // ✅ CRÍTICO: Habilitar ferramentas (jurisprudência, KB, CNJ, súmulas)
+      userId: userId  // 🔥 FIX CRÍTICO: Passar userId para que arquivos gerados tenham userId correto
     });
 
     const totalTime = Date.now() - startTime;

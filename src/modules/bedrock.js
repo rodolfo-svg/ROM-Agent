@@ -440,7 +440,8 @@ export async function conversar(prompt, options = {}) {
           toolsUsed.push({ name, input });
 
           try {
-            const result = await executeTool(name, input);
+            // 🔥 FIX: Passar context com userId para tools
+            const result = await executeTool(name, input, { userId });
 
             toolResults.push({
               toolResult: {
@@ -643,7 +644,8 @@ export async function conversarStream(prompt, onChunk, options = {}) {
     maxTokens: requestedMaxTokens = CONFIG.maxTokens,
     temperature = CONFIG.temperature,
     kbContext = '',  // ← NOVO: contexto do KB para cálculo de tokens
-    enableTools = true  // ✅ NOVO: Habilitar ferramentas por padrão (jurisprudência, KB, CNJ)
+    enableTools = true,  // ✅ NOVO: Habilitar ferramentas por padrão (jurisprudência, KB, CNJ)
+    userId = null  // 🔥 FIX: userId para passar para tools
   } = options;
 
   // 🛡️ SEGURANÇA: Limitar maxTokens ao máximo absoluto
@@ -1216,7 +1218,8 @@ export async function conversarStream(prompt, onChunk, options = {}) {
         }
 
         try {
-          const result = await executeTool(tool.name, tool.input);
+          // 🔥 FIX: Passar context com userId para tools
+          const result = await executeTool(tool.name, tool.input, { userId });
 
           // Limpar heartbeat se estava rodando
           if (heartbeatInterval) {

@@ -365,10 +365,12 @@ async function executeWithTimeout(toolExecutionFn, toolName, timeoutMs) {
  * Executa uma tool chamada pela IA
  * @param {string} toolName - Nome da tool
  * @param {object} toolInput - Parâmetros da tool
+ * @param {object} context - Contexto da execução (userId, etc)
  * @returns {Promise<object>} Resultado da execução
  */
-export async function executeTool(toolName, toolInput) {
+export async function executeTool(toolName, toolInput, context = {}) {
   console.log(`🔧 [Tool Use] Executando: ${toolName}`, toolInput);
+  console.log(`   🔐 Context userId: ${context.userId || 'não fornecido'}`);
 
   const timeoutMs = TOOL_TIMEOUTS[toolName] || TOOL_TIMEOUTS.default;
   console.log(`⏱️ [Tool Timeout] ${toolName} configurado para ${timeoutMs}ms`);
@@ -1069,7 +1071,8 @@ export async function executeTool(toolName, toolInput) {
                 extractionModel: 'nova-micro',
                 analysisModel: model,
                 generateFiles: true,
-                saveToKB: true
+                saveToKB: true,
+                userId: context.userId || 'web-upload'  // 🔥 FIX CRÍTICO: Passar userId para que arquivos apareçam no filtro
               }
             );
 
@@ -1084,7 +1087,9 @@ export async function executeTool(toolName, toolInput) {
             const intermediateDoc = await documentProcessorV2.saveExtractedTextToKB(
               extraction.extractedText,
               doc.id,
-              doc.name || doc.originalName
+              doc.name || doc.originalName,
+              true,  // saveToDocuments
+              context.userId || 'web-upload'  // 🔥 FIX CRÍTICO: Passar userId para que arquivo apareça no filtro
             );
 
             result = {

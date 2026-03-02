@@ -155,7 +155,8 @@ router.post('/analyze', async (req, res) => {
         {
           analysisType,
           model,
-          jobId: null
+          jobId: null,
+          userId: req.session?.user?.id || 'web-upload'  // 🔥 FIX: Passar userId para que arquivos apareçam no filtro
         }
       );
     }
