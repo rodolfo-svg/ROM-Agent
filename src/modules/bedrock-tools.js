@@ -320,7 +320,7 @@ const TOOL_TIMEOUTS = {
   pesquisar_sumulas: 30000,             // 30s - database search
   consultar_kb: 45000,                  // 45s - semantic search
   pesquisar_doutrina: 45000,            // 45s - complex searches
-  analisar_documento_kb: 60000,         // 60s - document analysis
+  analisar_documento_kb: 600000,        // 🔥 FIX: 10 min (4 análises × 2 min cada + margem)
   create_artifact: 5000,                 // 5s - local operation
   default: 30000                         // 30s default
 };
@@ -1122,30 +1122,49 @@ export async function executeTool(toolName, toolInput) {
 
           if (analysis_type === 'complete' && result.technicalFiles) {
             responseContent += `\n## 📋 FICHEIROS TÉCNICOS GERADOS:\n\n`;
+            responseContent += `💾 **Os ficheiros completos foram salvos no KB e estão disponíveis para consulta.**\n\n`;
+
+            // 🔥 FIX: Retornar apenas resumo de cada ficheiro para evitar truncamento
+            // Tool response estava com >20k chars, causando timeout no LLM
+            const MAX_PREVIEW = 800;  // Caracteres de preview por ficheiro
 
             if (result.technicalFiles.RESUMO_EXECUTIVO) {
-              responseContent += `### 📝 RESUMO EXECUTIVO\n\n`;
-              responseContent += result.technicalFiles.RESUMO_EXECUTIVO;
+              const preview = result.technicalFiles.RESUMO_EXECUTIVO.slice(0, MAX_PREVIEW);
+              const truncated = result.technicalFiles.RESUMO_EXECUTIVO.length > MAX_PREVIEW;
+              responseContent += `### 📝 RESUMO EXECUTIVO ${truncated ? '(preview)' : ''}\n\n`;
+              responseContent += preview;
+              if (truncated) responseContent += `\n\n... [Continua no ficheiro salvo no KB]\n`;
               responseContent += `\n\n---\n\n`;
             }
 
             if (result.technicalFiles.FICHAMENTO) {
-              responseContent += `### 📄 FICHAMENTO ESTRUTURADO\n\n`;
-              responseContent += result.technicalFiles.FICHAMENTO;
+              const preview = result.technicalFiles.FICHAMENTO.slice(0, MAX_PREVIEW);
+              const truncated = result.technicalFiles.FICHAMENTO.length > MAX_PREVIEW;
+              responseContent += `### 📄 FICHAMENTO ESTRUTURADO ${truncated ? '(preview)' : ''}\n\n`;
+              responseContent += preview;
+              if (truncated) responseContent += `\n\n... [Continua no ficheiro salvo no KB]\n`;
               responseContent += `\n\n---\n\n`;
             }
 
             if (result.technicalFiles.CRONOLOGIA) {
-              responseContent += `### 📅 CRONOLOGIA DETALHADA\n\n`;
-              responseContent += result.technicalFiles.CRONOLOGIA;
+              const preview = result.technicalFiles.CRONOLOGIA.slice(0, MAX_PREVIEW);
+              const truncated = result.technicalFiles.CRONOLOGIA.length > MAX_PREVIEW;
+              responseContent += `### 📅 CRONOLOGIA DETALHADA ${truncated ? '(preview)' : ''}\n\n`;
+              responseContent += preview;
+              if (truncated) responseContent += `\n\n... [Continua no ficheiro salvo no KB]\n`;
               responseContent += `\n\n---\n\n`;
             }
 
             if (result.technicalFiles.ANALISE_JURIDICA) {
-              responseContent += `### ⚖️ ANÁLISE JURÍDICA TÉCNICA\n\n`;
-              responseContent += result.technicalFiles.ANALISE_JURIDICA;
+              const preview = result.technicalFiles.ANALISE_JURIDICA.slice(0, MAX_PREVIEW);
+              const truncated = result.technicalFiles.ANALISE_JURIDICA.length > MAX_PREVIEW;
+              responseContent += `### ⚖️ ANÁLISE JURÍDICA TÉCNICA ${truncated ? '(preview)' : ''}\n\n`;
+              responseContent += preview;
+              if (truncated) responseContent += `\n\n... [Continua no ficheiro salvo no KB]\n`;
               responseContent += `\n\n---\n\n`;
             }
+
+            responseContent += `\n💡 **Para ver os ficheiros completos, consulte a Knowledge Base.**\n`;
 
           } else if (analysis_type === 'extract_only') {
             responseContent += `\n✅ Texto completo extraído e salvo no KB como:\n`;
