@@ -6282,6 +6282,180 @@ app.post('/api/kb/cache/reload', requireAuth, generalLimiter, async (req, res) =
   }
 });
 
+/**
+ * POST /api/kb/cache/clean
+ * 🧹 Remove documentos fantasmas (sem arquivo físico no disco)
+ * Admin/debug endpoint
+ */
+app.post('/api/kb/cache/clean', requireAuth, generalLimiter, async (req, res) => {
+  try {
+    logger.info('🧹 Iniciando limpeza de documentos fantasmas...');
+
+    const allDocs = kbCache.getAll();
+    const beforeCount = allDocs.length;
+
+    const validDocs = [];
+    const ghostDocs = [];
+
+    // Verificar quais documentos ainda existem no disco
+    for (const doc of allDocs) {
+      if (doc.path && fs.existsSync(doc.path)) {
+        validDocs.push(doc);
+      } else {
+        ghostDocs.push({
+          id: doc.id,
+          name: doc.name,
+          path: doc.path || 'sem path',
+          userId: doc.userId
+        });
+        logger.info(`   👻 Documento fantasma: ${doc.name} (id: ${doc.id})`);
+      }
+    }
+
+    // Substituir cache apenas com docs válidos
+    if (ghostDocs.length > 0) {
+      kbCache.replaceAll(validDocs);
+      logger.info(`✅ ${ghostDocs.length} documento(s) fantasma(s) removido(s)`);
+    } else {
+      logger.info('✨ Nenhum documento fantasma encontrado');
+    }
+
+    res.json({
+      success: true,
+      message: `Limpeza concluída`,
+      beforeCount,
+      afterCount: validDocs.length,
+      ghostsRemoved: ghostDocs.length,
+      ghosts: ghostDocs
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao limpar KB cache:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * DELETE /api/kb/documents/user/:userId/all
+ * 🗑️ Deleta TODOS os documentos de um usuário específico
+ * Admin/dangerous endpoint
+ */
+app.delete('/api/kb/documents/user/:userId/all', requireAuth, generalLimiter, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const currentUserId = req.session.user.id;
+    const currentUserRole = req.session.user.role;
+
+    // Segurança: apenas o próprio usuário ou admin pode deletar
+    if (userId !== currentUserId && currentUserRole !== 'admin') {
+      return res.status(403).json({ error: 'Não autorizado' });
+    }
+
+    logger.info(`🗑️ Deletando TODOS os documentos do usuário: ${userId}`);
+
+    const allDocs = kbCache.getAll();
+    const userDocs = allDocs.filter(doc => doc.userId === userId);
+    const otherDocs = allDocs.filter(doc => doc.userId !== userId);
+
+    logger.info(`   Encontrados: ${userDocs.length} documentos do usuário`);
+    logger.info(`   Manter: ${otherDocs.length} documentos de outros usuários`);
+
+    let deletedCount = 0;
+    let errorCount = 0;
+
+    // Deletar arquivos físicos
+    for (const doc of userDocs) {
+      try {
+        if (doc.path && fs.existsSync(doc.path)) {
+          await fs.promises.unlink(doc.path);
+          deletedCount++;
+          logger.info(`   ✅ Deletado: ${doc.name}`);
+        }
+
+        // Deletar metadados
+        if (doc.path) {
+          const metadataPath = doc.path.replace(/\.(pdf|docx|txt|md)$/, '.metadata.json');
+          if (fs.existsSync(metadataPath)) {
+            await fs.promises.unlink(metadataPath);
+          }
+        }
+
+        // Deletar ficheiros estruturados
+        if (doc.metadata && doc.metadata.structuredDocsInKB) {
+          for (const file of doc.metadata.structuredDocsInKB) {
+            if (file.path && fs.existsSync(file.path)) {
+              await fs.promises.unlink(file.path);
+            }
+          }
+        }
+      } catch (error) {
+        errorCount++;
+        logger.error(`   ❌ Erro ao deletar ${doc.name}:`, error.message);
+      }
+    }
+
+    // Atualizar cache apenas com docs de outros usuários
+    kbCache.replaceAll(otherDocs);
+
+    logger.info(`✅ Limpeza concluída: ${deletedCount} deletados, ${errorCount} erros`);
+
+    res.json({
+      success: true,
+      message: `${deletedCount} documento(s) deletado(s)`,
+      deleted: deletedCount,
+      errors: errorCount,
+      remaining: otherDocs.length
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao deletar documentos do usuário:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
+ * GET /api/kb/documents/validate
+ * 📊 Valida integridade do KB - lista docs válidos vs fantasmas
+ */
+app.get('/api/kb/documents/validate', requireAuth, generalLimiter, (req, res) => {
+  try {
+    const allDocs = kbCache.getAll();
+    const userId = req.session.user.id;
+
+    // Filtrar docs do usuário atual
+    const userDocs = allDocs.filter(doc => doc.userId === userId || doc.userId === 'web-upload');
+
+    const valid = [];
+    const ghosts = [];
+
+    for (const doc of userDocs) {
+      if (doc.path && fs.existsSync(doc.path)) {
+        valid.push({
+          id: doc.id,
+          name: doc.name,
+          size: doc.size,
+          path: doc.path
+        });
+      } else {
+        ghosts.push({
+          id: doc.id,
+          name: doc.name,
+          path: doc.path || 'sem path'
+        });
+      }
+    }
+
+    res.json({
+      total: userDocs.length,
+      valid: valid.length,
+      ghosts: ghosts.length,
+      validDocuments: valid,
+      ghostDocuments: ghosts
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao validar KB:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Download de documento do KB (requer autenticação e ownership)
 app.get('/api/kb/documents/:id/download', requireAuth, (req, res) => {
   try {
