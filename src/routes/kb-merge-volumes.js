@@ -11,6 +11,7 @@ import { PDFDocument } from 'pdf-lib';
 import fs from 'fs/promises';
 import path from 'path';
 import { ACTIVE_PATHS } from '../../lib/storage-config.js';
+import kbCache from '../../lib/kb-cache.js';  // 🚀 Cache em memória
 import logger from '../../lib/logger.js';
 import { requireAuth } from '../middleware/auth.js';
 
@@ -167,18 +168,8 @@ router.post('/', requireAuth, upload.array('files', 10), async (req, res) => {
     logger.info(`   ✅ PDF mesclado criado: ${mergedFilename}`);
     logger.info(`   📊 Total: ${totalPages} páginas, ${formatBytes(mergedSize)}`);
 
-    // Criar documento no KB
-    const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');
-    let allDocs = [];
-
-    try {
-      const content = await fs.readFile(kbDocsPath, 'utf8');
-      allDocs = JSON.parse(content);
-    } catch (error) {
-      // Arquivo não existe, criar novo array
-      allDocs = [];
-    }
-
+    // Criar documento no KB usando cache em memória
+    // 🚀 OTIMIZADO: Usar kbCache (antes: fs.readFile + fs.writeFile bloqueantes)
     const documentId = `merged-${timestamp}`;
 
     // DEBUG: Log session info
@@ -203,8 +194,8 @@ router.post('/', requireAuth, upload.array('files', 10), async (req, res) => {
       }
     };
 
-    allDocs.push(newDoc);
-    await fs.writeFile(kbDocsPath, JSON.stringify(allDocs, null, 2));
+    // Adicionar ao cache (salva automaticamente com debounce)
+    kbCache.add(newDoc);
 
     logger.info(`   ✅ Documento adicionado ao KB: ${documentId}`);
 
