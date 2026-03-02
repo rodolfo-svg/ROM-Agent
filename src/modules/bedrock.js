@@ -1197,11 +1197,31 @@ export async function conversarStream(prompt, onChunk, options = {}) {
                             tool.name === 'consultar_cnj_datajud' ? '⏳ Acessando DataJud...' :
                             tool.name === 'pesquisar_sumulas' ? '⏳ Buscando súmulas...' :
                             tool.name === 'consultar_kb' ? '⏳ Consultando documentos...' :
+                            tool.name === 'analisar_documento_kb' ? '⏳ Analisando documento (pode levar alguns minutos)...' :
                             `⏳ Executando ${tool.name}...`;
         onChunk(toolStartMsg);
 
+        // 🔥 FIX: Para tools longas (analisar_documento_kb), enviar heartbeat a cada 30s
+        // Isso mantém conexão SSE viva e evita timeout do proxy (Render = 60s)
+        let heartbeatInterval = null;
+        if (tool.name === 'analisar_documento_kb') {
+          let elapsed = 0;
+          heartbeatInterval = setInterval(() => {
+            elapsed += 30;
+            const minutes = Math.floor(elapsed / 60);
+            const seconds = elapsed % 60;
+            const timeStr = minutes > 0 ? `${minutes}min ${seconds}s` : `${seconds}s`;
+            onChunk(`\n⏳ Processando... ${timeStr}\n`);
+          }, 30000);  // Heartbeat a cada 30 segundos
+        }
+
         try {
           const result = await executeTool(tool.name, tool.input);
+
+          // Limpar heartbeat se estava rodando
+          if (heartbeatInterval) {
+            clearInterval(heartbeatInterval);
+          }
 
           // 🎨 ESPECIAL: Se for create_artifact, enviar evento especial para o frontend
           if (tool.name === 'create_artifact' && result.success && result.artifact) {
@@ -1253,6 +1273,11 @@ export async function conversarStream(prompt, onChunk, options = {}) {
           });
           console.log(`✅ Ferramenta ${tool.name} executada com sucesso`);
         } catch (error) {
+          // 🔥 FIX: Limpar heartbeat se estava rodando
+          if (heartbeatInterval) {
+            clearInterval(heartbeatInterval);
+          }
+
           console.error(`❌ Erro ao executar ${tool.name}:`, error);
           onChunk(' ✗ (erro)\n');
           toolResults.push({
