@@ -25,6 +25,7 @@ import { buildSystemPrompt } from '../server-enhanced.js';
 import { getSSEConnectionManager } from '../utils/sse-connection-manager.js';
 import conversationMemoryService from '../services/conversation-memory-service.js';
 import * as ConversationRepository from '../repositories/conversation-repository.js';
+import { estimateTokens, getSafeContextLimit, extractRelevantSections } from '../utils/context-manager.js';
 
 const router = express.Router();
 const sseManager = getSSEConnectionManager();
@@ -436,6 +437,30 @@ router.post('/stream', async (req, res) => {
       }
     }
 
+    // ✅ PERFORMANCE: Truncar contextos muito grandes para prevenir timeouts e OOM
+    const safeLimit = getSafeContextLimit(selectedModel);
+    let truncatedKbContext = kbContext;
+    let truncatedAdditionalContext = additionalContext;
+
+    // Truncar KB context se necessário
+    if (kbContext) {
+      const kbTokens = estimateTokens(kbContext);
+      if (kbTokens > safeLimit * 0.4) { // Max 40% do limite para KB
+        logger.warn(`[${requestId}] KB context muito grande (${kbTokens} tokens), truncando para ${Math.floor(safeLimit * 0.4)} tokens`);
+        const extracted = extractRelevantSections(kbContext, message, Math.floor(safeLimit * 0.4));
+        truncatedKbContext = extracted.content;
+      }
+    }
+
+    // Truncar additional context se necessário
+    if (additionalContext) {
+      const additionalTokens = estimateTokens(additionalContext);
+      if (additionalTokens > safeLimit * 0.2) { // Max 20% do limite para contexto hierárquico
+        logger.warn(`[${requestId}] Additional context muito grande (${additionalTokens} tokens), truncando`);
+        truncatedAdditionalContext = additionalContext.substring(0, Math.floor(safeLimit * 0.2 * 3.5));
+      }
+    }
+
     // ✅ CRÍTICO: Usar systemPrompt com instruções de ferramentas se não vier do frontend
     // 🔧 IMPORTANTE: Passar context correto para garantir que Custom Instructions sejam aplicadas
     let finalSystemPrompt = systemPrompt || buildSystemPrompt({
@@ -447,8 +472,8 @@ router.post('/stream', async (req, res) => {
     });
 
     // Adicionar contexto hierárquico ao system prompt se disponível
-    if (additionalContext) {
-      finalSystemPrompt = `${finalSystemPrompt}\n\n${additionalContext}`;
+    if (truncatedAdditionalContext) {
+      finalSystemPrompt = `${finalSystemPrompt}\n\n${truncatedAdditionalContext}`;
     }
 
     // Executar streaming (sem timeout - permitir documentos grandes)
@@ -456,7 +481,7 @@ router.post('/stream', async (req, res) => {
       modelo: selectedModel,
       systemPrompt: finalSystemPrompt,  // ✅ Sempre usar systemPrompt (com instruções de ferramentas)
       historico: limitedHistory, // Usar histórico limitado
-      kbContext,
+      kbContext: truncatedKbContext, // ✅ Usar contexto truncado para performance
       maxTokens,
       temperature,
       enableTools: true,  // ✅ CRÍTICO: Habilitar ferramentas (jurisprudência, KB, CNJ, súmulas)

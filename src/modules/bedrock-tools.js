@@ -959,8 +959,9 @@ export async function executeTool(toolName, toolInput, context = {}) {
         console.log(`   Modelo: ${model}`);
 
         try {
-          // Importar document-processor-v2
-          const { documentProcessorV2 } = await import('../../lib/document-processor-v2.js');
+          // Importar document-processor-v2 (com cache busting para forçar reload)
+          const cacheBuster = `?v=${Date.now()}`;
+          const { documentProcessorV2 } = await import(`../../lib/document-processor-v2.js${cacheBuster}`);
 
           // Buscar documento na KB
           const kbDocsPath = path.join(ACTIVE_PATHS.data, 'kb-documents.json');

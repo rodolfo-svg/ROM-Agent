@@ -22,9 +22,8 @@ services:
     # CRÍTICO: Iniciar servidor IMEDIATAMENTE para evitar port scan timeout
     # Frontend já foi buildado no buildCommand
     # Migrations rodam assíncronamente após servidor abrir porta
-    # TEMPORÁRIO: Desabilitando cluster mode para diagnosticar problema de deploy
-    # Depois de funcionar, voltaremos para server-cluster.js
-    startCommand: node --max-old-space-size=3072 scripts/ensure-frontend-build.js && node --max-old-space-size=3072 src/server-enhanced.js
+    # Heap size otimizado: 1536MB × 2 workers = 3GB total (fits in 4GB RAM)
+    startCommand: node --max-old-space-size=1536 scripts/ensure-frontend-build.js && node --max-old-space-size=1536 src/server-cluster.js
 
     # ═══ VARIÁVEIS DE AMBIENTE ═══
     envVars:
