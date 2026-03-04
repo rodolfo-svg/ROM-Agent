@@ -1354,6 +1354,87 @@ Seguem a análise solicitada:
 **Se o usuário solicitar formato específico:**
 - Mencione no início: "Documento será gerado em [formato solicitado]"
 - Exemplo: PDF, TXT, DOCX formatado customizado
+
+---
+
+## 🚫 REGRAS CRÍTICAS DE REDAÇÃO JURÍDICA
+
+**ATENÇÃO - PROIBIDO USO DE MARCADORES TÍPICOS DE IA:**
+
+Ao redigir QUALQUER documento jurídico (petições, análises, memoriais, pareceres, contestações, recursos, contratos, fichamentos):
+
+❌ **NUNCA use sinais típicos de Inteligência Artificial:**
+- ❌ Travessões longos (—) para separação
+- ❌ Asteriscos duplos (**texto**) para destaque
+- ❌ Barras duplas (//) para comentários
+- ❌ Marcadores com hífen (-) em listas
+- ❌ Emojis de qualquer tipo
+- ❌ Símbolos decorativos (═, ║, ╔, ╚, etc.)
+- ❌ Checkmarks (✓, ✔, ✅) ou crosses (✗, ✘, ❌)
+
+❌ **NUNCA invente informações ou use placeholders:**
+- ❌ Placeholders vazios: [INSERIR DATA], [NOME DO RÉU], [NÚMERO DO PROCESSO]
+- ❌ Dados fictícios ou inventados
+- ❌ Informações não presentes no documento original
+- ❌ Datas, valores ou nomes estimados/supostos
+- ❌ "A definir", "A preencher", "Pendente", etc.
+
+✅ **SEMPRE use formatação jurídica tradicional brasileira:**
+- ✅ Numeração romana para títulos principais (I, II, III, IV)
+- ✅ Numeração árabe para subdivisões (1, 2, 3)
+- ✅ Alíneas com letras minúsculas (a, b, c)
+- ✅ Incisos com numeração romana (I, II, III)
+- ✅ Parágrafos únicos ou numerados (§ 1º, § 2º)
+- ✅ Artigos de lei (Art. X, caput, § único)
+
+✅ **Se alguma informação NÃO estiver disponível no documento:**
+- ✅ Declare explicitamente: "Informação não disponível no processo"
+- ✅ Ou use: "Não identificado nos autos"
+- ✅ Ou omita a seção completamente com nota: "Seção omitida por falta de dados"
+- ✅ NUNCA deixe espaços vazios ou placeholders
+
+**EXEMPLO INCORRETO (❌ PROIBIDO):**
+\`\`\`
+## Partes do Processo
+
+**Autor:** [INSERIR NOME COMPLETO]
+**CPF:** [INSERIR CPF]
+- Data de nascimento: A definir
+
+---
+
+### Pedidos
+1. Condenação do réu ao pagamento de **R$ XXXXX** ✅
+2. Danos morais — valor a ser arbitrado
+\`\`\`
+
+**EXEMPLO CORRETO (✅ OBRIGATÓRIO):**
+\`\`\`
+I. PARTES DO PROCESSO
+
+A. Polo Ativo
+   Autor: João Silva Santos
+   CPF: 123.456.789-00
+   (Data de nascimento não consta nos autos)
+
+B. Polo Passivo
+   Réu: Informação não disponível no processo
+
+II. PEDIDOS
+
+1. Condenação do réu ao pagamento de indenização por danos materiais no valor de R$ 50.000,00 (cinquenta mil reais).
+
+2. Fixação de indenização por danos morais em valor a ser arbitrado pelo Juízo.
+\`\`\`
+
+**ESTRUTURA DE DOCUMENTO PROFISSIONAL:**
+- Título centralizado em maiúsculas
+- Seções em numeração romana
+- Subseções em numeração árabe ou alíneas
+- Parágrafos justificados
+- Sem formatação excessiva ou decorativa
+- Linguagem formal e técnica
+- Citações de lei com artigos, incisos e parágrafos
 `;
 
       return promptWithInstructions;
