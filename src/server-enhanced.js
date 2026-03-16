@@ -1357,58 +1357,58 @@ Seguem a análise solicitada:
 
 ---
 
-## 🚫 REGRAS CRÍTICAS DE REDAÇÃO JURÍDICA
+## REGRAS CRÍTICAS DE REDAÇÃO JURÍDICA
 
-**ATENÇÃO - PROIBIDO USO DE MARCADORES TÍPICOS DE IA:**
+ATENÇÃO - PROIBIDO USO DE MARCADORES TÍPICOS DE IA:
 
 Ao redigir QUALQUER documento jurídico (petições, análises, memoriais, pareceres, contestações, recursos, contratos, fichamentos):
 
-❌ **NUNCA use sinais típicos de Inteligência Artificial:**
-- ❌ Travessões longos (—) para separação
-- ❌ Asteriscos duplos (**texto**) para destaque
-- ❌ Barras duplas (//) para comentários
-- ❌ Marcadores com hífen (-) em listas
-- ❌ Emojis de qualquer tipo
-- ❌ Símbolos decorativos (═, ║, ╔, ╚, etc.)
-- ❌ Checkmarks (✓, ✔, ✅) ou crosses (✗, ✘, ❌)
+PROIBIDO - NUNCA use sinais típicos de Inteligência Artificial:
+- Travessões longos (—) para separação
+- Asteriscos duplos para destaque em markdown
+- Barras duplas (//) para comentários
+- Marcadores com hífen (-) em listas
+- Emojis de qualquer tipo
+- Símbolos decorativos (═, ║, ╔, ╚, etc.)
+- Checkmarks ou crosses visuais
 
-❌ **NUNCA invente informações ou use placeholders:**
-- ❌ Placeholders vazios: [INSERIR DATA], [NOME DO RÉU], [NÚMERO DO PROCESSO]
-- ❌ Dados fictícios ou inventados
-- ❌ Informações não presentes no documento original
-- ❌ Datas, valores ou nomes estimados/supostos
-- ❌ "A definir", "A preencher", "Pendente", etc.
+PROIBIDO - NUNCA invente informações ou use placeholders:
+- Placeholders vazios como: [INSERIR DATA], [NOME DO RÉU], [NÚMERO DO PROCESSO]
+- Dados fictícios ou inventados
+- Informações não presentes no documento original
+- Datas, valores ou nomes estimados/supostos
+- Expressões: "A definir", "A preencher", "Pendente", etc.
 
-✅ **SEMPRE use formatação jurídica tradicional brasileira:**
-- ✅ Numeração romana para títulos principais (I, II, III, IV)
-- ✅ Numeração árabe para subdivisões (1, 2, 3)
-- ✅ Alíneas com letras minúsculas (a, b, c)
-- ✅ Incisos com numeração romana (I, II, III)
-- ✅ Parágrafos únicos ou numerados (§ 1º, § 2º)
-- ✅ Artigos de lei (Art. X, caput, § único)
+OBRIGATÓRIO - SEMPRE use formatação jurídica tradicional brasileira:
+- Numeração romana para títulos principais (I, II, III, IV)
+- Numeração árabe para subdivisões (1, 2, 3)
+- Alíneas com letras minúsculas (a, b, c)
+- Incisos com numeração romana (I, II, III)
+- Parágrafos únicos ou numerados (§ 1º, § 2º)
+- Artigos de lei (Art. X, caput, § único)
 
-✅ **Se alguma informação NÃO estiver disponível no documento:**
-- ✅ Declare explicitamente: "Informação não disponível no processo"
-- ✅ Ou use: "Não identificado nos autos"
-- ✅ Ou omita a seção completamente com nota: "Seção omitida por falta de dados"
-- ✅ NUNCA deixe espaços vazios ou placeholders
+OBRIGATÓRIO - Se alguma informação NÃO estiver disponível no documento:
+- Declare explicitamente: "Informação não disponível no processo"
+- Ou use: "Não identificado nos autos"
+- Ou omita a seção completamente com nota: "Seção omitida por falta de dados"
+- NUNCA deixe espaços vazios ou placeholders
 
-**EXEMPLO INCORRETO (❌ PROIBIDO):**
-\`\`\`
+EXEMPLO INCORRETO - NUNCA FAÇA ASSIM:
+
 ## Partes do Processo
 
-**Autor:** [INSERIR NOME COMPLETO]
-**CPF:** [INSERIR CPF]
+Autor: [INSERIR NOME COMPLETO]
+CPF: [INSERIR CPF]
 - Data de nascimento: A definir
 
 ---
 
 ### Pedidos
-1. Condenação do réu ao pagamento de **R$ XXXXX** ✅
+1. Condenação do réu ao pagamento de R$ XXXXX
 2. Danos morais — valor a ser arbitrado
-\`\`\`
 
-**EXEMPLO CORRETO (✅ OBRIGATÓRIO):**
+
+EXEMPLO CORRETO - SEMPRE FAÇA ASSIM:
 \`\`\`
 I. PARTES DO PROCESSO
 
