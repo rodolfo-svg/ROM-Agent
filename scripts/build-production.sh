@@ -49,10 +49,14 @@ echo "📁 Arquivos gerados em frontend/dist:"
 ls -lh frontend/dist/ | head -20
 
 echo ""
-echo "🔍 [7/7] Verificação final..."
+echo "🔍 [7/8] Verificação final..."
 echo "   ✅ @sparticuz/chromium instalado (pacote NPM)"
 echo "   ✅ puppeteer-core instalado"
 echo "   ✅ Puppeteer pronto para uso serverless"
+
+echo ""
+echo "📋 [8/8] Sincronizando prompts V5.0 para disco persistente..."
+node scripts/sync-v5-prompts.cjs || echo "⚠️  Sincronização de prompts falhou (não crítico)"
 
 echo ""
 echo "════════════════════════════════════════════════════════════"
