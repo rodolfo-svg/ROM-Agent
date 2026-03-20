@@ -37,6 +37,9 @@ import authRoutes from './routes/auth.js';
 // DataJud API routes
 import datajudRoutes from './routes/datajud.js';
 
+// Prompts V5.0 Sync routes
+import { setupSyncPromptsRoutes } from '../lib/api-routes-sync-prompts.js';
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -80,6 +83,9 @@ app.use('/api/chat-stream', chatStreamRoutes);
 
 // Rotas DataJud CNJ - Consulta de Processos Judiciais
 app.use('/api/datajud', datajudRoutes);
+
+// Rotas de Sincronização de Prompts V5.0 (Admin)
+setupSyncPromptsRoutes(app);
 
 // Instância do agente
 let agent = null;
