@@ -113,4 +113,41 @@ router.get('/:uploadId/status', (req, res) => {
   });
 });
 
+/**
+ * POST /api/upload-progress/:uploadId/cancel
+ *
+ * Cancela um upload em progresso
+ */
+router.post('/:uploadId/cancel', (req, res) => {
+  const { uploadId } = req.params;
+
+  console.log(`🛑 [CANCEL] Solicitação de cancelamento: ${uploadId}`);
+
+  const session = progressEmitter.getSessionStatus(uploadId);
+
+  if (!session) {
+    return res.status(404).json({
+      success: false,
+      error: 'Upload não encontrado'
+    });
+  }
+
+  if (session.status !== 'processing') {
+    return res.json({
+      success: true,
+      message: 'Upload já finalizado',
+      status: session.status
+    });
+  }
+
+  // Marcar sessão como falhada (cancelada)
+  progressEmitter.failSession(uploadId, new Error('Cancelado pelo usuário'));
+
+  res.json({
+    success: true,
+    message: 'Upload cancelado com sucesso',
+    uploadId
+  });
+});
+
 export default router;

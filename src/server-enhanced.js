@@ -5971,6 +5971,16 @@ app.post('/api/kb/upload', requireAuth, upload.array('files', 20), async (req, r
 
     console.log(`📤 KB Upload iniciado: ${uploadId} por ${userName} (${req.files.length} arquivos)`);
 
+    // 🧹 CLEANUP: Cancelar qualquer upload anterior deste usuário que ainda esteja ativo
+    const activeSessions = progressEmitter.sessions;
+    for (const [sessionId, session] of activeSessions.entries()) {
+      if (session.metadata?.user === userName && session.status === 'processing') {
+        const age = Date.now() - session.startTime;
+        console.log(`⚠️  Cancelando upload anterior ${sessionId} do usuário ${userName} (idade: ${Math.round(age / 60000)}min)`);
+        progressEmitter.failSession(sessionId, new Error('Cancelado: novo upload iniciado pelo mesmo usuário'));
+      }
+    }
+
     // ✨ FIX: Iniciar sessão de progresso ANTES de responder ao frontend
     // Isso garante que o SSE encontre a sessão ao conectar
     progressEmitter.startSession(uploadId, {
@@ -6105,11 +6115,21 @@ async function processUploadInBackground(uploadId, files, userId, userName) {
 
   const uploadedDocs = [];
 
+  // ⏱️ TIMEOUT: 2 horas máximo para upload completo
+  const UPLOAD_TIMEOUT = 2 * 60 * 60 * 1000; // 2 horas
+  const uploadStartTime = Date.now();
+
   try {
     // Processar cada arquivo COM DOCUMENTOS ESTRUTURADOS
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
       const filePercent = (i / files.length) * 100;
+
+      // ⏱️ Verificar timeout global
+      const elapsed = Date.now() - uploadStartTime;
+      if (elapsed > UPLOAD_TIMEOUT) {
+        throw new Error(`Upload excedeu tempo máximo de 2 horas (${Math.round(elapsed / 60000)} minutos)`);
+      }
 
       try {
         // Emitir progresso: iniciando arquivo
@@ -6123,22 +6143,28 @@ async function processUploadInBackground(uploadId, files, userId, userName) {
 
         console.log(`🔍 [${uploadId}] Arquivo ${i + 1}/${files.length}: ${file.originalname}`);
 
-        // 🚀 PROCESSAR arquivo com callbacks de progresso
-        const processResult = await processFileWithProgress(
-          file.path,
-          (stage, stagePercent) => {
-            // Calcular percentual total: progresso do arquivo atual + progresso interno
-            const totalPercent = filePercent + (stagePercent / files.length);
+        // 🚀 PROCESSAR arquivo com callbacks de progresso + timeout wrapper
+        const FILE_TIMEOUT = 60 * 60 * 1000; // 1 hora por arquivo
+        const processResult = await Promise.race([
+          processFileWithProgress(
+            file.path,
+            (stage, stagePercent) => {
+              // Calcular percentual total: progresso do arquivo atual + progresso interno
+              const totalPercent = filePercent + (stagePercent / files.length);
 
-            progressEmitter.addUpdate(uploadId, 'info', stage, {
-              percent: Math.round(totalPercent),
-              currentFile: i + 1,
-              totalFiles: files.length,
-              fileName: file.originalname,
-              stage
-            });
-          }
-        );
+              progressEmitter.addUpdate(uploadId, 'info', stage, {
+                percent: Math.round(totalPercent),
+                currentFile: i + 1,
+                totalFiles: files.length,
+                fileName: file.originalname,
+                stage
+              });
+            }
+          ),
+          new Promise((_, reject) =>
+            setTimeout(() => reject(new Error(`Timeout: arquivo ${file.originalname} excedeu 1 hora de processamento`)), FILE_TIMEOUT)
+          )
+        ]);
 
         if (!processResult.success) {
           throw new Error(processResult.error || 'Falha na extração');
