@@ -434,11 +434,16 @@ NÃO inclua markdown, explicações ou texto adicional. Apenas o JSON.`;
     const resultado = await bedrock.conversar(prompt, {
       modelo: mapearModelo(modelo),
       temperature: 0.1,
-      maxTokens: 500
+      maxTokens: 1000  // ✅ FIX: Aumentado de 500 para 1000 tokens
     });
 
+    // ✅ FIX: Corrigido de resposta.text para resultado.resposta
+    if (!resultado.sucesso) {
+      throw new Error(resultado.erro || 'Erro ao classificar documento');
+    }
+
     // Extrair JSON da resposta
-    const jsonMatch = resposta.text.match(/\{[\s\S]*\}/);
+    const jsonMatch = resultado.resposta.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       return JSON.parse(jsonMatch[0]);
     }
