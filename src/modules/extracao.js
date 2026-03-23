@@ -316,7 +316,7 @@ export async function aplicarProcessadores(texto, opcoes = {}) {
     }),
 
     // Processador 3: Compactação (contagem de redundâncias)
-    Promise.resolve(() => {
+    (() => {
       const linhas = texto.split('\n');
       const contador = {};
       linhas.forEach(l => { contador[l] = (contador[l] || 0) + 1; });
@@ -325,7 +325,7 @@ export async function aplicarProcessadores(texto, opcoes = {}) {
     })(),
 
     // Processador 4-8: Análise estrutural
-    Promise.resolve(() => {
+    (() => {
       const linhas = texto.split('\n');
       return {
         totalLinhas: linhas.length,
@@ -335,7 +335,7 @@ export async function aplicarProcessadores(texto, opcoes = {}) {
     })(),
 
     // Processador 9: Divisão em Chunks (OTIMIZADO - não explode memória)
-    Promise.resolve(() => {
+    (() => {
       const chunks = [];
       let chunkAtual = '';
       let tamanhoAtual = 0;
