@@ -115,7 +115,7 @@ export const MODELOS_BEDROCK = {
     'claude-sonnet-4': 'us.anthropic.claude-sonnet-4-20250514-v1:0',
     'claude-haiku-4.5': 'us.anthropic.claude-haiku-4-5-20251001-v1:0',
     'claude-3.7-sonnet': 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
-    'claude-3.5-sonnet': 'us.anthropic.claude-3-5-sonnet-20241022-v2:0',
+    'claude-3.5-sonnet': 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',  // FIX: 3.5 legacy, usando 3.7
     'claude-3.5-haiku': 'us.anthropic.claude-3-5-haiku-20241022-v1:0',
     'claude-3-opus': 'us.anthropic.claude-3-opus-20240229-v1:0',
     'claude-3-sonnet': 'anthropic.claude-3-sonnet-20240229-v1:0',
@@ -160,7 +160,7 @@ export const INFERENCE_PROFILES = {
   // Anthropic Claude (modelos que requerem inference profile)
   'anthropic.claude-3-opus-20240229-v1:0': 'us.anthropic.claude-3-opus-20240229-v1:0',
   'anthropic.claude-3-5-haiku-20241022-v1:0': 'us.anthropic.claude-3-5-haiku-20241022-v1:0',
-  'anthropic.claude-3-5-sonnet-20241022-v2:0': 'us.anthropic.claude-3-5-sonnet-20241022-v2:0',
+  'anthropic.claude-3-5-sonnet-20241022-v2:0': 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',  // FIX: Legacy, redirect to 3.7
   'anthropic.claude-3-7-sonnet-20250219-v1:0': 'us.anthropic.claude-3-7-sonnet-20250219-v1:0',
   'anthropic.claude-sonnet-4-20250514-v1:0': 'us.anthropic.claude-sonnet-4-20250514-v1:0',
   'anthropic.claude-sonnet-4-5-20250929-v1:0': 'us.anthropic.claude-sonnet-4-5-20250929-v1:0',

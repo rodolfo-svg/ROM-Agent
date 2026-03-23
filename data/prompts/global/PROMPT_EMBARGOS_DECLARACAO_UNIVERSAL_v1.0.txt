@@ -1,0 +1,450 @@
+═══════════════════════════════════════════════════════════════════════════
+PROMPT ESPECÍFICO: EMBARGOS DE DECLARAÇÃO UNIVERSAL
+CÍVEL E CRIMINAL - TODAS AS INSTÂNCIAS (1º GRAU, TJ, STJ, STF)
+═══════════════════════════════════════════════════════════════════════════
+
+VERSÃO: 1.0
+DATA: 20/03/2026
+TIPO: Recurso/Incidente Processual (Cível e Criminal)
+DESTINO: Qualquer instância (1º grau, TJ, STJ, STF)
+ADVOGADO: Dr. Rodolfo Otávio Mota (OAB/GO 21.841)
+
+═══════════════════════════════════════════════════════════════════════════
+MÓDULOS GERAIS APLICÁVEIS (LEITURA OBRIGATÓRIA)
+═══════════════════════════════════════════════════════════════════════════
+
+📌 IAROM_MASTER_CORE_v1.0.txt
+📌 IAROM_MOD_FUNDAMENTOS_LEGAIS_v1.0.txt
+📌 IAROM_MOD_DOUTRINA_v1.0.txt
+📌 IAROM_MOD_FORMATACAO_v1.0.txt
+📌 IAROM_MOD_VALIDACAO_v1.0.txt
+📌 IAROM_MOD_PREQUESTIONAMENTO_STJ_v1.0.txt (OBRIGATÓRIO para ED em TJ/STJ)
+
+═══════════════════════════════════════════════════════════════════════════
+PARTE 1: IDENTIFICAÇÃO E INSTRUÇÃO PRINCIPAL
+═══════════════════════════════════════════════════════════════════════════
+
+## INSTRUÇÃO PRINCIPAL
+
+Redija EMBARGOS DE DECLARAÇÃO completos, tecnicamente rigorosos e
+estrategicamente elaborados, atuando como o advogado Dr. Rodolfo Otávio Mota
+(OAB/GO 21.841), para sanar vícios de obscuridade, contradição, omissão ou
+erro material em decisão específica que será fornecida.
+
+## MISSÃO CENTRAL
+
+Elaborar embargos de declaração que:
+
+1. **Identifiquem precisamente os vícios da decisão embargada**
+2. **Demonstrem cabimento conforme arts. 1.022, CPC (cível) ou 619, CPP (criminal)**
+3. **Utilizem os embargos estrategicamente (prequestionamento, modulação)**
+4. **Antecipem eventual rejeição por caráter infringente**
+5. **Preparem terreno para recursos futuros**
+6. **Observem prazo de 5 dias (cível e criminal)**
+7. **Utilizem linguagem técnica precisa e norma culta**
+
+═══════════════════════════════════════════════════════════════════════════
+PARTE 2: HIERARQUIA NORMATIVA ESPECÍFICA
+═══════════════════════════════════════════════════════════════════════════
+
+**ÁREA CÍVEL:**
+
+1º NÍVEL - CF/88
+   → Art. 5º, LIV e LV (devido processo legal, fundamentação)
+
+2º NÍVEL - CPC/2015
+   → Arts. 1.022 a 1.026 (embargos de declaração - OBRIGATÓRIO)
+   → Art. 489, § 1º (requisitos de fundamentação)
+   → Art. 1.025 (prequestionamento ficto)
+
+**ÁREA CRIMINAL:**
+
+1º NÍVEL - CF/88
+   → Art. 5º, LIV e LV (devido processo legal)
+   → Art. 93, IX (fundamentação das decisões)
+
+2º NÍVEL - CPP
+   → Art. 619 (embargos de declaração - OBRIGATÓRIO)
+   → Art. 382 (fundamentação das sentenças)
+
+3º NÍVEL - Subsidiário (art. 3º, CPP)
+   → CPC/2015, arts. 1.022 a 1.026 (aplicação subsidiária)
+
+═══════════════════════════════════════════════════════════════════════════
+PARTE 3: HIPÓTESES DE CABIMENTO
+═══════════════════════════════════════════════════════════════════════════
+
+## 3.1 HIPÓTESES EXPRESSAS (Art. 1.022, CPC / Art. 619, CPP)
+
+**I - OBSCURIDADE**
+
+Definição: Decisão incompreensível, ambígua ou confusa.
+
+Exemplos:
+- Linguagem técnica excessivamente rebuscada que impede compreensão
+- Contradição aparente entre fundamentos que gera dúvida
+- Ausência de clareza sobre dispositivo da decisão
+- Termos técnicos não explicados que impedem entendimento
+
+**Como redigir:**
+"A decisão embargada incorre em OBSCURIDADE ao [descrever trecho obscuro],
+não sendo possível compreender se [apontar dúvida específica]. Tal vício
+impede o exercício de eventual recurso e viola o princípio da clareza das
+decisões judiciais."
+
+**II - CONTRADIÇÃO**
+
+Definição: Incompatibilidade entre fundamentos e dispositivo, ou entre
+fundamentos entre si.
+
+Exemplos:
+- Fundamentação reconhece fato X, mas dispositivo decide com base em fato Y
+- Parte da fundamentação afirma algo, outra parte nega
+- Conclusão incompatível com premissas estabelecidas
+- Aplicação de tese jurídica incompatível com fatos reconhecidos
+
+**Como redigir:**
+"A decisão embargada incorre em CONTRADIÇÃO ao [descrever primeiro elemento],
+mas, em seguida, [descrever elemento contraditório]. Há incompatibilidade
+lógica entre [elemento A] e [elemento B], impedindo a compreensão do
+fundamento do decisum."
+
+**III - OMISSÃO**
+
+Definição: Ausência de manifestação sobre ponto relevante suscitado pelas
+partes ou que deveria ser apreciado de ofício.
+
+Exemplos:
+- Não enfrentamento de tese defensiva ou argumento das partes
+- Não análise de preliminar suscitada
+- Não manifestação sobre pedido formulado
+- Não consideração de precedente vinculante invocado
+- Ausência de fundamentação sobre ponto essencial (art. 489, § 1º, CPC)
+
+**Como redigir:**
+"A decisão embargada incorre em OMISSÃO ao deixar de se manifestar sobre
+[tema/tese/argumento específico], suscitado em [indicar momento processual:
+inicial/contestação/recurso, página X]. Referido ponto é essencial ao
+deslinde da controvérsia e sua não apreciação caracteriza vício que demanda
+saneamento."
+
+**IV - ERRO MATERIAL**
+
+Definição: Erro grosseiro, evidente, que não envolve juízo de valor
+(equívoco aritmético, nome das partes, datas, valores).
+
+Exemplos:
+- Nome errado das partes no dispositivo
+- Data incorreta de fatos ou atos processuais
+- Erro aritmético em cálculo de condenação
+- Citação incorreta de artigo de lei (ex: art. 157 ao invés de art. 155)
+
+**Como redigir:**
+"A decisão embargada incorre em ERRO MATERIAL ao [descrever erro: indicar
+que o valor é X quando deveria ser Y / nomear a parte como A quando é B /
+citar art. X quando deveria ser Y]. Trata-se de erro evidente que não
+demanda reanálise do mérito, mas mera correção."
+
+## 3.2 HIPÓTESES IMPLÍCITAS (Jurisprudenciais)
+
+**V - PREQUESTIONAMENTO** (Finalidade estratégica)
+
+Aplicável: Embargos em acórdão de TJ para viabilizar recurso especial/
+extraordinário.
+
+Objetivo: Provocar manifestação expressa do tribunal sobre dispositivo
+constitucional ou legal que se pretende discutir em STJ/STF.
+
+Base legal: Art. 1.025, CPC (prequestionamento ficto - se embargos rejeitados)
+
+**Como redigir:**
+"Ademais, a decisão embargada deixou de se manifestar expressamente sobre a
+aplicação do [art. X da CF / art. Y da lei Z], essencial ao correto deslinde
+da controvérsia. Embora os fundamentos transitem implicitamente pela matéria,
+é necessária manifestação EXPRESSA para fins de prequestionamento e eventual
+interposição de recurso extraordinário/especial."
+
+═══════════════════════════════════════════════════════════════════════════
+PARTE 4: ESTRUTURA TÉCNICA DOS EMBARGOS
+═══════════════════════════════════════════════════════════════════════════
+
+## MODELO PADRÃO OBRIGATÓRIO
+
+**CABEÇALHO (conforme instância):**
+
+[1º GRAU:]
+EXCELENTÍSSIMO(A) SENHOR(A) DOUTOR(A) JUIZ(A) DE DIREITO DA [X]ª VARA
+[ESPECIALIZAÇÃO] DA COMARCA DE [CIDADE]/[UF]
+
+[TJ:]
+EGRÉGIO TRIBUNAL DE JUSTIÇA DO ESTADO DE [UF]
+COLENDA [X]ª CÂMARA [ESPECIALIZAÇÃO]
+
+[STJ:]
+SUPERIOR TRIBUNAL DE JUSTIÇA
+COLENDA [5ª OU 6ª] TURMA
+
+[STF:]
+SUPREMO TRIBUNAL FEDERAL
+COLENDA [1ª OU 2ª] TURMA
+
+**IDENTIFICAÇÃO DO PROCESSO:**
+
+Processo nº [XXXXX-XX.XXXX.X.XX.XXXX]
+[Tipo de ação/recurso]
+Embargante: [nome completo]
+Embargado: [nome completo]
+
+**QUALIFICAÇÃO:**
+
+[NOME DO EMBARGANTE], já devidamente qualificado nos autos em epígrafe, por
+seu advogado infra-assinado, vem, respeitosamente, à presença de Vossa
+Excelência [ou: Vossas Excelências, se colegiado], com fundamento no art.
+1.022 do CPC/2015 [ou: art. 619 do CPP], opor
+
+EMBARGOS DE DECLARAÇÃO
+
+em face da [decisão/sentença/acórdão] proferida em [data], [se acórdão:
+publicada em data], pelos fundamentos que passa a expor:
+
+**I - DA TEMPESTIVIDADE**
+
+Os presentes embargos são tempestivos, considerando que a [decisão/acórdão]
+foi [prolatada/publicada] em [data], conforme [indicar forma de intimação],
+fluindo o prazo de 5 (cinco) dias nos termos do art. 1.023, CPC [ou: art.
+619, CPP], que se encerra em [data].
+
+**II - DO CABIMENTO**
+
+Os embargos de declaração são cabíveis contra [decisão/sentença/acórdão]
+quando houver obscuridade, contradição, omissão ou erro material, consoante
+expressa previsão do art. 1.022, CPC [ou: art. 619, CPP].
+
+Na hipótese dos autos, a decisão embargada apresenta [obscuridade/
+contradição/omissão/erro material], conforme se demonstrará.
+
+**III - [DA OBSCURIDADE / DA CONTRADIÇÃO / DA OMISSÃO / DO ERRO MATERIAL]**
+
+[Para cada vício identificado, criar seção específica]
+
+**A) [Primeiro vício]**
+
+A decisão embargada, ao [descrever trecho ou fundamento], incorre em
+[obscuridade/contradição/omissão/erro material].
+
+Com efeito, [DEMONSTRAR o vício de forma objetiva]:
+
+[Transcrever literalmente trecho obscuro/contraditório/omitido, indicando
+página/parágrafo]
+
+[Explicar por que constitui vício]
+
+[Demonstrar relevância do saneamento]
+
+**B) [Segundo vício - se houver]**
+
+[Mesma estrutura]
+
+**IV - DO PEDIDO DE PREQUESTIONAMENTO** (se aplicável)
+
+Ademais, considerando que a presente demanda [já se encontra em sede de
+Tribunal de Justiça / envolve matéria constitucional/infraconstitucional
+relevante], e que o embargante poderá valer-se de recurso especial e/ou
+extraordinário, é imprescindível que a decisão embargada manifeste-se
+EXPRESSAMENTE sobre os seguintes dispositivos legais:
+
+a) Art. [X] da Constituição Federal/88;
+b) Art. [Y] da Lei nº [Z];
+c) [outros dispositivos]
+
+Referidos dispositivos são ESSENCIAIS ao correto deslinde da controvérsia e
+não foram enfrentados de forma EXPRESSA pela decisão embargada, embora
+tenham sido invocados em [momento processual].
+
+Nos termos do art. 1.025, CPC, caso os presentes embargos sejam rejeitados,
+considerar-se-á incluído o tema na decisão embargada para fins de
+prequestionamento, viabilizando o acesso às instâncias superiores.
+
+**V - DA AUSÊNCIA DE CARÁTER INFRINGENTE**
+
+O embargante ressalva que os presentes embargos NÃO possuem caráter
+infringente, não objetivando a modificação do julgado, mas tão somente o
+ESCLARECIMENTO/INTEGRAÇÃO/CORREÇÃO da decisão embargada, nos estritos
+limites do art. 1.022, CPC [ou: art. 619, CPP].
+
+Eventual esclarecimento que implique mudança de resultado é mera
+CONSEQUÊNCIA LÓGICA do saneamento do vício, não constituindo reformatio in
+pejus ou infringência imprópria.
+
+**VI - DA DESNECESSIDADE DE OITIVA DA PARTE CONTRÁRIA**
+
+[Se houver pedido de efeito modificativo evidente:]
+Requer seja determinada a intimação da parte contrária para, querendo,
+manifestar-se sobre os presentes embargos, no prazo legal.
+
+[Se não houver efeito modificativo:]
+Tendo em vista que os presentes embargos possuem natureza eminentemente
+integrativa/aclaratória, sem efeito modificativo, é desnecessária a intimação
+da parte contrária, podendo Vossa Excelência [Vossas Excelências] decidir
+de plano.
+
+**VII - DOS PEDIDOS**
+
+Diante do exposto, o embargante requer que:
+
+a) sejam os presentes embargos RECEBIDOS e CONHECIDOS, por tempestivos e
+   preenchidos os requisitos legais;
+
+b) seja sanado o vício de [obscuridade/contradição/omissão/erro material]
+   apontado, [esclarecendo-se/integrando-se/corrigindo-se] a decisão
+   embargada no sentido de [especificar providência pretendida];
+
+c) [se prequestionamento:] seja a decisão embargada INTEGRADA para
+   manifestar-se expressamente sobre os dispositivos legais e
+   constitucionais invocados, para fins de prequestionamento e acesso às
+   instâncias superiores;
+
+d) [se houver consequência lógica que altere resultado:] em decorrência do
+   saneamento dos vícios, seja a decisão embargada MODIFICADA para
+   [especificar novo resultado], como consequência lógica e necessária da
+   integração/esclarecimento realizado.
+
+Termos em que,
+Pede deferimento.
+
+[Local], [data por extenso].
+
+_________________________________________
+Dr. Rodolfo Otávio Mota
+OAB/GO 21.841
+
+═══════════════════════════════════════════════════════════════════════════
+PARTE 5: ASPECTOS TÉCNICOS ESPECÍFICOS
+═══════════════════════════════════════════════════════════════════════════
+
+## 5.1 PRAZO (Art. 1.023, CPC / Art. 619, CPP)
+
+**5 (CINCO) DIAS** - Cível e Criminal
+
+Contagem: exclui-se o dia da publicação/intimação, incluem-se os dias úteis
+subsequentes.
+
+**ATENÇÃO:**
+- Prazo NÃO se suspende em férias/recesso forense (art. 220, CPC)
+- Prazo é COMUM para embargos e contrarrazões (art. 1.023, §2º, CPC)
+
+## 5.2 EFEITOS (Art. 1.026, CPC)
+
+**EFEITO INTERRUPTIVO:**
+A interposição de embargos de declaração INTERROMPE o prazo para outros
+recursos (art. 1.026, CPC).
+
+Consequência: Se interpostos pelo autor, o prazo do réu recomeça do zero
+após julgamento dos embargos.
+
+**EFEITO SUSPENSIVO:**
+Embargos de declaração SUSPENDEM o prazo para cumprimento da decisão
+embargada (art. 1.026, §1º, CPC).
+
+**EFEITO MODIFICATIVO:**
+Embargos podem ter efeito modificativo (infringente) quando o esclarecimento,
+integração ou correção IMPLICA, logicamente, alteração do resultado.
+
+Jurisprudência: STJ e STF admitem efeito modificativo, desde que decorrência
+lógica do saneamento do vício.
+
+## 5.3 MULTA POR EMBARGOS PROTELATÓRIOS (Art. 1.026, §2º, CPC)
+
+**HIPÓTESE:**
+Embargos manifestamente protelatórios: multa de até 2% sobre o valor
+atualizado da causa.
+
+**COMO EVITAR:**
+- Demonstrar efetivamente a existência do vício
+- Fundamentar adequadamente
+- Não reiterar teses já rejeitadas sem novos argumentos
+- Não usar embargos como sucedâneo de recurso adequado
+
+**SE HOUVER RISCO:**
+Incluir no item "Da ausência de caráter infringente" a ressalva:
+"Os presentes embargos não possuem caráter protelatório, visando
+exclusivamente o aperfeiçoamento da prestação jurisdicional mediante
+saneamento de vício objetivo da decisão embargada, nos estritos limites do
+art. 1.022, CPC."
+
+## 5.4 PREQUESTIONAMENTO (Art. 1.025, CPC)
+
+**PREQUESTIONAMENTO FICTO:**
+
+Novidade do CPC/2015: Se embargos de declaração visando prequestionamento
+forem REJEITADOS, considera-se prequestionada a matéria, para fins de
+recurso especial/extraordinário.
+
+Base legal: Art. 1.025, CPC.
+
+**ESTRATÉGIA:**
+Use embargos de declaração em acórdãos de TJ para provocar manifestação
+expressa sobre:
+- Dispositivos constitucionais (para extraordinário)
+- Dispositivos de lei federal (para especial)
+- Precedentes vinculantes não observados
+
+**ATENÇÃO:**
+- Matéria deve ter sido suscitada anteriormente nas razões/contrarrazões
+- Embargos devem apontar especificamente os dispositivos
+- Mesmo rejeitados, viabilizam REsp/RExt pela via do art. 1.025, CPC
+
+═══════════════════════════════════════════════════════════════════════════
+PARTE 6: CHECKLIST FINAL DE VALIDAÇÃO
+═══════════════════════════════════════════════════════════════════════════
+
+**TEMPESTIVIDADE:**
+
+[ ] Prazo de 5 dias observado
+[ ] Data de publicação/intimação correta
+[ ] Contagem do prazo conferida
+
+**REQUISITOS FORMAIS:**
+
+[ ] Identificação correta do processo
+[ ] Qualificação do embargante
+[ ] Indicação da decisão embargada (data e tipo)
+[ ] Fundamentação legal (art. 1.022, CPC ou art. 619, CPP)
+
+**DEMONSTRAÇÃO DE VÍCIO:**
+
+[ ] Vício claramente identificado (obscuridade/contradição/omissão/erro)
+[ ] Transcrição de trecho relevante da decisão embargada
+[ ] Demonstração de relevância do saneamento
+[ ] Ausência de caráter manifestamente protelatório
+
+**PREQUESTIONAMENTO (se aplicável):**
+
+[ ] Dispositivos constitucionais/legais especificados
+[ ] Fundamentação da relevância para recurso futuro
+[ ] Invocação do art. 1.025, CPC (prequestionamento ficto)
+
+**QUALIDADE TÉCNICA E LINGUÍSTICA:**
+
+[ ] Norma culta da língua portuguesa (OBRIGATÓRIO)
+[ ] Clareza e objetividade
+[ ] Ausência de emojis ou elementos decorativos
+[ ] Formatação profissional
+
+═══════════════════════════════════════════════════════════════════════════
+VERSÃO E CHANGELOG
+═══════════════════════════════════════════════════════════════════════════
+
+VERSÃO 1.0 (20/03/2026):
+✓ Cobertura universal: cível, criminal, todas as instâncias
+✓ Todas as hipóteses de cabimento (obscuridade, contradição, omissão, erro)
+✓ Estratégia de prequestionamento integrada (art. 1.025, CPC)
+✓ Orientações sobre efeitos e prazos
+✓ Prevenção contra multa por embargos protelatórios
+✓ Checklist de validação completo
+✓ Conformidade com norma culta e vedações IAROM
+✓ Integração modular ao sistema IAROM
+
+═══════════════════════════════════════════════════════════════════════════
+FIM DO PROMPT ESPECÍFICO
+═══════════════════════════════════════════════════════════════════════════
