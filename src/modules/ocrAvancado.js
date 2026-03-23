@@ -265,6 +265,8 @@ export const ocrEngine = {
   async executarOCRMultiplo(imagePaths, opcoes = {}) {
     await this.inicializar();
 
+    const { onProgress, ...ocrOptions } = opcoes; // Extrair callback de progresso
+
     const resultados = [];
     const BATCH_SIZE = 4; // Processar 4 páginas em paralelo (1 por worker)
     const totalPages = imagePaths.length;
@@ -285,7 +287,7 @@ export const ocrEngine = {
       const batchResults = await Promise.all(
         batch.map(async (imagePath, idx) => {
           const pageNum = startIdx + idx + 1;
-          const resultado = await this.executarOCR(imagePath, opcoes);
+          const resultado = await this.executarOCR(imagePath, ocrOptions);
           return {
             arquivo: imagePath,
             pagina: pageNum,
@@ -297,9 +299,21 @@ export const ocrEngine = {
       resultados.push(...batchResults);
 
       // Log de progresso
-      const pagesProcessed = (batchIndex + 1) * BATCH_SIZE;
+      const pagesProcessed = Math.min((batchIndex + 1) * BATCH_SIZE, totalPages);
       const actualProgress = ((pagesProcessed / totalPages) * 100).toFixed(1);
-      console.log(`   ✅ Batch ${batchNumber} concluído - ${Math.min(pagesProcessed, totalPages)}/${totalPages} páginas (${actualProgress}%)`);
+      console.log(`   ✅ Batch ${batchNumber} concluído - ${pagesProcessed}/${totalPages} páginas (${actualProgress}%)`);
+
+      // Callback de progresso (se fornecido)
+      if (onProgress && typeof onProgress === 'function') {
+        onProgress({
+          phase: 'ocr',
+          batch: batchNumber,
+          totalBatches,
+          pagesProcessed,
+          totalPages,
+          percent: parseFloat(actualProgress)
+        });
+      }
     }
 
     return {
@@ -447,7 +461,8 @@ export const extratorPDF = {
     const {
       dpi = 300,
       preprocessar = true,
-      limparTemporarios = true
+      limparTemporarios = true,
+      onProgress = null
     } = opcoes;
 
     console.log('Convertendo PDF para imagens...');
@@ -462,7 +477,7 @@ export const extratorPDF = {
     }
 
     console.log(`Executando OCR em ${conversao.imagens.length} paginas...`);
-    const resultado = await ocrEngine.executarOCRMultiplo(conversao.imagens, { preprocessar });
+    const resultado = await ocrEngine.executarOCRMultiplo(conversao.imagens, { preprocessar, onProgress });
 
     // Limpar arquivos temporarios
     if (limparTemporarios) {
