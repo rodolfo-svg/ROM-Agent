@@ -222,7 +222,42 @@ router.post('/', async (req, res) => {
         isPDF = true;
         console.log(`   ✅ PDF parseado: ${pdfData.numpages} páginas`);
         console.log(`   📊 Texto extraído: ${Math.round(rawText.length / 1000)}k caracteres`);
-        console.log(`   💡 PDF já fornece texto limpo - pulando extração com IA`);
+
+        // 🔥 FIX: Detectar PDF escaneado (pouco/zero texto)
+        const charsPerPage = rawText.length / pdfData.numpages;
+        const MIN_CHARS_PER_PAGE = 100; // Menos que isso = provável escaneado
+
+        if (charsPerPage < MIN_CHARS_PER_PAGE) {
+          console.log(`   ⚠️  PDF escaneado detectado: ${Math.round(charsPerPage)} chars/página (< ${MIN_CHARS_PER_PAGE})`);
+          console.log(`   🔄 Iniciando OCR com Tesseract.js...`);
+
+          try {
+            const { performOCROnPDF } = await import('../services/ocr-service.js');
+            const ocrOutputFolder = path.join(path.dirname(doc.path), `ocr_${doc.id}`);
+
+            const ocrResult = await performOCROnPDF(doc.path, ocrOutputFolder, {
+              processAllPages: true,
+              maxPages: Math.min(pdfData.numpages, 500), // Limitar a 500 páginas
+              confidenceThreshold: 60,
+              saveIndividualPages: false,
+              workerCount: 2 // Usar 2 workers para não sobrecarregar
+            });
+
+            if (ocrResult.success && ocrResult.fullText) {
+              rawText = ocrResult.fullText;
+              console.log(`   ✅ OCR concluído: ${Math.round(rawText.length / 1000)}k caracteres`);
+              console.log(`   📊 Confiança média: ${Math.round(ocrResult.averageConfidence)}%`);
+              console.log(`   ⏱️  Tempo de OCR: ${Math.round(ocrResult.processingTime / 1000)}s`);
+            } else {
+              console.log(`   ⚠️  OCR falhou ou retornou pouco texto, usando texto original`);
+            }
+          } catch (ocrError) {
+            console.error(`   ❌ Erro no OCR:`, ocrError.message);
+            console.log(`   📝 Continuando com texto extraído por pdf-parse (${rawText.length} chars)`);
+          }
+        } else {
+          console.log(`   💡 PDF digital (${Math.round(charsPerPage)} chars/página) - texto OK`);
+        }
       } else {
         // Texto puro (.txt, .md, etc)
         rawText = fs.readFileSync(doc.path, 'utf-8');
