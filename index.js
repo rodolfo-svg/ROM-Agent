@@ -15,6 +15,7 @@ import monitor from './lib/monitor.js';
 import partners from './lib/partners.js';
 import analytics from './lib/analytics.js';
 import extractor from './lib/extractor-pipeline.js';
+import orchestrator from './lib/prompt-orchestrator.js';
 // import datajud from './mcp-servers/datajud-server.js';
 
 // =============================================================================
@@ -33,16 +34,46 @@ export function processRequest(pieceType, area, content = {}, modeOverride = nul
   // 1. Selecionar modelo
   const modelSelection = router.selectModel(pieceType, area, modeOverride);
 
-  // 2. Construir prompt otimizado para cache
-  const prompt = router.buildOptimizedPrompt(
-    { additional: content.additionalInstructions },
-    {
-      caseData: content.caseData,
-      documents: content.documents,
-      jurisprudence: content.jurisprudence,
-      instruction: content.instruction
+  // 2. NOVO: Tentar detectar prompt V5.0 automaticamente
+  const userMessage = content.instruction || content.additionalInstructions || '';
+  const v5Result = orchestrator.buildSystemPromptV5(userMessage);
+
+  let prompt;
+  let promptType = 'default';
+
+  if (v5Result.isV5) {
+    // Usuário pediu uma peça específica - usar prompt V5.0 completo
+    console.log(`✅ [V5.0] Prompt ativado: ${v5Result.promptType}`);
+    prompt = v5Result.systemPrompt;
+    promptType = v5Result.promptType;
+
+    // Adicionar dados dinâmicos ao final do prompt V5.0
+    if (content.caseData || content.documents || content.jurisprudence) {
+      prompt += '\n\n═══════════════════════════════════════════════════════════════════════════════\n';
+      prompt += '\nDADOS FORNECIDOS PELO USUÁRIO:\n';
+
+      if (content.caseData) {
+        prompt += `\n## Dados do Caso\n${content.caseData}\n`;
+      }
+      if (content.documents) {
+        prompt += `\n## Documentos\n${content.documents}\n`;
+      }
+      if (content.jurisprudence) {
+        prompt += `\n## Jurisprudência\n${content.jurisprudence}\n`;
+      }
     }
-  );
+  } else {
+    // Não detectou V5.0 - usar lógica existente
+    prompt = router.buildOptimizedPrompt(
+      { additional: content.additionalInstructions },
+      {
+        caseData: content.caseData,
+        documents: content.documents,
+        jurisprudence: content.jurisprudence,
+        instruction: content.instruction
+      }
+    );
+  }
 
   // 3. Verificar se precisa pipeline
   const needsPipeline = router.requiresPipeline(pieceType);
@@ -55,6 +86,8 @@ export function processRequest(pieceType, area, content = {}, modeOverride = nul
     temperature: modelSelection.config.temperature,
     useCache: modelSelection.config.use_cache,
     prompt: prompt,
+    promptType: promptType,  // NOVO: incluir tipo do prompt usado
+    isV5: v5Result.isV5,     // NOVO: flag indicando se usou V5.0
     pipeline: needsPipeline ? router.getPipelineConfig() : null,
     estimatedCost: router.estimateCost(pieceType)
   };
@@ -126,6 +159,23 @@ export async function buscarJurisprudencia(termo, tribunal = null) {
     console.error('Erro na busca:', e.message);
     return [];
   }
+}
+
+/**
+ * Lista todos os prompts V5.0 disponíveis
+ * @returns {object} - { total, keywords, prompts }
+ */
+export function listPromptsV5() {
+  return orchestrator.listPromptsV5();
+}
+
+/**
+ * Detecta qual prompt V5.0 seria usado para uma mensagem
+ * @param {string} userMessage - Mensagem do usuário
+ * @returns {string|null} - Nome do arquivo do prompt ou null
+ */
+export function detectPromptV5(userMessage) {
+  return orchestrator.detectPromptV5(userMessage);
 }
 
 // =============================================================================
@@ -271,6 +321,10 @@ export default {
   logUsageWithBilling,
   buscarJurisprudencia,
 
+  // Funções V5.0 - Sistema de Orquestração Automática
+  listPromptsV5,                 // Lista todos os prompts V5.0 disponíveis
+  detectPromptV5,                // Detecta qual prompt V5.0 usar
+
   // Funções para Agente de IA (CUSTO $0)
   prepareDocumentForAI,          // Extrai documento → texto (grátis)
   prepareMultipleDocuments,      // Extrai múltiplos documentos
@@ -282,6 +336,7 @@ export default {
   router,
   monitor,
   partners,
+  orchestrator,                  // Sistema de orquestração V5.0
   analytics,
   extractor,
   // datajud,
