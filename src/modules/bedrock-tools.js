@@ -1028,8 +1028,15 @@ export async function executeTool(toolName, toolInput, context = {}) {
           console.log(`   ✅ Documento encontrado: ${doc.name || doc.originalName}`);
           console.log(`   📊 Tamanho: ${Math.round((doc.textLength || doc.size) / 1000)}k caracteres`);
           console.log(`   📂 Path do documento: ${doc.path}`);
+          console.log(`   👤 UserId do documento: ${doc.userId || 'não definido'}`);
+          console.log(`   🔐 Context userId: ${context.userId || 'não definido'}`);
           console.log(`   🔍 Estrutura completa do documento:`);
           console.log(JSON.stringify(doc, null, 2));
+
+          // 🔥 FIX CRÍTICO: Usar userId do documento ORIGINAL
+          // Fichamentos devem ter MESMO userId do documento pai para aparecer no filtro
+          const documentUserId = doc.userId || context.userId || 'web-upload';
+          console.log(`   ✅ userId final para fichamentos: ${documentUserId}`);
 
           // Ler texto completo do documento (com fallback)
           let rawText;
@@ -1075,7 +1082,7 @@ export async function executeTool(toolName, toolInput, context = {}) {
                 analysisModel: model,
                 generateFiles: true,
                 saveToKB: true,
-                userId: context.userId || 'web-upload'  // 🔥 FIX CRÍTICO: Passar userId para que arquivos apareçam no filtro
+                userId: documentUserId  // 🔥 FIX CRÍTICO: Usar userId do documento original
               }
             );
 
@@ -1092,7 +1099,7 @@ export async function executeTool(toolName, toolInput, context = {}) {
               doc.id,
               doc.name || doc.originalName,
               true,  // saveToDocuments
-              context.userId || 'web-upload'  // 🔥 FIX CRÍTICO: Passar userId para que arquivo apareça no filtro
+              documentUserId  // 🔥 FIX CRÍTICO: Usar userId do documento original
             );
 
             result = {

@@ -6342,8 +6342,17 @@ app.get('/api/kb/documents', requireAuth, (req, res) => {
     // Filtrar documentos do usuário atual + documentos compartilhados (web-upload)
     const userDocs = allDocs.filter(doc => doc.userId === userId || doc.userId === 'web-upload');
 
+    // 🔍 DEBUG: Log detalhado de filtro
+    const uniqueUserIds = [...new Set(allDocs.map(d => d.userId))];
+    const byUserId = {};
+    uniqueUserIds.forEach(uid => {
+      byUserId[uid || 'undefined'] = allDocs.filter(d => d.userId === uid).length;
+    });
+
     // Log para debug
     logger.info(`📚 [KB] Listando documentos: total=${allDocs.length}, userId=${userId}, filtered=${userDocs.length}`);
+    logger.info(`   📊 Distribuição por userId:`, byUserId);
+    logger.info(`   🔍 Primeiros 5 docs filtrados:`, userDocs.slice(0, 5).map(d => ({ id: d.id, name: d.name, userId: d.userId })));
 
     // Retornar documentos formatados
     const documents = userDocs.map(doc => ({
