@@ -252,4 +252,58 @@ router.post('/extraction-jobs/:id/cancel', requireAuth, async (req, res) => {
   }
 });
 
+/**
+ * POST /api/extraction-jobs/cleanup-orphaned
+ * ADMIN: Cancel orphaned jobs (stuck in processing after server restart)
+ * Query param: secret=mota2323kb
+ */
+router.post('/extraction-jobs/cleanup-orphaned', async (req, res) => {
+  try {
+    // Security check
+    if (req.query.secret !== 'mota2323kb') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    // Find jobs that are stuck in 'processing' or 'pending' for more than 30 minutes
+    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000);
+
+    const orphanedJobs = await ExtractionJob.findAll({
+      where: {
+        status: ['pending', 'processing'],
+        updated_at: {
+          [ExtractionJob.sequelize.Sequelize.Op.lt]: thirtyMinutesAgo
+        }
+      }
+    });
+
+    logger.info(`🧹 Cleanup: Found ${orphanedJobs.length} orphaned extraction jobs`);
+
+    const cancelledIds = [];
+
+    for (const job of orphanedJobs) {
+      job.status = 'failed';
+      job.error = 'Job orphaned - server restarted during processing';
+      job.completed_at = new Date();
+      await job.save();
+
+      cancelledIds.push(job.id);
+      logger.info(`   ✅ Cancelled orphaned job: ${job.id}`);
+    }
+
+    res.json({
+      success: true,
+      message: `${cancelledIds.length} orphaned job(s) cancelled`,
+      cancelled: cancelledIds.length,
+      jobs: cancelledIds
+    });
+
+  } catch (error) {
+    logger.error('❌ Error cleaning up orphaned jobs:', error);
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 export default router;
