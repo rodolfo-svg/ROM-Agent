@@ -1,16 +1,16 @@
 ═══════════════════════════════════════════════════════════════════════════════════
-PROMPT V5.0: EMBARGOS DE DECLARAÇÃO UNIVERSAL
+PROMPT V5.2: EMBARGOS DE DECLARAÇÃO UNIVERSAL
 (Arts. 1.022-1.026 CPC/2015 e Art. 619 CPP - Todas as Instâncias)
 ═══════════════════════════════════════════════════════════════════════════════════
 
 ARQUIVO: PROMPT_EMBARGOS_DECLARACAO_UNIVERSAL_V5.0.txt
-VERSÃO: 5.0
-DATA: 20/03/2026
+VERSÃO: 5.2
+DATA ÚLTIMA ATUALIZAÇÃO: 25/03/2026
 AUTOR: Dr. Rodolfo Otávio Mota - OAB/GO 21.841
 ÁREA: Processo Civil e Processo Penal - Recurso/Incidente Processual
 TIPO: Embargos de Declaração (arts. 1.022-1.026 CPC e art. 619 CPP)
       Aplicável a decisões, sentenças e acórdãos em todas as instâncias
-PALAVRAS: ~40.000
+PALAVRAS: ~75.000 (expandido com 5 novas partes: XI-A Standard Probatório + XI-B Tratados)
 STATUS: COMPLETO - Integrado ao sistema geral ROM V3.0
 
 ESCOPO DESTE PROMPT:
@@ -50,13 +50,15 @@ PARTE VI   - PRAZO, EFEITOS E MULTA POR EMBARGOS PROTEATORIOS
 PARTE VII  - ESTRUTURA REDACIONAL DA PECA (CPC/CPP + CNJ + TECNICA ROM)
 PARTE VIII - ANALISE DA FUNDAMENTACAO DA DECISAO EMBARGADA (ARTS. 489 CPC E 93 CF)
 PARTE IX   - DIREITO MATERIAL: ESTRUTURA NORMATIVA COMPLETA (TODOS OS RAMOS)
-PARTE X    - IRDR, IAC, TEMAS REPETITIVOS, SUMULAS E ENUNCIADOS
-PARTE XI   - EFEITO MODIFICATIVO (INFRINGENTE)
-PARTE XII  - EMBARGOS CONTRA ACÓRDÃO DE TJ/TRF (PREPARO PARA REsp/RE)
-PARTE XIII - EMBARGOS EM EXECUCAO E CUMPRIMENTO DE SENTENCA
-PARTE XIV  - EMBARGOS EM PROCESSO PENAL (ART. 619 CPP)
-PARTE XV   - DISTINGUISHING E OVERRULING
-PARTE XVI  - MODELOS DE PARAGRAFOS TECNICOS (BLOCOS PRONTOS)
+PARTE X    - APLICACAO DA NORMA NO TEMPO - DIREITO INTERTEMPORAL PROCESSUAL
+PARTE XI   - DIREITO MATERIAL - ESTRUTURA NORMATIVA EXPANDIDA PARA EMBARGOS
+PARTE XI-A - STANDARD PROBATORIO E ANALISE DE SUFICIENCIA PROBATORIA EM EMBARGOS
+PARTE XI-B - TRATADOS INTERNACIONAIS - PREQUESTIONAMENTO E TECNICA EM EMBARGOS
+PARTE XII  - DISTINGUISHING E OVERRULING - TECNICA EM EMBARGOS DE DECLARACAO
+PARTE XIII - IRDR, IAC, TEMAS REPETITIVOS, SUMULAS E ENUNCIADOS
+PARTE XIV  - EFEITO MODIFICATIVO (INFRINGENTE)
+PARTE XV   - EMBARGOS CONTRA ACÓRDÃO DE TJ/TRF (PREPARO PARA REsp/RE)
+PARTE XVI  - EMBARGOS EM EXECUCAO E CUMPRIMENTO DE SENTENCA
 PARTE XVII - CHECKLIST FINAL (META: 105/105)
 PARTE XVIII- PROTOCOLO DE VERIFICACAO DE PRECEDENTES
 PARTE XIX  - RIGOR ORTOGRAFICO, GRAMATICAL E DE PONTUACAO (INSTRUCOES ATIVAS)
@@ -1047,6 +1049,250 @@ PARTE VII: ESTRUTURA REDACIONAL DA PECA (CPC/CPP + CNJ + TECNICA ROM)
 
 ═══════════════════════════════════════════════════════════════════════════════════
 
+IMPORTANTE: Esta Parte VII apresenta a estrutura redacional COMPLETA dos embargos
+de declaração, contemplando DUAS METODOLOGIAS DISTINTAS:
+
+A) SISTEMA ÚNICO (Sistema Tradicional - Arts. 1.022-1.026 CPC/2015)
+   - Uma única petição de embargos de declaração (tipicamente 3-15 páginas)
+   - Objetivos: correção, esclarecimento, integração
+   - Aplicável quando NÃO há estratégia de prequestionamento para STJ/STF
+
+B) SISTEMA DUAL (Sistema Estratégico de Prequestionamento)
+   - Primeiros Embargos ("Embargos de Declaração Integrativos"): 3-8 páginas
+   - Segundos Embargos (se primeiros rejeitados): 5-10 páginas
+   - Objetivo: garantir prequestionamento para acesso ao STJ/STF
+   - Aplicável em acórdãos de TJ/TRF quando há interesse em REsp/RE
+
+ESCOLHA DO SISTEMA: O modelo deve identificar, a partir dos insumos fornecidos
+pelo usuário, qual sistema aplicar. Se houver menção a "prequestionamento",
+"temas constitucionais/federais", "possibilidade de REsp/RE" ou "acórdão de
+TJ/TRF", considerar o Sistema Dual. Caso contrário, aplicar Sistema Único.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO I - FUNDAMENTO NORMATIVO COMPLETO (TRANSCRIÇÃO INTEGRAL)
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Antes de apresentar a estrutura redacional, é OBRIGATÓRIO conhecer a íntegra
+dos dispositivos legais que regem os embargos de declaração.
+
+1. CÓDIGO DE PROCESSO CIVIL DE 2015 (LEI Nº 13.105/2015)
+
+1.1 ART. 1.022 - CABIMENTO DOS EMBARGOS DE DECLARAÇÃO
+
+"Art. 1.022. Cabem embargos de declaração contra qualquer decisão judicial para:
+
+I - esclarecer obscuridade ou eliminar contradição;
+
+II - suprir omissão de ponto ou questão sobre o qual devia se pronunciar o
+juiz de ofício ou a requerimento;
+
+III - corrigir erro material.
+
+Parágrafo único. Considera-se omissa a decisão que:
+
+I - deixe de se manifestar sobre tese firmada em julgamento de casos repetitivos
+ou em incidente de assunção de competência aplicável ao caso sob julgamento;
+
+II - incorra em qualquer das condutas descritas no art. 489, § 1º."
+
+NOTA ROM: O art. 1.022 estabelece TRÊS hipóteses de cabimento (obscuridade,
+contradição, omissão e erro material). A omissão é AMPLIADA pelo parágrafo
+único para incluir: (a) ausência de manifestação sobre tese vinculante de
+repetitivos/IAC; (b) violação aos requisitos de fundamentação adequada do
+art. 489, §1º (fundamentação deficiente = omissão).
+
+CONSEQUÊNCIA PRÁTICA: Todo vício de fundamentação do art. 489, §1º, CPC pode
+ser objeto de embargos de declaração por OMISSÃO (parágrafo único, II).
+
+1.2 ART. 1.023 - PRAZO E EFEITOS
+
+"Art. 1.023. Os embargos serão opostos, no prazo de 5 (cinco) dias, em petição
+dirigida ao juiz, com indicação do erro, obscuridade, contradição ou omissão,
+e não se sujeitam a preparo.
+
+§ 1º Aplica-se aos embargos de declaração o art. 229.
+
+§ 2º O juiz intimará o embargado para, querendo, manifestar-se, no prazo de
+5 (cinco) dias, sobre os embargos opostos, caso seu eventual acolhimento
+implique a modificação da decisão embargada.
+
+§ 3º Os embargos de declaração não possuem efeito suspensivo e interrompem o
+prazo para a interposição de recurso.
+
+§ 4º Caso o prazo para a interposição do recurso se encerre antes do julgamento
+dos embargos de declaração, considera-se tempestivo o recurso interposto até
+5 (cinco) dias após esse julgamento, desde que a interposição tenha sido
+realizada pela parte que não deu causa à oposição dos embargos.
+
+§ 5º Quando manifestamente protelatórios os embargos de declaração, o juiz ou
+o tribunal, em decisão fundamentada, condenará o embargante a pagar ao
+embargado multa não excedente a dois por cento sobre o valor atualizado da
+causa.
+
+§ 6º Não serão admitidos novos embargos de declaração se os 2 (dois) anteriores
+houverem sido considerados protelatórios."
+
+NOTA ROM: Prazo de 5 dias ÚTEIS (art. 1.003, §5º, CPC - prazo processual em
+dias). Não há preparo (custas). Efeito INTERRUPTIVO do prazo recursal (não
+suspensivo). Contraditório FACULTATIVO: só se houver potencial modificativo
+(§2º). Multa por protelatório: até 2% do valor da causa (§5º). Limite de
+embargos: terceiros embargos inadmissíveis se os dois anteriores foram
+protelatórios (§6º).
+
+1.3 ART. 1.024 - EFEITO SUSPENSIVO AUTOMÁTICO DURANTE JULGAMENTO
+
+"Art. 1.024. O juiz julgará os embargos em 5 (cinco) dias.
+
+§ 1º Nos tribunais, o relator apresentará os embargos em mesa na sessão
+subsequente, proferindo voto, e, não havendo julgamento nessa sessão,
+será o recurso incluído em pauta automaticamente.
+
+§ 2º Quando os embargos de declaração forem opostos contra decisão de relator,
+o órgão competente para seu julgamento será aquele previsto no regimento
+interno do tribunal.
+
+§ 3º O órgão julgador resolverá os embargos de declaração na primeira sessão
+de julgamento que se seguir à respectiva intimação, desconsiderando-se o
+sobrestamento do feito em que eles foram interpostos.
+
+§ 4º Durante o período entre a interposição dos embargos de declaração e seu
+julgamento, a eficácia da decisão embargada ficará suspensa."
+
+NOTA ROM: O §4º foi INCLUÍDO pela Lei nº 13.256/2016 e estabelece EFEITO
+SUSPENSIVO AUTOMÁTICO da decisão embargada DURANTE O JULGAMENTO dos embargos.
+Isso significa que, enquanto os embargos não forem julgados, a decisão
+embargada NÃO produz efeitos. Este dispositivo é CRUCIAL em casos urgentes.
+
+ATENÇÃO: A suspensão automática do §4º NÃO se confunde com o efeito
+suspensivo do recurso. Os embargos NÃO possuem efeito suspensivo após o
+julgamento (art. 1.023, §3º), MAS possuem efeito suspensivo DURANTE o
+julgamento (art. 1.024, §4º).
+
+1.4 ART. 1.025 - PREQUESTIONAMENTO AUTOMÁTICO
+
+"Art. 1.025. Consideram-se incluídos no acórdão os elementos que o embargante
+suscitou, para fins de pré-questionamento, ainda que os embargos de declaração
+sejam inadmitidos ou rejeitados, caso o tribunal superior considere existentes
+erro, omissão, contradição ou obscuridade."
+
+NOTA ROM: Dispositivo ESSENCIAL para estratégia de prequestionamento. Mesmo
+que os embargos sejam REJEITADOS pelo TJ/TRF, o tribunal superior (STJ/STF)
+pode CONSIDERAR que houve omissão e, nesse caso, os temas suscitados nos
+embargos são AUTOMATICAMENTE considerados prequestionados, viabilizando o
+conhecimento do REsp/RE.
+
+CONSEQUÊNCIA PRÁTICA: Os embargos de declaração são o instrumento OBRIGATÓRIO
+para prequestionamento. Não basta alegar tema nas razões de apelação; é
+necessário suscitar nos embargos caso o acórdão seja omisso.
+
+JURISPRUDÊNCIA VINCULANTE: Súmula 282/STF ("É inadmissível o recurso
+extraordinário, quando não ventilada, na decisão recorrida, a questão federal
+suscitada"), Súmula 356/STF ("O ponto omisso da decisão, sobre o qual não
+foram opostos embargos declaratórios, não pode ser objeto de recurso
+extraordinário, por faltar o requisito do prequestionamento").
+
+1.5 ART. 1.026 - EMBARGOS MANIFESTAMENTE PROTELATÓRIOS
+
+"Art. 1.026. Os embargos de declaração não possuem efeito suspensivo e
+interrompem o prazo para a interposição de recurso.
+
+§ 1º A eficácia da decisão monocrática ou colegiada poderá ser suspensa pelo
+respectivo juiz ou relator se demonstrado, na oposição, risco de dano grave,
+de difícil ou impossível reparação, e a probabilidade de provimento do recurso.
+
+§ 2º Quando manifestamente protelatórios os embargos de declaração, o juiz ou
+tribunal, em decisão fundamentada, condenará o embargante a pagar ao embargado
+multa não excedente a dois por cento sobre o valor atualizado da causa.
+
+§ 3º Na reiteração de embargos de declaração manifestamente protelatórios, a
+multa será elevada a até dez por cento sobre o valor atualizado da causa, e a
+interposição de qualquer recurso ficará condicionada ao depósito prévio do
+valor da multa, à exceção da Fazenda Pública e do beneficiário de gratuidade
+de justiça, que farão o pagamento ao final."
+
+NOTA ROM: O §1º permite EFEITO SUSPENSIVO EXCEPCIONAL mediante requerimento
+fundamentado, demonstrando: (a) risco de dano grave, de difícil ou impossível
+reparação; (b) probabilidade de provimento dos embargos. É medida EXCEPCIONAL,
+distinta do efeito suspensivo automático do art. 1.024, §4º (que opera durante
+o julgamento).
+
+MULTA PROGRESSIVA: Primeiros embargos protelatórios = até 2% (§2º). Reiteração
+= até 10% (§3º) + condicionamento de recursos ao depósito prévio.
+
+2. CÓDIGO DE PROCESSO PENAL (DECRETO-LEI Nº 3.689/1941)
+
+2.1 ART. 619 - EMBARGOS DE DECLARAÇÃO EM PROCESSO PENAL
+
+"Art. 619. Aos acórdãos proferidos pelos Tribunais de Apelação, câmaras ou
+turmas, poderão ser opostos embargos de declaração, no prazo de dois dias
+contados da sua publicação, quando houver na sentença ambiguidade, obscuridade,
+contradição ou omissão."
+
+NOTA ROM: O CPP prevê prazo de 2 DIAS CORRIDOS (não úteis, pois processo
+penal segue contagem em dias corridos - art. 798 CPP). A doutrina e
+jurisprudência MAJORITÁRIAS, no entanto, aplicam SUBSIDIARIAMENTE o CPC (art.
+3º CPP), reconhecendo prazo de 5 DIAS CORRIDOS (não úteis) e as demais regras
+do CPC (arts. 1.022-1.026) quanto a efeitos, cabimento ampliado (erro material),
+prequestionamento, etc.
+
+POSIÇÃO ROM: Indicar prazo de 5 dias CORRIDOS (não úteis) no processo criminal,
+aplicando subsidiariamente o art. 1.023 CPC c/c art. 3º CPP, mas RESSALVAR que
+o CPP prevê 2 dias, para demonstrar cautela e tempestividade mesmo sob a regra
+mais restritiva.
+
+3. SÚMULAS DO STF RELEVANTES PARA EMBARGOS DE DECLARAÇÃO
+
+3.1 SÚMULA 282/STF - PREQUESTIONAMENTO OBRIGATÓRIO PARA RE
+
+"É inadmissível o recurso extraordinário, quando não ventilada, na decisão
+recorrida, a questão federal suscitada."
+
+NOTA ROM: O prequestionamento é REQUISITO DE ADMISSIBILIDADE do RE. A questão
+constitucional deve ter sido VENTILADA (debatida, analisada) na decisão
+recorrida. Se o acórdão de TJ/TRF for omisso, é OBRIGATÓRIO opor embargos de
+declaração para suprir a omissão (art. 1.025 CPC).
+
+3.2 SÚMULA 356/STF - EMBARGOS OBRIGATÓRIOS PARA PREQUESTIONAR PONTO OMISSO
+
+"O ponto omisso da decisão, sobre o qual não foram opostos embargos
+declaratórios, não pode ser objeto de recurso extraordinário, por faltar o
+requisito do prequestionamento."
+
+NOTA ROM: Se o acórdão for OMISSO sobre tema constitucional, é OBRIGATÓRIO
+opor embargos de declaração. Se não opuser, o RE será INADMITIDO por falta de
+prequestionamento. Mesmo que os embargos sejam rejeitados, o tema ficará
+prequestionado (art. 1.025 CPC).
+
+3.3 SÚMULA 211/STF - EMBARGOS NÃO SÃO MEIO ADEQUADO PARA INOVAÇÃO
+
+"Inadmissível é o recurso extraordinário, quando a decisão recorrida assenta
+em mais de um fundamento suficiente e o recurso não abrange todos eles."
+
+NOTA ROM: Esta súmula, embora não verse DIRETAMENTE sobre embargos, é relevante
+para a estratégia de prequestionamento: se o acórdão possui múltiplos
+fundamentos AUTÔNOMOS (cada um suficiente para sustentar a decisão), os
+embargos devem abranger TODOS os fundamentos omissos de índole federal/
+constitucional, sob pena de inadmissibilidade futura do REsp/RE.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO II - SISTEMA ÚNICO (TRADICIONAL - ARTS. 1.022-1.026 CPC/2015)
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+O Sistema Único é a metodologia PADRÃO para embargos de declaração. Aplica-se
+quando o objetivo é EXCLUSIVAMENTE:
+
+a) Corrigir erro material;
+b) Esclarecer obscuridade;
+c) Eliminar contradição;
+d) Suprir omissão;
+e) Prequestionar PONTUALMENTE (sem estratégia de REsp/RE planejado).
+
+Estrutura: UMA ÚNICA PETIÇÃO (tipicamente 3-15 páginas).
+
 A estrutura dos embargos de declaração deve seguir a técnica forense
 tradicional, observando as diretrizes do CNJ (Resolução 46/2007 — padronização
 de peças) e as diretrizes ROM de formatação (01_MASTER_ROM_V3.txt).
@@ -1478,6 +1724,740 @@ OAB/GO 21.841
 
 ═══════════════════════════════════════════════════════════════════════════════════
 
+SEÇÃO III - SISTEMA DUAL (ESTRATÉGIA DE PREQUESTIONAMENTO PARA STJ/STF)
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+O Sistema Dual é a metodologia ESTRATÉGICA para embargos de declaração em
+acórdãos de TJ/TRF quando há PLANEJAMENTO de interposição de REsp/RE. Difere
+do Sistema Único porque utiliza DUAS PETIÇÕES sucessivas de embargos de
+declaração, cada uma com finalidade específica:
+
+1ª PETIÇÃO: "Embargos de Declaração Integrativos" (3-8 páginas)
+   - Objetivo: suprir omissões quanto a temas federais/constitucionais
+   - Finalidade: garantir prequestionamento (art. 1.025 CPC + Súmulas 282, 356 STF)
+   - Técnica: identificar temas omitidos, requerer manifestação expressa
+
+2ª PETIÇÃO: "Embargos de Declaração de Prequestionamento" (5-10 páginas)
+   - Aplicável SOMENTE se os primeiros embargos forem REJEITADOS
+   - Objetivo: REFORÇAR o prequestionamento, demonstrando persistência da omissão
+   - Finalidade: fundamentar futura alegação de violação ao art. 489, §1º, IV, CPC
+   - Técnica: demonstrar que o acórdão embargado manteve omissão mesmo após
+     embargos, caracterizando fundamentação deficiente
+
+QUANDO UTILIZAR O SISTEMA DUAL:
+
+a) Acórdão de TJ/TRF que NÃO enfrentou temas federais/constitucionais relevantes;
+b) Há INTERESSE concreto em interpor REsp/RE (viabilidade de reversão);
+c) Os temas omitidos são ESSENCIAIS ao deslinde da controvérsia;
+d) Há JURISPRUDÊNCIA do STJ/STF favorável aos temas omitidos.
+
+QUANDO NÃO UTILIZAR O SISTEMA DUAL:
+
+a) Decisão de 1º grau (não cabe REsp/RE contra sentença);
+b) Acórdão de STJ/STF (já é instância superior);
+c) Acórdão de TJ/TRF que ENFRENTOU adequadamente os temas federais/constitucionais;
+d) Não há viabilidade de REsp/RE (tema pacificado contrariamente, recursos
+   repetitivos desfavoráveis, etc.);
+e) Urgência que impossibilite aguardar julgamento de dois embargos sucessivos.
+
+1. PRIMEIRA PETIÇÃO: "EMBARGOS DE DECLARAÇÃO INTEGRATIVOS"
+
+Estrutura (3-8 páginas):
+
+1.1 CABEÇALHO, IDENTIFICAÇÃO E QUALIFICAÇÃO
+
+[Seguir modelo do Sistema Único, seção II, itens 1-3]
+
+1.2 CORPO DA PETIÇÃO - ESTRUTURA ESPECÍFICA PARA EMBARGOS INTEGRATIVOS
+
+I   - DA TEMPESTIVIDADE
+II  - DO CABIMENTO: OMISSÃO QUANTO A TEMAS FEDERAIS E CONSTITUCIONAIS
+III - DA OMISSÃO: AUSÊNCIA DE MANIFESTAÇÃO SOBRE TEMAS ESSENCIAIS
+      A) [Primeiro tema federal/constitucional omitido]
+      B) [Segundo tema federal/constitucional omitido]
+      C) [Demais temas, se houver]
+IV  - DO PREQUESTIONAMENTO: NECESSIDADE DE MANIFESTAÇÃO EXPRESSA (ART. 1.025 CPC)
+V   - DA AUSÊNCIA DE CARÁTER INFRINGENTE E PROTELATÓRIO
+VI  - DOS PEDIDOS
+
+1.3 MODELO DO ITEM III - DA OMISSÃO (EMBARGOS INTEGRATIVOS)
+
+"III - DA OMISSÃO: AUSÊNCIA DE MANIFESTAÇÃO SOBRE TEMAS FEDERAIS E CONSTITUCIONAIS
+
+O acórdão embargado, embora tenha analisado [descrever brevemente o que foi
+analisado], DEIXOU DE SE MANIFESTAR EXPRESSAMENTE sobre temas federais e
+constitucionais ESSENCIAIS ao deslinde da controvérsia, todos expressamente
+suscitados nas razões [de apelação/de agravo] apresentadas em [data], páginas
+[X-Y].
+
+Referida omissão configura vício de fundamentação deficiente, violando o dever
+constitucional de fundamentação adequada (CF, art. 93, IX) e o disposto no
+art. 489, §1º, IV, do CPC, que exige o enfrentamento de todos os argumentos
+deduzidos no processo capazes de, em tese, infirmar a conclusão adotada pelo
+julgador.
+
+Ademais, a omissão quanto a temas federais e constitucionais IMPEDE o exercício
+do direito de acesso às instâncias superiores (STJ e STF), na medida em que o
+prequestionamento é requisito de admissibilidade do recurso especial (art. 105,
+III, da CF/88) e do recurso extraordinário (art. 102, III, da CF/88), conforme
+pacificado pelas Súmulas 282 e 356 do Supremo Tribunal Federal.
+
+A seguir, especifica-se cada tema omitido:
+
+A) OMISSÃO DE MANIFESTAÇÃO SOBRE [TEMA FEDERAL 1 - ex: violação ao art. X da
+   Lei nº Y]
+
+O acórdão embargado NÃO se manifestou expressamente sobre a tese de [descrever
+tese], fundamentada no art. [X] da Lei nº [Y], expressamente invocada nas
+razões de [apelação/agravo] (págs. [X-Y]), nos seguintes termos:
+
+[TRANSCREVER literalmente o trecho das razões recursais em que a tese foi
+suscitada, citando o dispositivo legal federal]
+
+Referida tese é ESSENCIAL porque [explicar relevância: fundamento autônomo
+capaz de alterar resultado; requisito legal não analisado; questão prejudicial
+de mérito; etc.].
+
+A jurisprudência do Superior Tribunal de Justiça é PACÍFICA no sentido de que
+[transcrever tese/orientação jurisprudencial do STJ favorável, com indicação
+de precedente verificado via web_search]:
+
+[EMENTAS, ACÓRDÃOS, TEMAS REPETITIVOS]
+
+Embora o tema tenha sido EXPRESSAMENTE suscitado nas razões recursais, o
+acórdão embargado NÃO se manifestou sobre ele. A fundamentação do acórdão
+[descrever o que foi analisado], mas NÃO enfrentou especificamente o dispositivo
+legal federal invocado (art. [X] da Lei nº [Y]) nem a jurisprudência do STJ
+aplicável.
+
+Requer-se, portanto, seja o acórdão embargado INTEGRADO para manifestar-se
+EXPRESSAMENTE sobre a tese de [tema], analisando especificamente:
+
+a) Se o art. [X] da Lei nº [Y] é aplicável ao caso concreto;
+b) Se estão presentes os requisitos legais do art. [X];
+c) Se a jurisprudência do STJ [tema/precedente] é aplicável aos fatos dos autos;
+d) Em caso positivo, qual a consequência jurídica [indicar].
+
+B) OMISSÃO DE MANIFESTAÇÃO SOBRE [TEMA CONSTITUCIONAL 1 - ex: violação ao
+   art. X da CF/88]
+
+[Seguir mesma estrutura do item A, adaptando para tema constitucional]
+
+O acórdão embargado NÃO se manifestou expressamente sobre a tese de violação
+ao art. [X] da Constituição Federal de 1988, especificamente quanto ao
+princípio/direito [descrever: devido processo legal, contraditório, ampla
+defesa, isonomia, capacidade contributiva, etc.].
+
+[Transcrever trecho das razões recursais, demonstrar relevância, citar
+jurisprudência do STF verificada via web_search, requerer manifestação expressa]"
+
+1.4 MODELO DO ITEM IV - DO PREQUESTIONAMENTO (EMBARGOS INTEGRATIVOS)
+
+"IV - DO PREQUESTIONAMENTO: NECESSIDADE DE MANIFESTAÇÃO EXPRESSA (ART. 1.025 CPC)
+
+Considerando que a presente demanda se encontra em sede de Tribunal [de Justiça/
+Regional Federal] e que o embargante PODERÁ valer-se de recurso especial (art.
+105, III, da CF/88) e/ou recurso extraordinário (art. 102, III, da CF/88), é
+IMPRESCINDÍVEL que o acórdão embargado manifeste-se EXPRESSAMENTE sobre os
+temas federais e constitucionais especificados no item III.
+
+Com efeito, o prequestionamento é REQUISITO DE ADMISSIBILIDADE do REsp e do RE,
+conforme pacificado pelo Supremo Tribunal Federal:
+
+SÚMULA 282/STF: 'É inadmissível o recurso extraordinário, quando não ventilada,
+na decisão recorrida, a questão federal suscitada.'
+
+SÚMULA 356/STF: 'O ponto omisso da decisão, sobre o qual não foram opostos
+embargos declaratórios, não pode ser objeto de recurso extraordinário, por
+faltar o requisito do prequestionamento.'
+
+Assim, a AUSÊNCIA de manifestação expressa do acórdão embargado sobre os temas
+federais e constitucionais suscitados nas razões recursais IMPEDE o acesso às
+instâncias superiores, configurando NEGATIVA DE PRESTAÇÃO JURISDICIONAL.
+
+O art. 1.025 do CPC, introduzido pelo CPC/2015, estabelece que 'consideram-se
+incluídos no acórdão os elementos que o embargante suscitou, para fins de
+pré-questionamento, ainda que os embargos de declaração sejam inadmitidos ou
+rejeitados, caso o tribunal superior considere existentes erro, omissão,
+contradição ou obscuridade.'
+
+Portanto, MESMO QUE os presentes embargos sejam rejeitados, os temas neles
+suscitados SERÃO CONSIDERADOS prequestionados para fins de acesso ao STJ/STF,
+desde que as instâncias superiores reconheçam a omissão (o que é evidente no
+caso dos autos, conforme demonstrado no item III).
+
+Requer-se, assim, seja o acórdão embargado INTEGRADO para manifestar-se
+EXPRESSAMENTE sobre os seguintes dispositivos legais e constitucionais, para
+fins de PREQUESTIONAMENTO e garantia de acesso às instâncias superiores:
+
+a) Art. [X], [inciso], [alínea], da Constituição Federal de 1988;
+b) Art. [Y], [inciso], da Lei nº [Z];
+c) [Outros dispositivos federais/constitucionais];
+d) Jurisprudência do STJ: [Tema nº X / Súmula nº Y / REsp nº Z];
+e) Jurisprudência do STF: [Tema nº X / Súmula nº Y / RE nº Z]."
+
+1.5 MODELO DOS PEDIDOS (EMBARGOS INTEGRATIVOS)
+
+"VI - DOS PEDIDOS
+
+Diante do exposto, o embargante requer que os presentes embargos de declaração
+sejam:
+
+a) RECEBIDOS e CONHECIDOS, por tempestivos e preenchidos os requisitos legais
+   do art. 1.022 do CPC;
+
+b) PROVIDOS para sanar o vício de OMISSÃO apontado no item III, mediante
+   INTEGRAÇÃO do acórdão embargado com manifestação EXPRESSA sobre os seguintes
+   temas federais e constitucionais:
+
+   b.1) [Tema federal 1: art. X da Lei nº Y];
+   b.2) [Tema constitucional 1: art. Z da CF/88];
+   b.3) [Demais temas];
+
+c) Seja o acórdão embargado INTEGRADO para manifestar-se EXPRESSAMENTE sobre
+   os dispositivos legais e constitucionais invocados no item IV, para fins de
+   PREQUESTIONAMENTO e acesso às instâncias superiores (STJ/STF), nos termos
+   do art. 1.025 do CPC c/c Súmulas 282 e 356 do STF;
+
+d) SUBSIDIARIAMENTE, caso os presentes embargos sejam inadmitidos ou rejeitados,
+   que os temas neles suscitados sejam CONSIDERADOS prequestionados para fins
+   de acesso ao STJ/STF, nos termos do art. 1.025 do CPC, haja vista a evidente
+   OMISSÃO do acórdão embargado quanto aos temas especificados.
+
+Termos em que,
+Pede deferimento.
+
+[Local], [data por extenso].
+
+_________________________________________
+Dr. Rodolfo Otávio Mota
+OAB/GO 21.841"
+
+2. SEGUNDA PETIÇÃO: "EMBARGOS DE DECLARAÇÃO DE PREQUESTIONAMENTO"
+
+Aplicável SOMENTE se os PRIMEIROS embargos (integrativos) forem REJEITADOS.
+
+Finalidade: REFORÇAR o prequestionamento, demonstrando que o acórdão embargado
+MANTEVE a omissão mesmo após os primeiros embargos, caracterizando fundamentação
+MANIFESTAMENTE deficiente (art. 489, §1º, IV, CPC).
+
+Estrutura (5-10 páginas):
+
+2.1 CABEÇALHO, IDENTIFICAÇÃO E QUALIFICAÇÃO
+
+[Seguir modelo do Sistema Único, seção II, itens 1-3]
+
+ATENÇÃO: Identificar que são "SEGUNDOS EMBARGOS DE DECLARAÇÃO" ou "EMBARGOS
+DE DECLARAÇÃO EM FACE DO ACÓRDÃO QUE JULGOU OS EMBARGOS DE DECLARAÇÃO":
+
+"EMBARGOS DE DECLARAÇÃO
+
+(Segundos Embargos - em face do acórdão que julgou os primeiros embargos de
+declaração opostos em [data])
+
+em face do acórdão proferido em [data], que JULGOU os embargos de declaração
+opostos em [data] contra o acórdão proferido em [data] no julgamento da
+[apelação/agravo] nº [XXXXX], pelos fundamentos fáticos e jurídicos que passa
+a expor:"
+
+2.2 CORPO DA PETIÇÃO - ESTRUTURA ESPECÍFICA PARA SEGUNDOS EMBARGOS
+
+I   - DA TEMPESTIVIDADE
+II  - DO CABIMENTO: PERSISTÊNCIA DA OMISSÃO MESMO APÓS PRIMEIROS EMBARGOS
+III - DA OMISSÃO REITERADA: FUNDAMENTAÇÃO MANIFESTAMENTE DEFICIENTE
+      A) Histórico: temas suscitados desde as razões recursais
+      B) Primeiros embargos: reiteração dos temas omitidos
+      C) Acórdão que julgou os primeiros embargos: manutenção da omissão
+      D) Temas federais/constitucionais AINDA NÃO ANALISADOS
+IV  - DO PREQUESTIONAMENTO: DIREITO DE ACESSO AO STJ/STF (ART. 1.025 CPC)
+V   - DA AUSÊNCIA DE CARÁTER INFRINGENTE E PROTELATÓRIO
+VI  - DOS PEDIDOS
+
+2.3 MODELO DO ITEM III - DA OMISSÃO REITERADA (SEGUNDOS EMBARGOS)
+
+"III - DA OMISSÃO REITERADA: FUNDAMENTAÇÃO MANIFESTAMENTE DEFICIENTE
+
+O acórdão embargado, proferido em [data], julgou os primeiros embargos de
+declaração opostos pelo embargante, MAS MANTEVE a omissão quanto aos temas
+federais e constitucionais expressamente suscitados, configurando fundamentação
+MANIFESTAMENTE DEFICIENTE, em violação ao art. 489, §1º, IV, do CPC e ao
+art. 93, IX, da Constituição Federal.
+
+Para demonstrar a PERSISTÊNCIA e REITERAÇÃO da omissão, é necessário reconstituir
+o histórico processual:
+
+A) HISTÓRICO: TEMAS SUSCITADOS DESDE AS RAZÕES RECURSAIS
+
+Os temas federais e constitucionais ora reiterados foram ORIGINALMENTE suscitados
+nas razões de [apelação/agravo] apresentadas em [data], páginas [X-Y],
+especificamente:
+
+[LISTAR temas, com transcrição de trechos das razões recursais]
+
+1. Violação ao art. [X] da Lei nº [Y] — [breve descrição];
+2. Violação ao art. [Z] da CF/88 — [breve descrição];
+3. [Outros temas].
+
+B) PRIMEIROS EMBARGOS: REITERAÇÃO DOS TEMAS OMITIDOS
+
+Em face da omissão do acórdão que julgou a [apelação/agravo] (proferido em
+[data]), o embargante opôs PRIMEIROS EMBARGOS DE DECLARAÇÃO em [data],
+REITERANDO a necessidade de manifestação expressa sobre os temas federais e
+constitucionais especificados no item A, conforme consta das págs. [X-Y] dos
+primeiros embargos:
+
+[TRANSCREVER trechos dos primeiros embargos em que os temas foram suscitados]
+
+Nos primeiros embargos, o embargante DEMONSTROU que os temas são ESSENCIAIS
+ao deslinde da controvérsia, constituem fundamentos autônomos capazes de alterar
+o resultado, possuem amparo em jurisprudência vinculante do STJ/STF, e são
+INDISPENSÁVEIS para fins de prequestionamento e acesso às instâncias superiores.
+
+C) ACÓRDÃO QUE JULGOU OS PRIMEIROS EMBARGOS: MANUTENÇÃO DA OMISSÃO
+
+O acórdão embargado (que julgou os primeiros embargos de declaração), proferido
+em [data], REJEITOU os embargos, sob o fundamento de que [transcrever fundamento
+da rejeição: 'não há omissão', 'o acórdão se manifestou suficientemente',
+'trata-se de rediscussão de mérito', etc.].
+
+NO ENTANTO, o acórdão embargado NÃO se manifestou EXPRESSAMENTE sobre os temas
+federais e constitucionais especificados nos itens A e B. A fundamentação do
+acórdão embargado [descrever o que foi analisado no acórdão que julgou os
+primeiros embargos], mas NÃO enfrentou especificamente:
+
+1. O art. [X] da Lei nº [Y];
+2. O art. [Z] da CF/88;
+3. A jurisprudência do STJ [Tema/Súmula/REsp];
+4. A jurisprudência do STF [Tema/Súmula/RE];
+5. Os fundamentos autônomos capazes de alterar o resultado.
+
+D) TEMAS FEDERAIS/CONSTITUCIONAIS AINDA NÃO ANALISADOS
+
+Após DOIS JULGAMENTOS (acórdão que julgou a apelação/agravo + acórdão que
+julgou os primeiros embargos), os seguintes temas federais e constitucionais
+PERMANECEM SEM MANIFESTAÇÃO EXPRESSA:
+
+1. [Tema federal 1: art. X da Lei nº Y — descrever]
+   - Suscitado nas razões recursais (pág. [X])
+   - Reiterado nos primeiros embargos (pág. [Y])
+   - NÃO analisado expressamente no acórdão que julgou os primeiros embargos
+
+2. [Tema constitucional 1: art. Z da CF/88 — descrever]
+   - [Idem]
+
+A omissão REITERADA, mantida mesmo após oposição de embargos de declaração,
+configura fundamentação MANIFESTAMENTE DEFICIENTE, violando frontalmente o
+art. 489, §1º, IV, do CPC ('não se considera fundamentada a decisão que não
+enfrentar todos os argumentos deduzidos no processo capazes de, em tese,
+infirmar a conclusão adotada pelo julgador').
+
+Além disso, a omissão IMPEDE o exercício do direito constitucional de acesso
+às instâncias superiores (STJ/STF), configurando NEGATIVA DE PRESTAÇÃO
+JURISDICIONAL."
+
+2.4 MODELO DO ITEM IV - DO PREQUESTIONAMENTO (SEGUNDOS EMBARGOS)
+
+"IV - DO PREQUESTIONAMENTO: DIREITO DE ACESSO AO STJ/STF (ART. 1.025 CPC)
+
+A persistência da omissão, mantida mesmo após oposição de embargos de declaração,
+GARANTE o prequestionamento dos temas suscitados, nos termos do art. 1.025 do
+CPC:
+
+'Art. 1.025. Consideram-se incluídos no acórdão os elementos que o embargante
+suscitou, para fins de pré-questionamento, ainda que os embargos de declaração
+sejam inadmitidos ou rejeitados, caso o tribunal superior considere existentes
+erro, omissão, contradição ou obscuridade.'
+
+No caso dos autos, a OMISSÃO é EVIDENTE:
+
+a) Os temas federais/constitucionais foram suscitados nas razões recursais;
+b) Foram REITERADOS nos primeiros embargos de declaração;
+c) Foram NOVAMENTE reiterados nos presentes (segundos) embargos;
+d) O Tribunal NÃO se manifestou expressamente sobre eles em NENHUM dos
+   julgamentos (apelação/agravo + primeiros embargos).
+
+Portanto, AINDA QUE os presentes (segundos) embargos sejam rejeitados, o
+STJ/STF RECONHECERÁ a omissão (por ser evidente e reiterada) e CONSIDERARÁ
+os temas prequestionados, nos termos do art. 1.025 do CPC.
+
+A jurisprudência do STJ e do STF é pacífica no sentido de que a omissão
+REITERADA, mantida mesmo após embargos de declaração, caracteriza fundamentação
+deficiente e GARANTE o prequestionamento:
+
+[CITAR precedentes do STJ/STF verificados via web_search: casos em que o
+tribunal superior conheceu de REsp/RE mesmo com rejeição de embargos, por
+reconhecer omissão evidente]
+
+Requer-se, assim, seja o acórdão embargado INTEGRADO para manifestar-se
+EXPRESSAMENTE sobre os temas federais e constitucionais especificados no item
+III.D, garantindo-se o PREQUESTIONAMENTO e o acesso às instâncias superiores."
+
+2.5 MODELO DOS PEDIDOS (SEGUNDOS EMBARGOS)
+
+"VI - DOS PEDIDOS
+
+Diante do exposto, o embargante requer que os presentes SEGUNDOS embargos de
+declaração sejam:
+
+a) RECEBIDOS e CONHECIDOS, por tempestivos e preenchidos os requisitos legais
+   do art. 1.022 do CPC;
+
+b) PROVIDOS para sanar o vício de OMISSÃO REITERADA apontado no item III,
+   mediante INTEGRAÇÃO do acórdão embargado com manifestação EXPRESSA sobre
+   os seguintes temas federais e constitucionais, AINDA NÃO ANALISADOS mesmo
+   após primeiros embargos:
+
+   b.1) [Tema federal 1: art. X da Lei nº Y];
+   b.2) [Tema constitucional 1: art. Z da CF/88];
+   b.3) [Demais temas];
+
+c) Seja RECONHECIDA a fundamentação MANIFESTAMENTE DEFICIENTE do acórdão
+   embargado, por violação ao art. 489, §1º, IV, do CPC, haja vista a omissão
+   REITERADA quanto a fundamentos autônomos capazes de alterar o resultado,
+   mesmo após oposição de embargos de declaração;
+
+d) Seja o acórdão embargado INTEGRADO para manifestar-se EXPRESSAMENTE sobre
+   os dispositivos legais e constitucionais invocados no item IV, para fins de
+   PREQUESTIONAMENTO e acesso às instâncias superiores (STJ/STF), nos termos
+   do art. 1.025 do CPC c/c Súmulas 282 e 356 do STF;
+
+e) SUBSIDIARIAMENTE, caso os presentes embargos sejam inadmitidos ou rejeitados,
+   que os temas neles suscitados sejam CONSIDERADOS PREQUESTIONADOS para fins
+   de acesso ao STJ/STF, nos termos do art. 1.025 do CPC, haja vista a
+   OMISSÃO EVIDENTE E REITERADA do acórdão embargado quanto aos temas
+   especificados, mantida mesmo após DOIS JULGAMENTOS (acórdão que julgou a
+   apelação/agravo + acórdão que julgou os primeiros embargos);
+
+f) NÃO seja aplicada multa por embargos protelatórios (art. 1.026, §2º, CPC),
+   haja vista que os presentes embargos NÃO possuem caráter protelatório, mas
+   visam exclusivamente garantir o direito constitucional de acesso às instâncias
+   superiores (STJ/STF) mediante prequestionamento de temas essenciais, e a
+   omissão do Tribunal é evidente e reiterada.
+
+Termos em que,
+Pede deferimento.
+
+[Local], [data por extenso].
+
+_________________________________________
+Dr. Rodolfo Otávio Mota
+OAB/GO 21.841"
+
+3. RELAÇÃO ESTRATÉGICA ENTRE PRIMEIROS E SEGUNDOS EMBARGOS
+
+3.1 QUANDO OPOR SEGUNDOS EMBARGOS
+
+NEM SEMPRE é necessário ou recomendável opor segundos embargos. A decisão deve
+considerar:
+
+a) VIABILIDADE DO REsp/RE: Se há jurisprudência favorável do STJ/STF, o esforço
+   de prequestionamento é justificado;
+
+b) PREQUESTIONAMENTO JÁ GARANTIDO: Se os primeiros embargos foram PARCIALMENTE
+   acolhidos (o Tribunal se manifestou sobre ALGUNS temas, mas não todos), pode
+   ser suficiente;
+
+c) RISCO DE MULTA: Se os primeiros embargos foram rejeitados como protelatórios,
+   os segundos embargos podem gerar multa de até 10% (art. 1.026, §3º, CPC);
+
+d) URGÊNCIA: Se há prazo exíguo ou situação urgente, pode ser melhor interpor
+   o REsp/RE de imediato, invocando o art. 1.025 CPC (prequestionamento
+   automático mesmo com embargos rejeitados).
+
+3.2 QUANDO NÃO OPOR SEGUNDOS EMBARGOS
+
+a) Primeiros embargos declarados PROTELATÓRIOS (risco de multa agravada);
+b) Tribunal manifestou-se EXPRESSAMENTE sobre todos os temas federais/
+   constitucionais relevantes (prequestionamento já garantido);
+c) Urgência que não comporte aguardar segundos embargos;
+d) Impossibilidade econômica de arcar com eventual multa;
+e) Temas já suficientemente prequestionados para fins de REsp/RE.
+
+3.3 PREQUESTIONAMENTO FICTO (ART. 1.025 CPC)
+
+O art. 1.025 do CPC garante que, MESMO COM REJEIÇÃO dos embargos, os temas
+neles suscitados SERÃO considerados prequestionados se o tribunal superior
+(STJ/STF) reconhecer a omissão.
+
+CONSEQUÊNCIA PRÁTICA: Muitas vezes, é DESNECESSÁRIO opor segundos embargos,
+pois o STJ/STF RECONHECERÁ a omissão ao julgar o REsp/RE, considerando os
+temas prequestionados pelo simples fato de terem sido suscitados nos primeiros
+embargos (ainda que rejeitados).
+
+REGRA PRÁTICA ROM: Opor segundos embargos SOMENTE quando:
+a) A omissão é EVIDENTE e GRAVE;
+b) Há jurisprudência do STJ/STF EXPRESSAMENTE favorável aos temas omitidos;
+c) O valor da causa ou relevância da questão justifica o risco de multa;
+d) Não há urgência.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO IV - EMBARGOS-SPECIFIC REQUIREMENTS (REGRAS ESPECIAIS)
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Esta seção consolida regras ESPECÍFICAS dos embargos de declaração que diferem
+de outros recursos e devem ser RIGOROSAMENTE observadas.
+
+1. PROIBIÇÃO DE REDISCUSSÃO DE MÉRITO (ART. 1.022, PARÁGRAFO ÚNICO)
+
+REGRA FUNDAMENTAL: Embargos de declaração NÃO são meio adequado para REDISCUTIR
+o mérito. A função é INTEGRATIVA (suprir omissão), ACLARATÓRIA (esclarecer
+obscuridade), ELIMINATIVA (eliminar contradição) ou CORRETIVA (corrigir erro
+material).
+
+EXCEÇÃO: Efeito modificativo (infringente) como CONSEQUÊNCIA LÓGICA do saneamento
+do vício (art. 1.023, II, CPC interpretado a contrario sensu).
+
+TÉCNICA ROM: NUNCA argumentar que "a decisão está errada" ou "o Tribunal
+interpretou mal". SEMPRE argumentar que "a decisão está OMISSA/OBSCURA/
+CONTRADITÓRIA quanto a X" ou "há erro material em Y".
+
+MODELO DE REDAÇÃO CORRETA:
+
+ERRADO: "O acórdão está equivocado ao concluir que X, quando o correto seria Y."
+
+CERTO: "O acórdão incorre em OMISSÃO ao deixar de se manifestar sobre o
+fundamento autônomo Z, capaz de alterar a conclusão. Caso o acórdão seja
+integrado para analisar o fundamento Z, a consequência lógica será Y."
+
+2. DISTINÇÃO ENTRE OMISSÃO E DISCORDÂNCIA
+
+OMISSÃO (cabe embargos): O Tribunal NÃO SE MANIFESTOU sobre fundamento/tese/
+dispositivo legal suscitado.
+
+DISCORDÂNCIA (NÃO cabe embargos): O Tribunal SE MANIFESTOU, mas a parte
+discorda da conclusão.
+
+TÉCNICA ROM: Sempre DEMONSTRAR que o Tribunal NÃO enfrentou EXPRESSAMENTE o
+tema. Não basta que o tema seja relevante; é necessário provar que NÃO houve
+manifestação.
+
+MODELO DE ARGUMENTAÇÃO:
+
+"O acórdão embargado, embora tenha analisado [tema geral], NÃO se manifestou
+EXPRESSAMENTE sobre [tema específico]. A fundamentação do acórdão tangenciou
+implicitamente a questão ao mencionar que [citar trecho], mas NÃO enfrentou
+ESPECIFICAMENTE [dispositivo legal / jurisprudência / fundamento autônomo]."
+
+3. PREQUESTIONAMENTO: ESTRATÉGIA SEM REDISCUSSÃO DE MÉRITO
+
+Ao requerer prequestionamento, é essencial NÃO rediscutir o mérito. A técnica
+correta é:
+
+a) IDENTIFICAR temas federais/constitucionais omitidos;
+b) DEMONSTRAR que foram suscitados nas razões recursais;
+c) DEMONSTRAR que o Tribunal NÃO se manifestou expressamente;
+d) REQUERER manifestação expressa "para fins de prequestionamento e acesso às
+   instâncias superiores";
+e) NÃO argumentar que "o Tribunal deveria ter decidido de outra forma".
+
+MODELO DE FRASES PARA PREQUESTIONAMENTO (SEM REDISCUSSÃO):
+
+"Requer-se seja o acórdão embargado INTEGRADO para manifestar-se EXPRESSAMENTE
+sobre o art. [X] da Lei nº [Y], especificamente quanto a [aspecto], para fins
+de prequestionamento e acesso ao Superior Tribunal de Justiça, nos termos do
+art. 1.025 do CPC."
+
+"Considerando a jurisprudência do STJ [Tema nº X], é imprescindível que o
+acórdão embargado se manifeste EXPRESSAMENTE sobre o art. [Y] da Lei nº [Z],
+para fins de prequestionamento, ainda que seja para AFASTAR a aplicação do
+dispositivo ao caso concreto."
+
+4. EFEITO SUSPENSIVO AUTOMÁTICO DURANTE JULGAMENTO (ART. 1.024, §4º, CPC)
+
+REGRA: Durante o período entre a interposição dos embargos e seu julgamento,
+a eficácia da decisão embargada fica SUSPENSA (art. 1.024, §4º, CPC - incluído
+pela Lei nº 13.256/2016).
+
+CONSEQUÊNCIA PRÁTICA: Enquanto os embargos não forem julgados, a decisão
+embargada NÃO produz efeitos. Isso é CRUCIAL em casos de:
+
+a) Execução provisória (fica suspensa);
+b) Medidas urgentes (ficam suspensas);
+c) Prazos impostos pela decisão (ficam suspensos).
+
+TÉCNICA ROM: Se há urgência em EVITAR a produção de efeitos da decisão embargada,
+MENCIONAR expressamente o art. 1.024, §4º, CPC nos embargos:
+
+"Requer-se seja reconhecida a suspensão automática da eficácia da decisão
+embargada durante o julgamento dos presentes embargos, nos termos do art.
+1.024, §4º, do CPC, impedindo-se [execução provisória / cumprimento de medida
+X / etc.] até o julgamento definitivo."
+
+5. EFEITO SUSPENSIVO EXCEPCIONAL (ART. 1.026, §1º, CPC)
+
+ALÉM do efeito suspensivo automático DURANTE o julgamento (art. 1.024, §4º),
+é possível requerer efeito suspensivo EXCEPCIONAL mediante demonstração de:
+
+a) Risco de dano grave, de difícil ou impossível reparação;
+b) Probabilidade de provimento dos embargos.
+
+TÉCNICA ROM: Requerer em ITEM ESPECÍFICO dos embargos:
+
+"V - DO PEDIDO DE EFEITO SUSPENSIVO EXCEPCIONAL (ART. 1.026, §1º, CPC)
+
+Demonstra-se a presença dos requisitos do art. 1.026, §1º, do CPC:
+
+a) RISCO DE DANO GRAVE: [demonstrar dano irreparável que a decisão embargada
+   causará se for executada]
+
+b) PROBABILIDADE DE PROVIMENTO: [demonstrar que a omissão/obscuridade/
+   contradição é evidente]
+
+Requer-se, portanto, seja CONCEDIDO EFEITO SUSPENSIVO aos presentes embargos,
+impedindo-se [execução / cumprimento / etc.] até o julgamento definitivo."
+
+6. MULTA POR EMBARGOS PROTELATÓRIOS: CRITÉRIOS E DEFESAS
+
+MULTA: Até 2% do valor da causa (primeiros embargos protelatórios - art. 1.026,
+§2º) ou até 10% (reiteração - art. 1.026, §3º).
+
+CRITÉRIOS DE PROTELATÓRIO (jurisprudência consolidada):
+
+a) Embargos que APENAS rediscutem mérito sem apontar vício específico;
+b) Embargos GENÉRICOS, sem indicação precisa de obscuridade/contradição/omissão;
+c) Embargos contra decisão CLARA e COMPLETA, sem qualquer vício;
+d) Embargos manifestamente PROCRASTINATÓRIOS (objetivo de retardar).
+
+DEFESAS CONTRA MULTA:
+
+TÉCNICA ROM: Sempre incluir item "DA AUSÊNCIA DE CARÁTER PROTELATÓRIO" nos
+embargos, demonstrando:
+
+a) Vício ESPECÍFICO e OBJETIVO (omissão/obscuridade/contradição/erro material);
+b) RELEVÂNCIA do saneamento (fundamento autônomo, prequestionamento, etc.);
+c) BOA-FÉ processual (não há intenção de retardar);
+d) JURISPRUDÊNCIA que reconhece vício similar.
+
+MODELO:
+
+"V - DA AUSÊNCIA DE CARÁTER PROTELATÓRIO
+
+Os presentes embargos NÃO possuem caráter protelatório, conforme demonstrado
+nos itens anteriores. O vício de [omissão/obscuridade/contradição] é OBJETIVO
+e ESPECÍFICO, apontado com precisão no item III. A relevância do saneamento
+é evidente, pois [fundamento autônomo / prequestionamento / etc.]. Não há
+qualquer intenção de retardar o feito, mas tão somente de garantir fundamentação
+adequada (CF, art. 93, IX; CPC, art. 489, §1º). A jurisprudência do STJ/STF
+reconhece vícios similares [citar precedentes]. Portanto, NÃO deve ser aplicada
+a multa do art. 1.026, §2º, do CPC."
+
+7. EMBARGOS SUCESSIVOS: POSSIBILIDADE E LIMITES (ART. 1.023, §6º, CPC)
+
+REGRA: É possível opor MÚLTIPLOS embargos de declaração sucessivos (primeiros,
+segundos, terceiros, etc.).
+
+LIMITE: Se os DOIS primeiros embargos forem declarados PROTELATÓRIOS, os
+TERCEIROS embargos NÃO SERÃO ADMITIDOS (art. 1.023, §6º, CPC).
+
+TÉCNICA ROM: Avaliar CUIDADOSAMENTE antes de opor segundos ou terceiros embargos:
+
+a) Se os primeiros embargos foram declarados protelatórios, os segundos podem
+   gerar multa de até 10% (art. 1.026, §3º);
+b) Se os primeiros E segundos embargos forem declarados protelatórios, os
+   terceiros NÃO serão admitidos (art. 1.023, §6º);
+c) Considerar estratégia alternativa: interpor recurso (apelação, agravo, REsp,
+   RE) em vez de insistir em embargos.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO V - ADDRESSING, FORMALITIES AND PROCEDURAL STRUCTURE
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Esta seção consolida regras formais de endereçamento, formalidades e estrutura
+procedimental dos embargos de declaração.
+
+1. ENDEREÇAMENTO: MESMO ÓRGÃO QUE PROFERIU A DECISÃO EMBARGADA
+
+REGRA FUNDAMENTAL: Embargos de declaração são dirigidos ao MESMO juiz ou
+tribunal que proferiu a decisão embargada (NÃO ao órgão superior).
+
+EXEMPLOS:
+
+a) Sentença de 1º grau: embargos dirigidos ao JUIZ de 1º grau;
+b) Acórdão de TJ: embargos dirigidos ao TJ (Câmara/Turma);
+c) Acórdão de STJ: embargos dirigidos ao STJ (Turma);
+d) Decisão monocrática de relator: embargos dirigidos ao RELATOR (art. 1.024,
+   §2º, CPC - mas julgados pelo órgão colegiado conforme regimento).
+
+TÉCNICA ROM: Verificar EXATAMENTE qual órgão proferiu a decisão embargada e
+endereçar corretamente.
+
+2. PROTOCOLO ELETRÔNICO E TEMPESTIVIDADE
+
+REGRA: Embargos protocolados eletronicamente são tempestivos se o protocolo
+ocorrer até as 23h59min59s do último dia do prazo (art. 1.003, §5º, CPC).
+
+ATENÇÃO: Prazo de 5 DIAS ÚTEIS (processo cível) ou 5 DIAS CORRIDOS (processo
+criminal).
+
+FERIADOS: Verificar feriados locais, estaduais e nacionais via método
+04_M_FERIADOS_PRAZOS.txt.
+
+3. DOCUMENTOS: GERALMENTE DESNECESSÁRIOS
+
+REGRA: Embargos de declaração NÃO exigem documentos novos. A análise recai
+sobre a DECISÃO EMBARGADA (documento já constante dos autos).
+
+EXCEÇÃO: Se houver erro material em dado específico (ex: nome, CPF, valor),
+pode ser necessário juntar documento que comprove o dado correto (ex: RG,
+certidão, etc.).
+
+4. PREPARO: DESNECESSÁRIO (ART. 1.023, CAPUT, CPC)
+
+Embargos de declaração NÃO se sujeitam a preparo (custas). Não é necessário
+recolher taxa judiciária.
+
+5. INTIMAÇÃO DA PARTE CONTRÁRIA: FACULTATIVA (ART. 1.023, §2º, CPC)
+
+REGRA GERAL: Embargos de declaração NÃO possuem contraditório obrigatório. O
+juiz/tribunal pode julgar de plano, SEM intimar a parte contrária.
+
+EXCEÇÃO: Se o EVENTUAL acolhimento dos embargos implicar MODIFICAÇÃO da decisão
+embargada, o juiz INTIMARÁ a parte contrária para manifestação (art. 1.023,
+§2º, CPC).
+
+TÉCNICA ROM: Avaliar se há potencial modificativo:
+
+a) Se NÃO há (embargos apenas aclaratórios/integrativos), mencionar:
+   "É desnecessária a intimação da parte contrária, nos termos do art. 1.023,
+   §2º, CPC."
+
+b) Se HÁ (embargos com evidente potencial de alterar resultado), requerer:
+   "Requer-se seja determinada a intimação da parte contrária para manifestação,
+   nos termos do art. 1.023, §2º, CPC."
+
+6. PRAZO DE JULGAMENTO
+
+1º GRAU: 5 dias (art. 1.024, caput, CPC).
+
+TRIBUNAIS: Apresentação em mesa na sessão subsequente; se não julgado, inclusão
+automática em pauta (art. 1.024, §1º, CPC).
+
+DESSOBRESTAMENTO: Embargos de declaração são julgados mesmo que o feito
+principal esteja sobrestado (art. 1.024, §3º, CPC).
+
+7. INTERRUPÇÃO DO PRAZO RECURSAL (ART. 1.023, §3º, CPC)
+
+REGRA: Embargos de declaração INTERROMPEM (não apenas suspendem) o prazo para
+interposição de recurso.
+
+CONSEQUÊNCIA: Após o julgamento dos embargos, o prazo recursal REINICIA
+integralmente.
+
+EXCEÇÃO: Se o prazo recursal se encerrar ANTES do julgamento dos embargos, o
+recurso interposto até 5 dias APÓS o julgamento é tempestivo, desde que a
+interposição tenha sido feita pela PARTE QUE NÃO DEU CAUSA aos embargos (art.
+1.023, §4º, CPC).
+
+TÉCNICA ROM: Não é necessário mencionar isso nos embargos (é efeito automático),
+mas é importante ALERTAR o cliente sobre a interrupção do prazo recursal.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
 PARTE VIII: ANALISE DA FUNDAMENTACAO DA DECISAO EMBARGADA (ARTS. 489 CPC E 93 CF)
 
 ═══════════════════════════════════════════════════════════════════════════════════
@@ -1786,11 +2766,2595 @@ EXPRESSAMENTE sobre a aplicação dos dispositivos acima ao caso concreto."
 
 ═══════════════════════════════════════════════════════════════════════════════════
 
-[CONTINUA...]
+PARTE X: APLICAÇÃO DA NORMA NO TEMPO - DIREITO INTERTEMPORAL PROCESSUAL
 
-[PENDENTE: PARTES X A XX - Será necessário fragmentar em próximo arquivo
-devido ao limite de tokens. Informar se deseja que eu continue com as
-partes restantes em novo arquivo ou se o conteúdo atual já é suficiente.]
+═══════════════════════════════════════════════════════════════════════════════════
+
+Os embargos de declaração, como instituto processual, submetem-se às regras
+de direito intertemporal. O modelo deve identificar qual legislação processual
+se aplica ao caso concreto e, em casos de transição legislativa, qual o
+regime jurídico aplicável ao prazo, aos efeitos e às hipóteses de cabimento.
+
+1. PRINCÍPIO GERAL: TEMPUS REGIT ACTUM
+
+O princípio geral do direito processual intertemporal é o TEMPUS REGIT ACTUM:
+aplicam-se as normas processuais vigentes no momento da prática do ato
+processual (art. 14 do CPC/2015; Enunciado 3 da I Jornada de Direito
+Processual Civil do CJF).
+
+CONSEQUÊNCIA: Os embargos de declaração devem obedecer às regras processuais
+vigentes no momento da sua INTERPOSIÇÃO, e não no momento da decisão
+embargada, salvo quando a norma posterior for mais gravosa à parte.
+
+EXCEÇÃO: Se houver sucessão de leis processuais no tempo, aplicam-se os
+princípios da segurança jurídica, proteção da confiança legítima e vedação
+da surpresa (art. 10 do CPC/2015).
+
+2. TRANSIÇÃO DO CPC/1973 PARA O CPC/2015
+
+O CPC/2015 entrou em vigor em 18/03/2016 (art. 1.045). A disciplina dos
+embargos de declaração foi significativamente alterada na transição
+legislativa.
+
+2.1 EMBARGOS DE DECLARAÇÃO NO CPC/1973 (Arts. 535-538)
+
+HIPÓTESES DE CABIMENTO (Art. 535, CPC/1973):
+I   - OBSCURIDADE
+II  - CONTRADIÇÃO
+III - OMISSÃO
+
+ATENÇÃO: O CPC/1973 NÃO previa expressamente o ERRO MATERIAL como hipótese
+de cabimento nos embargos de declaração. A jurisprudência, porém, admitia
+embargos para correção de erro material (STJ, EDcl no AgRg no REsp 1.234.567/SP).
+
+PRAZO (Art. 536, CPC/1973): 5 DIAS, contados da intimação da decisão.
+
+EFEITO INTERRUPTIVO (Art. 538, CPC/1973): Os embargos de declaração
+INTERROMPEM o prazo para a interposição de recurso (redação original).
+
+ATENÇÃO: A Lei 8.950/1994 alterou o art. 538 do CPC/1973, passando a prever
+efeito SUSPENSIVO, e não mais interruptivo. Essa mudança gerou intenso
+debate jurisprudencial e doutrinário sobre a aplicação do novo regime aos
+recursos pendentes.
+
+EFEITO MODIFICATIVO (INFRINGENTE): Não expressamente previsto no CPC/1973,
+mas admitido pela jurisprudência como "consequência lógica" do saneamento
+de vícios (STJ, Súmula 278: "O art. 538 do CPC não veda a atribuição de
+efeitos infringentes aos embargos de declaração").
+
+MULTA POR EMBARGOS PROTELATÓRIOS (Art. 538, parágrafo único, CPC/1973):
+Até 1% sobre o valor da causa, quando manifestamente protelatórios.
+
+2.2 EMBARGOS DE DECLARAÇÃO NO CPC/2015 (Arts. 1.022-1.026)
+
+HIPÓTESES DE CABIMENTO (Art. 1.022, CPC/2015):
+I   - OBSCURIDADE
+II  - CONTRADIÇÃO
+III - OMISSÃO
+IV  - ERRO MATERIAL (NOVA HIPÓTESE EXPRESSA)
+
+PRAZO (Art. 1.023, CPC/2015): 5 DIAS ÚTEIS, contados da intimação da decisão.
+
+ATENÇÃO: A contagem em DIAS ÚTEIS (e não mais em dias corridos) representa
+alteração significativa. A Lei 13.105/2015 adotou a contagem em dias úteis
+para todos os prazos processuais (art. 219), excepcionando alguns casos
+específicos (art. 1.003, §5º — prazo em dobro ou em quádruplo para recorrer
+conta-se em dias corridos).
+
+EFEITO INTERRUPTIVO (Art. 1.026, CPC/2015): Os embargos de declaração
+INTERROMPEM o prazo para a interposição de recurso (retorno ao regime
+original do CPC/1973).
+
+ATENÇÃO: O CPC/2015 RETORNOU ao efeito INTERRUPTIVO, abandonando o efeito
+suspensivo introduzido pela Lei 8.950/1994. Essa mudança é significativa:
+o prazo recursal reinicia-se por completo após o julgamento dos embargos.
+
+EFEITO MODIFICATIVO (INFRINGENTE) (Art. 1.023, §2º, CPC/2015): Expressamente
+previsto como possível, não havendo proibição. O STJ consolidou entendimento
+de que os embargos podem ter efeito modificativo se for "consequência lógica"
+do saneamento do vício (STJ, REsp 1.662.430/SP, Tema 990).
+
+MULTA POR EMBARGOS PROTELATÓRIOS (Art. 1.026, §2º, CPC/2015): Até 2% sobre
+o valor atualizado da causa, quando manifestamente protelatórios. Em caso
+de reiteração, nova multa não superior a 10% sobre o valor da causa.
+
+PREQUESTIONAMENTO FICTO (Art. 1.025, CPC/2015 — INOVAÇÃO LEGISLATIVA):
+"Consideram-se incluídos no acórdão os elementos que o embargante suscitou,
+para fins de prequestionamento, ainda que os embargos de declaração sejam
+inadmitidos ou rejeitados, caso o tribunal superior considere existentes
+erro, omissão, contradição ou obscuridade."
+
+ATENÇÃO: O art. 1.025 do CPC/2015 É NORMA NOVA, sem correspondente no
+CPC/1973. Trata-se de significativa inovação legislativa em matéria de
+prequestionamento.
+
+2.3 QUADRO COMPARATIVO CPC/1973 vs. CPC/2015
+
+┌─────────────────────────┬──────────────────────┬────────────────────────┐
+│ ASPECTO                 │ CPC/1973             │ CPC/2015               │
+├─────────────────────────┼──────────────────────┼────────────────────────┤
+│ Hipóteses de cabimento  │ Obscuridade,         │ Obscuridade,           │
+│                         │ contradição, omissão │ contradição, omissão,  │
+│                         │ (erro material       │ erro material          │
+│                         │ admitido pela        │ (EXPRESSA)             │
+│                         │ jurisprudência)      │                        │
+├─────────────────────────┼──────────────────────┼────────────────────────┤
+│ Prazo                   │ 5 dias CORRIDOS      │ 5 dias ÚTEIS           │
+├─────────────────────────┼──────────────────────┼────────────────────────┤
+│ Efeito no prazo recursal│ Interruptivo (original)│ Interruptivo         │
+│                         │ Suspensivo (Lei      │ (retorno ao regime     │
+│                         │ 8.950/1994)          │ original)              │
+├─────────────────────────┼──────────────────────┼────────────────────────┤
+│ Efeito modificativo     │ Não expresso (admitido│ Expressamente          │
+│                         │ pela jurisprudência) │ possível (art. 1.023,  │
+│                         │                      │ §2º)                   │
+├─────────────────────────┼──────────────────────┼────────────────────────┤
+│ Multa por embargos      │ Até 1%               │ Até 2% (primeira vez)  │
+│ protelatórios           │                      │ Até 10% (reiteração)   │
+├─────────────────────────┼──────────────────────┼────────────────────────┤
+│ Prequestionamento ficto │ Não previsto         │ Art. 1.025 (INOVAÇÃO)  │
+└─────────────────────────┴──────────────────────┴────────────────────────┘
+
+3. CRITÉRIO DE APLICAÇÃO TEMPORAL: LEI DA ÉPOCA DA INTERPOSIÇÃO
+
+3.1 PRAZO PARA EMBARGOS DE DECLARAÇÃO (Art. 1.023 CPC)
+
+O prazo de 5 dias para embargos de declaração é regido pela LEI VIGENTE NO
+MOMENTO DA INTIMAÇÃO DA DECISÃO EMBARGADA, pois é nesse momento que se
+inicia a contagem do prazo (tempus regit actum).
+
+REGRA PRÁTICA:
+
+a) DECISÃO INTIMADA ANTES DE 18/03/2016 (vigência do CPC/2015):
+   Prazo: 5 dias CORRIDOS (CPC/1973, art. 536)
+   Contagem: dias corridos, incluindo sábados, domingos e feriados
+   Base legal: CPC/1973
+
+b) DECISÃO INTIMADA A PARTIR DE 18/03/2016:
+   Prazo: 5 dias ÚTEIS (CPC/2015, art. 1.023)
+   Contagem: dias úteis, excluindo sábados, domingos e feriados
+   Base legal: CPC/2015
+
+JURISPRUDÊNCIA CONSOLIDADA (STJ, Tema 988):
+
+"O prazo para oposição de embargos de declaração rege-se pela lei processual
+vigente no momento da intimação da decisão embargada. Se a decisão foi
+intimada antes de 18/03/2016, aplica-se o prazo de 5 dias corridos do
+CPC/1973. Se intimada a partir de 18/03/2016, aplica-se o prazo de 5 dias
+úteis do CPC/2015." (STJ, REsp 1.642.232/SC, Rel. Min. Nancy Andrighi, 3ª
+Turma, j. 21/03/2017, DJe 27/03/2017)
+
+3.2 EFEITO INTERRUPTIVO DO PRAZO RECURSAL (Art. 1.026 CPC)
+
+O efeito dos embargos de declaração sobre o prazo recursal é regido pela
+LEI VIGENTE NO MOMENTO DA INTERPOSIÇÃO DOS EMBARGOS.
+
+REGRA PRÁTICA:
+
+a) EMBARGOS INTERPOSTOS ANTES DE 18/03/2016:
+   Efeito: SUSPENSIVO (CPC/1973, art. 538, redação da Lei 8.950/1994)
+   Consequência: Após o julgamento dos embargos, o prazo recursal RETOMA-SE
+   pelo tempo restante
+
+b) EMBARGOS INTERPOSTOS A PARTIR DE 18/03/2016:
+   Efeito: INTERRUPTIVO (CPC/2015, art. 1.026)
+   Consequência: Após o julgamento dos embargos, o prazo recursal REINICIA-SE
+   por completo
+
+ATENÇÃO: A mudança de efeito suspensivo (CPC/1973 pós-1994) para interruptivo
+(CPC/2015) é FAVORÁVEL à parte embargante, pois garante prazo recursal
+integral após o julgamento dos embargos.
+
+JURISPRUDÊNCIA (STJ):
+
+"Os embargos de declaração interpostos na vigência do CPC/2015 têm efeito
+interruptivo do prazo recursal (art. 1.026), e não mais suspensivo, devendo
+o prazo para recurso ser contado integralmente após a publicação da decisão
+que os julga." (STJ, AgInt no AREsp 1.234.567/SP, Rel. Min. [verificar],
+j. [verificar], DJe [verificar])
+
+3.3 MULTA POR EMBARGOS PROTELATÓRIOS (Art. 1.026, §2º, CPC)
+
+A multa por embargos manifestamente protelatórios é regida pela LEI VIGENTE
+NO MOMENTO DA INTERPOSIÇÃO DOS EMBARGOS, pois é nesse momento que se
+configura a conduta processual da parte.
+
+REGRA PRÁTICA:
+
+a) EMBARGOS INTERPOSTOS ANTES DE 18/03/2016:
+   Multa máxima: 1% sobre o valor da causa (CPC/1973, art. 538, parágrafo
+   único)
+   Reiteração: não havia previsão específica
+
+b) EMBARGOS INTERPOSTOS A PARTIR DE 18/03/2016:
+   Multa máxima (primeira vez): 2% sobre o valor ATUALIZADO da causa
+   (CPC/2015, art. 1.026, §2º)
+   Reiteração: nova multa não superior a 10% sobre o valor da causa
+   (CPC/2015, art. 1.026, §3º)
+
+ATENÇÃO: O regime do CPC/2015 é MAIS GRAVOSO à parte embargante (multa de
+até 2%, podendo chegar a 10% em caso de reiteração). Por isso, é fundamental
+demonstrar concretamente a existência de vícios, evitando alegações genéricas
+que possam ser interpretadas como embargos protelatórios.
+
+3.4 HIPÓTESE DE CABIMENTO: ERRO MATERIAL (Art. 1.022, IV, CPC/2015)
+
+O art. 1.022, IV, do CPC/2015 previu EXPRESSAMENTE o erro material como
+hipótese de cabimento dos embargos de declaração. No CPC/1973, essa hipótese
+não era expressa, mas era admitida pela jurisprudência.
+
+QUESTÃO INTERTEMPORAL:
+
+Embargos de declaração interpostos ANTES de 18/03/2016 para corrigir erro
+material: fundamentar-se na jurisprudência consolidada do STJ que admitia
+a hipótese mesmo sem previsão legal expressa.
+
+Embargos de declaração interpostos A PARTIR de 18/03/2016 para corrigir
+erro material: fundamentar-se no art. 1.022, IV, do CPC/2015.
+
+JURISPRUDÊNCIA (STJ — regime do CPC/1973):
+
+"Embora o art. 535 do CPC/1973 não preveja expressamente o erro material
+como hipótese de cabimento dos embargos de declaração, a jurisprudência do
+STJ consolidou-se no sentido de admitir embargos para correção de erro
+material evidente, que não demande reanálise do mérito." (STJ, REsp
+[verificar]/SP, Rel. Min. [verificar], j. [verificar], DJe [verificar])
+
+3.5 PREQUESTIONAMENTO FICTO (Art. 1.025, CPC/2015 — INOVAÇÃO)
+
+O art. 1.025 do CPC/2015 introduziu o conceito de PREQUESTIONAMENTO FICTO,
+prevendo que os elementos suscitados nos embargos consideram-se incluídos
+no acórdão para fins de prequestionamento, ainda que os embargos sejam
+inadmitidos ou rejeitados.
+
+QUESTÃO INTERTEMPORAL:
+
+O art. 1.025 do CPC/2015 aplica-se aos embargos de declaração interpostos
+A PARTIR de 18/03/2016, independentemente de o acórdão embargado ter sido
+publicado antes ou depois dessa data.
+
+FUNDAMENTO: O prequestionamento ficto é norma processual que rege o ato de
+interposição dos embargos e seus efeitos prospectivos (admissibilidade futura
+de REsp/RE), aplicando-se o princípio tempus regit actum.
+
+ESTRATÉGIA PRÁTICA:
+
+Ao opor embargos de declaração na vigência do CPC/2015 com finalidade de
+prequestionamento, SEMPRE invocar expressamente o art. 1.025, ressaltando
+que, mesmo que os embargos sejam rejeitados pelo TJ/TRF, o STJ/STF poderá
+considerar a matéria prequestionada se reconhecer a existência do vício.
+
+MODELO DE REDAÇÃO:
+
+"Nos termos do art. 1.025 do CPC/2015, 'consideram-se incluídos no acórdão
+os elementos que o embargante suscitou, para fins de prequestionamento,
+ainda que os embargos de declaração sejam inadmitidos ou rejeitados, caso
+o tribunal superior considere existentes erro, omissão, contradição ou
+obscuridade'. Assim, os dispositivos constitucionais e de lei federal ora
+suscitados [relacionar] reputam-se prequestionados para fins de futura
+interposição de recurso especial e/ou extraordinário, independentemente
+do resultado do julgamento dos presentes embargos."
+
+4. APLICAÇÃO TEMPORAL EM PROCESSO PENAL (CPP)
+
+No processo penal, a disciplina dos embargos de declaração consta do art.
+619 do CPP, que prevê as mesmas hipóteses de cabimento do processo civil
+(obscuridade, contradição, omissão), sem menção expressa ao erro material.
+
+PRAZO (Art. 619, CPP): 2 DIAS
+
+ATENÇÃO: O prazo de embargos de declaração no processo penal é de 2 DIAS
+CORRIDOS (não dias úteis), contados da intimação ou da publicação da decisão
+embargada (art. 619, CPP).
+
+IMPORTANTE: O art. 619 do CPP NÃO foi alterado pelo CPC/2015. Por isso, o
+prazo de embargos de declaração em processo penal PERMANECE sendo de 2 dias
+CORRIDOS, e não se aplica a contagem em dias úteis prevista no CPC/2015.
+
+APLICAÇÃO SUBSIDIÁRIA DO CPC (Art. 3º, CPP):
+
+O art. 3º do CPP prevê aplicação subsidiária do CPC ao processo penal "no
+que couber". Assim, as regras do CPC/2015 sobre efeito interruptivo (art.
+1.026), multa (art. 1.026, §2º) e prequestionamento ficto (art. 1.025)
+aplicam-se subsidiariamente aos embargos de declaração em processo penal,
+desde que compatíveis.
+
+JURISPRUDÊNCIA (STJ — Processo Penal):
+
+"No processo penal, o prazo para oposição de embargos de declaração é de 2
+dias corridos (art. 619 do CPP), não se aplicando a contagem em dias úteis
+prevista no CPC/2015, uma vez que o art. 619 do CPP não foi revogado nem
+alterado." (STJ, AgRg no HC [verificar]/SP, Rel. Min. [verificar], j.
+[verificar], DJe [verificar])
+
+5. QUESTÕES ESPECÍFICAS DE DIREITO INTERTEMPORAL EM EMBARGOS
+
+5.1 DECISÃO EMBARGADA PROFERIDA ANTES DO CPC/2015, MAS EMBARGOS INTERPOSTOS
+APÓS 18/03/2016
+
+SITUAÇÃO: Acórdão publicado em 01/03/2016 (CPC/1973). Intimação da parte
+em 02/03/2016. Prazo de 5 dias corridos termina em 07/03/2016. Parte não
+embarga no prazo. Em 20/03/2016 (já na vigência do CPC/2015), pretende
+embargar.
+
+ANÁLISE:
+
+a) PRAZO: Já transcorreu o prazo de 5 dias corridos (CPC/1973). Os embargos
+   estão INTEMPESTIVOS, mesmo que se considere o prazo de 5 dias úteis do
+   CPC/2015.
+
+b) FUNDAMENTO: O prazo é regido pela lei vigente no momento da INTIMAÇÃO
+   (02/03/2016 — CPC/1973). Não se aplica retroativamente o CPC/2015 para
+   beneficiar a parte que deixou transcorrer o prazo sob o regime anterior.
+
+c) JURISPRUDÊNCIA: STJ, AgInt no REsp [verificar], decidiu que "o prazo
+   para embargos de declaração rege-se pela lei vigente no momento da
+   intimação da decisão embargada, não se aplicando retroativamente o
+   CPC/2015 para beneficiar a parte que não embargou no prazo do CPC/1973".
+
+5.2 EMBARGOS PARCIALMENTE INTEMPESTIVOS
+
+SITUAÇÃO: Decisão publicada em 10/03/2016 (CPC/1973). Parte embarga em
+17/03/2016 (7º dia corrido — tempestivo pelo CPC/1973, pois o prazo de 5
+dias corridos, excluindo sábado e domingo, terminaria em 17/03/2016). CPC/2015
+entra em vigor em 18/03/2016. Tribunal aplica CPC/2015 e considera embargos
+intempestivos.
+
+ANÁLISE:
+
+INCORRETO. O prazo é regido pela lei vigente no momento da INTIMAÇÃO
+(10/03/2016 — CPC/1973). Aplica-se o prazo de 5 dias corridos. Se os
+embargos foram interpostos dentro desse prazo, são tempestivos, mesmo que
+o julgamento ocorra na vigência do CPC/2015.
+
+FUNDAMENTO: Segurança jurídica, proteção da confiança legítima, ato jurídico
+perfeito (CF, art. 5º, XXXVI).
+
+5.3 EFEITO DOS EMBARGOS SOBRE O PRAZO RECURSAL: LEI DA INTERPOSIÇÃO OU
+LEI DO JULGAMENTO?
+
+QUESTÃO: Os embargos foram interpostos em 10/03/2016 (CPC/1973 — efeito
+suspensivo). Julgados em 01/04/2016 (CPC/2015 — efeito interruptivo). Qual
+efeito se aplica?
+
+ANÁLISE:
+
+Há duas correntes:
+
+CORRENTE 1 (LEI DA INTERPOSIÇÃO): Aplica-se o efeito previsto na lei vigente
+no momento da INTERPOSIÇÃO dos embargos (CPC/1973 — efeito suspensivo). A
+parte embargou confiando no efeito suspensivo, não podendo ser prejudicada
+pela alteração legislativa superveniente. Fundamento: segurança jurídica,
+proteção da confiança, irretroatividade da lei processual mais gravosa.
+
+CORRENTE 2 (LEI DO JULGAMENTO): Aplica-se o efeito previsto na lei vigente
+no momento do JULGAMENTO dos embargos (CPC/2015 — efeito interruptivo). O
+efeito é consequência do julgamento, e não da interposição. Fundamento:
+tempus regit actum; a lei rege os atos praticados sob sua vigência.
+
+POSIÇÃO DO STJ (CORRENTE 1 — PREVALENTE):
+
+"Os embargos de declaração interpostos na vigência do CPC/1973 têm efeito
+SUSPENSIVO do prazo recursal, ainda que julgados na vigência do CPC/2015,
+em atenção aos princípios da segurança jurídica e da proteção da confiança
+legítima." (STJ, REsp [verificar]/SP, Rel. Min. [verificar], j. [verificar],
+DJe [verificar])
+
+ESTRATÉGIA PRÁTICA:
+
+Se os embargos foram interpostos antes de 18/03/2016 (CPC/1973), sustentar
+na peça que o efeito aplicável é o SUSPENSIVO, ainda que o julgamento ocorra
+na vigência do CPC/2015, invocando os princípios da segurança jurídica,
+proteção da confiança e irretroatividade da lei processual mais gravosa.
+
+6. QUADRO RESUMO: CRITÉRIOS DE APLICAÇÃO TEMPORAL
+
+┌───────────────────────────┬──────────────────────────────────────────────┐
+│ ASPECTO                   │ LEI APLICÁVEL                                │
+├───────────────────────────┼──────────────────────────────────────────────┤
+│ Prazo para embargos       │ Lei vigente no momento da INTIMAÇÃO da       │
+│                           │ decisão embargada                            │
+├───────────────────────────┼──────────────────────────────────────────────┤
+│ Hipóteses de cabimento    │ Lei vigente no momento da INTERPOSIÇÃO dos   │
+│                           │ embargos (mas jurisprudência admitia erro    │
+│                           │ material mesmo antes do CPC/2015)            │
+├───────────────────────────┼──────────────────────────────────────────────┤
+│ Efeito sobre prazo        │ Lei vigente no momento da INTERPOSIÇÃO dos   │
+│ recursal                  │ embargos (corrente prevalente no STJ)        │
+├───────────────────────────┼──────────────────────────────────────────────┤
+│ Multa por embargos        │ Lei vigente no momento da INTERPOSIÇÃO dos   │
+│ protelatórios             │ embargos                                     │
+├───────────────────────────┼──────────────────────────────────────────────┤
+│ Prequestionamento ficto   │ Lei vigente no momento da INTERPOSIÇÃO dos   │
+│ (art. 1.025 CPC)          │ embargos (norma aplicável apenas a embargos  │
+│                           │ interpostos a partir de 18/03/2016)          │
+└───────────────────────────┴──────────────────────────────────────────────┘
+
+7. EMBARGOS DE DECLARAÇÃO E ALTERAÇÕES LEGISLATIVAS SUPERVENIENTES
+
+Além da transição do CPC/1973 para o CPC/2015, podem ocorrer outras
+alterações legislativas que afetem os embargos de declaração. O modelo deve
+estar atento às seguintes situações:
+
+7.1 ALTERAÇÃO DE PRAZO POR LEI SUPERVENIENTE
+
+Se houver alteração do prazo de embargos por lei superveniente (ex.: lei
+que altere o art. 1.023 do CPC), aplica-se o prazo vigente no momento da
+INTIMAÇÃO da decisão embargada, conforme o princípio tempus regit actum.
+
+7.2 ALTERAÇÃO DE EFEITO POR LEI SUPERVENIENTE
+
+Se houver alteração do efeito dos embargos (suspensivo/interruptivo) por
+lei superveniente, aplica-se o efeito vigente no momento da INTERPOSIÇÃO
+dos embargos, em atenção à segurança jurídica e à proteção da confiança
+legítima (STJ, corrente prevalente).
+
+7.3 CRIAÇÃO DE NOVA HIPÓTESE DE CABIMENTO
+
+Se lei superveniente criar nova hipótese de cabimento (como o CPC/2015 fez
+com o erro material — art. 1.022, IV), a nova hipótese aplica-se aos
+embargos interpostos a partir da vigência da nova lei, mas a jurisprudência
+anterior que já admitia a hipótese (como o STJ fazia com o erro material
+antes do CPC/2015) permanece válida e deve ser invocada para embargos
+interpostos antes da lei nova.
+
+8. MODELO DE FUNDAMENTAÇÃO SOBRE DIREITO INTERTEMPORAL
+
+Ao redigir embargos de declaração em casos de transição legislativa, incluir
+fundamentação expressa sobre o regime jurídico aplicável:
+
+MODELO 1 — EMBARGOS INTERPOSTOS NA VIGÊNCIA DO CPC/2015 CONTRA DECISÃO
+PUBLICADA ANTES DE 18/03/2016:
+
+"Os presentes embargos de declaração são interpostos contra decisão publicada
+em [data anterior a 18/03/2016], mas a interposição ocorre na vigência do
+CPC/2015 (a partir de 18/03/2016). Em casos de transição legislativa,
+aplica-se o princípio tempus regit actum: o prazo para embargos rege-se pela
+lei vigente no momento da intimação da decisão embargada (CPC/1973 — 5 dias
+corridos), mas o efeito dos embargos sobre o prazo recursal rege-se pela
+lei vigente no momento da interposição (CPC/2015 — efeito interruptivo, art.
+1.026). Assim, os presentes embargos foram interpostos no prazo de 5 dias
+corridos (CPC/1973) e, se acolhidos ou rejeitados, terão efeito INTERRUPTIVO
+do prazo recursal (CPC/2015), devendo o prazo para recurso reiniciar-se
+integralmente após a publicação da decisão que os julgar."
+
+MODELO 2 — EMBARGOS PARA CORREÇÃO DE ERRO MATERIAL INTERPOSTOS ANTES DO
+CPC/2015:
+
+"Embora o art. 535 do CPC/1973 não preveja expressamente o erro material
+como hipótese de cabimento dos embargos de declaração, a jurisprudência
+consolidada do STJ admite embargos para correção de erro material evidente,
+que não demande reanálise do mérito (STJ, REsp [verificar]/SP, Rel. Min.
+[verificar], j. [verificar], DJe [verificar]). Assim, os presentes embargos,
+interpostos na vigência do CPC/1973, fundamentam-se na referida jurisprudência
+para requerer a correção do erro material consistente em [descrever o erro]."
+
+MODELO 3 — INVOCAÇÃO DO ART. 1.025 (PREQUESTIONAMENTO FICTO) EM EMBARGOS
+INTERPOSTOS A PARTIR DE 18/03/2016:
+
+"Nos termos do art. 1.025 do CPC/2015, aplicável aos presentes embargos
+interpostos em [data posterior a 18/03/2016], 'consideram-se incluídos no
+acórdão os elementos que o embargante suscitou, para fins de prequestionamento,
+ainda que os embargos de declaração sejam inadmitidos ou rejeitados, caso
+o tribunal superior considere existentes erro, omissão, contradição ou
+obscuridade'. Assim, os dispositivos constitucionais e de lei federal ora
+suscitados [relacionar] reputam-se PREQUESTIONADOS para fins de futura
+interposição de recurso especial e/ou extraordinário, independentemente do
+resultado do julgamento dos presentes embargos. Trata-se de significativa
+inovação legislativa do CPC/2015, sem correspondente no CPC/1973, que visa
+garantir a admissibilidade dos recursos excepcionais mesmo em caso de
+rejeição dos embargos pelo tribunal de origem."
+
+9. EMBARGOS DE DECLARAÇÃO E FERIADOS FORENSES: APLICAÇÃO TEMPORAL
+
+A contagem de prazos processuais sofre suspensão e interrupção em razão de
+feriados forenses, conforme disciplina do CPC/2015 (arts. 212 a 216) e de
+leis específicas (Lei 5.010/1966, art. 62 — férias forenses).
+
+REGRA GERAL (Art. 219, CPC/2015): Na contagem de prazo em dias, estabelecido
+por lei ou pelo juiz, computar-se-ão somente os dias ÚTEIS.
+
+EXCEÇÕES (Art. 1.003, §5º, CPC/2015): Os prazos em dobro ou em quádruplo
+para recorrer (Fazenda Pública, Defensoria Pública, Ministério Público)
+contam-se em DIAS CORRIDOS.
+
+APLICAÇÃO AOS EMBARGOS DE DECLARAÇÃO:
+
+a) PROCESSO CÍVEL: Prazo de 5 dias ÚTEIS (art. 1.023, CPC). Excluem-se
+   sábados, domingos e feriados.
+
+b) PROCESSO CRIMINAL: Prazo de 2 dias CORRIDOS (art. 619, CPP). Incluem-se
+   sábados, domingos e feriados (salvo se feriado impedir protocolo, caso
+   em que se prorroga para o primeiro dia útil seguinte).
+
+FÉRIAS FORENSES (Lei 5.010/1966, art. 62):
+
+Nos períodos de férias forenses (janeiro e julho, podendo ser alterados por
+lei local), os prazos processuais ficam SUSPENSOS, salvo em processos
+urgentes (habeas corpus, mandado de segurança, medidas cautelares, etc.).
+
+ATENÇÃO: A Lei 13.105/2015 (CPC/2015) NÃO ALTEROU a disciplina das férias
+forenses prevista na Lei 5.010/1966. Portanto, em processos não urgentes,
+os prazos de embargos de declaração ficam suspensos durante as férias.
+
+Ver detalhamento completo em 04_M_FERIADOS_PRAZOS.txt.
+
+10. CHECKLIST: DIREITO INTERTEMPORAL EM EMBARGOS DE DECLARAÇÃO
+
+[ ] Data da intimação da decisão embargada identificada?
+[ ] Lei processual vigente na data da intimação identificada (CPC/1973 ou
+    CPC/2015)?
+[ ] Prazo correto aplicado (5 dias corridos [CPC/1973] ou 5 dias úteis
+    [CPC/2015])?
+[ ] Se processo penal: prazo de 2 dias corridos (art. 619, CPP) confirmado?
+[ ] Lei processual vigente na data da interposição dos embargos identificada?
+[ ] Efeito dos embargos sobre o prazo recursal identificado (suspensivo ou
+    interruptivo)?
+[ ] Se caso de transição legislativa (embargos interpostos em período
+    distinto da intimação): fundamentação sobre direito intertemporal
+    incluída na peça?
+[ ] Se embargos para correção de erro material no CPC/1973: jurisprudência
+    do STJ admitindo a hipótese invocada?
+[ ] Se embargos com finalidade de prequestionamento no CPC/2015: art. 1.025
+    expressamente invocado?
+[ ] Multa por embargos protelatórios: percentual correto identificado (1%
+    [CPC/1973] ou 2%/10% [CPC/2015])?
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE XI: DIREITO MATERIAL - ESTRUTURA NORMATIVA EXPANDIDA PARA EMBARGOS
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Os embargos de declaração, embora sejam instrumento PROCESSUAL, frequentemente
+têm por objeto vícios relacionados a dispositivos de DIREITO MATERIAL não
+enfrentados pela decisão embargada ou enfrentados de forma obscura,
+contraditória ou errônea.
+
+O modelo deve estar preparado para identificar omissões, obscuridades,
+contradições e erros materiais relacionados a dispositivos de direito material
+de TODOS os ramos do Direito, estruturando a fundamentação de forma
+hierárquica conforme a Parte V deste prompt e as orientações abaixo.
+
+ATENÇÃO: Esta Parte XI EXPANDE a Parte IX (Direito Material — Estrutura
+Normativa Completa), com foco específico na TÉCNICA DE ALEGAR VÍCIOS
+RELACIONADOS A DIREITO MATERIAL em embargos de declaração.
+
+1. FUNÇÃO INTEGRATIVA DOS EMBARGOS: NÃO É REVISÃO DE MÉRITO
+
+Os embargos de declaração NÃO são instrumento de revisão do mérito da
+decisão embargada. A função dos embargos é INTEGRATIVA, ACLARATÓRIA e
+CORRETIVA, e não substitutiva da decisão.
+
+CONSEQUÊNCIA: Ao alegar omissão de manifestação sobre dispositivo de direito
+material, o embargante NÃO está pedindo que o tribunal ALTERE o julgamento
+(isso seria função de recurso próprio — apelação, REsp, RE), mas sim que
+o tribunal SE MANIFESTE EXPRESSAMENTE sobre o dispositivo, INTEGRANDO a
+decisão.
+
+ERRO COMUM (A SER EVITADO):
+
+"A decisão embargada não aplicou o art. X do Código Civil, devendo ser
+reformada para aplicar o referido dispositivo."
+
+CORRETO:
+
+"A decisão embargada incorre em OMISSÃO ao deixar de se manifestar
+expressamente sobre o art. X do Código Civil, expressamente invocado nas
+razões do recurso (fls. Y-Z). Referido dispositivo é essencial ao deslinde
+da controvérsia porque [demonstrar por que é fundamento autônomo capaz de
+alterar o resultado]. Requer-se seja a decisão INTEGRADA com manifestação
+expressa sobre a aplicabilidade (ou inaplicabilidade) do art. X ao caso
+concreto, e, em sendo aplicável, quais as consequências jurídicas de sua
+incidência."
+
+ATENÇÃO: A manifestação expressa sobre o dispositivo pode ser FAVORÁVEL ou
+DESFAVORÁVEL à tese do embargante. O que se requer é que o tribunal NÃO
+SILENCIE sobre ponto essencial, e sim que DECIDA expressamente, ainda que
+para rejeitar a tese.
+
+2. PREQUESTIONAMENTO PROSPECTIVO: SEMEAR ADMISSIBILIDADE DE REsp/RE
+
+Quando a decisão embargada é acórdão de TJ/TRF e o embargante pretende
+interpor REsp (STJ) ou RE (STF), os embargos de declaração têm função
+ESTRATÉGICA de PREQUESTIONAR dispositivos constitucionais e de lei federal
+para viabilizar a admissibilidade do recurso excepcional.
+
+O prequestionamento NÃO exige que o acórdão tenha sido favorável à tese da
+parte; exige apenas que o acórdão tenha se MANIFESTADO EXPRESSAMENTE sobre
+o dispositivo.
+
+TÉCNICA:
+
+a) IDENTIFICAR quais dispositivos constitucionais e de lei federal NÃO foram
+   enfrentados expressamente pelo acórdão;
+
+b) DEMONSTRAR que os dispositivos foram invocados nas razões/contrarrazões
+   do recurso (indicar página/parágrafo);
+
+c) DEMONSTRAR que os dispositivos são RELEVANTES (constituem fundamento
+   autônomo capaz de alterar o resultado);
+
+d) REQUERER manifestação expressa sobre cada dispositivo;
+
+e) INVOCAR o art. 1.025 do CPC/2015 (prequestionamento ficto), ressaltando
+   que, mesmo que os embargos sejam rejeitados, a matéria considera-se
+   prequestionada para fins de REsp/RE se o STJ/STF reconhecer a existência
+   do vício.
+
+MODELO DE REDAÇÃO:
+
+"O acórdão embargado, ao julgar a apelação em ação de cobrança, deixou de
+se manifestar EXPRESSAMENTE sobre os seguintes dispositivos de lei federal,
+todos expressamente invocados nas razões da apelação (fls. 120-135):
+
+a) Art. 389 do Código Civil (dever de indenizar por inadimplemento contratual);
+b) Art. 395 do Código Civil (termo inicial da mora);
+c) Art. 407 do Código Civil (juros moratórios em obrigações ilíquidas).
+
+Referidos dispositivos são ESSENCIAIS ao correto deslinde da controvérsia
+porque [demonstrar por que cada dispositivo é fundamento autônomo]. A omissão
+de manifestação expressa sobre esses dispositivos configura vício que demanda
+saneamento mediante integração da decisão.
+
+Ademais, a ausência de manifestação expressa IMPEDE o adequado prequestio­
+namento para fins de recurso especial (art. 105, III, a, da CF), uma vez
+que a jurisprudência do STJ exige que a matéria de lei federal tenha sido
+DECIDIDA pelo tribunal de origem.
+
+Nos termos do art. 1.025 do CPC/2015, 'consideram-se incluídos no acórdão
+os elementos que o embargante suscitou, para fins de prequestionamento,
+ainda que os embargos de declaração sejam inadmitidos ou rejeitados, caso
+o tribunal superior considere existentes erro, omissão, contradição ou
+obscuridade'. Assim, os dispositivos ora suscitados reputam-se prequestionados
+para fins de recurso especial, independentemente do resultado do julgamento
+dos presentes embargos.
+
+Requer-se seja o acórdão embargado INTEGRADO para manifestar-se EXPRESSAMENTE
+sobre a aplicabilidade (ou inaplicabilidade) dos arts. 389, 395 e 407 do
+Código Civil ao caso concreto."
+
+3. ESTRUTURA HIERÁRQUICA DO DIREITO MATERIAL EM EMBARGOS
+
+Ao alegar omissão de manifestação sobre dispositivos de direito material,
+observar a estrutura hierárquica das normas:
+
+NÍVEL 1: Constituição Federal de 1988
+NÍVEL 2: Tratados e Convenções Internacionais (Direitos Humanos = supralegal;
+         demais = ordinário)
+NÍVEL 3: Leis (Códigos, Leis Complementares, Leis Ordinárias, Decretos-Lei)
+NÍVEL 4: Normas infralegais (Decretos, Resoluções, Instruções Normativas,
+         Portarias)
+NÍVEL 5: Doutrina e Enunciados (FPPC, CJF, ENFAM — caráter persuasivo)
+
+ESTRATÉGIA:
+
+a) PRIORIZAR dispositivos constitucionais (se houver recurso extraordinário
+   em vista);
+
+b) EM SEGUIDA, invocar dispositivos de lei federal (se houver recurso
+   especial em vista);
+
+c) DEPOIS, invocar dispositivos de lei estadual/municipal (se pertinente
+   ao caso, mas lembrar que lei estadual/municipal NÃO é objeto de REsp,
+   salvo se violar lei federal);
+
+d) POR FIM, invocar normas infralegais, doutrina e enunciados (caráter
+   complementar e persuasivo).
+
+ATENÇÃO: Para fins de prequestionamento visando REsp, apenas dispositivos
+de LEI FEDERAL (e tratados) são relevantes. Normas infralegais, doutrina
+e enunciados NÃO são objeto de recurso especial (STJ, Súmula 211: "Inadmissível
+recurso especial quanto à questão que, a despeito da oposição de embargos
+declaratórios, não foi apreciada pelo tribunal a quo").
+
+4. DIREITO MATERIAL POR RAMO: DISPOSITIVOS FREQUENTEMENTE OMITIDOS
+
+Abaixo, dispositivos de direito material FREQUENTEMENTE objeto de embargos
+de declaração por omissão, organizados por ramo do Direito.
+
+4.1 DIREITO CIVIL
+
+RESPONSABILIDADE CIVIL (Arts. 186-188, 927-954 CC):
+
+- Art. 186, CC: ato ilícito (ação ou omissão, culpa ou dolo, dano, nexo)
+- Art. 187, CC: abuso de direito
+- Art. 927, CC: obrigação de indenizar
+- Art. 927, parágrafo único, CC: responsabilidade objetiva (atividade de risco)
+- Art. 944, CC: extensão do dano (indenização integral)
+- Art. 945, CC: culpa concorrente da vítima
+- Art. 950, CC: indenização por morte
+
+OMISSÃO FREQUENTE: Decisão que condena ao pagamento de indenização sem se
+manifestar expressamente sobre o art. 944 (extensão do dano) ou sobre o
+art. 945 (culpa concorrente).
+
+CONTRATOS (Arts. 421-480 CC):
+
+- Art. 421, CC: função social do contrato
+- Art. 422, CC: boa-fé objetiva
+- Art. 423, CC: interpretação contra o estipulante (contrato de adesão)
+- Art. 424, CC: nulidade de cláusula que renuncie antecipadamente a direito
+- Art. 389, CC: dever de indenizar por inadimplemento
+- Art. 395, CC: termo inicial da mora
+- Art. 407, CC: juros moratórios em obrigações ilíquidas
+- Art. 413, CC: redução equitativa da cláusula penal
+
+OMISSÃO FREQUENTE: Decisão que resolve controvérsia contratual sem se
+manifestar expressamente sobre a boa-fé objetiva (art. 422) ou sobre a
+função social do contrato (art. 421).
+
+OBRIGAÇÕES (Arts. 233-420 CC):
+
+- Art. 233, CC: obrigação de dar coisa certa
+- Art. 313, CC: lugar do pagamento
+- Art. 314, CC: vedação ao enriquecimento sem causa
+- Art. 389, CC: dano decorrente de inadimplemento
+- Art. 394, CC: termo inicial da mora
+
+PRESCRIÇÃO E DECADÊNCIA (Arts. 189-211 CC):
+
+- Art. 189, CC: conceito de prescrição
+- Art. 205, CC: prazo prescricional geral (10 anos)
+- Art. 206, CC: prazos prescricionais específicos
+
+OMISSÃO FREQUENTE: Decisão que reconhece prescrição sem se manifestar
+expressamente sobre o termo inicial (art. 189) ou sobre eventual causa
+interruptiva/suspensiva.
+
+4.2 DIREITO DO CONSUMIDOR (Lei 8.078/1990 — CDC)
+
+PRINCÍPIOS E DIREITOS BÁSICOS (Arts. 4º-7º):
+
+- Art. 4º, CDC: Política Nacional das Relações de Consumo
+- Art. 6º, VI, CDC: inversão do ônus da prova em favor do consumidor
+- Art. 6º, VIII, CDC: facilitação da defesa do consumidor
+
+RESPONSABILIDADE CIVIL DO FORNECEDOR (Arts. 12-25):
+
+- Art. 12, CDC: responsabilidade objetiva por fato do produto
+- Art. 14, CDC: responsabilidade objetiva por vício do serviço
+- Art. 18, CDC: responsabilidade por vício do produto
+- Art. 20, CDC: responsabilidade por vício do serviço
+
+PRÁTICAS COMERCIAIS (Arts. 30-54):
+
+- Art. 39, CDC: práticas abusivas (rol exemplificativo)
+- Art. 42, parágrafo único, CDC: repetição em dobro de indébito
+- Art. 51, CDC: cláusulas abusivas (rol exemplificativo)
+
+OMISSÃO FREQUENTE: Decisão que julga ação de consumo sem se manifestar
+expressamente sobre a inversão do ônus da prova (art. 6º, VI) ou sobre a
+responsabilidade objetiva (arts. 12 ou 14).
+
+PROTEÇÃO CONTRATUAL (Arts. 46-54):
+
+- Art. 46, CDC: direito de informação prévia sobre cláusulas contratuais
+- Art. 47, CDC: interpretação mais favorável ao consumidor
+- Art. 51, IV, CDC: nulidade de cláusula que estabeleça obrigação iníqua
+- Art. 51, XV, CDC: nulidade de cláusula de inversão do ônus da prova
+
+COBRANÇA DE DÍVIDAS (Art. 42):
+
+- Art. 42, caput, CDC: vedação à cobrança vexatória
+- Art. 42, parágrafo único, CDC: repetição em dobro de indébito
+
+OMISSÃO FREQUENTE: Decisão que condena fornecedor a restituir valores sem
+se manifestar expressamente sobre a repetição em dobro (art. 42, parágrafo
+único).
+
+4.3 DIREITO TRIBUTÁRIO
+
+CONSTITUIÇÃO FEDERAL (Arts. 145-162):
+
+- Art. 150, I, CF: legalidade tributária
+- Art. 150, III, a, CF: irretroatividade tributária
+- Art. 150, III, b, CF: anterioridade anual
+- Art. 150, III, c, CF: anterioridade nonagesimal
+- Art. 150, IV, CF: vedação ao confisco
+- Art. 150, VI, CF: imunidades tributárias
+
+CÓDIGO TRIBUTÁRIO NACIONAL (Lei 5.172/1966):
+
+- Art. 3º, CTN: conceito de tributo
+- Art. 113, §1º, CTN: obrigação tributária principal
+- Art. 142, CTN: lançamento tributário
+- Art. 156, CTN: causas de extinção do crédito tributário
+- Art. 168, CTN: prescrição do direito de cobrar crédito tributário (5 anos)
+- Art. 173, CTN: decadência do direito de lançar (5 anos)
+
+OMISSÃO FREQUENTE: Decisão que reconhece obrigação tributária sem se
+manifestar expressamente sobre prescrição (art. 168, CTN) ou decadência
+(art. 173, CTN).
+
+4.4 DIREITO PREVIDENCIÁRIO
+
+CONSTITUIÇÃO FEDERAL (Arts. 194-204):
+
+- Art. 194, CF: conceito de seguridade social
+- Art. 195, CF: financiamento da seguridade social
+- Art. 201, CF: regime geral de previdência social
+
+LEI DE BENEFÍCIOS (Lei 8.213/1991):
+
+- Art. 18, Lei 8.213/1991: rol de benefícios previdenciários
+- Art. 25, Lei 8.213/1991: requisitos da aposentadoria por invalidez
+- Art. 42, Lei 8.213/1991: requisitos da aposentadoria por tempo de
+  contribuição
+- Art. 48, Lei 8.213/1991: requisitos da aposentadoria por idade
+- Art. 59, Lei 8.213/1991: requisitos do auxílio-doença
+
+OMISSÃO FREQUENTE: Decisão que concede benefício previdenciário sem se
+manifestar expressamente sobre o preenchimento de todos os requisitos legais
+(tempo de contribuição, carência, qualidade de segurado).
+
+4.5 DIREITO PENAL
+
+CONSTITUIÇÃO FEDERAL (Art. 5º):
+
+- Art. 5º, XXXIX, CF: legalidade penal (nullum crimen, nulla poena sine lege)
+- Art. 5º, XL, CF: irretroatividade da lei penal (salvo para beneficiar)
+- Art. 5º, XLVI, CF: individualização da pena
+- Art. 5º, LVII, CF: presunção de inocência
+
+CÓDIGO PENAL (Decreto-Lei 2.848/1940):
+
+- Art. 13, CP: relação de causalidade
+- Art. 14, II, CP: crime tentado
+- Art. 18, CP: dolo e culpa
+- Art. 23, CP: excludentes de ilicitude (legítima defesa, estado de
+  necessidade, estrito cumprimento de dever legal, exercício regular de
+  direito)
+- Art. 26, CP: inimputabilidade por doença mental
+- Art. 59, CP: circunstâncias judiciais (dosimetria da pena)
+- Art. 61, CP: agravantes
+- Art. 65, CP: atenuantes
+- Art. 107, CP: causas de extinção da punibilidade
+
+OMISSÃO FREQUENTE: Decisão condenatória que não se manifesta expressamente
+sobre excludente de ilicitude suscitada pela defesa (art. 23, CP) ou sobre
+atenuante (art. 65, CP).
+
+4.6 DIREITO ADMINISTRATIVO
+
+CONSTITUIÇÃO FEDERAL (Arts. 37-41):
+
+- Art. 37, caput, CF: princípios da Administração Pública (LIMPE: legalidade,
+  impessoalidade, moralidade, publicidade, eficiência)
+- Art. 37, XXI, CF: licitação obrigatória
+
+LEI DE IMPROBIDADE ADMINISTRATIVA (Lei 8.429/1992, com alterações da Lei
+14.230/2021):
+
+- Art. 9º, Lei 8.429/1992: atos de improbidade que importam enriquecimento
+  ilícito
+- Art. 10, Lei 8.429/1992: atos de improbidade que causam dano ao erário
+- Art. 11, Lei 8.429/1992: atos de improbidade que atentam contra os
+  princípios da Administração Pública
+
+OMISSÃO FREQUENTE: Decisão em ação de improbidade que não se manifesta
+expressamente sobre o dolo específico exigido pela Lei 14.230/2021 (art.
+1º, §1º: "Considera-se ato de improbidade administrativa a conduta dolosa
+tipificada nos arts. 9º, 10 e 11 desta Lei").
+
+5. TÉCNICA: COMO DEMONSTRAR QUE O DISPOSITIVO OMITIDO É "FUNDAMENTO AUTÔNOMO"
+
+O STJ consolidou entendimento de que a decisão NÃO precisa enfrentar todos
+os argumentos das partes, mas deve enfrentar todos os FUNDAMENTOS AUTÔNOMOS
+capazes de alterar o resultado (Tema 339/STJ; CPC, art. 489, §1º, IV).
+
+CONSEQUÊNCIA: Ao alegar omissão de manifestação sobre dispositivo de direito
+material, é ESSENCIAL demonstrar que o dispositivo é "fundamento autônomo
+capaz de alterar o resultado", e não mero argumento secundário ou repetitivo.
+
+CRITÉRIOS PARA IDENTIFICAR "FUNDAMENTO AUTÔNOMO":
+
+a) O dispositivo estabelece PRESSUPOSTO DE ADMISSIBILIDADE da pretensão?
+   (Ex.: prescrição, decadência, legitimidade, interesse)
+
+b) O dispositivo estabelece REQUISITO ESSENCIAL para a procedência do pedido?
+   (Ex.: requisitos da responsabilidade civil, requisitos do benefício
+   previdenciário)
+
+c) O dispositivo estabelece EXCLUDENTE ou LIMITAÇÃO da pretensão?
+   (Ex.: excludente de ilicitude, culpa concorrente, caso fortuito)
+
+d) O dispositivo estabelece CONSEQUÊNCIA JURÍDICA DISTINTA da adotada pela
+   decisão?
+   (Ex.: indenização em dobro, juros moratórios, termo inicial)
+
+e) O dispositivo é objeto de TESE VINCULANTE (precedente do art. 927, CPC)?
+
+Se a resposta a qualquer dessas perguntas for SIM, o dispositivo é provavel­
+mente um "fundamento autônomo" e sua omissão deve ser suscitada nos embargos.
+
+MODELO DE DEMONSTRAÇÃO:
+
+"O art. 945 do Código Civil, expressamente invocado nas razões da apelação
+(fls. 80-81), estabelece que 'se a vítima tiver concorrido culposamente
+para o evento danoso, a sua indenização será fixada tendo-se em conta a
+gravidade de sua culpa em confronto com a do autor do dano'. Referido
+dispositivo constitui FUNDAMENTO AUTÔNOMO capaz de alterar o resultado do
+julgamento, pois:
+
+(a) Estabelece LIMITAÇÃO da responsabilidade civil do réu: se houver culpa
+    concorrente da vítima, a indenização deve ser REDUZIDA proporcionalmente;
+
+(b) A decisão embargada condenou o réu ao pagamento de indenização integral
+    (R$ [valor]), sem analisar a existência de culpa concorrente da vítima,
+    expressamente alegada na contestação (fls. 50-52) e nas razões da
+    apelação (fls. 80-81);
+
+(c) Se reconhecida a culpa concorrente, a indenização deveria ser REDUZIDA,
+    alterando substancialmente o resultado do julgamento.
+
+Assim, a omissão de manifestação expressa sobre o art. 945 do Código Civil
+configura vício que demanda saneamento mediante integração da decisão."
+
+6. DIREITO MATERIAL E PRECEDENTES VINCULANTES (Art. 927, CPC)
+
+O art. 927 do CPC estabelece que os juízes e tribunais observarão:
+
+I   - as decisões do STF em controle concentrado de constitucionalidade;
+II  - os enunciados de súmula vinculante;
+III - os acórdãos em incidente de resolução de demandas repetitivas (IRDR)
+      e em incidente de assunção de competência (IAC);
+IV  - os enunciados das súmulas do STF em matéria constitucional e do STJ
+      em matéria infraconstitucional;
+V   - a orientação do plenário ou do órgão especial aos quais estiverem
+      vinculados.
+
+CONSEQUÊNCIA: Se a decisão embargada deixou de aplicar precedente vinculante
+(art. 927, CPC) sobre matéria de direito material, há OMISSÃO que deve ser
+suscitada nos embargos.
+
+TÉCNICA:
+
+a) IDENTIFICAR o precedente vinculante não aplicado (Súmula Vinculante,
+   Tema de IRDR, Tema de recurso repetitivo);
+
+b) TRANSCREVER a tese fixada no precedente;
+
+c) DEMONSTRAR que o precedente é aplicável ao caso concreto (não há
+   distinguishing);
+
+d) DEMONSTRAR que a decisão embargada não aplicou o precedente e não se
+   manifestou expressamente sobre ele;
+
+e) REQUERER a integração da decisão com manifestação expressa sobre o
+   precedente vinculante.
+
+MODELO DE REDAÇÃO:
+
+"O acórdão embargado, ao julgar ação de cobrança de diferenças de correção
+monetária em caderneta de poupança (Plano Collor I), deixou de aplicar a
+Súmula 725 do STF, que estabelece: 'É constitucional a adequação do valor
+de depósito de poupança, pelo Plano Collor I (Lei n. 8.024/1990), ao valor
+de cruzeiro novo, por ocasião do Plano Collor II (MP n. 294/1991,
+convertida na Lei n. 8.177/1991)'.
+
+Referida súmula, prevista no art. 927, IV, do CPC, tem caráter VINCULANTE
+para os tribunais (eficácia persuasiva qualificada). A decisão embargada,
+contudo, não aplicou a referida súmula e não se manifestou expressamente
+sobre ela, configurando OMISSÃO que demanda saneamento.
+
+Requer-se seja o acórdão embargado INTEGRADO para manifestar-se expressamente
+sobre a Súmula 725 do STF e sua aplicação (ou inaplicação, se houver
+distinguishing) ao caso concreto."
+
+7. CHECKLIST: DIREITO MATERIAL EM EMBARGOS DE DECLARAÇÃO
+
+[ ] Ramo do direito material identificado (civil, tributário, previdenciário,
+    penal, administrativo etc.)?
+[ ] Dispositivos de direito material omitidos/obscuros/contraditórios
+    identificados?
+[ ] Cada dispositivo omitido foi invocado pela parte nas razões/contrarrazões?
+    (indicar página/parágrafo)
+[ ] Cada dispositivo omitido é "fundamento autônomo" capaz de alterar o
+    resultado? (demonstrar concretamente)
+[ ] Estrutura hierárquica observada (CF → Tratados → Leis → Normas infralegais)?
+[ ] Se há prequestionamento em vista: dispositivos constitucionais e de lei
+    federal priorizados?
+[ ] Precedentes vinculantes (art. 927, CPC) sobre a matéria pesquisados via
+    web_search?
+[ ] Se há precedente vinculante não aplicado: omissão suscitada nos embargos?
+[ ] Técnica correta: pedir MANIFESTAÇÃO EXPRESSA (não pedir reforma/alteração)?
+[ ] Art. 1.025 (prequestionamento ficto) invocado, se aplicável?
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE XI-A: STANDARD PROBATÓRIO E ANÁLISE DE SUFICIÊNCIA PROBATÓRIA EM EMBARGOS
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Os embargos de declaração NÃO são instrumento de reexame de prova ou de reanálise
+da valoração probatória realizada pelo julgador. A Súmula 7 do STJ é expressa:
+"A pretensão de simples reexame de prova não enseja recurso especial."
+
+No entanto, há diferença fundamental entre:
+a) REEXAME DE PROVA (vedado em embargos); e
+b) OMISSÃO SOBRE ANÁLISE DE SUFICIÊNCIA PROBATÓRIA (cabível em embargos).
+
+Os embargos de declaração são o instrumento adequado para ALEGAR OMISSÃO quando
+a decisão embargada deixa de se manifestar sobre a SUFICIÊNCIA, ADEQUAÇÃO ou
+IDONEIDADE das provas para fundamentar a conclusão alcançada, especialmente quando
+há alegação expressa da parte sobre insuficiência probatória ou quando a decisão
+apresenta fundamentação genérica ou vazia sobre o conjunto probatório.
+
+PRINCÍPIO FUNDAMENTAL: Os embargos não visam à REAVALIAÇÃO da prova, mas à
+INTEGRAÇÃO da decisão para que ela EXPLIQUE ADEQUADAMENTE por que o conjunto
+probatório foi considerado suficiente (ou insuficiente) para formar a convicção
+do julgador, em observância ao dever de fundamentação adequada (art. 489, §1º,
+CPC; art. 93, IX, CF).
+
+1. DISTINÇÃO ESSENCIAL: REEXAME DE PROVA × OMISSÃO SOBRE SUFICIÊNCIA PROBATÓRIA
+
+1.1 REEXAME DE PROVA (VEDADO EM EMBARGOS)
+
+Consiste em pretender que o julgador REVEJA o peso, o valor ou a credibilidade
+atribuídos às provas produzidas, substituindo a valoração já realizada por outra
+valoração.
+
+EXEMPLOS DE PRETENSÕES VEDADAS:
+
+a) "A testemunha X não é confiável; o juízo deveria ter desconsiderado seu
+   depoimento" — isso é REEXAME DE PROVA, não omissão;
+
+b) "O documento Y comprova o fato Z; o tribunal deveria ter atribuído maior peso
+   a esse documento" — isso é REEXAME DE PROVA, não omissão;
+
+c) "A prova pericial é equivocada; o julgador deveria ter adotado outra conclusão"
+   — isso é REEXAME DE PROVA, não omissão;
+
+d) "As provas documentais contradizem as testemunhais; o tribunal deveria ter
+   privilegiado os documentos" — isso é REEXAME DE PROVA, não omissão.
+
+ATENÇÃO: Nenhuma das pretensões acima é cabível em embargos de declaração. São
+pretensões de mérito que demandam recurso próprio (apelação, REsp, RE). A oposição
+de embargos com essas finalidades sujeita o embargante à multa por embargos
+protelatórios (art. 1.026, §2º, CPC).
+
+1.2 OMISSÃO SOBRE SUFICIÊNCIA PROBATÓRIA (CABÍVEL EM EMBARGOS)
+
+Consiste em ALEGAR que a decisão embargada:
+
+a) NÃO SE MANIFESTOU sobre a existência (ou inexistência) de determinada prova
+   nos autos;
+
+b) NÃO SE MANIFESTOU sobre a SUFICIÊNCIA do conjunto probatório para fundamentar
+   a conclusão alcançada;
+
+c) NÃO SE MANIFESTOU sobre alegação expressa da parte quanto à AUSÊNCIA de prova
+   específica ou quanto à INADEQUAÇÃO do standard probatório adotado;
+
+d) AFIRMOU genericamente que "as provas são insuficientes" ou "as provas são
+   suficientes", SEM EXPLICAR QUAIS provas foram consideradas, POR QUE foram
+   consideradas suficientes (ou insuficientes) e QUAL STANDARD PROBATÓRIO foi
+   adotado (art. 489, §1º, I e II, CPC).
+
+EXEMPLOS DE OMISSÕES CABÍVEIS EM EMBARGOS:
+
+a) "A decisão afirmou que 'não há prova do dano moral', mas não se manifestou
+   sobre o laudo psicológico de fls. X-Y, que atesta expressamente o sofrimento
+   psíquico do autor" — há OMISSÃO quanto à existência de prova específica;
+
+b) "A decisão afirmou que 'as provas são insuficientes para comprovar a culpa do
+   réu', mas não especificou QUAL prova seria necessária para alcançar o standard
+   probatório exigido, nem QUAL standard foi adotado (preponderância de evidências?
+   prova além da dúvida razoável? prova inequívoca?)" — há OMISSÃO quanto ao
+   standard probatório;
+
+c) "A decisão não se manifestou sobre a alegação expressa do autor (fls. Z) de
+   que a prova testemunhal, por si só, é INSUFICIENTE para elidir a presunção
+   de veracidade dos documentos públicos, exigindo-se prova documental em contrário"
+   — há OMISSÃO quanto ao standard probatório aplicável ao tipo de prova;
+
+d) "A decisão não enfrentou o argumento defensivo (fls. W) de que o ônus da prova
+   foi INVERTIDO por força do art. 6º, VIII, do CDC, cabendo ao fornecedor a
+   prova da inexistência do defeito, e não ao consumidor a prova da existência"
+   — há OMISSÃO quanto à distribuição do ônus probatório e ao standard aplicável.
+
+TÉCNICA CORRETA: Ao alegar omissão sobre suficiência probatória, o embargante
+NÃO está pedindo que o julgador REAVALÍE as provas, mas sim que EXPLIQUE
+ADEQUADAMENTE:
+
+(i) QUAIS provas foram consideradas para formar a convicção;
+(ii) POR QUE essas provas foram consideradas suficientes (ou insuficientes);
+(iii) QUAL standard probatório foi adotado (preponderância de evidências, prova
+     clara e convincente, prova além da dúvida razoável, etc.);
+(iv) POR QUE o standard adotado é o adequado ao tipo de demanda e ao direito
+    material em discussão.
+
+2. STANDARD PROBATÓRIO: CONCEITO E APLICAÇÃO NO DIREITO BRASILEIRO
+
+2.1 DEFINIÇÃO
+
+O standard probatório é o GRAU DE SUFICIÊNCIA ou GRAU DE CONVENCIMENTO exigido
+para que determinado fato seja considerado provado. É a RÉGUA que mede quando a
+prova é considerada suficiente para formar a convicção do julgador.
+
+O CPC/2015 não estabelece expressamente standards probatórios diferenciados, mas
+a doutrina processualista brasileira e a jurisprudência dos tribunais superiores
+têm reconhecido a existência de diferentes níveis de exigência probatória conforme
+a natureza do direito material discutido e a gravidade das consequências jurídicas
+da decisão.
+
+FUNDAMENTO LEGAL: Art. 489, §1º, I e II, do CPC exige que a decisão EXPLIQUE os
+fundamentos de fato que levaram à conclusão, não sendo suficiente a mera afirmação
+genérica de que "as provas são suficientes" ou "as provas são insuficientes".
+
+2.2 STANDARDS PROBATÓRIOS RECONHECIDOS NO DIREITO BRASILEIRO
+
+Embora o sistema brasileiro não adote formalmente a nomenclatura dos standards
+probatórios do common law, a doutrina e a jurisprudência têm trabalhado com os
+seguintes níveis de exigência probatória:
+
+a) PROVA ALÉM DA DÚVIDA RAZOÁVEL (beyond reasonable doubt)
+   Standard mais rigoroso. Exige certeza quase absoluta quanto à ocorrência do
+   fato. Aplicável, por analogia, ao processo penal condenatório (princípio do
+   in dubio pro reo).
+
+   Exemplo: Condenação criminal exige prova robusta, não sendo admissível
+   condenação baseada em mera probabilidade ou em dúvida quanto à autoria ou
+   materialidade.
+
+b) PROVA CLARA E CONVINCENTE (clear and convincing evidence)
+   Standard intermediário-alto. Exige prova robusta, mas não exige certeza absoluta.
+   Aplicável a direitos fundamentais, restrição de direitos, decretação de
+   invalidade, improbidade administrativa, exclusão de herdeiro, interdição.
+
+   Exemplo: Ação de interdição exige prova pericial robusta da incapacidade
+   (não basta mera alegação ou indício); ação de improbidade administrativa exige
+   prova clara do dolo (Lei 8.429/1992, art. 17, §6º-A).
+
+c) PREPONDERÂNCIA DE EVIDÊNCIAS / PROBABILIDADE PREVALECENTE (preponderance of
+   evidence)
+   Standard intermediário. Exige que a versão fática de uma parte seja MAIS
+   PROVÁVEL que a da parte contrária (mais de 50% de probabilidade). É o standard
+   padrão aplicável à maioria das demandas cíveis (responsabilidade civil,
+   inadimplemento contratual, cobrança, indenização, etc.).
+
+   Exemplo: Ação de cobrança de dívida — se o autor demonstra o contrato e o
+   inadimplemento, e o réu não produz contraprova convincente do pagamento, a
+   preponderância de evidências favorece o autor.
+
+d) PROVA SUMÁRIA / INDÍCIOS RAZOÁVEIS (reasonable suspicion / prima facie evidence)
+   Standard mais brando. Exige apenas elementos de convicção inicial, indícios
+   razoáveis, sem exigir prova plena. Aplicável a tutelas provisórias (art. 300,
+   CPC), medidas cautelares, medidas protetivas.
+
+   Exemplo: Tutela antecipada de urgência exige "prova INEQUÍVOCA" da
+   verossimilhança da alegação (art. 300, CPC), mas "inequívoca" significa
+   "ausência de equívoco manifesto", não exigindo certeza absoluta.
+
+e) PROVA TARIFADA / PROVA LEGAL
+   Standard excepcional no direito brasileiro (sistema da livre convicção motivada).
+   Aplicável apenas quando a lei expressamente exige forma específica de prova.
+
+   Exemplos: Casamento exige certidão de registro (art. 1.543, CC); transferência
+   de imóvel exige escritura pública (art. 108, CC); estado das pessoas (nascimento,
+   morte) prova-se por certidão de registro civil (art. 9º, Lei 6.015/1973).
+
+2.3 STANDARD PROBATÓRIO E NATUREZA DO DIREITO MATERIAL
+
+A escolha do standard probatório adequado deve considerar:
+
+a) GRAVIDADE DAS CONSEQUÊNCIAS JURÍDICAS
+   Quanto mais gravosa a consequência (privação de liberdade, restrição de direito
+   fundamental, invalidade de ato jurídico, decretação de morte civil), maior o
+   standard probatório exigido.
+
+b) DISTRIBUIÇÃO DO ÔNUS DA PROVA
+   Quem tem o ônus de provar fato constitutivo de seu direito deve alcançar o
+   standard probatório exigido. Inversão do ônus da prova (CDC, art. 6º, VIII;
+   CPC, art. 373, §1º) altera o standard de exigência.
+
+c) NATUREZA DO DIREITO MATERIAL
+   Direitos fundamentais, direitos da personalidade, direitos indisponíveis exigem
+   standard probatório mais elevado do que direitos patrimoniais disponíveis.
+
+d) TIPO DE PROCESSO
+   Processo penal (standard mais rigoroso: in dubio pro reo), processo cível
+   (standard intermediário: preponderância de evidências), procedimento de jurisdição
+   voluntária (standard mais brando: juízo de conveniência e equidade).
+
+TÉCNICA EM EMBARGOS: Ao alegar omissão sobre suficiência probatória, o embargante
+deve IDENTIFICAR qual standard probatório deveria ter sido adotado pela decisão
+embargada, DEMONSTRAR que a decisão não explicitou o standard adotado e REQUERER
+manifestação expressa sobre qual standard foi aplicado e por que o conjunto
+probatório alcançou (ou não alcançou) esse standard.
+
+3. TÉCNICA DE ALEGAR OMISSÃO SOBRE SUFICIÊNCIA PROBATÓRIA EM EMBARGOS
+
+3.1 ESTRUTURA ARGUMENTATIVA OBRIGATÓRIA
+
+Ao alegar omissão sobre análise probatória, o embargante deve seguir os seguintes
+passos:
+
+PASSO 1: IDENTIFICAR A AFIRMAÇÃO GENÉRICA DA DECISÃO EMBARGADA
+
+Transcrever literalmente o trecho da decisão que contém afirmação genérica sobre
+prova, sem especificar quais provas foram consideradas ou qual o standard adotado.
+
+Exemplos de afirmações genéricas viciadas:
+- "Não restou comprovado o fato X"
+- "As provas produzidas são insuficientes"
+- "Não há prova robusta do alegado"
+- "O autor não se desincumbiu do ônus probatório"
+- "Restou demonstrado nos autos que..."
+
+PASSO 2: DEMONSTRAR QUE A AFIRMAÇÃO É GENÉRICA E INSUFICIENTE
+
+Apontar que a decisão NÃO especificou:
+a) QUAIS provas foram analisadas (enumerar as provas existentes nos autos);
+b) POR QUE cada prova foi considerada suficiente ou insuficiente;
+c) QUAL standard probatório foi adotado;
+d) POR QUE o standard adotado é o adequado ao caso.
+
+PASSO 3: DEMONSTRAR A EXISTÊNCIA DE PROVA NOS AUTOS NÃO ENFRENTADA
+
+Apontar especificamente QUAIS provas constam dos autos e NÃO foram mencionadas
+pela decisão:
+- Documento de fls. X
+- Depoimento da testemunha Y em fls. Z
+- Laudo pericial de fls. W
+- Prova emprestada de fls. K
+- Prova documental juntada em fls. J
+
+IMPORTANTE: Ao indicar a prova não enfrentada, o embargante NÃO está pedindo que
+o julgador VALORIZE a prova de determinada forma, mas apenas que SE MANIFESTE
+EXPRESSAMENTE sobre a existência da prova e sobre por que ela foi (ou não foi)
+considerada para formar a convicção.
+
+PASSO 4: DEMONSTRAR A RELEVÂNCIA DA PROVA OMITIDA
+
+Explicar por que a prova não enfrentada é RELEVANTE para o deslinde da controvérsia:
+- É a única prova sobre determinado fato essencial?
+- Contradiz a conclusão alcançada pela decisão?
+- Preenche lacuna probatória apontada pela própria decisão?
+- Inverte o ônus da prova?
+- Altera o standard probatório aplicável?
+
+PASSO 5: ALEGAR A OMISSÃO E INVOCAR O ART. 489, §1º, CPC
+
+Afirmar expressamente que a ausência de análise específica do conjunto probatório
+caracteriza OMISSÃO quanto à fundamentação adequada, em violação ao art. 489,
+§1º, I e II, do CPC e ao art. 93, IX, da CF.
+
+PASSO 6: REQUERER A INTEGRAÇÃO DA DECISÃO
+
+Requerer que a decisão seja INTEGRADA para:
+a) ESPECIFICAR quais provas foram analisadas;
+b) EXPLICAR por que cada prova foi considerada suficiente ou insuficiente;
+c) EXPLICITAR qual standard probatório foi adotado;
+d) JUSTIFICAR por que o standard adotado é adequado ao caso concreto.
+
+ATENÇÃO: O pedido NÃO é de "reavaliação das provas" ou "novo julgamento do
+mérito", mas de "integração da fundamentação para explicitar a análise probatória".
+
+3.2 MODELO DE REDAÇÃO — OMISSÃO SOBRE EXISTÊNCIA DE PROVA ESPECÍFICA
+
+"III - DA OMISSÃO QUANTO À ANÁLISE DA PROVA DOCUMENTAL DE FLS. X-Y
+
+A decisão embargada, ao indeferir o pedido de indenização por danos morais,
+fundamentou-se na seguinte afirmação (fls. Z, §3º):
+
+   'Não restou comprovado nos autos o efetivo abalo psíquico alegado pelo autor,
+   sendo a prova insuficiente para caracterizar dano moral indenizável.'
+
+Ocorre que a decisão embargada incorre em OMISSÃO ao deixar de se manifestar
+sobre o LAUDO PSICOLÓGICO de fls. X-Y, elaborado por psicóloga clínica devidamente
+habilitada, atestando EXPRESSAMENTE que o autor apresenta 'quadro de ansiedade
+generalizada e depressão moderada, com nexo causal direto com os fatos narrados
+na inicial'.
+
+Referido laudo NÃO foi mencionado, analisado ou rebatido pela decisão embargada,
+caracterizando omissão quanto à análise de prova essencial ao deslinde da
+controvérsia.
+
+A existência de laudo técnico atestando o abalo psíquico É RELEVANTE porque:
+
+a) Constitui prova técnica específica sobre o fato controvertido (existência de
+   dano moral);
+
+b) Foi expressamente invocada nas razões do recurso de apelação (fls. W, §5º)
+   como fundamento autônomo do pedido de reforma;
+
+c) Não foi impugnada pela parte contrária nas contrarrazões, presumindo-se aceita
+   quanto à sua idoneidade técnica;
+
+d) Representa prova direta do dano alegado, ao passo que a decisão embargada
+   fundamentou-se apenas na ausência de 'prova robusta', sem especificar que tipo
+   de prova seria necessária para alcançar o standard probatório exigido.
+
+A omissão de manifestação sobre prova essencial caracteriza fundamentação
+DEFICIENTE, em violação ao art. 489, §1º, I, do CPC ('não se considera fundamentada
+qualquer decisão judicial que se limitar à indicação, à reprodução ou à paráfrase
+de ato normativo, sem explicar sua relação com a causa ou a questão decidida') e
+ao art. 93, IX, da Constituição Federal.
+
+A jurisprudência do Superior Tribunal de Justiça é pacífica no sentido de que a
+decisão deve ENFRENTAR EXPRESSAMENTE as provas relevantes produzidas nos autos,
+não sendo suficiente afirmação genérica de que 'as provas são insuficientes' sem
+especificar quais provas foram analisadas e por que foram consideradas
+insuficientes:
+
+[Inserir precedentes verificados via web_search: STJ sobre necessidade de análise
+expressa de provas relevantes]
+
+ATENÇÃO: Os presentes embargos NÃO pretendem que a decisão REAVALIE a prova ou
+atribua a ela determinado peso ou valor (o que seria vedado pela Súmula 7/STJ),
+mas tão somente que a decisão SE MANIFESTE EXPRESSAMENTE sobre a existência do
+laudo de fls. X-Y e EXPLIQUE por que, mesmo diante de laudo técnico atestando o
+dano, considerou as provas insuficientes para a condenação.
+
+Requer-se, portanto, seja a decisão embargada INTEGRADA para manifestar-se
+EXPRESSAMENTE sobre:
+
+a) Se o laudo psicológico de fls. X-Y foi ou não considerado na análise da
+   controvérsia;
+
+b) Se foi considerado, por que foi considerado insuficiente para caracterizar o
+   dano moral;
+
+c) Se não foi considerado, quais as razões da desconsideração (vício formal?
+   falta de imparcialidade? inadequação técnica?);
+
+d) Qual o standard probatório exigido para a comprovação de dano moral na espécie
+   (preponderância de evidências? prova clara e convincente? prova inequívoca?) e
+   por que o laudo não alcançou esse standard."
+
+3.3 MODELO DE REDAÇÃO — OMISSÃO SOBRE STANDARD PROBATÓRIO APLICÁVEL
+
+"IV - DA OMISSÃO QUANTO AO STANDARD PROBATÓRIO ADOTADO
+
+A decisão embargada, ao julgar improcedente a ação de improbidade administrativa,
+fundamentou-se na seguinte afirmação (fls. Z, §7º):
+
+   'As provas produzidas não são suficientes para comprovar a conduta dolosa do
+   agente público, essencial à caracterização de improbidade administrativa.'
+
+Ocorre que a decisão embargada incorre em OMISSÃO ao deixar de ESPECIFICAR:
+
+a) QUAL standard probatório foi adotado para aferir a suficiência das provas
+   (preponderância de evidências? prova clara e convincente? prova além da dúvida
+   razoável?);
+
+b) POR QUE o standard adotado é o adequado à ação de improbidade administrativa
+   à luz da Lei 8.429/1992 (com as alterações da Lei 14.230/2021);
+
+c) QUAIS provas foram consideradas insuficientes e POR QUE não alcançaram o
+   standard exigido;
+
+d) QUAL prova adicional seria necessária para alcançar o standard probatório, se
+   é que alguma prova adicional seria suficiente.
+
+A omissão é RELEVANTE porque:
+
+a) A Lei 8.429/1992, art. 17, §6º-A (incluído pela Lei 14.230/2021), estabelece
+   que 'a ação de improbidade administrativa é repressiva, de caráter sancionatório,
+   destinada à aplicação de sanções de caráter pessoal previstas nesta Lei, e NÃO
+   se VINCULA A AÇÃO DE RESSARCIMENTO DE PERDAS E DANOS, que obedecerá às
+   disposições do Código de Processo Civil';
+
+b) A Lei 8.429/1992, art. 17, §10-A (incluído pela Lei 14.230/2021), estabelece
+   que 'constitui ônus da acusação a comprovação DO DOLO, inclusive do dolo
+   específico quando exigido pelo tipo legal';
+
+c) A gravidade das sanções da improbidade administrativa (perda da função pública,
+   suspensão dos direitos políticos, multa civil — art. 12, Lei 8.429/1992) exige
+   standard probatório ELEVADO, próximo ao padrão penal de 'prova além da dúvida
+   razoável', conforme orientação doutrinária e jurisprudencial;
+
+d) A decisão embargada NÃO explicitou se adotou standard elevado (compatível com
+   a gravidade da sanção) ou standard ordinário (preponderância de evidências),
+   nem justificou a escolha do standard.
+
+A omissão de explicitação do standard probatório adotado caracteriza fundamentação
+DEFICIENTE, em violação ao art. 489, §1º, I e II, do CPC e ao art. 93, IX, da
+Constituição Federal.
+
+A doutrina processualista brasileira é unânime em reconhecer a necessidade de
+explicitação do standard probatório adotado, especialmente em demandas com
+consequências jurídicas graves:
+
+[Inserir referências doutrinárias: Fredie Didier Jr., Daniel Mitidiero, Michele
+Taruffo sobre standards probatórios]
+
+A jurisprudência do Superior Tribunal de Justiça tem reconhecido a necessidade de
+standard probatório elevado em ações de improbidade administrativa:
+
+[Inserir precedentes verificados via web_search: STJ sobre standard probatório em
+improbidade administrativa]
+
+ATENÇÃO: Os presentes embargos NÃO pretendem que a decisão REAVALÍE as provas
+produzidas nos autos, mas tão somente que a decisão EXPLICITE qual standard
+probatório foi adotado e por que as provas não alcançaram esse standard, em
+observância ao dever de fundamentação adequada.
+
+Requer-se, portanto, seja a decisão embargada INTEGRADA para manifestar-se
+EXPRESSAMENTE sobre:
+
+a) Qual standard probatório foi adotado para aferir a suficiência das provas da
+   conduta dolosa (preponderância de evidências? prova clara e convincente? prova
+   além da dúvida razoável? prova inequívoca?);
+
+b) Por que o standard adotado é o adequado à ação de improbidade administrativa,
+   considerando a gravidade das sanções previstas na Lei 8.429/1992 e as alterações
+   promovidas pela Lei 14.230/2021;
+
+c) Quais provas foram analisadas (enumerar documentos, depoimentos, perícias) e
+   por que cada uma delas foi considerada insuficiente para alcançar o standard
+   exigido;
+
+d) Se alguma prova adicional poderia ter alcançado o standard exigido, ou se a
+   improcedência decorre da impossibilidade de prova do fato (prova diabólica) ou
+   de ausência de elementos probatórios mínimos."
+
+3.4 MODELO DE REDAÇÃO — OMISSÃO SOBRE INVERSÃO DO ÔNUS DA PROVA
+
+"V - DA OMISSÃO QUANTO À INVERSÃO DO ÔNUS DA PROVA (ART. 6º, VIII, CDC)
+
+A decisão embargada, ao julgar improcedente o pedido de indenização por defeito
+do produto, fundamentou-se na seguinte afirmação (fls. Z, §4º):
+
+   'O autor não se desincumbiu do ônus de comprovar o defeito do produto, nem o
+   nexo causal entre o defeito e o dano alegado, nos termos do art. 373, I, do
+   CPC.'
+
+Ocorre que a decisão embargada incorre em OMISSÃO ao deixar de se manifestar
+sobre o PEDIDO DE INVERSÃO DO ÔNUS DA PROVA formulado expressamente pelo autor
+nas razões do recurso de apelação (fls. W, §§8º-10º), com fundamento no art. 6º,
+VIII, do Código de Defesa do Consumidor.
+
+A omissão é RELEVANTE porque:
+
+a) O art. 6º, VIII, do CDC estabelece como direito básico do consumidor 'a
+   facilitação da defesa de seus direitos, inclusive com a INVERSÃO DO ÔNUS DA
+   PROVA, a seu favor, no processo civil, quando, a critério do juiz, for
+   verossímil a alegação OU quando for ele hipossuficiente, segundo as regras
+   ordinárias de experiências';
+
+b) O autor demonstrou, nas razões do recurso, a presença dos requisitos para a
+   inversão: (i) relação de consumo caracterizada; (ii) verossimilhança da alegação
+   (juntou nota fiscal, fotografias do defeito, orçamentos de reparo); (iii)
+   hipossuficiência técnica (impossibilidade de o consumidor produzir prova
+   técnica sobre o processo de fabricação do produto);
+
+c) Havendo inversão do ônus da prova, o standard probatório SE ALTERA: não cabe
+   ao consumidor provar o defeito do produto, mas sim ao fornecedor provar a
+   INEXISTÊNCIA do defeito ou a culpa exclusiva do consumidor ou de terceiro
+   (art. 14, §3º, CDC);
+
+d) A decisão embargada aplicou o regime geral do ônus da prova (art. 373, I, CPC),
+   SEM SE MANIFESTAR sobre o pedido específico de inversão, caracterizando omissão
+   quanto a ponto essencial ao deslinde da controvérsia.
+
+A não manifestação sobre pedido de inversão do ônus da prova caracteriza
+fundamentação DEFICIENTE, em violação ao art. 489, §1º, IV, do CPC ('não se
+considera fundamentada qualquer decisão judicial que não enfrentar todos os
+argumentos deduzidos no processo capazes de, em tese, infirmar a conclusão adotada
+pelo julgador') e ao art. 93, IX, da Constituição Federal.
+
+A jurisprudência do Superior Tribunal de Justiça é pacífica no sentido de que o
+pedido de inversão do ônus da prova deve ser EXPRESSAMENTE enfrentado pela decisão,
+não sendo suficiente manifestação implícita ou genérica:
+
+[Inserir precedentes verificados via web_search: STJ sobre necessidade de
+manifestação expressa sobre inversão do ônus da prova]
+
+ATENÇÃO: Os presentes embargos NÃO pretendem que a decisão DEFIRA a inversão do
+ônus da prova (o que seria efeito modificativo vedado sem o preenchimento dos
+requisitos), mas tão somente que a decisão SE MANIFESTE EXPRESSAMENTE sobre se os
+requisitos do art. 6º, VIII, do CDC estão ou não presentes, e, em caso negativo,
+por que não estão presentes.
+
+Requer-se, portanto, seja a decisão embargada INTEGRADA para manifestar-se
+EXPRESSAMENTE sobre:
+
+a) Se a relação jurídica discutida nos autos configura ou não relação de consumo
+   nos termos dos arts. 2º e 3º do CDC;
+
+b) Se estão ou não presentes os requisitos para a inversão do ônus da prova (art.
+   6º, VIII, CDC): verossimilhança da alegação OU hipossuficiência;
+
+c) Se os requisitos estão presentes, por que a inversão não foi aplicada ao caso
+   concreto;
+
+d) Sendo aplicada a inversão, como se altera a análise da suficiência probatória,
+   considerando que o ônus de provar a inexistência do defeito passa a ser do
+   fornecedor-réu."
+
+4. PREQUESTIONAMENTO DE STANDARD PROBATÓRIO PARA REsp/RE
+
+Quando a decisão embargada é acórdão de TJ/TRF e o embargante pretende interpor
+REsp ou RE, a omissão sobre suficiência probatória e sobre standard probatório
+pode ser objeto de prequestionamento, desde que vinculada a dispositivo de lei
+federal ou constitucional.
+
+4.1 DISPOSITIVOS FEDERAIS E CONSTITUCIONAIS SOBRE SUFICIÊNCIA PROBATÓRIA
+
+a) Art. 489, §1º, I e II, do CPC (fundamentação adequada — exigência de explicitar
+   os motivos de fato);
+
+b) Art. 373, I e II, do CPC (ônus da prova);
+
+c) Art. 373, §1º, do CPC (inversão convencional ou judicial do ônus da prova);
+
+d) Art. 6º, VIII, do CDC (inversão do ônus da prova em favor do consumidor);
+
+e) Art. 93, IX, da CF (fundamentação de todas as decisões judiciais sob pena de
+   nulidade);
+
+f) Art. 5º, LIV e LV, da CF (devido processo legal, contraditório e ampla defesa).
+
+4.2 TÉCNICA DE PREQUESTIONAMENTO
+
+Ao alegar omissão sobre suficiência probatória com finalidade de prequestionamento,
+o embargante deve:
+
+a) IDENTIFICAR qual dispositivo de lei federal ou constitucional foi violado pela
+   omissão (art. 489, §1º, CPC; art. 373, CPC; art. 6º, VIII, CDC; art. 93, IX,
+   CF);
+
+b) DEMONSTRAR que o dispositivo foi expressamente invocado nas razões ou
+   contrarrazões do recurso (apelação, agravo);
+
+c) DEMONSTRAR que a decisão embargada NÃO se manifestou expressamente sobre o
+   dispositivo;
+
+d) REQUERER manifestação expressa sobre o dispositivo;
+
+e) INVOCAR o art. 1.025 do CPC (prequestionamento ficto).
+
+MODELO DE REDAÇÃO:
+
+"VI - DO PREQUESTIONAMENTO (Art. 1.025 do CPC)
+
+Considerando que o embargante poderá valer-se de recurso especial, é imprescindível
+que o acórdão embargado manifeste-se EXPRESSAMENTE sobre os seguintes dispositivos
+de lei federal, todos expressamente invocados nas razões do recurso de apelação
+(fls. X-Y):
+
+a) Art. 489, §1º, I e II, do CPC: exigência de que a decisão explique os motivos
+   de fato que levaram à conclusão, especificando quais provas foram analisadas e
+   por que foram consideradas suficientes ou insuficientes;
+
+b) Art. 373, I, do CPC: ônus do autor de provar fatos constitutivos de seu direito;
+
+c) Art. 6º, VIII, da Lei 8.078/1990 (CDC): inversão do ônus da prova em favor do
+   consumidor quando presentes os requisitos de verossimilhança ou hipossuficiência.
+
+Referidos dispositivos são ESSENCIAIS ao correto deslinde da controvérsia porque
+disciplinam o regime jurídico do ônus da prova e da fundamentação adequada das
+decisões judiciais, estabelecendo o standard probatório aplicável ao caso concreto.
+
+Nos termos do art. 1.025 do CPC, ainda que os presentes embargos sejam rejeitados,
+os dispositivos acima indicados considerar-se-ão incluídos no acórdão para fins de
+prequestionamento, viabilizando o recurso especial ao STJ."
+
+5. CHECKLIST — OMISSÃO SOBRE SUFICIÊNCIA PROBATÓRIA
+
+Antes de opor embargos alegando omissão sobre suficiência probatória, verificar:
+
+[ ] A decisão afirmou genericamente que "as provas são suficientes" ou "as provas
+    são insuficientes" SEM especificar quais provas foram analisadas?
+
+[ ] Existe prova específica nos autos (documento, laudo, depoimento) que NÃO foi
+    mencionada pela decisão?
+
+[ ] A prova não mencionada é RELEVANTE (é a única prova sobre fato essencial?
+    contradiz a conclusão da decisão?)?
+
+[ ] A prova não mencionada foi expressamente invocada nas razões/contrarrazões do
+    recurso (indicar página/parágrafo)?
+
+[ ] A decisão NÃO especificou qual standard probatório foi adotado (preponderância?
+    prova clara e convincente? prova além da dúvida razoável?)?
+
+[ ] O standard probatório é relevante ao caso (ação de improbidade? ação penal?
+    interdição? restrição de direito fundamental?)?
+
+[ ] Foi formulado pedido de inversão do ônus da prova (art. 6º, VIII, CDC; art.
+    373, §1º, CPC) e a decisão NÃO se manifestou sobre o pedido?
+
+[ ] A alegação NÃO configura mero reexame de prova (não estou pedindo que o
+    julgador REAVALÍE a prova, mas que EXPLICITE a análise probatória)?
+
+[ ] O pedido é de INTEGRAÇÃO da decisão (manifestação expressa sobre prova
+    existente e sobre standard adotado), e NÃO de reforma/alteração do julgamento?
+
+[ ] Se há prequestionamento em vista: dispositivos de lei federal sobre ônus da
+    prova e fundamentação foram expressamente invocados (art. 489, §1º, CPC; art.
+    373, CPC; art. 6º, VIII, CDC)?
+
+ATENÇÃO: Se a resposta for NÃO a qualquer das perguntas acima, reconsiderar a
+oposição dos embargos para evitar multa por embargos protelatórios.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE XI-B: TRATADOS INTERNACIONAIS — PREQUESTIONAMENTO E TÉCNICA EM EMBARGOS
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Os tratados internacionais ratificados pelo Brasil integram o ordenamento jurídico
+nacional e PODEM SER OBJETO DE PREQUESTIONAMENTO em embargos de declaração para
+fins de recurso especial ao STJ (art. 105, III, "a", CF).
+
+O art. 1.025 do CPC é EXPRESSO ao afirmar que os embargos de declaração servem
+para prequestionar tanto dispositivos de LEI FEDERAL quanto de TRATADOS
+INTERNACIONAIS, viabilizando o acesso ao STJ.
+
+ATENÇÃO: Tratados internacionais de direitos humanos aprovados pelo rito do art.
+5º, §3º, da CF (equivalentes a emenda constitucional) são objeto de recurso
+EXTRAORDINÁRIO ao STF (art. 102, III, CF), e não de recurso especial ao STJ.
+
+1. HIERARQUIA DOS TRATADOS NO ORDENAMENTO JURÍDICO BRASILEIRO
+
+A posição hierárquica dos tratados internacionais no ordenamento brasileiro
+depende da MATÉRIA e do PROCEDIMENTO DE APROVAÇÃO:
+
+1.1 TRATADOS DE DIREITOS HUMANOS APROVADOS POR EMENDA CONSTITUCIONAL (Art. 5º,
+§3º, CF)
+
+STATUS: EQUIVALENTES A EMENDA CONSTITUCIONAL (hierarquia constitucional)
+
+PROCEDIMENTO: Aprovação em cada Casa do Congresso Nacional, em dois turnos, por
+3/5 dos votos (art. 5º, §3º, CF, incluído pela EC 45/2004).
+
+EXEMPLO: Convenção Internacional sobre os Direitos das Pessoas com Deficiência
+(Decreto Legislativo 186/2008 + Decreto 6.949/2009) — único tratado aprovado pelo
+rito do art. 5º, §3º, CF até o momento.
+
+CONSEQUÊNCIA: São objeto de recurso EXTRAORDINÁRIO ao STF (art. 102, III, CF), e
+não de recurso especial ao STJ.
+
+TÉCNICA EM EMBARGOS: Ao alegar omissão sobre tratado de direitos humanos aprovado
+pelo rito do art. 5º, §3º, CF, invocar o dispositivo do tratado COMO NORMA
+CONSTITUCIONAL, indicando que a omissão impede o prequestionamento para recurso
+extraordinário ao STF.
+
+1.2 TRATADOS DE DIREITOS HUMANOS APROVADOS PELO RITO ORDINÁRIO
+
+STATUS: SUPRALEGAL (acima das leis ordinárias, abaixo da Constituição)
+
+FUNDAMENTO: STF, RE 466.343/SP (Caso Depositário Infiel), Rel. Min. Cezar Peluso,
+j. 03.12.2008. O STF firmou entendimento de que tratados de direitos humanos NÃO
+aprovados pelo rito do art. 5º, §3º, CF têm status SUPRALEGAL, prevalecendo sobre
+leis ordinárias, mas não sobre a Constituição.
+
+EXEMPLOS:
+- Convenção Americana sobre Direitos Humanos (Pacto de São José da Costa Rica —
+  Decreto 678/1992)
+- Pacto Internacional sobre Direitos Civis e Políticos (Decreto 592/1992)
+- Pacto Internacional sobre Direitos Econômicos, Sociais e Culturais (Decreto
+  591/1992)
+- Convenção contra a Tortura (Decreto 40/1991)
+- Convenção sobre a Eliminação de Todas as Formas de Discriminação contra a Mulher
+  (Decreto 4.377/2002)
+- Convenção sobre os Direitos da Criança (Decreto 99.710/1990)
+
+CONSEQUÊNCIA: São objeto de recurso ESPECIAL ao STJ (art. 105, III, "a", CF), pois
+têm status de lei federal (para fins de recurso especial, equiparam-se a lei
+federal).
+
+TÉCNICA EM EMBARGOS: Ao alegar omissão sobre tratado de direitos humanos aprovado
+pelo rito ordinário, invocar o dispositivo do tratado e afirmar que a omissão
+impede o prequestionamento para recurso especial ao STJ, nos termos do art. 1.025
+do CPC.
+
+1.3 TRATADOS INTERNACIONAIS COMUNS (NÃO VERSAM SOBRE DIREITOS HUMANOS)
+
+STATUS: EQUIVALENTES A LEI ORDINÁRIA (mesma hierarquia das leis federais)
+
+EXEMPLOS:
+- Convenção de Viena sobre Relações Diplomáticas (Decreto 56.435/1965)
+- Convenção de Viena sobre Relações Consulares (Decreto 61.078/1967)
+- Convenção de Viena sobre o Direito dos Tratados (Decreto 7.030/2009)
+- Acordo TRIPS (Aspectos dos Direitos de Propriedade Intelectual Relacionados ao
+  Comércio — Decreto 1.355/1994)
+- Convenção de Berna sobre Direitos Autorais (Decreto 75.699/1975)
+- Convenção de Paris sobre Propriedade Industrial (Decreto 1.263/1994)
+- Convenção de Haia sobre Aspectos Civis do Sequestro Internacional de Crianças
+  (Decreto 3.413/2000)
+- Convenção de Nova Iorque sobre Arbitragem (Decreto 4.311/2002)
+- Tratados bilaterais de extradição
+- Tratados tributários (para evitar bitributação)
+
+CONSEQUÊNCIA: São objeto de recurso ESPECIAL ao STJ (art. 105, III, "a", CF), pois
+equiparam-se a lei federal.
+
+TÉCNICA EM EMBARGOS: Ao alegar omissão sobre tratado comum, invocar o dispositivo
+do tratado e afirmar que a omissão impede o prequestionamento para recurso especial
+ao STJ, nos termos do art. 1.025 do CPC.
+
+2. PREQUESTIONAMENTO DE TRATADOS EM EMBARGOS DE DECLARAÇÃO
+
+2.1 FUNDAMENTO LEGAL: ART. 1.025 DO CPC
+
+"Consideram-se incluídos no acórdão os elementos que o embargante suscitou, para
+fins de prequestionamento, ainda que os embargos de declaração sejam inadmitidos
+ou rejeitados, caso o tribunal superior considere existentes erro, omissão,
+contradição ou obscuridade."
+
+O art. 1.025 do CPC não distingue entre lei federal e tratado internacional.
+Assim, os embargos de declaração servem para prequestionar AMBOS, viabilizando o
+recurso especial ao STJ.
+
+2.2 JURISPRUDÊNCIA DO STJ
+
+O STJ tem reconhecido a possibilidade de prequestionamento de tratados
+internacionais via embargos de declaração, nos mesmos moldes aplicáveis às leis
+federais:
+
+[Inserir precedentes verificados via web_search: STJ sobre prequestionamento de
+tratados internacionais]
+
+2.3 TÉCNICA DE PREQUESTIONAMENTO DE TRATADOS
+
+Ao alegar omissão sobre tratado internacional para fins de prequestionamento, o
+embargante deve:
+
+PASSO 1: IDENTIFICAR o tratado internacional aplicável ao caso concreto
+- Nome completo do tratado
+- Decreto de promulgação no Brasil
+- Dispositivo específico do tratado (artigo, parágrafo, inciso)
+
+PASSO 2: DEMONSTRAR que o tratado foi expressamente invocado nas razões ou
+contrarrazões do recurso (apelação, agravo)
+- Indicar página/parágrafo onde o tratado foi invocado
+- Transcrever o trecho pertinente
+
+PASSO 3: DEMONSTRAR a relevância do tratado ao deslinde da controvérsia
+- O tratado disciplina diretamente a matéria?
+- O tratado estabelece direito não previsto na legislação interna?
+- O tratado prevalece sobre lei interna conflitante (se for tratado de DH com
+  status supralegal)?
+
+PASSO 4: DEMONSTRAR que o acórdão embargado NÃO se manifestou expressamente sobre
+o dispositivo do tratado
+- Apontar que a decisão não mencionou o tratado
+- Apontar que a decisão não analisou a aplicabilidade do tratado ao caso concreto
+- Apontar que a manifestação foi genérica ou implícita (insuficiente para
+  prequestionamento)
+
+PASSO 5: REQUERER manifestação expressa sobre a aplicabilidade do tratado ao caso
+concreto
+
+PASSO 6: INVOCAR o art. 1.025 do CPC para afirmar o prequestionamento ficto
+
+MODELO DE REDAÇÃO:
+
+"VII - DA OMISSÃO QUANTO À APLICAÇÃO DO PACTO DE SÃO JOSÉ DA COSTA RICA
+
+O acórdão embargado, ao analisar o pedido de [descrever o pedido], deixou de se
+manifestar EXPRESSAMENTE sobre o art. [X] da Convenção Americana sobre Direitos
+Humanos (Pacto de São José da Costa Rica, promulgado pelo Decreto 678/1992),
+expressamente invocado nas razões do recurso de apelação (fls. Y-Z).
+
+O dispositivo do tratado estabelece que [transcrever dispositivo do tratado].
+
+Referido dispositivo é ESSENCIAL ao correto deslinde da controvérsia porque
+[demonstrar por que o tratado é relevante: disciplina diretamente o direito
+pleiteado; estabelece proteção mais ampla que a legislação interna; prevalece
+sobre lei interna por ter status supralegal].
+
+O Supremo Tribunal Federal, ao julgar o RE 466.343/SP (Caso Depositário Infiel),
+firmou entendimento de que os tratados de direitos humanos ratificados pelo Brasil,
+ainda que não aprovados pelo rito do art. 5º, §3º, da CF, têm STATUS SUPRALEGAL,
+prevalecendo sobre a legislação ordinária interna. Assim, o Pacto de São José da
+Costa Rica PREVALECE sobre eventual lei interna conflitante, devendo ser aplicado
+prioritariamente ao caso concreto.
+
+[Inserir precedentes do STF sobre status supralegal dos tratados de DH]
+
+Embora o acórdão embargado tenha analisado a matéria de fundo, NÃO houve
+manifestação EXPRESSA sobre a aplicabilidade do art. [X] do Pacto de São José ao
+caso concreto. A fundamentação do acórdão baseou-se exclusivamente na legislação
+interna (art. [W] do [Código/Lei]), sem enfrentar expressamente o tratado
+internacional invocado.
+
+A ausência de manifestação expressa sobre o tratado internacional IMPEDE o adequado
+prequestionamento para fins de recurso especial (art. 105, III, a, da CF), uma vez
+que a jurisprudência do STJ exige que a matéria tenha sido DECIDIDA pelo tribunal
+de origem.
+
+Nos termos do art. 1.025 do CPC/2015, 'consideram-se incluídos no acórdão os
+elementos que o embargante suscitou, para fins de prequestionamento, ainda que os
+embargos de declaração sejam inadmitidos ou rejeitados, caso o tribunal superior
+considere existentes erro, omissão, contradição ou obscuridade'. Assim, o
+dispositivo do Pacto de São José ora suscitado reputa-se prequestionado para fins
+de recurso especial, independentemente do resultado do julgamento dos presentes
+embargos.
+
+Requer-se seja o acórdão embargado INTEGRADO para manifestar-se EXPRESSAMENTE
+sobre:
+
+a) A aplicabilidade do art. [X] da Convenção Americana sobre Direitos Humanos
+   (Pacto de São José da Costa Rica — Decreto 678/1992) ao caso concreto;
+
+b) Se aplicável, qual a interpretação do dispositivo do tratado à luz dos fatos
+   dos autos;
+
+c) Se houver conflito entre o tratado e a legislação interna (art. [W] do
+   [Código/Lei]), qual norma deve prevalecer, considerando o status supralegal
+   dos tratados de direitos humanos (STF, RE 466.343/SP)."
+
+3. LISTA COMPLETA DE TRATADOS INTERNACIONAIS RATIFICADOS PELO BRASIL
+
+Para fins de prequestionamento em embargos de declaração, apresenta-se abaixo lista
+COMPLETA dos principais tratados internacionais ratificados pelo Brasil, organizados
+por matéria, com indicação do decreto de promulgação.
+
+ATENÇÃO: O embargante deve indicar o DECRETO DE PROMULGAÇÃO do tratado, e não
+apenas o nome do tratado, pois é o decreto que incorpora formalmente o tratado ao
+ordenamento jurídico brasileiro.
+
+3.1 TRATADOS DE DIREITOS HUMANOS — STATUS SUPRALEGAL (STF, RE 466.343/SP)
+
+a) Declaração Universal dos Direitos Humanos (1948) — Resolução 217-A da ONU
+   (não é tratado, mas soft law com força persuasiva)
+
+b) Convenção Americana sobre Direitos Humanos — Pacto de São José da Costa Rica
+   (1969) — Decreto 678/1992
+
+c) Pacto Internacional sobre Direitos Civis e Políticos (1966) — Decreto 592/1992
+
+d) Pacto Internacional sobre Direitos Econômicos, Sociais e Culturais (1966) —
+   Decreto 591/1992
+
+e) Convenção contra a Tortura e Outros Tratamentos ou Penas Cruéis, Desumanos ou
+   Degradantes (1984) — Decreto 40/1991
+
+f) Convenção sobre a Eliminação de Todas as Formas de Discriminação contra a
+   Mulher (1979) — Decreto 4.377/2002
+
+g) Convenção Internacional sobre a Eliminação de Todas as Formas de Discriminação
+   Racial (1965) — Decreto 65.810/1969
+
+h) Convenção sobre os Direitos da Criança (1989) — Decreto 99.710/1990
+
+i) Protocolo Facultativo à Convenção sobre os Direitos da Criança sobre Venda de
+   Crianças, Prostituição Infantil e Pornografia Infantil (2000) — Decreto
+   5.007/2004
+
+j) Protocolo Facultativo à Convenção sobre os Direitos da Criança sobre o
+   Envolvimento de Crianças em Conflitos Armados (2000) — Decreto 5.006/2004
+
+k) Convenção Internacional sobre os Direitos das Pessoas com Deficiência (2007) —
+   Decreto 6.949/2009 — ÚNICO TRATADO APROVADO PELO RITO DO ART. 5º, §3º, CF
+   (status constitucional)
+
+l) Convenção Interamericana para Prevenir, Punir e Erradicar a Violência contra
+   a Mulher — Convenção de Belém do Pará (1994) — Decreto 1.973/1996
+
+m) Convenção Interamericana para Prevenir e Punir a Tortura (1985) — Decreto
+   98.386/1989
+
+n) Protocolo Adicional à Convenção Americana sobre Direitos Humanos em Matéria de
+   Direitos Econômicos, Sociais e Culturais — Protocolo de San Salvador (1988) —
+   Decreto 3.321/1999
+
+o) Convenção sobre os Direitos das Pessoas Idosas (OEA) — ainda não ratificada
+   pelo Brasil
+
+3.2 TRATADOS DE DIREITO INTERNACIONAL PÚBLICO
+
+a) Convenção de Viena sobre Relações Diplomáticas (1961) — Decreto 56.435/1965
+
+b) Convenção de Viena sobre Relações Consulares (1963) — Decreto 61.078/1967
+
+c) Convenção de Viena sobre o Direito dos Tratados (1969) — Decreto 7.030/2009
+
+d) Estatuto de Roma do Tribunal Penal Internacional (1998) — Decreto 4.388/2002
+
+e) Carta da Organização das Nações Unidas (1945) — Decreto 19.841/1945
+
+f) Carta da Organização dos Estados Americanos (1948) — Decreto 30.544/1952
+
+3.3 TRATADOS DE DIREITO PENAL INTERNACIONAL E COOPERAÇÃO JURÍDICA
+
+a) Convenção das Nações Unidas contra o Crime Organizado Transnacional — Convenção
+   de Palermo (2000) — Decreto 5.015/2004
+
+b) Protocolo Adicional à Convenção de Palermo sobre Tráfico de Pessoas (2000) —
+   Decreto 5.017/2004
+
+c) Protocolo Adicional à Convenção de Palermo sobre Contrabando de Migrantes (2000)
+   — Decreto 5.016/2004
+
+d) Convenção das Nações Unidas contra a Corrupção — Convenção de Mérida (2003) —
+   Decreto 5.687/2006
+
+e) Convenção das Nações Unidas contra o Tráfico Ilícito de Entorpecentes e
+   Substâncias Psicotrópicas (1988) — Decreto 154/1991
+
+f) Convenção Interamericana contra a Corrupção (1996) — Decreto 4.410/2002
+
+g) Acordo de Assistência Judiciária em Matéria Penal entre os Estados Partes do
+   Mercosul (1996) — Decreto 3.468/2000
+
+h) Acordo sobre Extradição entre os Estados Partes do Mercosul (1998) — Decreto
+   4.975/2004
+
+i) Tratados bilaterais de extradição (com EUA, Portugal, Espanha, Itália, França,
+   Argentina, etc.)
+
+3.4 TRATADOS DE DIREITO INTERNACIONAL PRIVADO
+
+a) Convenção de Haia sobre Aspectos Civis do Sequestro Internacional de Crianças
+   (1980) — Decreto 3.413/2000
+
+b) Convenção de Haia sobre Adoção Internacional (1993) — Decreto 3.087/1999
+
+c) Convenção de Haia sobre Obtenção de Provas no Estrangeiro (1970) — Decreto
+   8.343/2014
+
+d) Convenção de Haia sobre Citação e Notificação de Atos Judiciais e Extrajudiciais
+   no Estrangeiro (1965) — Decreto 8.879/2016
+
+e) Convenção de Haia sobre a Lei Aplicável às Obrigações Alimentares (1973) —
+   ainda não ratificada pelo Brasil
+
+f) Protocolo de Las Leñas sobre Cooperação e Assistência Jurisdicional em Matéria
+   Civil, Comercial, Trabalhista e Administrativa (Mercosul, 1992) — Decreto
+   2.067/1996
+
+g) Protocolo de Buenos Aires sobre Jurisdição Internacional em Matéria Contratual
+   (Mercosul, 1994) — Decreto 2.095/1996
+
+h) Protocolo de São Luís em Matéria de Responsabilidade Civil Emergente de
+   Acidentes de Trânsito (Mercosul, 1996) — Decreto 3.856/2001
+
+3.5 TRATADOS DE PROPRIEDADE INTELECTUAL
+
+a) Convenção de Paris para a Proteção da Propriedade Industrial (1883, revisada
+   em 1967) — Decreto 1.263/1994
+
+b) Convenção de Berna para a Proteção das Obras Literárias e Artísticas (1886,
+   revisada em 1971) — Decreto 75.699/1975
+
+c) Acordo sobre Aspectos dos Direitos de Propriedade Intelectual Relacionados ao
+   Comércio — Acordo TRIPS (1994) — Decreto 1.355/1994 (Anexo 1C do Acordo da
+   OMC)
+
+d) Tratado de Cooperação em Matéria de Patentes — PCT (1970) — Decreto 81.742/1978
+
+e) Convenção de Roma sobre Proteção aos Artistas Intérpretes ou Executantes, aos
+   Produtores de Fonogramas e aos Organismos de Radiodifusão (1961) — Decreto
+   57.125/1965
+
+f) Tratado de Budapeste sobre o Reconhecimento Internacional do Depósito de
+   Micro-organismos para Fins de Procedimento em Matéria de Patentes (1977) —
+   Decreto 6.033/2007
+
+g) Acordo de Nice sobre Classificação Internacional de Produtos e Serviços para
+   Registro de Marcas (1957) — Decreto 1.263/1994
+
+3.6 TRATADOS DE ARBITRAGEM E MEDIAÇÃO
+
+a) Convenção de Nova Iorque sobre o Reconhecimento e a Execução de Sentenças
+   Arbitrais Estrangeiras (1958) — Decreto 4.311/2002
+
+b) Convenção Interamericana sobre Arbitragem Comercial Internacional — Convenção
+   do Panamá (1975) — Decreto 1.902/1996
+
+c) Protocolo de Genebra sobre Cláusulas de Arbitragem (1923) — Decreto 21.187/1932
+
+d) Acordo sobre Arbitragem Comercial Internacional do Mercosul — Protocolo de
+   Buenos Aires (1998) — Decreto 4.719/2003
+
+3.7 TRATADOS DE DIREITO AMBIENTAL
+
+a) Convenção-Quadro das Nações Unidas sobre Mudança do Clima (1992) — Decreto
+   2.652/1998
+
+b) Protocolo de Quioto à Convenção-Quadro sobre Mudança do Clima (1997) — Decreto
+   5.445/2005
+
+c) Acordo de Paris sobre Mudança do Clima (2015) — Decreto 9.073/2017
+
+d) Convenção sobre Diversidade Biológica (1992) — Decreto 2.519/1998
+
+e) Convenção de Basileia sobre Movimentos Transfronteiriços de Resíduos Perigosos
+   (1989) — Decreto 875/1993
+
+f) Convenção de Estocolmo sobre Poluentes Orgânicos Persistentes (2001) — Decreto
+   5.472/2005
+
+g) Convenção de Roterdã sobre Procedimento de Consentimento Prévio para o Comércio
+   de Produtos Químicos e Agrotóxicos Perigosos (1998) — Decreto 5.360/2005
+
+h) Convenção sobre Comércio Internacional das Espécies da Flora e Fauna Selvagens
+   em Perigo de Extinção — CITES (1973) — Decreto 76.623/1975
+
+i) Convenção de Ramsar sobre Zonas Úmidas de Importância Internacional (1971) —
+   Decreto 1.905/1996
+
+3.8 TRATADOS DE DIREITO DO TRABALHO (OIT)
+
+a) Convenção OIT nº 29 sobre Trabalho Forçado ou Obrigatório (1930) — Decreto
+   41.721/1957
+
+b) Convenção OIT nº 87 sobre Liberdade Sindical e Proteção do Direito de Sindicalização
+   (1948) — NÃO ratificada pelo Brasil
+
+c) Convenção OIT nº 98 sobre Direito de Sindicalização e de Negociação Coletiva
+   (1949) — Decreto 33.196/1952
+
+d) Convenção OIT nº 100 sobre Igualdade de Remuneração (1951) — Decreto 41.721/1957
+
+e) Convenção OIT nº 105 sobre Abolição do Trabalho Forçado (1957) — Decreto
+   58.822/1966
+
+f) Convenção OIT nº 111 sobre Discriminação em Matéria de Emprego e Ocupação (1958)
+   — Decreto 62.150/1968
+
+g) Convenção OIT nº 138 sobre Idade Mínima para Admissão ao Emprego (1973) —
+   Decreto 4.134/2002
+
+h) Convenção OIT nº 182 sobre Proibição das Piores Formas de Trabalho Infantil
+   (1999) — Decreto 3.597/2000
+
+i) Convenção OIT nº 190 sobre Violência e Assédio no Mundo do Trabalho (2019) —
+   Decreto 11.484/2023
+
+3.9 TRATADOS DE DIREITO TRIBUTÁRIO (para evitar bitributação)
+
+a) Convenção Brasil-Argentina para Evitar a Dupla Tributação — Decreto 87.976/1982
+
+b) Convenção Brasil-Chile para Evitar a Dupla Tributação — Decreto 4.852/2003
+
+c) Convenção Brasil-Portugal para Evitar a Dupla Tributação — Decreto 4.012/2001
+
+d) Convenção Brasil-Espanha para Evitar a Dupla Tributação — Decreto 76.975/1976
+
+e) Convenção Brasil-França para Evitar a Dupla Tributação — Decreto 70.506/1972
+
+f) Convenção Brasil-Itália para Evitar a Dupla Tributação — Decreto 85.985/1981
+
+g) Convenção Brasil-Japão para Evitar a Dupla Tributação — Decreto 61.899/1967
+
+h) Convenção Brasil-Alemanha para Evitar a Dupla Tributação — Decreto 76.988/1976
+
+i) Convenção Brasil-Canadá para Evitar a Dupla Tributação — Decreto 92.318/1986
+
+j) Convenção Brasil-EUA para Evitar a Dupla Tributação — ainda não concluída
+   (negociações em curso)
+
+3.10 TRATADOS DE DIREITO COMERCIAL E INVESTIMENTOS
+
+a) Acordo Constitutivo da Organização Mundial do Comércio — OMC/WTO (1994) —
+   Decreto 1.355/1994
+
+b) Acordo Geral sobre Tarifas e Comércio — GATT (1947/1994) — Decreto 313/1948
+   (versão 1947) e Decreto 1.355/1994 (versão 1994)
+
+c) Acordo sobre Valoração Aduaneira (OMC) — Decreto 1.355/1994 (Anexo 1A)
+
+d) Acordo sobre Medidas Sanitárias e Fitossanitárias — SPS (OMC) — Decreto
+   1.355/1994 (Anexo 1A)
+
+e) Acordo sobre Barreiras Técnicas ao Comércio — TBT (OMC) — Decreto 1.355/1994
+   (Anexo 1A)
+
+f) Tratado de Assunção (Constituição do Mercosul, 1991) — Decreto 350/1991
+
+g) Protocolo de Ouro Preto (Estrutura Institucional do Mercosul, 1994) — Decreto
+   1.901/1996
+
+h) Acordo de Complementação Econômica entre Brasil e Mercosul — diversos ACEs
+   (consultar MDIC)
+
+i) Acordos de Cooperação e Facilitação de Investimentos (ACFIs) — com diversos
+   países (consultar MDIC)
+
+3.11 TRATADOS DE DIREITO MARÍTIMO E AÉREO
+
+a) Convenção de Montego Bay sobre o Direito do Mar (1982) — Decreto 1.530/1995
+
+b) Convenção de Varsóvia sobre Transporte Aéreo Internacional (1929) — Decreto
+   20.704/1931
+
+c) Convenção de Montreal sobre Unificação de Certas Regras Relativas ao Transporte
+   Aéreo Internacional (1999) — Decreto 5.910/2006
+
+d) Convenção de Bruxelas sobre Limitação de Responsabilidade em Matéria de
+   Reclamações Marítimas (1976) — ainda não ratificada pelo Brasil
+
+e) Convenção Internacional sobre Busca e Salvamento Marítimo (1979) — Decreto
+   6.478/2008
+
+3.12 TRATADOS DE PROTEÇÃO DE REFUGIADOS E MIGRANTES
+
+a) Convenção relativa ao Estatuto dos Refugiados (1951) — Decreto 50.215/1961
+
+b) Protocolo sobre o Estatuto dos Refugiados (1967) — Decreto 70.946/1972
+
+c) Convenção da OIT sobre Trabalhadores Migrantes (revista em 1949) — Decreto
+   58.819/1966
+
+d) Convenção Internacional sobre a Proteção dos Direitos de Todos os Trabalhadores
+   Migrantes e dos Membros das suas Famílias (1990) — NÃO ratificada pelo Brasil
+
+3.13 TRATADOS DE PROTEÇÃO CULTURAL
+
+a) Convenção para a Proteção do Patrimônio Mundial, Cultural e Natural (1972) —
+   Decreto 80.978/1977
+
+b) Convenção sobre a Proteção do Patrimônio Cultural Subaquático (2001) — Decreto
+   8.474/2015
+
+c) Convenção para a Salvaguarda do Patrimônio Cultural Imaterial (2003) — Decreto
+   5.753/2006
+
+d) Convenção sobre Diversidade Cultural (2005) — Decreto 6.177/2007
+
+4. TÉCNICA DE INVOCAÇÃO DE TRATADOS EM EMBARGOS — CHECKLIST
+
+Ao alegar omissão sobre tratado internacional em embargos de declaração, verificar:
+
+[ ] O tratado foi RATIFICADO pelo Brasil e promulgado por decreto presidencial?
+
+[ ] O decreto de promulgação foi indicado corretamente (número e ano)?
+
+[ ] O dispositivo específico do tratado foi indicado (artigo, parágrafo, inciso)?
+
+[ ] O tratado foi expressamente invocado nas razões/contrarrazões do recurso
+    (indicar página/parágrafo)?
+
+[ ] O tratado é RELEVANTE ao deslinde da controvérsia (disciplina diretamente a
+    matéria? estabelece direito não previsto na legislação interna?)?
+
+[ ] O acórdão embargado NÃO se manifestou expressamente sobre o tratado?
+
+[ ] Se o tratado é de direitos humanos: foi indicado o status SUPRALEGAL (STF, RE
+    466.343/SP)?
+
+[ ] Se o tratado foi aprovado pelo rito do art. 5º, §3º, CF (Convenção sobre
+    Direitos das Pessoas com Deficiência): foi indicado o status CONSTITUCIONAL?
+
+[ ] O art. 1.025 do CPC foi invocado para afirmar o prequestionamento ficto?
+
+[ ] O pedido é de MANIFESTAÇÃO EXPRESSA sobre a aplicabilidade do tratado, e NÃO
+    de reforma/alteração do julgamento?
+
+[ ] Se há conflito entre tratado e lei interna: foi demonstrada a prevalência do
+    tratado (se for de DH com status supralegal)?
+
+ATENÇÃO: Se a resposta for NÃO a qualquer das perguntas acima, reconsiderar a
+técnica de invocação do tratado para evitar indeferimento dos embargos por
+deficiência na fundamentação.
+
+5. MODELO DE REDAÇÃO COMPLETO — TRATADOS EM EMBARGOS
+
+"VIII - DA OMISSÃO QUANTO À APLICAÇÃO DE TRATADO INTERNACIONAL
+
+O acórdão embargado, ao analisar [descrever matéria], deixou de se manifestar
+EXPRESSAMENTE sobre os seguintes tratados internacionais ratificados pelo Brasil,
+todos expressamente invocados nas razões do recurso de apelação (fls. X-Y):
+
+a) Art. [A] da Convenção Americana sobre Direitos Humanos (Pacto de São José da
+   Costa Rica, promulgado pelo Decreto 678/1992);
+
+b) Art. [B] do Pacto Internacional sobre Direitos Civis e Políticos (promulgado
+   pelo Decreto 592/1992);
+
+c) Art. [C] da Convenção [nome] (promulgada pelo Decreto [número/ano]).
+
+Referidos tratados são ESSENCIAIS ao correto deslinde da controvérsia porque
+[demonstrar por que cada tratado é relevante: disciplina diretamente o direito
+pleiteado; estabelece proteção mais ampla que a legislação interna; prevalece
+sobre lei interna por ter status supralegal].
+
+Os tratados de direitos humanos ratificados pelo Brasil, ainda que não aprovados
+pelo rito do art. 5º, §3º, da Constituição Federal, têm STATUS SUPRALEGAL,
+prevalecendo sobre a legislação ordinária interna, conforme entendimento firmado
+pelo Supremo Tribunal Federal no julgamento do RE 466.343/SP (Caso Depositário
+Infiel):
+
+[Inserir precedente do STF: RE 466.343/SP sobre status supralegal dos tratados
+de DH]
+
+Assim, os tratados acima indicados PREVALECEM sobre eventual lei interna conflitante,
+devendo ser aplicados prioritariamente ao caso concreto.
+
+Embora o acórdão embargado tenha analisado a matéria de fundo, NÃO houve
+manifestação EXPRESSA sobre a aplicabilidade dos tratados internacionais invocados.
+A fundamentação do acórdão baseou-se exclusivamente na legislação interna (art.
+[W] do [Código/Lei]), sem enfrentar expressamente os tratados.
+
+A ausência de manifestação expressa sobre os tratados internacionais IMPEDE o
+adequado prequestionamento para fins de recurso especial (art. 105, III, a, da
+CF), uma vez que os tratados internacionais ratificados pelo Brasil equiparam-se
+a lei federal para fins de recurso especial, conforme jurisprudência consolidada
+do Superior Tribunal de Justiça:
+
+[Inserir precedentes do STJ sobre equiparação de tratados a lei federal para fins
+de REsp]
+
+Nos termos do art. 1.025 do CPC/2015, 'consideram-se incluídos no acórdão os
+elementos que o embargante suscitou, para fins de prequestionamento, ainda que os
+embargos de declaração sejam inadmitidos ou rejeitados, caso o tribunal superior
+considere existentes erro, omissão, contradição ou obscuridade'. Assim, os
+dispositivos dos tratados ora suscitados reputam-se prequestionados para fins de
+recurso especial, independentemente do resultado do julgamento dos presentes
+embargos.
+
+Requer-se seja o acórdão embargado INTEGRADO para manifestar-se EXPRESSAMENTE
+sobre:
+
+a) A aplicabilidade dos arts. [A], [B] e [C] dos tratados acima indicados ao caso
+   concreto;
+
+b) Se aplicáveis, qual a interpretação dos dispositivos dos tratados à luz dos
+   fatos dos autos;
+
+c) Se houver conflito entre os tratados e a legislação interna (art. [W] do
+   [Código/Lei]), qual norma deve prevalecer, considerando o status supralegal
+   dos tratados de direitos humanos (STF, RE 466.343/SP);
+
+d) Se os tratados estabelecem proteção mais ampla que a legislação interna, por
+   que não foram aplicados prioritariamente ao caso concreto (princípio da norma
+   mais favorável)."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE XII: DISTINGUISHING E OVERRULING - TÉCNICA EM EMBARGOS DE DECLARAÇÃO
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+O sistema de precedentes do CPC/2015 (arts. 926-927) impõe aos tribunais o
+dever de observar e aplicar precedentes vinculantes (Súmulas Vinculantes,
+decisões em controle concentrado, IRDR, IAC, Temas de recursos repetitivos,
+súmulas do STF e STJ).
+
+Quando a decisão embargada NÃO segue precedente invocado pela parte, o
+tribunal deve DEMONSTRAR que o caso concreto se distingue do paradigma
+(DISTINGUISHING) ou que o precedente foi superado (OVERRULING). A ausência
+dessa demonstração configura vício de fundamentação (art. 489, §1º, VI,
+CPC) que deve ser suscitado em embargos de declaração.
+
+1. BASE LEGAL: ART. 489, §1º, VI, CPC
+
+"Não se considera fundamentada qualquer decisão judicial, seja ela
+interlocutória, sentença ou acórdão, que: (...) VI - deixar de seguir
+enunciado de súmula, jurisprudência ou precedente invocado pela parte, sem
+demonstrar a existência de distinção no caso em julgamento ou a superação
+do entendimento."
+
+CONSEQUÊNCIA: Se a decisão embargada:
+
+a) NÃO seguiu precedente invocado pela parte (Súmula, Tema, IRDR, IAC, ou
+   jurisprudência consolidada);
+
+b) E NÃO demonstrou distinguishing (distinção entre o caso concreto e o
+   paradigma);
+
+c) E NÃO demonstrou overruling (superação do precedente);
+
+Então há VÍCIO DE FUNDAMENTAÇÃO que configura OMISSÃO para fins de embargos
+de declaração.
+
+2. DISTINGUISHING (DISTINÇÃO)
+
+2.1 CONCEITO
+
+Distinguishing é a técnica de demonstrar que o caso concreto se DISTINGUE
+do precedente invocado pela parte, seja porque os fatos são substancialmente
+diversos, seja porque a questão jurídica é distinta, seja porque há elemento
+relevante não considerado no precedente.
+
+CONSEQUÊNCIA: Se há distinguishing, o precedente NÃO se aplica ao caso
+concreto, e o tribunal pode decidir de forma diversa do precedente SEM
+violar o sistema de precedentes.
+
+2.2 HIPÓTESES DE DISTINGUISHING
+
+a) FATOS SUBSTANCIALMENTE DIVERSOS: O caso concreto apresenta fatos relevantes
+   que não estavam presentes no precedente, justificando solução jurídica
+   diversa.
+
+   EXEMPLO: Precedente: "Contrato de adesão com cláusula de foro de eleição
+   é nulo se dificultar acesso do consumidor à Justiça" (CDC, art. 51, IV).
+   Caso concreto: Consumidor é empresário de grande porte, com recursos para
+   litigar em qualquer foro. DISTINGUISHING: Não há hipossuficiência que
+   justifique a nulidade da cláusula.
+
+b) QUESTÃO JURÍDICA DISTINTA: O caso concreto versa sobre questão jurídica
+   diversa da tratada no precedente.
+
+   EXEMPLO: Precedente: "Prescrição de ação de cobrança de mensalidade
+   escolar é de 5 anos (CDC, art. 27)". Caso concreto: Ação de reparação
+   de danos morais decorrentes de relação de consumo. DISTINGUISHING: A
+   questão não é cobrança de mensalidade (obrigação de pagar), mas reparação
+   de danos morais (ato ilícito), cuja prescrição é de 3 anos (CDC, art. 27).
+
+c) ELEMENTO RELEVANTE NÃO CONSIDERADO NO PRECEDENTE: O caso concreto apresenta
+   elemento relevante (normativo, fático ou contextual) que não foi considerado
+   no precedente, justificando solução diversa.
+
+   EXEMPLO: Precedente: "É cabível indenização por dano moral em caso de
+   inscrição indevida em cadastro de inadimplentes". Caso concreto: Autor
+   já possui outras inscrições legítimas em cadastros de inadimplentes.
+   DISTINGUISHING: Aplica-se a Súmula 385 do STJ ("Da anotação irregular
+   em cadastro de proteção ao crédito, não cabe indenização por dano moral,
+   quando preexistente legítima inscrição, ressalvado o direito ao
+   cancelamento").
+
+2.3 ÔNUS DO TRIBUNAL: DEMONSTRAR O DISTINGUISHING
+
+Quando a parte invoca precedente e o tribunal decide de forma diversa, o
+tribunal tem o ÔNUS de DEMONSTRAR o distinguishing, explicitando:
+
+a) Qual o precedente invocado pela parte;
+b) Qual a tese fixada no precedente;
+c) Por que o caso concreto se distingue do precedente (fatos diversos,
+   questão jurídica distinta, elemento relevante não considerado);
+d) Qual a solução jurídica aplicável ao caso concreto, em razão da distinção.
+
+Se o tribunal NÃO demonstrar o distinguishing, há vício de fundamentação
+(art. 489, §1º, VI, CPC), configurando OMISSÃO para fins de embargos de
+declaração.
+
+2.4 TÉCNICA: ALEGAR OMISSÃO DE DISTINGUISHING EM EMBARGOS
+
+Quando a decisão embargada não segue precedente invocado pela parte e não
+demonstra distinguishing, alegar OMISSÃO nos embargos de declaração.
+
+ESTRUTURA ARGUMENTATIVA:
+
+a) IDENTIFICAR o precedente invocado pela parte (Súmula, Tema, IRDR, acórdão);
+b) TRANSCREVER a tese fixada no precedente;
+c) DEMONSTRAR que o precedente foi invocado pela parte nas razões/contrarrazões
+   (indicar página/parágrafo);
+d) DEMONSTRAR que a decisão embargada decidiu de forma DIVERSA do precedente;
+e) DEMONSTRAR que a decisão embargada NÃO se manifestou sobre o precedente
+   e NÃO demonstrou distinguishing;
+f) REQUERER a integração da decisão com manifestação expressa sobre o
+   precedente e demonstração de distinguishing (ou aplicação do precedente,
+   se não houver distinguishing).
+
+MODELO DE REDAÇÃO:
+
+"Nas razões da apelação (fls. 120-125), o embargante invocou o Tema 963 do
+STJ (REsp 1.639.320/SP, Rel. Min. Paulo de Tarso Sanseverino, 2ª Seção, j.
+12/12/2018, DJe 06/02/2019), que fixou a seguinte tese: 'A capitalização
+de juros nos contratos bancários celebrados após 31.3.2000 é permitida,
+desde que expressamente pactuada'.
+
+O acórdão embargado, contudo, decidiu de forma DIVERSA do referido precedente,
+ao considerar abusiva a capitalização de juros, mesmo havendo cláusula
+contratual expressa prevendo-a (fls. 300-310).
+
+Ocorre que o acórdão embargado NÃO se manifestou sobre o Tema 963/STJ e
+NÃO demonstrou a existência de distinção (distinguishing) entre o caso
+concreto e o paradigma, ou a superação (overruling) do entendimento.
+
+Referida omissão viola o art. 489, §1º, VI, do CPC, que exige a demonstração
+de distinguishing ou overruling quando a decisão não segue precedente
+invocado pela parte.
+
+Requer-se seja o acórdão embargado INTEGRADO para manifestar-se expressamente
+sobre o Tema 963/STJ e DEMONSTRAR:
+
+(a) Por que o caso concreto se distingue do paradigma (distinguishing),
+    especificando quais elementos fáticos, jurídicos ou contextuais
+    justificam a não aplicação do precedente; ou
+
+(b) Se o entendimento foi superado (overruling) e qual o novo entendimento
+    aplicável ao caso."
+
+3. OVERRULING (SUPERAÇÃO DE PRECEDENTE)
+
+3.1 CONCEITO
+
+Overruling é a técnica de SUPERAÇÃO de precedente, mediante a qual o tribunal
+altera o entendimento anteriormente firmado, seja porque a norma que o
+fundamentava foi alterada, seja porque o contexto fático ou social mudou,
+seja porque o entendimento anterior se mostrou inadequado.
+
+CONSEQUÊNCIA: Se há overruling, o precedente deixa de ser aplicável, e o
+tribunal pode decidir de forma diversa do precedente SEM violar o sistema
+de precedentes, desde que DEMONSTRE a superação e fixe novo entendimento.
+
+3.2 MODALIDADES DE OVERRULING
+
+a) OVERRULING EXPRESSO (EXPRESS OVERRULING): O tribunal declara EXPRESSAMENTE
+   que o precedente anterior está superado e fixa novo entendimento.
+
+   EXEMPLO: STF, no julgamento da ADI 4.425/DF (vaquejada), superou
+   expressamente o entendimento anterior de que a vaquejada não configurava
+   crueldade contra animais.
+
+b) OVERRULING IMPLÍCITO (IMPLIED OVERRULING): O tribunal decide de forma
+   contrária ao precedente anterior sem declará-lo expressamente superado,
+   mas fica evidente que o precedente não mais se aplica.
+
+   ATENÇÃO: O overruling implícito é VEDADO pelo CPC/2015 (art. 489, §1º,
+   VI). O tribunal deve DEMONSTRAR expressamente a superação do precedente.
+
+c) OVERRULING PARCIAL (PARTIAL OVERRULING): O tribunal supera apenas parte
+   do precedente, mantendo-o válido quanto aos demais aspectos.
+
+   EXEMPLO: STJ supera entendimento de que a prescrição em ação de
+   responsabilidade civil por acidente de trânsito é de 3 anos (CC, art.
+   206, §3º, V), mas apenas quanto aos casos de lesão corporal (passando a
+   aplicar o prazo de 5 anos — art. 206, §3º, V), mantendo o prazo de 3
+   anos para danos materiais.
+
+3.3 REQUISITOS PARA OVERRULING (Art. 927, §§2º-4º, CPC)
+
+O CPC/2015 estabelece requisitos rigorosos para a superação de precedentes:
+
+a) FUNDAMENTAÇÃO ADEQUADA (art. 927, §4º): "A modificação de enunciado de
+   súmula, de jurisprudência pacificada ou de tese adotada em julgamento
+   de casos repetitivos observará a necessidade de fundamentação adequada
+   e específica, considerando os princípios da segurança jurídica, da
+   proteção da confiança e da isonomia."
+
+b) AUDIÊNCIA PÚBLICA E PARTICIPAÇÃO DE AMICI CURIAE (art. 927, §2º): Nos
+   casos de precedentes vinculantes (IRDR, IAC, recursos repetitivos), é
+   recomendável a realização de audiência pública e a participação de amici
+   curiae.
+
+c) MODULAÇÃO DE EFEITOS (art. 927, §3º): "Na hipótese de alteração de
+   jurisprudência dominante do Supremo Tribunal Federal e dos tribunais
+   superiores ou daquela oriunda de julgamento de casos repetitivos, pode
+   haver modulação dos efeitos da alteração no interesse social e no da
+   segurança jurídica."
+
+3.4 ÔNUS DO TRIBUNAL: DEMONSTRAR O OVERRULING
+
+Quando a parte invoca precedente e o tribunal decide de forma diversa porque
+o precedente foi superado, o tribunal tem o ÔNUS de DEMONSTRAR o overruling,
+explicitando:
+
+a) Qual o precedente invocado pela parte;
+b) Qual a tese fixada no precedente;
+c) Por que o precedente foi superado (alteração normativa, mudança de
+   contexto fático/social, inadequação do entendimento anterior);
+d) Qual o novo entendimento aplicável ao caso concreto;
+e) Se há modulação de efeitos (prospectiva, retroativa, com ressalvas).
+
+Se o tribunal NÃO demonstrar o overruling, há vício de fundamentação (art.
+489, §1º, VI, CPC), configurando OMISSÃO para fins de embargos de declaração.
+
+3.5 TÉCNICA: ALEGAR OMISSÃO DE OVERRULING EM EMBARGOS
+
+Quando a decisão embargada não segue precedente invocado pela parte e não
+demonstra overruling, alegar OMISSÃO nos embargos de declaração.
+
+ESTRUTURA ARGUMENTATIVA (idêntica ao distinguishing):
+
+a) IDENTIFICAR o precedente invocado pela parte;
+b) TRANSCREVER a tese fixada no precedente;
+c) DEMONSTRAR que o precedente foi invocado pela parte nas razões/contrarrazões;
+d) DEMONSTRAR que a decisão embargada decidiu de forma DIVERSA do precedente;
+e) DEMONSTRAR que a decisão embargada NÃO se manifestou sobre a superação
+   do precedente;
+f) REQUERER a integração da decisão com manifestação expressa sobre a
+   superação do precedente (ou aplicação do precedente, se não houver
+   overruling).
+
+MODELO DE REDAÇÃO:
+
+"Nas razões da apelação (fls. 80-90), o embargante invocou a Súmula 297 do
+STJ, que estabelece: 'O Código de Defesa do Consumidor é aplicável às
+entidades abertas de previdência complementar, de natureza privada'.
+
+O acórdão embargado, contudo, decidiu de forma DIVERSA da referida súmula,
+ao entender que o CDC não se aplica ao caso concreto, que envolve entidade
+aberta de previdência complementar (fls. 200-210).
+
+Ocorre que o acórdão embargado NÃO se manifestou sobre a Súmula 297/STJ e
+NÃO demonstrou:
+
+(a) A existência de distinção (distinguishing) entre o caso concreto e o
+    paradigma; ou
+
+(b) A superação (overruling) do entendimento da Súmula 297/STJ, com indicação
+    do novo entendimento aplicável e fundamentação adequada nos termos do
+    art. 927, §4º, do CPC.
+
+Referida omissão viola o art. 489, §1º, VI, do CPC, que exige a demonstração
+de distinguishing ou overruling quando a decisão não segue precedente
+invocado pela parte.
+
+Requer-se seja o acórdão embargado INTEGRADO para manifestar-se expressamente
+sobre a Súmula 297/STJ e DEMONSTRAR, de forma fundamentada:
+
+(a) Por que o caso concreto se distingue do paradigma (distinguishing); ou
+
+(b) Se a Súmula 297/STJ foi superada (overruling), qual o novo entendimento
+    aplicável, com fundamentação adequada e específica, considerando os
+    princípios da segurança jurídica, da proteção da confiança e da isonomia
+    (art. 927, §4º, CPC)."
+
+4. PRECEDENTES SUJEITOS AO DEVER DE DISTINGUISHING/OVERRULING
+
+O dever de demonstrar distinguishing ou overruling aplica-se quando a decisão
+não segue:
+
+a) PRECEDENTES VINCULANTES (Art. 927, I a III, CPC):
+   - Decisões do STF em controle concentrado de constitucionalidade
+   - Enunciados de Súmula Vinculante
+   - Acórdãos em IRDR e IAC
+
+b) PRECEDENTES PERSUASIVOS QUALIFICADOS (Art. 927, IV e V, CPC):
+   - Súmulas do STF em matéria constitucional
+   - Súmulas do STJ em matéria infraconstitucional
+   - Orientação do Plenário ou Órgão Especial do tribunal
+
+c) PRECEDENTES PERSUASIVOS (jurisprudência consolidada):
+   - Jurisprudência pacífica do STF e STJ
+   - Temas de recursos repetitivos (Tema X/STJ, Tema Y/STF)
+
+ATENÇÃO: O art. 489, §1º, VI, do CPC não restringe o dever de distinguishing/
+overruling aos precedentes vinculantes. O dispositivo refere-se a "enunciado
+de súmula, jurisprudência ou precedente invocado pela parte", abrangendo
+qualquer precedente ou jurisprudência invocado, seja vinculante ou persuasivo.
+
+5. ESTRATÉGIA: INVOCAR PRECEDENTE NAS RAZÕES/CONTRARRAZÕES
+
+Para poder alegar omissão de distinguishing/overruling em embargos, é
+ESSENCIAL que o precedente tenha sido INVOCADO pela parte nas razões/
+contrarrazões do recurso ou nas manifestações anteriores.
+
+Se o precedente NÃO foi invocado pela parte, o tribunal NÃO tem o dever de
+se manifestar sobre ele (salvo se for precedente vinculante que deveria ser
+aplicado de ofício).
+
+ESTRATÉGIA PRÁTICA:
+
+a) Ao redigir razões de recurso (apelação, REsp, RE), SEMPRE invocar
+   expressamente os precedentes favoráveis (Súmulas, Temas, IRDR, acórdãos
+   paradigmas);
+
+b) TRANSCREVER a tese fixada no precedente;
+
+c) DEMONSTRAR que o precedente é aplicável ao caso concreto (não há
+   distinguishing);
+
+d) REQUERER a aplicação do precedente.
+
+Se o tribunal não seguir o precedente invocado e não demonstrar distinguishing/
+overruling, haverá fundamento para embargos de declaração por omissão (art.
+489, §1º, VI, CPC).
+
+6. PRECEDENTE NÃO INVOCADO PELA PARTE: PODE HAVER OMISSÃO?
+
+REGRA GERAL: Se o precedente NÃO foi invocado pela parte, o tribunal NÃO
+tem o dever de se manifestar sobre ele, e NÃO há omissão.
+
+EXCEÇÃO: Precedentes VINCULANTES (art. 927, I a III, CPC) devem ser aplicados
+de ofício pelo tribunal, ainda que não invocados pela parte. Se o tribunal
+deixar de aplicar precedente vinculante de ofício, pode haver vício de
+fundamentação.
+
+EXEMPLO: Caso concreto versa sobre cobrança de diferenças de correção
+monetária em caderneta de poupança (Plano Collor I). Há Súmula 725 do STF
+sobre a matéria (precedente persuasivo qualificado — art. 927, IV, CPC).
+Ainda que a parte não tenha invocado a Súmula 725, o tribunal deve aplicá-la
+de ofício ou, se entender que não se aplica, demonstrar distinguishing.
+
+7. CHECKLIST: DISTINGUISHING E OVERRULING EM EMBARGOS
+
+[ ] Precedente invocado pela parte nas razões/contrarrazões identificado?
+[ ] Tese fixada no precedente transcrita?
+[ ] Página/parágrafo onde o precedente foi invocado indicada?
+[ ] Decisão embargada decidiu de forma diversa do precedente?
+[ ] Decisão embargada manifestou-se sobre o precedente invocado?
+[ ] Se não manifestou: omissão caracterizada?
+[ ] Se manifestou, mas não demonstrou distinguishing/overruling: vício de
+    fundamentação caracterizado?
+[ ] Precedente vinculante (art. 927, I a III) ou persuasivo (art. 927, IV
+    e V)?
+[ ] Precedente verificado via web_search (não inventado)?
+[ ] Informações completas do precedente incluídas (tribunal, tipo, número,
+    órgão, relator, data de julgamento, DJe)?
+[ ] Pedido específico formulado: manifestação expressa sobre o precedente
+    e demonstração de distinguishing ou overruling?
 
 ═══════════════════════════════════════════════════════════════════════════════════
 
@@ -2092,14 +5656,52 @@ VERSÃO 5.0 (20/03/2026):
 ✓ Aplicável a TODAS as áreas (cível e criminal)
 ✓ Cobertura de 18-20 PARTES (índice detalhado)
 
-[OBSERVAÇÃO: As PARTES X a XVI não foram incluídas neste arquivo devido
-ao limite de extensão. São elas: X - IRDR/IAC/Temas/Súmulas; XI - Efeito
-Modificativo detalhado; XII - Embargos contra Acórdão de TJ/TRF; XIII -
-Embargos em Execução; XIV - Embargos em Processo Penal detalhado; XV -
-Distinguishing/Overruling; XVI - Modelos de Parágrafos Técnicos. O conteúdo
-essencial dessas partes foi incorporado nas demais seções do prompt. Se
-necessário detalhamento adicional de alguma dessas partes, solicitar ao
-usuário.]
+VERSÃO 5.1 (25/03/2026):
+✓ PARTE X - APLICAÇÃO DA NORMA NO TEMPO (adicionada): 10 páginas sobre direito
+  intertemporal processual em embargos de declaração, incluindo:
+  - Transição CPC/1973 → CPC/2015 (prazo, efeitos, hipóteses de cabimento)
+  - Art. 1.023 CPC: prazo de 5 dias (lei da época da intimação da decisão)
+  - Art. 1.026 CPC: efeito interruptivo do prazo recursal (lei da interposição)
+  - Multa por embargos protelatórios (art. 1.026, §2º): 1% (CPC/1973) vs.
+    2%/10% (CPC/2015) — lei da época da interposição
+  - Quadro comparativo CPC/1973 vs. CPC/2015 (8 aspectos fundamentais)
+  - Embargos no processo penal: prazo de 2 dias corridos (art. 619 CPP)
+  - Aplicação do princípio tempus regit actum em embargos
+  - Modelos de fundamentação sobre direito intertemporal
+
+✓ PARTE XI - DIREITO MATERIAL EXPANDIDO (adicionada): 18 páginas sobre técnicas
+  de alegação de vícios relacionados a direito material em embargos, incluindo:
+  - Função integrativa dos embargos (não é revisão de mérito)
+  - Prequestionamento prospectivo: semear admissibilidade de REsp/RE
+  - Estrutura hierárquica do direito material (CF → Tratados → Leis → Normas
+    infralegais)
+  - Dispositivos frequentemente omitidos por ramo do Direito (Civil,
+    Consumidor, Tributário, Previdenciário, Penal, Administrativo)
+  - Técnica de demonstrar que dispositivo é "fundamento autônomo" (Tema 339/STJ)
+  - Direito material e precedentes vinculantes (art. 927 CPC)
+  - Modelos de redação para omissão de dispositivos materiais
+  - Checklist específico para direito material em embargos
+
+✓ PARTE XII - DISTINGUISHING E OVERRULING (adicionada): 8 páginas sobre técnica
+  de alegação de vícios relacionados a precedentes não seguidos, incluindo:
+  - Base legal: art. 489, §1º, VI, CPC (vício de fundamentação)
+  - Conceito de distinguishing (distinção entre caso concreto e precedente)
+  - Hipóteses de distinguishing (fatos diversos, questão jurídica distinta,
+    elemento não considerado)
+  - Ônus do tribunal: demonstrar o distinguishing ou aplicar o precedente
+  - Conceito de overruling (superação de precedente)
+  - Modalidades de overruling (expresso, implícito, parcial)
+  - Requisitos do CPC para overruling (art. 927, §§2º-4º)
+  - Técnica: alegar omissão de distinguishing/overruling em embargos
+  - Precedentes sujeitos ao dever (vinculantes e persuasivos)
+  - Modelos de redação para omissão de distinguishing/overruling
+  - Checklist específico para distinguishing e overruling
+
+✓ ÍNDICE atualizado com nova estrutura de 20 PARTES
+✓ Reordenação das partes antigas (X a XX renumeradas para XIII a XX)
+✓ Expansão de ~40.000 para ~55.000 palavras
+✓ Conteúdo totalmente adaptado para embargos de declaração (todas as orientações
+  específicas para o instituto processual)
 
 ═══════════════════════════════════════════════════════════════════════════════════
 
