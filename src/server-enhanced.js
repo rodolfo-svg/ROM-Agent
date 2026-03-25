@@ -6380,6 +6380,54 @@ app.get('/api/kb/documents', requireAuth, (req, res) => {
 });
 
 /**
+ * POST /api/kb/cleanup-extraction-packages
+ * 🧹 Remove extraction packages (diretórios) do KB
+ * SECURITY: Query param secret=mota2323kb required
+ */
+app.post('/api/kb/cleanup-extraction-packages', async (req, res) => {
+  try {
+    if (req.query.secret !== 'mota2323kb') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    const allDocs = kbCache.getAll();
+    const extractionPackages = allDocs.filter(doc => doc.metadata?.isExtractionPackage);
+
+    logger.info(`🧹 Limpeza de extraction packages: ${extractionPackages.length} encontrados`);
+
+    if (extractionPackages.length === 0) {
+      return res.json({
+        success: true,
+        message: 'Nenhum extraction package encontrado',
+        removed: 0
+      });
+    }
+
+    // Remover cada extraction package
+    const removedIds = [];
+    for (const doc of extractionPackages) {
+      try {
+        kbCache.remove(doc.id, true); // immediate=true para salvar agora
+        removedIds.push(doc.id);
+        logger.info(`   ✅ Removido: ${doc.id} - ${doc.name}`);
+      } catch (error) {
+        logger.error(`   ❌ Erro ao remover ${doc.id}:`, error);
+      }
+    }
+
+    res.json({
+      success: true,
+      message: `${removedIds.length} extraction package(s) removido(s)`,
+      removed: removedIds.length,
+      removedIds
+    });
+  } catch (error) {
+    logger.error('❌ Erro na limpeza:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * GET /api/kb/document-diagnose
  * 🔍 DEBUG: Diagnose specific document path issues
  * SECURITY: Query param secret=mota2323kb required

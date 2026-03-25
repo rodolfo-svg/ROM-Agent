@@ -99,8 +99,12 @@ router.post('/', async (req, res) => {
     const allDocs = JSON.parse(fs.readFileSync(kbDocsPath, 'utf8'));
     console.log(`   📚 Total de documentos na KB: ${allDocs.length}`);
 
+    // 🚨 FIX CRÍTICO: Filtrar extraction packages (são diretórios, não arquivos)
+    const validDocs = allDocs.filter(d => !d.metadata?.isExtractionPackage);
+    console.log(`   ✅ Documentos válidos (sem extraction packages): ${validDocs.length}`);
+
     // Busca melhorada
-    const doc = allDocs.find(d => {
+    const doc = validDocs.find(d => {
       const searchName = documentName.toLowerCase();
       return d.name?.toLowerCase().includes(searchName) ||
              d.originalName?.toLowerCase().includes(searchName) ||
