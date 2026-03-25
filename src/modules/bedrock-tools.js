@@ -1044,6 +1044,8 @@ export async function executeTool(toolName, toolInput, context = {}) {
           // Tentar ler do path físico primeiro
           if (doc.path && fs.existsSync(doc.path)) {
             console.log(`   ✅ Arquivo existe no disco: ${doc.path}`);
+            const stats = fs.statSync(doc.path);
+            console.log(`   📊 Tamanho do arquivo no disco: ${Math.round(stats.size / 1024)}KB`);
             rawText = fs.readFileSync(doc.path, 'utf-8');
           }
           // Fallback: usar extractedText do registro (documentos estruturados têm texto no KB)
@@ -1064,6 +1066,31 @@ export async function executeTool(toolName, toolInput, context = {}) {
               success: false,
               content: `Erro ao acessar documento "${doc.name}".\n\nPath: ${doc.path || 'não definido'}\nArquivo existe: ${doc.path ? fs.existsSync(doc.path) : 'N/A'}\nTexto no registro: ${doc.extractedText ? 'Sim' : 'Não'}\n\nPor favor, faça upload do documento novamente.`
             };
+          }
+
+          // 🚨 VALIDAÇÃO CRÍTICA: Verificar se rawText foi lido corretamente
+          console.log(`   📊 RawText carregado: ${Math.round(rawText.length / 1000)}k caracteres`);
+
+          if (!rawText || rawText.length === 0) {
+            console.error(`   ❌ ERRO: rawText está vazio após leitura!`);
+            return {
+              success: false,
+              content: `Erro: Documento "${doc.name}" está vazio ou não pôde ser lido.\n\nPor favor, faça upload do documento novamente.`
+            };
+          }
+
+          // ⚠️ AVISO para documentos muito pequenos
+          if (rawText.length < 1000) {
+            console.warn(`   ⚠️  AVISO: Documento muito pequeno (${rawText.length} chars)`);
+            console.warn(`   ⚠️  Isso pode indicar extração incompleta`);
+          }
+
+          // 📊 INFO para documentos muito grandes
+          if (rawText.length > 5000000) {
+            const sizeInMB = Math.round(rawText.length / 1000000);
+            console.warn(`   ⚠️  AVISO: Documento muito grande (${sizeInMB}MB de texto)`);
+            console.warn(`   ⚠️  Processamento pode levar vários minutos`);
+            console.warn(`   ⚠️  Estimativa: ~${Math.round(sizeInMB * 2)} minutos`);
           }
 
           // Processar com DocumentProcessorV2
