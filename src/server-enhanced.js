@@ -6497,6 +6497,71 @@ app.post('/api/kb/cache/reload', requireAuth, generalLimiter, async (req, res) =
 });
 
 /**
+ * POST /api/kb/cache/remove-by-keyword
+ * 🗑️ Remove documentos por palavra-chave (emergency cleanup)
+ * SECURITY: Query param secret=mota2323kb required
+ */
+app.post('/api/kb/cache/remove-by-keyword', async (req, res) => {
+  try {
+    if (req.query.secret !== 'mota2323kb') {
+      return res.status(403).json({ error: 'Forbidden' });
+    }
+
+    const { keywords } = req.body;
+
+    if (!keywords || !Array.isArray(keywords)) {
+      return res.status(400).json({ error: 'keywords array required' });
+    }
+
+    logger.info(`🗑️ Removendo documentos com keywords: ${keywords.join(', ')}`);
+
+    const allDocs = kbCache.getAll();
+    const beforeCount = allDocs.length;
+
+    // Filtrar documentos que contêm keywords
+    const toRemove = allDocs.filter(doc => {
+      const searchText = [
+        doc.name || '',
+        doc.originalName || '',
+        doc.id || ''
+      ].join(' ').toLowerCase();
+
+      return keywords.some(keyword =>
+        searchText.includes(keyword.toLowerCase())
+      );
+    });
+
+    logger.info(`   Encontrados ${toRemove.length} documentos para remover`);
+
+    // Remover do cache
+    const remainingDocs = allDocs.filter(doc =>
+      !toRemove.some(remove => remove.id === doc.id)
+    );
+
+    kbCache.replaceAll(remainingDocs);
+
+    const removed = toRemove.map(doc => ({
+      id: doc.id,
+      name: doc.name || doc.originalName,
+      uploadedAt: doc.uploadedAt
+    }));
+
+    logger.info(`✅ ${toRemove.length} documento(s) removido(s)`);
+
+    res.json({
+      success: true,
+      message: `${toRemove.length} documento(s) removido(s)`,
+      beforeCount,
+      afterCount: remainingDocs.length,
+      removed
+    });
+  } catch (error) {
+    logger.error('❌ Erro ao remover por keyword:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+/**
  * POST /api/kb/cache/clean
  * 🧹 Remove documentos fantasmas (sem arquivo físico no disco)
  * Admin/debug endpoint
