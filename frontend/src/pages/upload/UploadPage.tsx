@@ -311,27 +311,45 @@ export function UploadPage() {
           formData.append('files', file)
         })
 
-        const response = await fetch('/api/kb/upload', {
-          method: 'POST',
-          body: formData,
-          credentials: 'include',
-          headers: {
-            'x-csrf-token': csrfToken
+        // Criar AbortController com timeout de 2 minutos
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => {
+          console.error('[UploadPage] Upload timeout após 2 minutos')
+          controller.abort()
+        }, 120000) // 2 minutos
+
+        try {
+          const response = await fetch('/api/kb/upload', {
+            method: 'POST',
+            body: formData,
+            credentials: 'include',
+            headers: {
+              'x-csrf-token': csrfToken
+            },
+            signal: controller.signal
+          })
+
+          clearTimeout(timeoutId)
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`)
           }
-        })
 
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
-        }
+          const data = await response.json()
 
-        const data = await response.json()
-
-        if (data.success && data.uploadId) {
-          console.log(`[UploadPage] Upload iniciado: ${data.uploadId}`)
-          setCurrentUploadId(data.uploadId)
-        } else {
-          console.error('[UploadPage] Resposta sem uploadId:', data)
-          throw new Error(data.error || 'Falha ao iniciar upload')
+          if (data.success && data.uploadId) {
+            console.log(`[UploadPage] Upload iniciado: ${data.uploadId}`)
+            setCurrentUploadId(data.uploadId)
+          } else {
+            console.error('[UploadPage] Resposta sem uploadId:', data)
+            throw new Error(data.error || 'Falha ao iniciar upload')
+          }
+        } catch (fetchError) {
+          clearTimeout(timeoutId)
+          if (fetchError instanceof Error && fetchError.name === 'AbortError') {
+            throw new Error('Upload cancelado: Timeout de 2 minutos excedido')
+          }
+          throw fetchError
         }
       }
 
