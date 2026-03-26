@@ -5956,7 +5956,18 @@ app.get('/api/kb/status', (req, res) => {
 // Upload de documentos para o KB (requer autenticação)
 // ✅ FIX: Adicionar requireAuth para consistência
 // ✅ v2.0: Processamento assíncrono com progresso via SSE
-app.post('/api/kb/upload', requireAuth, upload.array('files', 20), async (req, res) => {
+// ✅ v2.8.1: Configurações de timeout para uploads grandes
+app.post('/api/kb/upload', requireAuth, (req, res, next) => {
+  // Aumentar timeout para uploads grandes (10 minutos)
+  req.setTimeout(600000); // 10 min
+  res.setTimeout(600000); // 10 min
+
+  // Headers para bypass de Cloudflare buffering
+  res.setHeader('X-Accel-Buffering', 'no');
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+
+  next();
+}, upload.array('files', 20), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
