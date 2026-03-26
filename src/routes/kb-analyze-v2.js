@@ -334,6 +334,8 @@ router.post('/', async (req, res) => {
         } else {
           console.log(`   💡 PDF digital (${Math.round(charsPerPage)} chars/página) - texto OK`);
         }
+        } // Close else block from line 265
+
       } else {
         // Texto puro (.txt, .md, etc)
         rawText = fs.readFileSync(doc.path, 'utf-8');
