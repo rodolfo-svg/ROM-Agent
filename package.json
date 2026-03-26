@@ -44,7 +44,9 @@
     "setup:windows": "powershell -ExecutionPolicy Bypass -File scripts/setup-extracao-v2.ps1",
     "setup:mac": "bash scripts/setup-extracao-v2.sh",
     "setup:linux": "bash scripts/setup-extracao-v2-linux.sh",
-    "kb:clean": "node scripts/limpar-kb-fantasmas.js"
+    "kb:clean": "node scripts/limpar-kb-fantasmas.js",
+    "monitor": "node monitor-site.js",
+    "monitor:once": "node monitor-site.js --once"
   },
   "keywords": [
     "juridico",
