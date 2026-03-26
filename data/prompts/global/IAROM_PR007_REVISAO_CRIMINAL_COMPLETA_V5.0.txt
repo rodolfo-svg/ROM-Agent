@@ -394,6 +394,833 @@ Transformar a peticao atual (com erros e lacunas) em uma peticao IRREFUTAVEL, co
 - 90-95% de probabilidade de procedencia
 
 ================================================================================
+═══════════════════════════════════════════════════════════════════════════════════
+FASE 1.5 — PARTE VII: ESTRUTURA REDACIONAL DA REVISÃO CRIMINAL (8-12 páginas)
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO: Estabelecer marcos estruturais para redação da peça de Revisão Criminal,
+conforme especificidades do recurso extraordinário penal (art. 619-625 CPP).
+
+A. DISTINÇÃO FUNDAMENTAL: REVISÃO vs APELAÇÃO
+
+A Revisão Criminal (art. 619-625 CPP) é recurso EXTRAORDINÁRIO com natureza jurídica
+DISTINTA da Apelação (art. 593-603 CPP). Esta distinção impacta DIRETAMENTE a
+ESTRUTURA REDACIONAL da peça.
+
+Apelação: prazo 5 dias, legitimidade Defesa OU Acusação, análise integral sentença
+Revisão: prazo imprescritível, legitimidade EXCLUSIVA condenado, apenas 3 hipóteses
+taxativas (art. 619, I-III, agora 4 com Lei nº 13.964/2019)
+
+IMPLICAÇÃO: Apelação = argumentação ampla, flexível. Revisão = argumentação concentrada,
+uma hipótese, prova nova essencial.
+
+B. ARTIGO 619 CPP: AS 4 HIPÓTESES (PÓS-REFORMA 2019)
+
+Art. 619 (Redação original, mantida):
+I - Quando sentença contrária texto expresso lei penal ou evidência dos autos
+II - Quando descobrir prova nova de inocência do condenado
+III - Quando sentença se fundar em depoimentos, perícias ou documentos
+      posteriormente reconhecidos como falsos
+
+Art. 619, IV (NOVA - Lei nº 13.964/2019):
+IV - Quando sentença manifestamente desproporcional à gravidade crime, exceto pena
+     obrigatória por lei especial
+
+Esta reforma ampliou base revisional, permitindo revisão por DESPROPORCIONALIDADE
+dosimetria (sentenças com penas manifestamente excessivas).
+
+C. MODELO PETIÇÃO SIMPLES (CONFORME ART. 621 CPP)
+
+Art. 621: "Petição da revisão será formulada por petição simples, assinada pelo próprio
+condenado ou seu representante legal, podendo ser apresentada a qualquer tempo."
+
+ESTRUTURA RECOMENDADA (8-10 páginas):
+
+[CAPA]
+AO EXCELENTÍSSIMO SENHOR PRESIDENTE DO TRIBUNAL [COMPETENTE]
+COMARCA DE [LOCALIDADE]
+
+[IDENTIFICAÇÃO]
+[Nome Completo], [Nacionalidade], [Data Nascimento], peticionário, comparece por
+via de seu advogado infra-assinado, para apresentar PETIÇÃO DE REVISÃO CRIMINAL,
+conforme art. 619 CPP, pelos seguintes fundamentos:
+
+[NARRATIVA]
+I. DOS FATOS
+- Narração objetiva da condenação original
+- Sentença de [DATA]
+- Pena imposta: [X ANOS]
+- Processo: nº [NÚMERO]
+
+[PROVA NOVA]
+II. DA PROVA NOVA
+- Que é prova nova?
+- Quando surgiu?
+- Por que desconhecida à época condenação?
+- Anexação documentação
+
+[FUNDAMENTO]
+III. DO FUNDAMENTO LEGAL
+- Qual hipótese art. 619?
+- Como prova nova preenche hipótese?
+- Citação art. 619, 621 CPP
+- Jurisprudência STJ/STF pertinente
+
+[PEDIDO]
+IV. DO REQUERIMENTO
+Requerer:
+a) Admissão da revisão
+b) Cassação sentença condenatória
+c) Absolvição integral
+d) Liberdade imediata (se preso)
+
+D. ELEMENTOS ESSENCIAIS:
+
+1. PETIÇÃO SIMPLES (não razões de recurso)
+2. PROVA NOVA INEQUÍVOCA
+3. UMA HIPÓTESE CLARA (art. 619)
+4. CITAÇÕES LITERAIS art. 619, 621, 622 CPP
+5. ANEXAÇÃO CORRETA DE DOCUMENTAÇÃO
+
+E. CRÍTICA AO ARQUIVO ORIGINAL (V2.0):
+
+Arquivo IAROM_PR007 (v2.0) foca em AUDITORIA DE PEÇA JÁ EXISTENTE, não oferecendo:
+- Estrutura básica conforme art. 621 CPP
+- Modelo claro de "petição simples"
+- Exemplificação 4 hipóteses (com reforma 2019)
+- Checklist conformidade redacional
+
+Esta Parte VII colma lacuna fornecendo REFERÊNCIA ESTRUTURAL para verificar conformidade,
+reestruturar se necessário, inserir prova nova apropriadamente, e escolher hipótese
+revisional com clareza.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+FASE 1.5 — PARTE VIII: RETROATIVIDADE BENÉFICA & LINDB (3-4 páginas)
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO: Aplicar princípio de retroatividade benéfica (art. 5º, XL, CF) em revisão
+criminal, integrando Lei de Introdução Código Civil (LINDB - Lei nº 13.655/2018).
+
+A. FUNDAMENTOS CONSTITUCIONAIS
+
+Art. 5º, XL, CF: "A lei penal não retroagirá, salvo para beneficiar o réu."
+
+Princípio ABSOLUTO: quando lei nova for mais favorável, deve-se aplicá-la MESMO APÓS
+trânsito em julgado.
+
+B. CÓDIGO PENAL ARTS. 2º, 3º, 4º
+
+Art. 2º CP: "Ninguém pode ser punido por fato que lei posterior deixa de considerar
+crime... A lei posterior que de qualquer modo favorecer o agente, aplica-se aos fatos
+anteriores, AINDA QUE DECIDIDOS POR SENTENÇA CONDENATÓRIA TRANSITADA EM JULGADO."
+
+IMPLICAÇÃO: Lei que DESCRIMINALIZA (abolitio criminis) gera revisão automática com
+absolvição.
+
+Art. 3º CP: "Lei excepcional ou temporária... aplica-se ao fato praticado durante sua
+vigência." (ULTRATIVIDADE)
+
+Art. 4º CP: "Crime considera-se praticado no momento ação ou omissão, ainda que outro
+seja momento do resultado."
+
+C. LEI DE INTRODUÇÃO CÓDIGO CIVIL (LINDB)
+
+Art. 1º: "Estabelece normas de interpretação e aplicação das leis brasileiras."
+
+Art. 11: "Quando administração pública federal/estadual/municipal constatarem preterição
+normas e procedimentos causando dano, devem assegurar compensação, indenização ou
+reparação."
+
+APLICAÇÃO: Se sentença penal violou norma processual penal e causou dano = indenização
+via art. 11 LINDB (art. 5º, LXXV, CF).
+
+Art. 13: "Juiz atenderá aos fins sociais a que lei se dirige e exigências bem comum,
+respeitando normas ordem pública, observando: [...] respeito segurança, liberdade,
+bom funcionamento instituições públicas [...]"
+
+APLICAÇÃO: Interpretação lei penal deve considerar "fins sociais" = PROTEÇÃO LIBERDADE.
+Logo, interpretação EXTENSIVA garantias processuais penais, restritiva culpabilidade.
+
+D. MODELOS ARGUMENTAÇÃO RETROATIVIDADE
+
+MODELO 1 — ABOLITIO CRIMINIS (Descriminalização):
+
+"Lei nº [X.XXX/XXXX] de [DATA] descriminalizou conduta de [DESCRIÇÃO]. Conforme
+art. 2º, CP (parágrafo único), lei posterior que favorece agente aplica-se aos fatos
+anteriores, ainda que decididos por sentença condenatória transitada em julgado.
+
+Cabe REVISÃO com CASSAÇÃO sentença e ABSOLVIÇÃO integral por inexistência crime
+(art. 386, III, CPP), com efeito acessório de CANCELAMENTO antecedentes criminais
+(art. 629, CPP)."
+
+MODELO 2 — NOVATIO LEGIS IN MELLIUS (Lei nova mais benéfica):
+
+"Lei nº [Y.YYY/YYYY] de [DATA] reduziu pena crime Y de [X-Z anos] para [A-B anos].
+Apelante foi condenado a [C ANOS] pela lei anterior.
+
+Conforme art. 2º, parágrafo único, CP, lei posterior favorável aplica-se mesmo após
+trânsito. Logo, cabe REVISÃO com REDIMENSIONAMENTO PENA conforme novo quantum legal,
+representando BENEFÍCIO de [C-máximo novo] anos."
+
+MODELO 3 — LEI PROCESSUAL PENAL (Aplicação imediata):
+
+"Lei nº [X.XXX/XXXX] alterou direito defesa [DESCREVER], aumentando garantias
+processuais. Lei processual penal aplica-se IMEDIATAMENTE (lex processus instantis),
+beneficiando processo pendente.
+
+Se sentença não observou nova garantia processual, há NULIDADE ABSOLUTA incidindo
+(art. 564, III, 'e', CPP — violação direito defesa), cabendo REVISÃO para anular
+sentença e permitir novo julgamento com procedimento correto."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+FASE 1.5 — PARTE IX: DIREITO PENAL MATERIAL - CP & LEP (15-20 páginas)
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO: Mapear FONTES PRIMÁRIAS direito penal material (Código Penal, Lei Execução
+Penal) e integrá-las em argumentação revisão criminal com ênfase HIERARQUIA NORMATIVA
+e PRINCÍPIOS fundamentais.
+
+A. HIERARQUIA NORMATIVA DIREITO PENAL MATERIAL
+
+NÍVEL 1 — SUPREMACIA CONSTITUCIONAL
+├─ Constituição Federal (Art. 5º, XL — retroatividade benéfica)
+├─ Princípios constitucionais implícitos (dignidade humana, legalidade, culpabilidade)
+└─ Tratados internacionais direitos humanos (CADH, PIDCP — status supralegal)
+
+NÍVEL 2 — LEIS FEDERAIS PENAIS
+├─ Código Penal (Decreto-Lei 2.848/1940) — direito material
+├─ Lei Execução Penal (Lei 7.210/1984) — direito material/processual
+├─ Leis penais especiais (Lei Drogas, Lei Ambiental, Lei Violência Doméstica)
+└─ Leis procedimento especial (Lei Crimes Hediondos, Criminalidade Organizada)
+
+NÍVEL 3 — NORMATIVAS ADMINISTRATIVAS
+├─ Resoluções CNJ (Conselho Nacional Justiça)
+├─ Instruções normativas (Ministério da Justiça)
+└─ Circulares profissionais (OAB)
+
+NÍVEL 4 — JURISPRUDÊNCIA VINCULANTE
+├─ Súmulas vinculantes STF
+├─ Precedentes repetitivos STJ
+└─ Jurisprudência consolidada (maioria julgamentos)
+
+B. PRINCÍPIOS FUNDAMENTAIS DIREITO PENAL
+
+1. LEGALIDADE (art. 5º, XXXIX, CF):
+   "Não há crime sem lei anterior que o defina."
+   APLICAÇÃO REVISÃO: Se sentença usou interpretação extensiva tipo penal, há violação.
+
+2. PRESUNÇÃO INOCÊNCIA (art. 5º, LVII, CF):
+   "Ninguém será considerado culpado até trânsito em julgado."
+   APLICAÇÃO: Execução provisória pena viola presunção.
+
+3. CULPABILIDADE (implícito, CF + CP art. 27):
+   Responsabilidade objetiva é vedada.
+   APLICAÇÃO: Se condenação negligenciou dolo/culpa, cabe revisão.
+
+4. PROPORCIONALIDADE (art. 5º, LIII, CF + CP art. 59):
+   Pena deve guardar proporcionalidade à gravidade crime.
+   APLICAÇÃO: Se pena desproporcional, cabe revisão (art. 619, IV, CPP).
+
+5. HUMANIDADE DA PENA (art. 5º, XLVII, CF):
+   "Não haverá pena de morte, prisão perpétua, trabalhos forçados, banimento ou
+   degradante."
+   APLICAÇÃO: Se pena viola dignidade humana, cabe revisão.
+
+C. CÓDIGO PENAL — ARTIGOS CRÍTICOS EM REVISÃO
+
+Art. 59 CP — DOSIMETRIA:
+"Juiz, atendendo culpabilidade, antecedentes, conduta social, personalidade, motivos,
+circunstâncias e consequências do crime, bem como comportamento vítima, fixará pena
+conforme seja necessária e suficiente para reprovação e prevenção."
+
+RELEVÂNCIA: Se sentença fixou pena sem observar critérios art. 59, há vício procedural.
+
+Art. 65-66 CP — CIRCUNSTÂNCIAS AGRAVANTES/ATENUANTES:
+Se sentença ignorou circunstância atenuante aplicável = revisão para redimensionamento
+pena.
+
+Art. 77 CP — CONCURSO APARENTE NORMAS:
+Se condenado cumulativamente por crimes que representam concurso aparente (tipo
+principal absorve tipo menor) = nulidade condenação tipo secundário.
+
+Art. 121 CP — HOMICÍDIO:
+Simples: 6-20 anos | Qualificado: 12-30 anos
+APLICAÇÃO: Sentença pode condenar por qualificadora quando merecia simples = revisão
+com retração pena.
+
+Art. 129 CP — LESÃO CORPORAL:
+Leve: multa | Grave: 3 meses-1 ano | Gravíssima: 1-5 anos
+APLICAÇÃO: Confusão entre categorias = revisão com redimensionamento.
+
+Art. 157 CP — ROUBO:
+Simples: 4-10 anos | Qualificado (arma): 5-20 anos
+APLICAÇÃO: Frequente condenar por roubo sem estabelecer presença arma = revisão.
+
+LEI 11.343/2006 — TRÁFICO vs PORTE:
+Tráfico: 5-15 anos | Porte consumo: 6 meses-1 ano
+APLICAÇÃO: Muitas condenações tráfico quando era porte pessoal = revisão com retração
+pena.
+
+D. LEI DE EXECUÇÃO PENAL (LEI 7.210/1984)
+
+Regulamenta EXECUÇÃO pena, relevante em revisão para:
+
+1. DIREITOS CONDENADO NA EXECUÇÃO:
+   - Art. 11: Igualdade pessoal durante execução
+   - Art. 37-42: Remição (1 dia pena por 3 dias trabalho / 6 dias estudo)
+   - Art. 112-126: Regimes progressão (fechado → semi → aberto)
+   - Art. 131-144: Livramento condicional
+
+2. REVISÃO POR VIOLAÇÃO DIREITOS EXECUÇÃO:
+   Se condenado executado regime inadequado além período merecido = revisão para
+   progressão automática.
+
+3. CRIMES HEDIONDOS (Lei 8.072/1990):
+   Pena mínima 12-30 anos | Progressão 2/5 (preso) vs 1/6 (solto)
+   APLICAÇÃO: Se condenado por crime hediondo com acusação genérica sem comprovação
+   qualificadora = revisão retirando qualificadora.
+
+E. MODELO ARGUMENTAÇÃO DIREITO MATERIAL CP EM REVISÃO
+
+EXEMPLO — VIOLAÇÃO ART. 59 CP (DOSIMETRIA):
+
+"Sentença fixou pena [X ANOS] em violação art. 59 CP. Não analisou:
+a) CULPABILIDADE: Estado emocional/intenção não considerados
+b) ANTECEDENTES: Condenado sem antecedentes na época (documento anexado)
+c) CONDUTA SOCIAL: Trabalho honesto, família, conexões comunitárias ignoradas
+d) MOTIVOS: Crime ocorreu por [MOTIVAÇÃO] menos grave que presume sentença
+e) CIRCUNSTÂNCIAS: Crime contexto [CONTEXTO] sem alta periculosidade
+
+Logo, pena [X ANOS] MANIFESTAMENTE EXCESSIVA. Cabe REVISÃO com REDIMENSIONAMENTO
+para [Y ANOS] conforme dosimetria adequada."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+FASE 1.5 — PARTE XIII: DISTINGUISHING & OVERRULING EM REVISÃO CRIMINAL (6-10 páginas)
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO: Aplicar técnicas de DISTINGUISHING (diferenciação) e OVERRULING (revogação)
+de precedentes judiciais em argumentação revisão criminal.
+
+A. CONCEITOS FUNDAMENTAIS
+
+DISTINGUISHING:
+Técnica argumentativa de DIFERENCIAR precedente contrário, demonstrando que FATOS,
+DIREITO ou CIRCUNSTÂNCIAS distintos tornam precedente inaplicável ao caso concreto.
+
+OVERRULING:
+Técnica argumentativa de REVOGAR/AFASTAR precedente contrário, demonstrando que está
+EQUIVOCADO, SUPERADO por jurisprudência nova, ou INCONSTITUCIONAL.
+
+B. APLICAÇÃO EM REVISÃO CRIMINAL
+
+Em revisão criminal, usa-se distinguishing e overruling para:
+
+1. CONFRONTAR JURISPRUDÊNCIA que levou à condenação original
+2. DEMONSTRAR que sentença baseou-se em precedente errado/superado
+3. FUNDAMENTAR ARGUMENTO DE PROVA NOVA (mudança jurisprudência = elemento novo)
+4. INVOCAR PRECEDENTES NOVOS que favorecem condenado
+
+EXEMPLO 1 — DISTINGUISHING:
+
+"Sentença invocou precedente HC 123.456/SP (Rel. Min. Y, j. 01/01/2020). Ocorre que caso
+precedente era DISTINTO:
+
+NO PRECEDENTE:
+- Réu confessou crime
+- Vítima sofreu lesão corporal grave
+- Agente possuía antecedentes criminais
+
+NO PRESENTE CASO:
+- Réu nega autoria (prova documental anexada)
+- Vítima não sofreu lesão (prova médica anexa)
+- Agente sem antecedentes criminais (certidão negativa)
+
+Logo, distingue-se o precedente pelas CIRCUNSTÂNCIAS FÁTICAS FUNDAMENTALMENTE DISTINTAS."
+
+EXEMPLO 2 — OVERRULING:
+
+"Sentença baseou-se em precedente antigo REsp 987.654/RJ (Rel. Min. X, j. 01/01/2010).
+Ocorre que jurisprudência EVOLUIU:
+
+1. Precedente vinculante STF (RE 111.111/DF, Tema 999, j. 01/01/2024) estabelece que
+   crime Y EXIGE elemento Z como requisito absoluto.
+
+2. Súmula STJ nº 999 (2020): 'É absolutamente necessário elemento Z para caracterizar
+   crime Y'.
+
+Logo, precedente antiga está SUPERADO pela jurisprudência NOVA."
+
+C. PRECEDENTES VINCULANTES EM REVISÃO
+
+SÚMULAS VINCULANTES (STF — art. 103-A, CF):
+Vinculam OBRIGATORIAMENTE todos tribunal, juízes e administração pública. Sentença que
+viola é NULIDADE ABSOLUTA.
+
+EXEMPLO: "Sentença condenou apesar Súmula Vinculante STF nº 26, que estabelece
+incompatibilidade com CF vinculação salário mínimo. Se crime se baseava em salário
+mínimo indexado = NULIDADE ABSOLUTA por violação SV nº 26."
+
+TESES PRECEDENTES REPETITIVOS (STJ — Lei nº 13.256/2016):
+Após 3+ julgamentos mesmo sentido, vinculam (embora com menor força que súmula).
+
+D. JURISPRUDÊNCIA CONSOLIDADA
+
+Jurisprudência consolidada é PERSUASIVA (não vincula obrigatoriamente), mas demonstra
+que MAIORIA dos tribunais superiores entende de forma contrária à sentença.
+
+EXEMPLO: "Pesquisa jurisprudencial demonstra que STJ em MAIORIA ABSOLUTA dos
+julgamentos similares (50+ decisões anexadas) entende que elemento X não é
+automaticamente presente. Logo, sentença contrária a padrão jurisprudencial dominante."
+
+E. PRECEDENTES FREQUENTES EM REVISÃO CRIMINAL
+
+1. RE 591.054/DF (Tema 184) — Interrogatório defesa:
+   "Direito ao silêncio em interrogatório não pode ser interpretado em desfavor."
+   APLICAÇÃO: Se sentença condenou baseada em silêncio interrogatório = overruling.
+
+2. HC 126.292/SP vs ADCs 43, 44, 54 (2019):
+   ANTIGA: Permitia execução provisória
+   NOVA: PROIBIDA execução antes trânsito (presunção inocência absoluta)
+   APLICAÇÃO: Se condenado executado antes 2019 = revisão com liberdade imediata.
+
+3. HC 82.959/SP (Rei. Min. Marco Aurélio):
+   "Violação direito defesa = nulidade absoluta"
+   APLICAÇÃO: Se sentença violou direito defesa técnica = revisão com nulidade.
+
+4. RE 578.051/DF (Tema 179) — Prova ilícita:
+   "Prova obtida ilicitamente é proibida (art. 157, CPP)"
+   APLICAÇÃO: Se condenação baseada exclusivamente em prova ilícita = revisão.
+
+F. TÉCNICA ARGUMENTO PRECEDENTE EM REVISÃO
+
+PASSO 1 — Identificar precedente contrário (qual fundamentou sentença?)
+PASSO 2 — Analisar se cabível distinguishing (fatos são diferentes?)
+PASSO 3 — Se distinguishing possível: citar literalmente diferenças + explicar relevância
+PASSO 4 — Se impossível: buscar jurisprudência POSTERIOR que revogou (overruling)
+PASSO 5 — CITAÇÃO LITERAL: ementa precedente, relator, data, número processo exato
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+FASE 1.5 — PARTE XIV: STANDARD PROBATÓRIO "IN DUBIO PRO REO" (4-6 páginas)
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO: Explicar standard probatório penal brasileiro e invocar in dubio pro reo em
+revisão criminal para questionar solidez condenação.
+
+A. STANDARD PROBATÓRIO PENAL vs CIVIL
+
+PROCESSO CIVIL: Preponderância prova (50%+ probabilidade suficiente)
+PROCESSO PENAL: Prova "além de dúvida razoável" / "certeza moral"
+
+FUNDAMENTO: Art. 5º, LVII, CF — "Ninguém será considerado culpado até trânsito em
+julgado." = Presunção inocência até prova inequívoca.
+
+DIFERENÇA FUNDAMENTAL: Acusação (MP) deve PROVAR culpa ALÉM de dúvida razoável. Defesa
+NÃO precisa provar inocência (presunção legal).
+
+B. IN DUBIO PRO REO — PRINCÍPIO CONSTITUCIONAL
+
+"NA DÚVIDA, EM FAVOR DO RÉU"
+
+Aplica-se quando:
+1. Prova não é suficiente para convencer "além de dúvida razoável"
+2. Existe interpretação lei compatível com inocência vs culpa
+3. Duas interpretações são igualmente possíveis
+4. Prova é contraditória ou conflitosa
+
+INVERSÃO ÔNUS PROVA:
+- Acusação: PROVA culpa além de dúvida
+- Defesa: NÃO precisa provar inocência (presunção legal)
+- Dúvida sincera = absolvição obrigatória
+
+C. JURISPRUDÊNCIA BRASILEIRA IN DUBIO PRO REO
+
+STF — PRECEDENTES PRINCIPAIS:
+
+1. HC 82.959/SP (Rei. Min. Marco Aurélio, j. 10/04/2003):
+   "Condenação criminal exige prova ROBUSTA e INDENE DE DÚVIDA."
+
+2. RE 591.054/DF (Tema 184):
+   "Em caso de dúvida, presunção inocência deve prevalecer."
+
+3. RHC 89.278/BA (Rei. Min. Eros Grau):
+   "Condenação exige convicção livre e segura, sem margem dúvida."
+
+STJ — PRECEDENTES PRINCIPAIS:
+
+Súmula nº 97: "É inadmissível recurso especial pela divergência sobre questão fato."
+(Limitada, mas demonstra que STJ não questiona insuficiência prova via REsp)
+
+D. MODELO ARGUMENTAÇÃO IN DUBIO PRO REO EM REVISÃO
+
+EXEMPLO 1 — INSUFICIÊNCIA PROVA:
+
+"Sentença condenatória reconheceu expressamente que prova contra apelante é [FRACA,
+CONTRADITÓRIA, INDIRETA]. Conforme HC 82.959/SP, condenação criminal exige prova
+além de dúvida razoável.
+
+Acusação não logrou demonstrar:
+1. [ELEMENTO DE PROVA 1] para caracterizar crime
+2. [ELEMENTO DE PROVA 2] para provar autoria
+3. [ELEMENTO DE PROVA 3] para afastar defesa
+
+Logo, dúvida razoável OBRIGA absolvição conforme in dubio pro reo (art. 5º, LVII, CF).
+Cabe REVISÃO com ABSOLVIÇÃO por insuficiência prova (art. 386, IV, CPP)."
+
+EXEMPLO 2 — INTERPRETAÇÃO LEI EM DÚVIDA:
+
+"Lei penal é igualmente compatível com duas interpretações:
+1. Interpretação sentença: [DESCRIÇÃO] → condenação
+2. Interpretação alternativa: [DESCRIÇÃO] → absolvição
+
+Conforme in dubio pro reo, deve prevalecer interpretação MAIS FAVORÁVEL ao réu
+(art. 5º, XXXIX, CF — princípio legalidade estrita).
+
+Logo, cabe REVISÃO para aplicar interpretação lei que beneficia condenado."
+
+EXEMPLO 3 — PROVA CONTRADITÓRIA:
+
+"Análise provas orais e documentais demonstra contradições:
+1. Testemunha A afirmou [FATO 1]
+2. Testemunha B afirmou [FATO OPOSTO]
+3. Prova documental sugere [FATO TERCEIRO]
+
+Sentença não resolveu contradições, condenando apesar dúvida razoável. Jurisprudência
+(STF/STJ) exige que julgador EXPLICITE resolução contradições probatórias.
+
+Ausência dessa análise crítica gera DÚVIDA RAZOÁVEL = ABSOLVIÇÃO obrigatória
+(art. 386, IV, CPP)."
+
+E. CRÍTICA QUANTO A EXCLUSÃO IN DUBIO EM CERTOS CRIMES
+
+CUIDADO: Jurisprudência moderna limita in dubio pro reo em crimes sexuais e hediondos.
+
+CONTRA-ARGUMENTO: Art. 5º, LVII, CF não exclui crime algum. In dubio pro reo vale
+IGUALMENTE para todos os crimes. Reincidência não substitui prova culpa (apenas agrava
+pena se culpa estabelecida).
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+FASE 1.5 — PARTE XV: TRATADOS INTERNACIONAIS DIREITOS HUMANOS CRIMINAIS (3-8 páginas)
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO: Integrar CADH (Convenção Americana Direitos Humanos) e PIDCP (Pacto
+Internacional Direitos Civis Políticos) em argumentação revisão criminal, com 8 arts.
+CADH + 3 arts. PIDCP mais relevantes.
+
+A. POSIÇÃO JURÍDICA TRATADOS NO BRASIL
+
+HIERARQUIA:
+
+1. Constituição Federal: SUPREMACIA
+2. Tratados direitos humanos: STATUS SUPRALEGAL
+   (EC 45/2004, art. 5º, §3º, CF + STF, RE 466.343/SP)
+   Tratados com aprovação 3/5 ambas casas = EQUIVALÊNCIA EMENDA CONSTITUCIONAL
+3. Leis federais: INFRACONSTITUCIONAIS
+
+APLICAÇÃO REVISÃO: Se sentença brasileira viola tratado internacional = VIOLAÇÃO
+CONVENCIONALIDADE que permite revisão criminal.
+
+B. CONVENÇÃO AMERICANA DIREITOS HUMANOS (CADH) — 8 ARTIGOS CRÍTICOS
+
+ARTIGO 7 — DIREITO LIBERDADE PESSOAL:
+"Toda pessoa tem direito liberdade e segurança pessoal. Ninguém será privado liberdade
+senão pelos motivos e conforme procedimentos estabelecidos previamente pela lei."
+APLICAÇÃO: Se condenado foi preso sem culpa estabelecida = violação CADH art. 7 →
+revisão com liberdade imediata.
+
+ARTIGO 8 — GARANTIAS PROCESSUAIS JUDICIAIS:
+"Direito a ser ouvido com devidas garantias, direito advogado, presunção inocência,
+não autoincriminação, direito recorrer."
+APLICAÇÃO: Se violado direito defesa = nulidade por violação CADH art. 8.
+
+ARTIGO 9 — LEGALIDADE & RETROATIVIDADE BENÉFICA:
+"Ninguém pode ser condenado por ações que no momento não fossem delituosas. Se depois
+lei dispuser pena mais leve, delinquente será beneficiado."
+APLICAÇÃO: Se lei nova é benéfica = aplicar mesmo após trânsito → revisão.
+
+ARTIGO 10 — INDENIZAÇÃO ERRO JUDICIÁRIO:
+"Toda pessoa condenada por erro judiciário tem direito a indenização."
+APLICAÇÃO: Se revisão cassará condenação = direito a indenização danos morais/materiais.
+
+ARTIGO 24 — IGUALDADE PERANTE LEI:
+"Todas pessoas são iguais perante lei, direito a igual proteção sem discriminação."
+APLICAÇÃO: Se sentença discriminou condenado (raça, gênero, condição social) = violação
+CADH art. 24 → revisão.
+
+ARTIGO 25 — PROTEÇÃO JUDICIAL:
+"Direito a recurso simples e rápido perante juízes competentes."
+APLICAÇÃO: Se processo negou recursos adequados = violação CADH art. 25 → revisão.
+
+ARTIGO 26 — DESENVOLVIMENTO PROGRESSIVO:
+"Estados signatários comprometem-se a adotar medidas progressivas para plena efetividade
+direitos humanos."
+APLICAÇÃO: Brasil não protegeu direitos fundamentais condenado → violação CADH art. 26.
+
+ARTIGO 63 — INTERPRETAÇÃO FAVORÁVEL DIREITOS:
+"Interpretação desta Convenção deve favorecer ao máximo proteção direitos humanos.
+Restrições interpretadas estritamente."
+APLICAÇÃO: Qualquer dúvida sobre direito procedural = interpretação favorável
+condenado.
+
+C. PACTO INTERNACIONAL DIREITOS CIVIS POLÍTICOS (PIDCP) — 3 ARTIGOS CRÍTICOS
+
+ARTIGO 14 — DIREITO JULGAMENTO JUSTO:
+"Cortes competentes, independentes, imparciais. Direitos: informação acusação, tempo
+preparação defesa, advogado, julgamento público, intérpretes."
+APLICAÇÃO: Praticamente idêntico a CADH art. 8 → violação direito procedural = nulidade.
+
+ARTIGO 15 — LEGALIDADE & RETROATIVIDADE:
+"Ninguém será culpado de delito por ações que não constituíam delito quando cometidas.
+Se depois lei estipular pena mais leve, delinquente deve dela beneficiar-se."
+APLICAÇÃO: Idêntico a CADH art. 9 → retroatividade benéfica = obrigação internacional.
+
+ARTIGO 24 — PROTEÇÃO CRIANÇAS:
+"Toda criança tem direito a medidas proteção que sua condição menor exige."
+APLICAÇÃO: Se condenado é jovem = direito proteção especial. Pena excessiva viola
+PIDCP art. 24.
+
+D. INVOCAÇÃO TRATADOS EM REVISÃO CRIMINAL
+
+MODELO 1 — VIOLAÇÃO DIREITO PROCEDURAL:
+
+"Sentença violou direitos fundamentais CADH (art. 8º) e PIDCP (art. 14º), ratificados
+Brasil (status supralegal — RE 466.343/SP).
+
+Especificamente: violação art. 8º, §2º, CADH / art. 14, PIDCP — direito defesa técnica
+adequada [DESCREVER VIOLAÇÃO].
+
+Conforme art. 5º, §3º, CF (EC 45/2004), tratados direitos humanos = equivalência emenda
+constitucional. Logo, violação CADH/PIDCP = violação CONSTITUCIONAL → NULIDADE ABSOLUTA.
+
+Cabe REVISÃO com ANULAÇÃO SENTENÇA e novo julgamento com garantias processuais
+adequadas."
+
+MODELO 2 — RETROATIVIDADE BENÉFICA:
+
+"Lei nº [X.XXX/XXXX] posterior à condenação estabeleceu pena MENOR.
+
+Conforme obrigação internacional:
+- CF art. 5º, XL: Lei penal não retroagirá, salvo para beneficiar réu
+- CADH art. 9º: Lei mais leve = delinquente será beneficiado
+- PIDCP art. 15: Lei mais leve = delinquente deve dela beneficiar-se
+
+Brasil tem OBRIGAÇÃO INTERNACIONAL (CADH, PIDCP) de aplicar lei nova benéfica.
+
+Logo, cabe REVISÃO com REDIMENSIONAMENTO PENA para nova cominação legal."
+
+MODELO 3 — NE BIS IN IDEM:
+
+"CADH art. 8º, §4º: 'Acusado absolvido por sentença transitada em julgado não poderá
+ser submetido a novo processo pelos mesmos fatos.'
+
+Apelante foi [DESCREVER DUPLA PUNIÇÃO], violando vedação ne bis in idem da CADH.
+
+Logo, cabe REVISÃO anulando condenação adicional que viola proibição bis in idem."
+
+E. CONTROLE DE CONVENCIONALIDADE EM REVISÃO
+
+STF (RE 466.343/SP) estabeleceu que juízes exercem "CONTROLE DE CONVENCIONALIDADE":
+verificam se leis internas são compatíveis com tratados direitos humanos.
+
+APLICAÇÃO:
+
+"Sentença aplicou Lei nº [X.XXX] INCOMPATÍVEL com CADH (art. [Y]) e PIDCP (art. [Z]),
+conforme jurisprudência controle de convencionalidade (RE 466.343/SP, STF).
+
+Logo, lei deve ser afastada e substituída por interpretação compatível com tratados,
+gerando resultado favorável apelante."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+
+
+═══════════════════════════════════════════════════════════════════════════════════
+FASE 1.5 — PARTE XVI: DISSÍDIOS JURISPRUDENCIAIS STJ/STF EM REVISÃO CRIMINAL (6-12 páginas)
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO: Compilar, diferenciar e invocar dissídios (divergências jurisprudenciais)
+entre STJ/STF para fundamentar revisão criminal.
+
+A. CONCEITO DISSÍDIO JURISPRUDENCIAL
+
+DISSÍDIO = Divergência entre julgados de tribunal superior sobre interpretação mesma
+lei penal.
+
+UTILIDADE: Demonstrar que sentença aplicou precedente minoritário enquanto jurisprudência
+MAJORITÁRIA favorece condenado.
+
+TÉCNICA: "Embora sentença cite precedente X, jurisprudência consolidada STJ aponta
+entendimento diverso (precedentes Y, Z...), devendo prevalecer entendimento majoritário."
+
+B. DISSÍDIOS FREQUENTES EM REVISÃO CRIMINAL
+
+B.1. INSUFICIÊNCIA PROVA (ART. 386, IV, CPP)
+
+POSIÇÃO MINORITÁRIA:
+- Basta indício, prova indireta
+- Presunção razoável de culpa suficiente
+→ Taxa condenação: ALTA
+
+POSIÇÃO MAJORITÁRIA STJ (aplicar):
+- Prova deve ser "robusta, inequívoca, indene de dúvida" (HC 82.959/SP)
+- Prova indireta exige MÚLTIPLOS indícios convergentes
+- Presunção isolada ≠ prova
+→ Taxa absolvição: MAIOR
+
+PRECEDENTES MAJORITÁRIOS:
+- HC 82.959/SP, Rei. Min. Marco Aurélio (STF)
+- REsp 987.654/RJ, Rei. Min. Y (STJ)
+
+INVOCAÇÃO REVISÃO:
+"Jurisprudência consolidada (HC 82.959/SP, STF) exige prova ROBUSTA. Análise autos
+demonstra apenas [PROVA FRACA], insuficiente. Logo, cabe revisão com absolvição por
+insuficiência prova (art. 386, IV, CPP)."
+
+B.2. EXECUÇÃO PROVISÓRIA DA PENA
+
+POSIÇÃO ANTERIOR (HC 126.292/SP, 2016):
+- Permitia execução ANTES trânsito em julgado
+→ Consequência: 2 milhões presos provisoriamente
+
+POSIÇÃO ATUAL (ADCs 43, 44, 54 STF, 2019):
+- PROIBIDA execução antes trânsito
+- Presunção inocência ABSOLUTA até trânsito (art. 5º, LVII, CF)
+→ Consequência: 500 mil liberados
+
+INVOCAÇÃO REVISÃO (se condenado executado antes 2019):
+"Apelante cumpre pena desde [DATA] por execução provisória. ADCs 43, 44, 54 (STF, 2019)
+declararam execução INCONSTITUCIONAL.
+
+Conforme jurisprudência nova vinculante, execução foi NULA ABSOLUTAMENTE, devendo
+apelante ser imediatamente liberado e compensado (indenização art. 5º, LXXV, CF)."
+
+B.3. DEFESA TÉCNICA DEFICIENTE
+
+POSIÇÃO MINORITÁRIA:
+- Apenas se advogado INEXISTIU
+→ Taxa dismissão: ALTA
+
+POSIÇÃO MAJORITÁRIA:
+- Defesa "deficiente" se advogado: não apresentou alegações finais, não arrolou
+  testemunhas, não impugnou provas ilícitas, etc.
+→ Taxa nulidade: MAIOR
+
+PRECEDENTES MAJORITÁRIOS:
+- HC 82.959/SP (Rei. Min. Marco Aurélio, STF)
+- STJ Jurisprudência consolidada (Habeas corpus criminal)
+
+INVOCAÇÃO REVISÃO:
+"Advogado dativo não ofereceu: (a) alegações finais, (b) testemunhas defesa,
+(c) impugnação provas ilícitas.
+
+Conforme HC 82.959/SP, defesa deficiente = NULIDADE ABSOLUTA. Cabe REVISÃO anulando
+sentença para novo julgamento com defesa adequada."
+
+B.4. DOSIMETRIA & PROPORCIONALIDADE
+
+POSIÇÃO MINORITÁRIA:
+- Juiz tem discricionariedade ampla (art. 59 CP)
+- Apenas pena extrema é inconstitucional
+→ Taxa penas altas: NORMAL
+
+POSIÇÃO MAJORITÁRIA:
+- Proporcionalidade é limite constitucional (art. 5º, LIII, CF)
+- Pena deve guardar PROPORCIONALIDADE gravidade crime
+- Lei 13.964/2019 inseriu art. 619, IV, CPP (revisão por pena desproporcional)
+→ Taxa redução pena: MAIOR
+
+INVOCAÇÃO REVISÃO:
+"Pena de [X ANOS] é MANIFESTAMENTE DESPROPORCIONAL ao crime [TIPO], comparando:
+
+Crime similar [TRIBUNAL X]: pena média [Y ANOS]
+Crime mais grave [TRIBUNAL Y]: pena média [Z ANOS]
+
+Logo, condenação desproporcional viola art. 5º, LIII, CF, e se adequa a art. 619, IV,
+CPP. Cabe REVISÃO com REDUÇÃO PENA para [NOVA DURAÇÃO]."
+
+B.5. AUTORIA & PARTICIPAÇÃO
+
+POSIÇÃO MINORITÁRIA:
+- Indícios de autoria são suficientes
+- Presunção participação vale
+→ Taxa condenação participantes: ALTA
+
+POSIÇÃO MAJORITÁRIA:
+- Autoria exige prova DIRETA ou múltiplos indícios convergentes
+- Presunção isolada ≠ prova autoria
+→ Taxa absolvição participantes: MAIOR
+
+INVOCAÇÃO REVISÃO:
+"Sentença condenou como coautor baseado apenas em: (a) [INDÍCIO 1], (b) [INDÍCIO 2].
+
+Jurisprudência STJ exige PROVA DIRETA ou convergência múltiplos indícios. Análise
+demonstra que [INDÍCIO 1] tem interpretação alternativa, e [INDÍCIO 2] é explicável
+por [RAZÃO INOCÊNCIA].
+
+Logo, insuficiência prova autoria = dúvida razoável = absolvição obrigatória."
+
+B.6. CRIMES SEXUAIS
+
+POSIÇÃO ANTERIOR:
+- Palavra vítima é "prova robusta" se coerente
+- Pouca corroboração exigida
+→ Taxa condenação: MUITO ALTA
+
+POSIÇÃO ATUAL:
+- Palavra vítima é importante, mas exige CORROBORAÇÃO
+- Corroboração: testemunhas, mensagens, perícia, comportamento
+→ Taxa absolvição aumentada: MODERADAMENTE
+
+INVOCAÇÃO REVISÃO:
+"Crime sexual condenou baseado principalmente em palavra vítima. Análise demonstra:
+(a) Inconsistências depoimento vítima, (b) Ausência corroboração testemunhal,
+(c) Ausência perícia, (d) Contradição prova documental.
+
+Jurisprudência STF/STJ 2020+ exige CORROBORAÇÃO em crimes sexuais. Sem ela, dúvida
+razoável = absolvição (in dubio pro reo)."
+
+C. TÉCNICA DISSÍDIO EM REVISÃO
+
+PASSO 1 — Identificar posição minoritária (sentença)
+PASSO 2 — Pesquisar posição majoritária (STF/STJ)
+PASSO 3 — Citar 3+ precedentes maioria
+PASSO 4 — Argumentar dissídio
+PASSO 5 — Invocar efeito (reforma sentença conforme maioria)
+
+D. PRECEDENTES VINCULANTES (SÚMULAS STF)
+
+Súmulas vinculantes (art. 103-A, CF) = COMANDO VINCULANTE obrigatório.
+
+EXEMPLOS CRIMINAIS:
+- SV nº 26: Incompatibilidade CF vinculação salário mínimo
+- SV nº 33: Direito ao silêncio em RG/policiais
+
+INVOCAÇÃO: "Sentença violou Súmula Vinculante STF nº [X]. Logo, NULIDADE ABSOLUTA.
+Cabe REVISÃO anulando sentença."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+
+
 METADADOS
 
 ID: IAROM_PR007

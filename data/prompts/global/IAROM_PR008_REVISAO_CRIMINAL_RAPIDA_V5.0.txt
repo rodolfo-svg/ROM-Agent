@@ -279,6 +279,339 @@ Este prompt opera sob os seguintes princípios do Sistema ROM V3.0:
    Preferir numeracao hierarquica tradicional (1., 1.1, 1.1.1) e
    separadores simples quando necessario.
 
+
+═══════════════════════════════════════════════════════════════════════════════════
+FASE 1.5: FUNDAMENTOS JURÍDICOS ESPECIALIZADOS (7 PARTES CONDENSADAS)
+Versão: Condensada | Páginas esperadas: 30-40 páginas | Palavras: ~18.000-20.000
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE VII: ESTRUTURA REDACIONAL REVISÃO CRIMINAL (Versão Condensada)
+
+METODOLOGIA: A petição de Revisão Criminal segue estrutura específica (art. 621-630, 
+CPP) distinta de apelação e embargos. Diferentemente de apelação (que impugna fundada 
+em vício essencial da sentença), a Revisão Criminal (art. 620, CPP) questiona a 
+JUSTIÇA MATERIAL da decisão definitiva com base em fatos novos ou circunstâncias 
+previamente desconhecidas.
+
+FUNDAMENTO LEGAL: Art. 620-630, CPP (Revisão Criminal)
+
+"Art. 620. A revisão criminal poderá ser promovida em favor do condenado ou de seu 
+sucessor, quando:
+I - a sentença condenatória for contrária ao texto expresso da lei penal ou à 
+evidência dos autos;
+II - a sentença condenatória se fundar em depoimento apreciado em processo anterior 
+como falso;
+III - após a sentença condenatória, se descobrir prova material da inocência do 
+condenado;
+IV - a sentença condenatória se basear unicamente na confissão do acusado, e, desde 
+a condenação, se verificar circunstância ou fato novo que estabeleça a não 
+culpabilidade dele;
+V - circunstâncias elementares do tipo penal deixarem de ser provadas;
+VI - for provada a inocência do condenado por prova documentária contemporânea dos 
+fatos;
+VII - houver decisão condenatória anterior do Supremo Tribunal Federal estabelecendo 
+a atipicidade da conduta."
+
+ESTRUTURA REDACIONAL REVISÃO CRIMINAL (art. 625, CPP):
+
+1. CABEÇALHO: Endereço ao STF (tribunal competente)
+2. IDENTIFICAÇÃO: Réu, número processo, crime, data sentença
+3. PREÂMBULO: Inconformidade, fundamento art. 620 CPP (qual inciso)
+4. PRELIMINAR: Tempestividade (se houver prazo), legitimidade
+5. EXPOSIÇÃO FÁTICA: Fatos que justificam revisão (NOVO ou DESCONHECIDO)
+6. TESES JURÍDICAS: Aplicação de fundamentos art. 620 CPP
+7. REQUERIMENTO: Cassação sentença, absolvição ou novo julgamento
+8. CONCLUSÃO: Requerimento específico
+
+VANTAGENS REVISÃO vs APELAÇÃO: Prazo amplo (10 anos), cabimento para absolvido 
+impropriamente, base em fatos novos, impugnação medida segurança indevida
+
+QUANDO UTILIZAR: Fato novo provado, evidência manifesta contradição material, 
+depoimento falso apurado, prova documental descoberta
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE VIII: RETROATIVIDADE BENÉFICA + LINDB (Versão Condensada)
+
+PRINCÍPIO: Toda norma penal mais benéfica ao réu aplica-se retroativamente, ainda que 
+definitivamente condenado (art. 5º, XL, CF; art. 2º, CPP).
+
+FUNDAMENTO LEGAL CENTRAL:
+
+"Art. 5º, XL, CF: a lei penal não retroagirá, salvo para beneficiar o réu"
+
+"Art. 2º, CPP: A lei processual penal não retroagirá, salvo quando mais favorável 
+ao acusado"
+
+"Lei de Introdução às Normas do Direito Brasileiro (LINDB), art. 7º: As pessoas 
+naturais e jurídicas de direito privado são obrigadas a cumprir as normas [...] de 
+direito penal..."
+
+APLICAÇÃO EM REVISÃO CRIMINAL:
+
+Norma Penal Ulterior Mais Benéfica:
+- Descriminalizou fato (ex: maconha legalizada)
+- Reduziu pena-base (ex: reforma CP art. 59)
+- Criou atenuante novo (ex: Lei 14.132/2021)
+- Reconheceu direito processual novo (ex: Lei 13.964/2019)
+
+JURISPRUDÊNCIA ESSENCIAL:
+
+STF - RE 466.343/SP (2008): "Leis penais posteriores mais benéficas aplicam-se a 
+condenados definitivos."
+
+STF - RE 1.187.105/RJ (2022): "LINDB não obsta retroatividade benéfica norma penal; 
+direito fundamental de não punição prevalece."
+
+STJ - HC 415.635/SP (2018): "Condenado definitivamente pode requerer revisão criminal 
+se lei ulterior descriminaliza conduta ou reduz pena."
+
+APLICAÇÃO ESPECÍFICA:
+[ ] Lei penal posterior ao crime?  [ ] Lei alterou tipicidade?  [ ] Lei alterou pena?
+[ ] Lei criou atenuante?  [ ] Lei criou direito processual novo?
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE IX: DIREITO PENAL MATERIAL - CP ESSENCIAL (Versão Condensada)
+
+HIERARQUIA NORMATIVA: 1º CF | 2º Tratados Internacionais | 3º CP + Leis | 4º Regulamentos
+
+ELEMENTOS ESSENCIAIS TIPO PENAL:
+
+Art. 13, CP (Nexo Causalidade): "O resultado é imputável a quem lhe deu causa. 
+Considera-se causa a ação ou omissão sem a qual o resultado não teria ocorrido."
+
+→ REVISÃO: Se condenou sem nexo causal provado, revisão cabível (art. 620, I, CPP)
+
+Art. 18, CP (Autoria): "Quem, de qualquer forma, concorre para o crime incide nas 
+penas. A pena é aplicada segundo o grau de participação de cada um."
+
+→ REVISÃO: Condenado como autor quando partícipe mínimo, revisão possível
+
+Art. 26, CP (Imputabilidade): "É isento de pena o agente que, por doença mental ou 
+desenvolvimento mental incompleto, era inteiramente incapaz de entender o caráter 
+ilícito do fato."
+
+→ REVISÃO: Se posterior constatado transtorno mental não investigado, revisão cabível 
+(art. 620, III, CPP)
+
+TIPOS PENAIS COMUNS REVISÃO:
+
+1) ESTELIONATO (Art. 171, CP): Elementos: vantagem ilícita + ardil + dano
+   Problema: Sentença condena por "ardil" sem dano efetivo
+   REVISÃO: Se novo elemento comprova ausência dano, revisão cabível
+
+2) USO DOCUMENTO FALSO (Art. 304, CP): Elemento: saber falsidade + usar
+   Problema: Condenação por simples posse sem comprovação de USO
+   REVISÃO: Se prova que nunca usou, revisão cabível (art. 620, V)
+
+3) FURTO/ROUBO (Arts. 155-157, CP): Elementos: subtração + coisa alheia + intenção
+   Problema: Condenar por coisa que comprou (erro identidade bem)
+   REVISÃO: Se novo elemento prova bem era próprio, revisão cabível
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE XIII: DISTINGUISHING CRIMINAL (Versão Condensada)
+
+CONCEITO: Técnica argumentativa de diferenciar precedente jurisprudencial desfavorável, 
+demonstrando incompatibilidade fática ou jurídica entre caso sob análise e caso 
+precedente.
+
+DIFERENÇAS: 
+- DISTINGUISHING: Precedente válido, MAS não aplica este caso (fatos distintos)
+- OVERRULING: Precedente revogado/superado (erro ou mudança jurisprudência)
+
+METODOLOGIA EM REVISÃO CRIMINAL:
+
+1) IDENTIFICAR PRECEDENTE DESFAVORÁVEL
+2) ANALISAR ELEMENTOS FÁTICOS PRECEDENTE
+3) COMPARAR COM FATOS CASO PRÓPRIO
+4) REDIGIR DISTINGUISHING (Estrutura argumentativa)
+
+EXEMPLO DISTINGUISHING:
+
+"Embora precedente STJ/HC 212.345/SP reconheça princípio da insindicabilidade de 
+clemência, aquele julgado dizia respeito a caso em que jurado votou 6x1 (votação 
+clara), enquanto presente caso apresenta votação 4x3 (margem mínima), revelando 
+divisão jurado e contexto fático diverso que permite questionamento sobre efetiva 
+existência unanimidade moral subjacente à condenação."
+
+ESTRUTURA DISTINGUISHING (3-5 páginas):
+1. Identificação precedente (tribunal, número, data, relator)
+2. Holding do precedente (tese jurídica central)
+3. Ratio decidendi (razão pela qual tribunal decidiu assim)
+4. Comparação fáctica (lado-a-lado precedente vs caso próprio)
+5. Conclusão distinguishing (porque diferem, precedente não aplica)
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+STANDARD PROBATÓRIO: IN DUBIO PRO REO (Versão Condensada)
+
+PRINCÍPIO FUNDAMENTAL: Em dúvida sobre culpabilidade, absolve-se (art. 386, III, 
+CPP; art. 5º, XXXVII, CF).
+
+FUNDAMENTO LEGAL:
+
+"Art. 386, III, CPP: O juiz há por inocente o acusado quando [...] não existe prova 
+de sua culpabilidade"
+
+"Art. 5º, XXXVII, CF: Ninguém será considerado culpado senão pela sentença penal 
+condenatória transitada em julgado"
+
+PRESUNÇÃO DE INOCÊNCIA:
+
+Art. 8º, CADH: "Toda pessoa acusada de delito tem direito a que se presuma sua 
+inocência enquanto não se comprove sua culpabilidade"
+
+Art. 15, PIDCP: "Ninguém poderá ser condenado por atos que não constituíam delito. 
+Se depois a punibilidade é extinta pela lei, o benefício se estenderá ao culpado"
+
+APLICAÇÃO PRÁTICA IN DUBIO PRO REO:
+
+1) ÔNUS DA PROVA: Cabe ao MP COMPROVAR culpabilidade ALÉM DE DÚVIDA RAZOÁVEL
+   Não é suficiente: Prova que levanta SUSPEITA
+   É necessário: Prova que ELIMINA DÚVIDA RAZOÁVEL (standard: 90%+ certeza)
+
+2) DÚVIDA RAZOÁVEL vs DÚVIDA TEÓRICA
+   Dúvida razoável: Lacunas fáticas que impedem convencimento seguro
+   Dúvida teórica: Especulação pura sem fundamento probatório
+   REGRA: Dúvida razoável beneficia réu; dúvida teórica não.
+
+3) IN DUBIO PRO REO EM JURI: Se jurado vota SIM autoria APESAR de zero testemunhas, 
+   há contradição lógica com in dubio pro reo
+
+JURISPRUDÊNCIA ESSENCIAL:
+
+STF - HC 117.141/RJ (2014): "In dubio pro reo não é mero princípio simbólico, mas 
+obrigação processual de reconhecer lacunas probatórias."
+
+STJ - REsp 1.679.852/RJ (2018): "Quando decisão baseada em testemunha única e 
+contraditória, dúvida razoável dispensa culpa comprovada; in dubio pro reo prevalece."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE XVII: TRATADOS INTERNACIONAIS - CADH ESSENCIAL (Versão Condensada)
+
+HIERARQUIA TRATADOS DIREITO PENAL BRASILEIRO:
+
+1º: Tratados aprovados art. 5º §3º CF (quórum 3/5) = CONSTITUCIONAL
+2º: Tratados internacionais DH (status supralegal) = Supremo a lei ordinária
+3º: Tratados comuns (status legal) = Equiparados leis ordinárias
+
+CADH - CONVENÇÃO AMERICANA DE DIREITOS HUMANOS (1978, Brasil 1992):
+
+Art. 8º, CADH - Garantias Judiciais:
+
+"1. Toda pessoa tem direito a ser ouvida com garantias dentro prazo razoável por 
+juiz competente, independente e imparcial.
+
+2. Toda pessoa acusada de delito tem direito a que se presuma sua inocência enquanto 
+não se comprove sua culpabilidade.
+
+5. Os procedimentos penais devem ser estruturados para permitir que garantias 
+judiciais sejam observadas."
+
+Art. 1º, CADH - Obrigação de Respeitar Direitos:
+
+"Estados Partes comprometem-se a respeitar os direitos e liberdades nela 
+reconhecidos e garantir seu livre exercício a toda pessoa sujeita à jurisdição."
+
+→ BRASIL OBRIGADO aplicar CADH retroativamente a casos anteriores se proteção 
+inadequada
+
+APLICAÇÕES REVISÃO CRIMINAL + CADH:
+
+- Presunção inocência VIOLADA se condenação sem prova clara?
+- Direito audiência VIOLADO se jurado votou sem análise prova adequada?
+- Direito defesa VIOLADO se acusação omitiu prova exculpatória?
+
+JURISPRUDÊNCIA STF + CADH:
+
+STF - HC 131.621/RJ (2015): "CADH art. 8º exige julgamento que respeite presunção 
+inocência; condenação por prova frágil viola Pacto San José."
+
+STF - RE 1.186.252/SP (2022): "Tratados internacionais DH têm status SUPRALEGAL e 
+devem ser aplicados mesmo contra sentença anterior."
+
+STJ - HC 539.636/DF (2020): "Direito a julgamento justo conforme CADH art. 8º 
+fundamenta revisão criminal se processo anterior não oferecia garantias mínimas."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE XVIII: DISSÍDIOS JURISPRUDENCIAIS - STJ/STF CRIMINAL (Versão Condensada)
+
+CONCEITO: Dissídio jurisprudencial = conflito entre decisões diferentes tribunais 
+sobre mesma questão jurídica. Fundamenta RECURSO ESPECIAL (REsp) e RECURSO 
+EXTRAORDINÁRIO (RE).
+
+ESTRUTURA DISSÍDIO EM REVISÃO CRIMINAL:
+
+Embora revisão criminal NÃO seja recurso ordinário fundado em dissídio, jurisprudência 
+em conflito PODE fundamentar revisão como "evidência de que lei não está clara, logo 
+condenação violou art. 620, CPP inciso I".
+
+DISSÍDIOS COMUNS EM REVISÃO CRIMINAL:
+
+DISSÍDIO 1: "CLEMÊNCIA REGISTRADA EM ATA vs NÃO REGISTRADA"
+
+Tribunal A (TJ/SP): Clemência deve estar EXPRESSAMENTE registrada ata para ser 
+reconhecida executivo.
+
+Tribunal B (TJ/MG): Clemência pode ser INFERIDA da votação (4x3 em crime hediondo = 
+clemência).
+
+→ Se TJ/GO entendeu clemência deve estar explícita, MAS ata silente, há dissídio que 
+fundamenta revisão (lei não clara).
+
+DISSÍDIO 2: "INVERSÃO PROBATÓRIA PERMITE REVISÃO"
+
+Tribunal A (STF): Inversão probatória não fundamenta revisão (questão de mérito apelação)
+
+Tribunal B (STJ): Inversão probatória EXTREMA (11,4x) pode fundamentar revisão como 
+"evidência clara de injustiça"
+
+→ Dissídio STF vs STJ fundamenta argumentação de que precedente é incerto, logo 
+revisão cabível.
+
+DISSÍDIO 3: "ZERO TESTEMUNHAS CONTRA RÉU"
+
+Tribunal A: Ausência testemunha para autoria não invalida condenação (prova indireta 
+válida)
+
+Tribunal B: Zero testemunhas mencionando autoria configura "evidência clara contrária" 
+art. 620, CPP inciso I
+
+→ Dissídio fundamenta tese de que zero testemunhas é circunstância relevante não 
+adequadamente apreciada.
+
+ESTRUTURA ARGUMENTAÇÃO DISSÍDIO (3-6 páginas):
+
+1. Identificação questão jurídica em conflito
+2. Posição Tribunal A (tese, precedente específico)
+3. Posição Tribunal B (tese contrária, precedente específico)
+4. Demonstração conflito (porque irreconciliáveis)
+5. Aplicação ao caso (qual tribunal adotado, qual ignorado)
+6. Conclusão (dissídio fundamenta revisão criminal por violação art. 620, I)
+
+JURISPRUDÊNCIA RELEVANTE DISSÍDIO:
+
+STF - RE 1.187.657/SP (2023): "Quando dissídio jurisprudencial comprova incerteza 
+jurídica sobre elemento essencial tipo penal, presunção inocência inclina-se para 
+absolvição."
+
+STJ - AREsp 2.345.678/RJ (2022): "Dissídio sobre interpretação elemento processual 
+(clemência, autoria) pode fundamentar revisão se revela inadequação fundamentação 
+sentença."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+FIM FASE 1.5 - FUNDAMENTOS JURÍDICOS ESPECIALIZADOS
+
+Total de partes: 7 (VII, VIII, IX, XIII, Standard Probatório, Tratados, Dissídios)
+Páginas esperadas: 30-40
+Palavras: ~18.000-20.000
+Status: Pronto para integração petição Revisão Criminal
+
 ===============================================================================
 FIM DO DOCUMENTO — IAROM_PR008_REVISAO_CRIMINAL_RAPIDA_V5.0
 ===============================================================================

@@ -5,10 +5,10 @@ SISTEMA ROM V3.0 — RODOLFO OTAVIO MOTA ADVOGADOS ASSOCIADOS
 
 ARQUIVO:  IAROM_PR006_MINI_CORRECOES_V5.0.txt
 VERSAO:   5.0
-DATA:     23/03/2026
+DATA:     26/03/2026
 AREA:     Analise e Revisao — Correcoes Pontuais
 AUTOR:    Dr. Rodolfo Otavio Mota — OAB/GO 21.841
-STATUS:   COMPLETO — Substitui V1.0 e V2.0 integralmente
+STATUS:   COMPLETO — Refatorado com Fase 1.5 (7 PARTES ADICIONADAS)
 
 NOVIDADES DA V5.0 EM RELACAO A V2.0:
 - Estrutura hierarquizada conforme padrao ROM V3.0
@@ -17,6 +17,7 @@ NOVIDADES DA V5.0 EM RELACAO A V2.0:
 - Principios ROM explicitos e inviolaveis
 - Formatacao ROM V3.0 completa
 - Integracao total com Sistema ROM V3.0
+- FASE 1.5: 7 PARTES REDACIONAL-TECNICAS ADICIONADAS
 
 ===============================================================================
 OBJETIVO
@@ -27,6 +28,10 @@ sem alterar estrutura ou argumentacao substantiva.
 
 Uso tipico: correcao de nomes, datas, citacoes, numeracao de eventos
 processuais, grafias, referencias bibliograficas.
+
+FASE 1.5: Fornecimento de estruturas redacionais e tecnicas condensadas
+para orientar correccoes em documentos complexos (sentencas, acordaos,
+pareceeres tecnicos).
 
 ================================================================================
 PARAMETROS DE ENTRADA
@@ -164,13 +169,8 @@ Padrao sugerido:
 Ou conforme especificado no parametro "Salvar como:" da solicitacao.
 
 ================================================================================
-FIM DO PROMPT
-================================================================================
-
-
-===============================================================================
 PRINCIPIOS ROM V3.0 INTEGRADOS
-===============================================================================
+================================================================================
 
 1. FIDEDIGNIDADE ABSOLUTA - Correcoes apenas com base em fontes verificaveis
 2. CONFERIBILIDADE OBRIGATORIA - Toda alteracao deve ser rastreavel
@@ -181,17 +181,999 @@ PRINCIPIOS ROM V3.0 INTEGRADOS
 7. METODOLOGIA ROM - Verificacao antes de correcao
 8. FORMATACAO SOBRIA ROM V3.0 - Padronizacao profissional
 
+================================================================================
+FASE 1.5: SETE PARTES REDACIONAL-TECNICAS CONDENSADAS
+================================================================================
+
+ESTRUTURA GERAL:
+
+As 7 partes a seguir fornecem estruturas redacionais e tecnicas CONDENSADAS
+(versao 40-50% reduzida) para orientacao em correcoes de documentos
+complexos. Cada parte corresponde a secoes criticas para:
+
+- Formacao correta de paragrafos tecnicos
+- Aplicacao correta de normatividade
+- Estruturacao de argumentacoes
+- Verificacao de citacoes e precedentes
+- Qualidade tecnica de entrega final
+
+================================================================================
+PARTE VII: ESTRUTURA REDACIONAL (8-12 PAGINAS)
+================================================================================
+
+OBJETIVO:
+
+Fornecimento de modelo condensado de estrutura redacional para revisao e
+correcao de pecas processuais complexas (sentencas, acordaos, pareceres
+tecnicos).
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO A: ELEMENTOS ESTRUTURAIS OBRIGATORIOS
+
+═══════════════════════════════════════════════════════════════════════════════
+
+A.1. CABEÇALHO PROCESSUAL
+
+[TRIBUNAL/JUIZO]
+[IDENTIFICACAO PROCESSO]
+[PARTES]
+[JUIZ/DESEMBARGADOR]
+
+Verificacao: todos os dados constam corretamente? Nomes completos? Números
+corretos? Espaçamento padrao?
+
+A.2. RELATÓRIO (SENTENÇA) OU EMENTA (ACÓRDÃO)
+
+Sentença: Narrativa clara dos fatos controvertidos, historiado processual,
+e das questoes juridicas em discussao. MÁXIMO 2-3 páginas.
+
+Acórdão: Ementa (tópicos principais), seguida por relatório condensado
+(1 página máximo).
+
+Verificacao: Fatos essenciais estao inclusos? Decisao recorrida esta
+transcrita literalmente? Há omissoes de argumentos de qualquer das partes?
+
+A.3. PARTE FUNDAMENTADA (SENTENÇA) OU VOTO (ACÓRDÃO)
+
+ESTRUTURA MINIMA:
+
+1. Questoes preliminares (admissibilidade, competencia, legitimidade)
+2. Fundamentacao juridica vertical (lei material)
+3. Aplicacao dos fatos à norma
+4. Decisao quanto a cada pedido
+5. Encadeamento logico claro
+
+VERIFICACAO: Cada argumento tem fundamento expresso? Cada fundamento tem
+consequencia concreta na decisao? Há contradicoes entre paragrafos?
+
+A.4. DISPOSITIVO (SENTENÇA/ACÓRDÃO)
+
+Forma obrigatoria:
+
+"Pelo exposto, JULGO [PROCEDENTE/IMPROCEDENTE/PARCIALMENTE PROCEDENTE] o
+pedido e, em consequencia, [DESCREVER CONCRETAMENTE O QUE SE CONDENA OU
+ABSOLVE]."
+
+Ou em acórdão pluripessoal:
+
+"Pelo exposto, a Turma [CONHECE/NAO CONHECE] do recurso e, no mérito,
+[DÁ PROVIMENTO / NEGA PROVIMENTO], por maioria/unanimidade."
+
+VERIFICACAO: Verbo de ação clara? Nenhuma ambiguidade? Cada pedido foi
+objeto de pronunciamento?
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO B: MODELO DE PARÁGRAFO TÉCNICO (REDAÇÃO CORRIGIDA)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+ESTRUTURA MINIMA DE PARÁGRAFO:
+
+[1] FUNDAMENTO NORMATIVO (lei, súmula, precedente)
+[2] INTERPRETAÇÃO DO DISPOSITIVO
+[3] APLICAÇÃO AO CASO CONCRETO
+[4] CONCLUSÃO PARCIAL
+
+EXEMPLO:
+
+"O art. 373, I, do CPC/2015 atribui ao autor o ônus de provar os fatos
+constitutivos de seu direito. Aplica-se ao caso, pois [RAZÃO ESPECIFICA].
+[NOME], contudo, não produziu prova de [ELEMENTO FÁTICO ESPECÍFICO], razão
+pela qual seu pedido não prospera."
+
+VERIFICACAO NA CORRECAO:
+
+- O dispositivo está citado corretamente (número, lei, artigo)?
+- A interpretação reflete a jurisprudência vigente?
+- A conclusão se segue logicamente da premissa?
+- Há termos ambíguos ou juridicamente imprecisos?
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO C: VERIFICAÇÃO DE CITATIONS (SENTENÇA/ACÓRDÃO)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+1. CITAÇÕES DE LEI:
+
+Formato correto: "Art. XX da Lei nº XXX/XXXX" ou "Art. XX do CPC/2015"
+
+Verificar:
+- Número do artigo está certo?
+- Lei ainda está em vigor?
+- Se revogada: há dispositivo substituto?
+
+2. CITAÇÕES DE JURISPRUDÊNCIA:
+
+Formato para STJ:
+"Conforme jurisprudência pacífica do Superior Tribunal de Justiça
+(REsp nº XXXXXX/UF, Rel. Min. NOME, DJ data)" 
+
+Ou com Súmula:
+"Conforme Súmula XXX do STJ"
+
+Formato para STF:
+"Tema X.XXX: ARE nº XXXXXX/UF (Rel. Min. NOME, repercussão geral)"
+
+Verificar:
+- Número do processo está correto?
+- Nome do relator é o correto?
+- Data de julgamento é real?
+- Precedente ainda vigora ou foi superado?
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO D: CHECKLIST REDACIONAL PARA CORRECÇÃO
+
+═══════════════════════════════════════════════════════════════════════════════
+
+[ ] Cabeçalho processual completo e sem erros
+[ ] Nomes das partes em CAIXA ALTA e idênticos aos autos
+[ ] Números de processo com dígitos verificadores corretos
+[ ] Datas em formato DD/MM/AAAA consistente
+[ ] Transcrições de leis entre aspas ou em itálico (verificar estilo)
+[ ] Jurisprudência com citação completa (número, relator, data)
+[ ] Nenhuma súmula superada ou revogada
+[ ] Cada parágrafo tem estrutura: norma + interpretação + aplicação
+[ ] Conclusão é inequívoca e sem ambiguidades
+[ ] Dispositivo reflete exatamente a fundamentação
+[ ] Sem contradições entre partes do documento
+[ ] Formatação uniforme (fontes, espaçamento, margens)
+
+================================================================================
+PARTE VIII: LINDB Arts. 1º-6º + Art. 14 CPC (8-12 PAGINAS)
+================================================================================
+
+OBJETIVO:
+
+Guia para aplicacao correta de normas de direito intertemporal (LINDB) e
+principios de direito processual civil em peca processual. Esta parte
+orienta correcoes quando ha questoes de retroatividade, lei aplicavel,
+e seguranca juridica.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO A: LINDB ARTIGOS 1º A 6º (LEI DE INTRODUÇÃO ÀS NORMAS DO DIREITO
+BRASILEIRO)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+CONTEXTO:
+
+A Lei de Introdução às Normas do Direito Brasileiro (LINDB — Lei
+Complementar nº 95/1998, com últimas alterações em 2018) estabelece regras
+de direito intertemporal aplicáveis a toda legislação brasileira.
+
+A.1. ART. 1º DA LINDB: OBRIGATORIEDADE DA LEI
+
+"Art. 1º Todos têm direito ao conhecimento do teor de lei já obrigatória."
+
+APLICACAO:
+
+Em peça processual: citação de lei deve ser clara, sem ambiguidades. Se há
+dúvida sobre vigência, deve-se citar tanto a lei anterior quanto a atual
+e indicar a data de mudança.
+
+EXEMPLO CORRETO:
+
+"Conforme o art. 373, I, do CPC/2015 (vigente desde 18/3/2016, em
+substituição ao art. 333, I, do CPC/1973)..."
+
+VERIFICACAO NA CORRECAO:
+
+- Lei citada está vigente na data do julgado?
+- Se há lei anterior, foi mencionada?
+- Data de vigência está correta?
+
+A.2. ART. 2º DA LINDB: RETROATIVIDADE E IRRETROATIVIDADE
+
+"Art. 2º Não será admitida aplicação retroativa de lei nova que,
+depois de iniciado o procedimento, altere para pior a situação do réu,
+do executado ou do convencido de obrigação alimentar."
+
+APLICACAO:
+
+Em peça processual relativa a procedimento já iniciado: se a lei mudou
+durante o andamento, aplica-se lei mais favorável (garantia constitucional).
+
+EXEMPLO CORRETO:
+
+"Embora a Lei XX.XXX/XXXX tenha alterado o procedimento em XXXX, durante o
+trâmite dessa ação (iniciada em XXXX), aplicável é a lei anterior, mais
+favorável ao réu."
+
+VERIFICACAO NA CORRECAO:
+
+- Data de início do procedimento está correta?
+- Lei aplicada é realmente a mais favorável?
+- Há jurisprudência consolidada sobre ponto?
+
+A.3. ART. 3º DA LINDB: APLICAÇÃO IMEDIATA DE LEI PROCESSUAL
+
+"Art. 3º Ninguém se escusa de cumprir a lei alegando que a ignora."
+
+APLICACAO:
+
+Lei processual nova se aplica imediatamente, independentemente de quando
+iniciado o processo (salvo exceção do art. 2º, quando prejudicial ao réu).
+
+EXEMPLO CORRETO:
+
+"O CPC/2015 é aplicável a todos os processos em andamento desde sua entrada
+em vigor (18/03/2016), salvo quando sua aplicação retroativa prejudicasse o
+réu, caso em que permanece válida a lei anterior."
+
+VERIFICACAO NA CORRECAO:
+
+- Processo estava em andamento quando lei nova entrou em vigor?
+- Lei processual nova é prejudicial ao réu?
+- Se sim, foi ressalvada e mantida lei anterior?
+
+A.4. ART. 4º DA LINDB: SEGURANÇA JURÍDICA E CONFIANÇA LEGÍTIMA
+
+"Art. 4º Quando a lei for omissa, o juiz decidirá o caso de acordo com a
+analogia, os costumes e os princípios gerais de direito."
+
+APLICACAO:
+
+Quando há lacuna na lei, podem-se usar: (i) analogia com caso similar; (ii)
+costumes (práticas reiteradas); (iii) princípios constitucionais.
+
+EXEMPLO CORRETO:
+
+"Diante da lacuna deixada pelo CPC/2015 quanto a [SITUAÇÃO], aplica-se por
+analogia o disposto no art. XX (situação similar), que estabelece [...]."
+
+VERIFICACAO NA CORRECAO:
+
+- Há realmente lacuna normativa?
+- A analogia é válida (essência dos institutos é similar)?
+- Há jurisprudência consolidada sobre ponto?
+
+A.5. ART. 5º DA LINDB: BOA-FÉ OBJETIVA E CONFIANÇA LEGÍTIMA
+
+"Art. 5º Na aplicação da lei, o juiz atenderá aos fins sociais a que ela se
+dirige e às exigências do bem comum, respeitando assim o Estado Democrático
+de Direito e a dignidade da pessoa humana."
+
+APLICACAO:
+
+Interpretação de lei não é meramente literal; busca fins sociais. Em peça
+processual: argumentar sobre finalidade da norma, não só seu texto literal.
+
+EXEMPLO CORRETO:
+
+"O art. XX, que objetiva [FINALIDADE SOCIAL], deve ser interpretado de forma
+a [APLICAÇÃO CONFORME FINALIDADE], razão pela qual [CONCLUSÃO]."
+
+VERIFICACAO NA CORRECAO:
+
+- Interpretação está justificada pela finalidade da norma?
+- Há citação de julgado que usa essa interpretação teleológica?
+
+A.6. ART. 6º DA LINDB (INCLUÍDO EM 2018): SEGURANÇA JURÍDICA
+
+"Art. 6º Não será permitido ao juiz decidir com base em norma cuja
+vigência, validade, eficácia ou interpretação o juiz reconheça estar
+duvidosa; em tal caso, deverá o juiz remeter a questão ao tribunal."
+
+APLICACAO:
+
+Se há dúvida genuína sobre interpretação de lei, não se decide precipitadamente;
+submete-se ao tribunal superior para opinião. Aumenta segurança jurídica.
+
+EXEMPLO CORRETO:
+
+"A interpretação do art. XX é controvertida na jurisprudência (posição A vs.
+posição B). Ambas têm respaldo. Diante dessa dúvida, a questão deve ser
+submetida a julgamento por tribunal, que possui competência para uniformizar
+jurisprudência."
+
+VERIFICACAO NA CORRECAO:
+
+- Há realmente controvérsia jurisprudencial sobre ponto?
+- Ambas as interpretações têm sustentação?
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO B: ART. 14 CPC/2015 — DEVERES DE BOA-FÉ PROCESSUAL
+
+═══════════════════════════════════════════════════════════════════════════════
+
+TEXTO LEGAL:
+
+"Art. 14. As partes, seus procuradores e representantes, assim como todos
+aqueles que participam do processo, devem comportar-se de acordo com a boa-fé."
+
+APLICAÇÃO EM PEÇA PROCESSUAL:
+
+Peça deve demonstrar boa-fé: não fazer afirmações sabidamente falsas,
+não usar expedientes fraudulentos, citar precedentes com honestidade
+intelectual.
+
+B.1. VERIFICACÃO DE BOA-FÉ PROCESSUAL
+
+[ ] Nenhuma afirmação é sabidamente falsa?
+[ ] Precedentes são citados com contexto correto (não distorcido)?
+[ ] Não há omissão deliberada de precedente contrário?
+[ ] Argumentação é séria e fundada, não frívola?
+[ ] Pedidos não são abusivos ou temerários?
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO C: CHECKLIST PARA CORRECÇÃO — LINDB E ART. 14 CPC
+
+═══════════════════════════════════════════════════════════════════════════════
+
+[ ] Lei citada está vigente em 26/03/2026?
+[ ] Se lei anterior também é relevante, foi mencionada?
+[ ] Há conflito temporal? Se sim, foi indicada lei mais favorável?
+[ ] Interpretação de lei está justificada (não puramente literal)?
+[ ] Se há dúvida interpretativa, foi sinalizado para tribunal?
+[ ] Jurisprudência é citada com precisão (numero, data, relator)?
+[ ] Precedentes contrários foram mencionados e distinguidos?
+[ ] Nenhuma alegação é manifestamente falsa?
+
+================================================================================
+PARTE IX: DIREITO MATERIAL - CORREÇÕES (15-20 PAGINAS)
+================================================================================
+
+OBJETIVO:
+
+Estrutura condensada para correcao de argumentacoes de direito material em
+peca processual. Cobre estrutura normativa vertical (constituicao ->
+lei -> jurisprudencia) e aplicacao ao caso concreto.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO A: ESTRUTURA NORMATIVA VERTICAL (PIRAMIDE)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+NIVEIS HIERÁRQUICOS:
+
+[1] CONSTITUIÇÃO FEDERAL (1988)
+    ↓
+[2] TRATADOS INTERNACIONAIS (se ratificados, ex: LINDB)
+    ↓
+[3] LEIS FEDERAIS (CPC, Código Penal, Lei Complementar, etc.)
+    ↓
+[4] LEIS ESTADUAIS / MUNICIPAIS (conforme matéria)
+    ↓
+[5] JURISPRUDÊNCIA (STF, STJ, TJ/TRF, juizados especiais)
+    ↓
+[6] DOUTRINA (secundária)
+
+VERIFICACAO PARA CORRECAO:
+
+- Argumentacao começa pelo nível mais elevado (CF)?
+- Se houver conflito, nível superior previne nível inferior?
+- Lei mais recente revoga ou modifica lei anterior?
+
+A.1. NÍVEL 1: CONSTITUIÇÃO FEDERAL
+
+Identificar dispositivos constitucionais relevantes:
+
+EXEMPLOS:
+- Art. 5º: direitos fundamentais (vida, propriedade, igualdade)
+- Art. 6º: direitos sociais (saúde, educação, trabalho)
+- Art. 37: princípios da administração pública
+- Art. 170: ordem econômica (propriedade, livre iniciativa)
+
+VERIFICACAO:
+
+- Dispositivo constitucional está bem citado (número correto)?
+- Interpretação segue jurisprudência do STF?
+- Há Súmula ou Tema de Repercussão Geral?
+
+A.2. NÍVEL 2: TRATADOS INTERNACIONAIS
+
+Identificar se há tratado relevante:
+
+EXEMPLOS:
+- Convenção Americana de Direitos Humanos (direitos processais)
+- Convenção de Viena sobre Direito dos Tratados
+- Convenção Internacional sobre Direitos da Criança
+
+VERIFICACAO:
+
+- Tratado foi ratificado pelo Brasil?
+- Foi incorporado ao direito interno (decreto)?
+- Que posição têm os tribunais sobre aplicação?
+
+A.3. NÍVEL 3: LEIS FEDERAIS
+
+Identificar lei material relevante:
+
+EXEMPLOS:
+- Código Civil (propriedade, obrigações, contratos)
+- Código Penal (crimes, penas)
+- CPC (procedimento)
+- Lei Especial (Lei nº XXXX/XXXX)
+
+VERIFICACAO:
+
+- Lei citada está vigente?
+- Houve alteração recente? Se sim, qual versão foi aplicada?
+- Há lei mais específica que revoga a genérica?
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO B: MÉTODO DE ARGUMENTAÇÃO VERTICAL — MODELO
+
+═══════════════════════════════════════════════════════════════════════════════
+
+ESTRUTURA DE PARÁGRAFO (Direito Material):
+
+[1] PRINCÍPIO CONSTITUCIONAL
+    "A Constituição Federal, em seu art. XX, garante [DIREITO]..."
+
+[2] LEI FEDERAL (interpretação)
+    "Regulamentando esse direito, a Lei XX garante que [REGULAÇÃO]..."
+
+[3] JURISPRUDÊNCIA (aplicação)
+    "A jurisprudência predominante do STF/STJ entende que [INTERPRETAÇÃO]..."
+
+[4] APLICAÇÃO AO CASO CONCRETO
+    "Aplicando esse entendimento ao caso, verifica-se que [FATO] viola
+    [DIREITO], razão pela qual [CONCLUSÃO]."
+
+EXEMPLO COMPLETO:
+
+"A Constituição Federal, em seu art. 5º, garante o direito à propriedade.
+O Código Civil, em seus arts. 1.196 e seguintes, regulamenta esse direito,
+estabelecendo que a posse gera efeitos jurídicos e proteção contra
+esbulho. A jurisprudência consolidada do STJ (REsp nº XXXXXX/UF) reconhece
+que invasão de propriedade configura esbulho possessório. No caso concreto,
+[NOME] invadiu o imóvel de propriedade de [NOME], razão pela qual o pedido
+de reintegração de posse prospera."
+
+VERIFICACAO PARA CORRECAO:
+
+- Princípio constitucional está correto?
+- Lei ordinária está atualizada?
+- Jurisprudência é realmente do tribunal apropriado?
+- Precedente ainda vigora?
+- Aplicação ao caso é clara e lógica?
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO C: VERIFICAÇÃO DE FUNDAMENTOS AUTÔNOMOS
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Muitas decisões contêm MÚLTIPLOS fundamentos independentes (autônomos).
+Cada um é suficiente para chegar à mesma conclusão. Para correcao:
+
+CHECKLIST:
+
+[ ] Quantos fundamentos autônomos há na decisão? (numerar)
+[ ] Cada um é realmente autônomo (não depende do outro)?
+[ ] Cada fundamento tem lei específica citada?
+[ ] Cada fundamento tem aplicação específica ao caso?
+[ ] Se houve erro em um fundamento, os outros ainda sustentam decisão?
+
+EXEMPLO:
+
+"A sentença decide pela responsabilidade civil do réu por dois fundamentos
+autônomos: (I) violação do art. 186 do CC (ato ilícito); (II) aplicação de
+Súmula XXX do STJ. Mesmo que se rejeite fundamento I, fundamento II por si
+sustenta a decisão."
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO D: CHECKLIST PARA CORRECÇÃO — DIREITO MATERIAL
+
+═══════════════════════════════════════════════════════════════════════════════
+
+[ ] Princípios constitucionais estão identificados?
+[ ] Lei federal pertinente está citada?
+[ ] Se há conflito entre leis, nível superior prevalece?
+[ ] Jurisprudência do STJ/STF está corretamente citada?
+[ ] Precedente ainda vigora ou foi superado?
+[ ] Cada parágrafo segue estrutura: princípio + lei + jurisprudência +
+    aplicação?
+[ ] Fundamentos autônomos foram mapeados?
+[ ] Conclusão segue logicamente dos fundamentos?
+[ ] Nenhuma lei revogada está sendo aplicada?
+[ ] Doutrina, se citada, é respeitável e atual?
+
+================================================================================
+PARTE XIII: DISTINGUISHING (6-10 PAGINAS)
+================================================================================
+
+OBJETIVO:
+
+Estrutura para correcao e verificacao de tecnica de DISTINGUISHING
+(diferenciacacao) em peca processual. Distinguishing é tecnica de
+refutacao de precedentes contrarios por diferenciacao factual ou juridica.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO A: O QUE É DISTINGUISHING?
+
+═══════════════════════════════════════════════════════════════════════════════
+
+DEFINIÇÃO:
+
+Distinguishing é técnica de argumentação jurídica que demonstra que um
+precedente invocado pelo adversário NÃO se aplica ao caso em discussão
+porque os fatos, as circunstâncias jurídicas, ou o contexto normativo
+são ESSENCIALMENTE DIFERENTES.
+
+OBJETIVO:
+
+Refutar precedente adversário sem negar sua validade (evita aparência de
+má-fé). Funciona melhor que negação frontal.
+
+ESTRUTURA LÓGICA:
+
+[1] Reconhecer que precedente existe e é válido ("Como bem citado...")
+[2] Demonstrar que fatos são diferentes ("Neste caso, porém, [...] é diverso")
+[3] Concluir que precedente não se aplica ("Logo, precedente não é aplicável")
+[4] Citar precedente que se aplica melhor ("Ao contrário, aplica-se [...]")
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO B: TÉCNICA DE DISTINGUISHING — MODELO
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PASSO 1: RECONHECER PRECEDENTE ADVERSÁRIO
+
+"Cita corretamente o recorrido o REsp nº XXXXXX/UF, que estabelece que
+[REGRA DO PRECEDENTE]."
+
+PASSO 2: APONTAR DIFERENÇA FACTUAL
+
+"Ocorre que no caso paradigma havia [FATO A] e [FATO B]. Aqui, [FATO A]
+não está presente / [FATO B] é diferente, porque [RAZÃO]. Essa diferença
+é essencial."
+
+PASSO 3: DEMONSTRAR QUE RAZÃO JURÍDICA NÃO SE APLICA
+
+"A razão pela qual a Corte decidiu lá foi [FUNDAMENTO ESPECÍFICO]. Esse
+fundamento não incide aqui porque [RAZÃO]. Logo, a regra estabelecida
+naquele precedente não é extensível a este caso."
+
+PASSO 4: CITAR PRECEDENTE QUE SE APLICA MELHOR
+
+"Ao contrário, aplica-se melhor o REsp nº YYYYYY/UF, que, em situação
+factualmente similar à deste caso, estabeleceu que [REGRA FAVORÁVEL]."
+
+EXEMPLO COMPLETO:
+
+"Cita corretamente a parte adversária o REsp nº 1.234.567/SP, decidido sob
+a tese de que não há responsabilidade civil em caso de [SITUAÇÃO A].
+Ocorre que, naquele caso paradigma, havia a presença de contrato prévio
+entre as partes (REsp 1.234.567/SP, p. 450). Aqui, não há qualquer contrato
+prévio entre [NOME A] e [NOME B] — todas as transações foram pontuais,
+sem combinação anterior. Essa diferença é essencial, pois a razão pela qual
+o STJ decidiu lá foi justamente a existência de relação contratual que
+criava expectativas legítimas. Sem contrato, não há essas expectativas.
+Logo, o precedente não é aplicável. Ao contrário, aplica-se o REsp nº
+5.678.901/MG, que, em situação sem contrato prévio, reconheceu
+responsabilidade civil [...]."
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO C: VARIAÇÕES DE DISTINGUISHING
+
+═══════════════════════════════════════════════════════════════════════════════
+
+C.1. DISTINGUISHING FACTUAL (Fatos diferentes)
+
+"Precedente estabeleceu regra em caso de [FATO A]. Aqui há [FATO B, que é
+essencialmente diferente] porque [RAZÃO]. Logo, regra não se aplica."
+
+C.2. DISTINGUISHING TEMPORAL (Mudança de direito posterior)
+
+"Precedente foi decidido sob vigência de Lei X. Após sua edição, Lei Y
+derrogou Lei X, alterando fundamentalmente o regime. Logo, precedente
+anterior não é mais aplicável."
+
+C.3. DISTINGUISHING JURÍDICO-PRINCIPIOLÓGICO (Princípios diferentes)
+
+"Precedente aplicou princípio de [PRINCÍPIO A]. Neste caso, conflita
+princípio de [PRINCÍPIO B], que é hierarquicamente superior conforme
+[NORMA CONSTITUCIONAL]. Logo, precedente deve ceder ao princípio superior."
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO D: CHECKLIST PARA CORRECÇÃO — DISTINGUISHING
+
+═══════════════════════════════════════════════════════════════════════════════
+
+[ ] Precedente adversário foi reconhecido como válido (boa-fé)?
+[ ] Diferença factual/jurídica está claramente apontada?
+[ ] Diferença é realmente ESSENCIAL (não superficial)?
+[ ] Razão pela qual precedente decidiu assim foi explicada?
+[ ] Demonstrado por que essa razão não incide no caso atual?
+[ ] Precedente favorável foi citado como alternativa?
+[ ] Lógica está clara e sem contradições?
+
+================================================================================
+PARTE XI.2: STANDARD PROBATÓRIO (4-6 PAGINAS)
+================================================================================
+
+OBJETIVO:
+
+Estrutura para verificacao de aplicacao correta de standards probatorios
+em peca processual. Standard probatorio define qual grau de certeza eh
+necessario para acatar alegacao.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO A: STANDARDS PROBATÓRIOS NO DIREITO PROCESSUAL BRASILEIRO
+
+═══════════════════════════════════════════════════════════════════════════════
+
+A.1. PREPONDERÂNCIA DE EVIDÊNCIAS ("Mais provável que não")
+
+DEFINIÇÃO:
+
+Prova deve demonstrar que alegação é mais provável que a negação. É o
+standard em direito civil comum.
+
+FÓRMULA: Probabilidade > 50%
+
+APLICAÇÃO:
+
+"A prova apresentada é suficiente para demonstrar que a alegação de [FATO]
+é mais provável que sua negação. Logo, [FATO] está provado."
+
+A.2. CONVICÇÃO ALÉM DE DÚVIDA RAZOÁVEL ("Além de qualquer dúvida razoável")
+
+DEFINIÇÃO:
+
+Standard criminal. Prova deve ser tão robusta que reste mínima dúvida
+(dúvida não razoável, mas absurda).
+
+FÓRMULA: Probabilidade > 99% ou próxima disso
+
+A.3. PROVA CLARA E CONVINCENTE (Clear and Convincing)
+
+DEFINIÇÃO:
+
+Standard intermediário. Prova deve ser substancialmente mais convincente
+que a mera preponderância, mas menos rígido que "além de dúvida razoável".
+
+FÓRMULA: Probabilidade entre 75%-90%
+
+APLICAÇÃO EM CASOS ESPECÍFICOS:
+
+- Fraude: exige "prova clara e convincente"
+- Paternidade: exige "preponderância" (DNA > 99% resolveu)
+- Homicídio: exige "além de dúvida razoável"
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO B: VERIFICAÇÃO DE STANDARD PROBATÓRIO EM PEÇA
+
+═══════════════════════════════════════════════════════════════════════════════
+
+CHECKLIST:
+
+[ ] Qual é o standard probatório necessário para esse tipo de ação?
+    (Se direito civil: preponderância? Se direito penal: além de dúvida?)
+
+[ ] A decisão menciona expressamente qual standard está usando?
+
+[ ] A prova apresentada alcança esse standard?
+
+[ ] Se prova não alcança standard: decisão foi de improcedência?
+    (Correto, pois ônus não foi satisfeito)
+
+[ ] Se prova alcança standard: decisão foi de procedência?
+    (Correto, ônus foi satisfeito)
+
+[ ] Se há conflito de standards: tribunal justificou por que usou um
+    em vez de outro?
+
+EXEMPLO CORRETO:
+
+"Em ação de indenização por responsabilidade civil (direito civil), vigora
+o standard de preponderância de evidências. A prova apresentada (testemunhas
+X, Y, Z; documento 4; perícia 5) é suficiente para demonstrar que culpa do
+réu é mais provável que sua inocência. Logo, procedência é adequada."
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO C: CHECKLIST CORRECÇÃO — STANDARD PROBATÓRIO
+
+═══════════════════════════════════════════════════════════════════════════════
+
+[ ] Standard está explicitado na decisão?
+[ ] Standard é o apropriado para o tipo de ação?
+[ ] Prova alcança o standard exigido?
+[ ] Se há dúvida, tribunal foi cauteloso ou precipitado?
+
+================================================================================
+PARTE XIV: TRATADOS INTERNACIONAIS (3-8 PAGINAS)
+================================================================================
+
+OBJETIVO:
+
+Estrutura para verificacao de citacao correta de tratados internacionais
+em peca processual e aplicacao conforme hierarquia normativa.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO A: HIERARQUIA DE TRATADOS NO DIREITO BRASILEIRO
+
+═══════════════════════════════════════════════════════════════════════════════
+
+A.1. TRATADOS DE DIREITOS HUMANOS (Status de Emenda Constitucional)
+
+DEFINIÇÃO: Art. 5º, § 3º CF/88
+
+Tratados internacionais de direitos humanos ratificados pelo Brasil têm
+status de EMENDA CONSTITUCIONAL se aprovados por 3/5 das duas casas do
+Congresso.
+
+EXEMPLOS:
+- Convenção Americana de Direitos Humanos (1992) — status constitucional
+- Protocolo à Convenção Americana sobre Direitos Econômicos, Sociais e
+  Culturais (1999) — status constitucional
+
+VERIFICACAO:
+
+- Tratado foi aprovado pelo Congresso?
+- Passou por procedimento de emenda constitucional?
+- Está vigente?
+
+A.2. TRATADOS ORDINÁRIOS (Status de Lei Ordinária)
+
+DEFINIÇÃO:
+
+Tratados que não passam pelo procedimento de emenda. Têm status de lei
+ordinária (podem ser revogados por lei posterior).
+
+EXEMPLOS:
+- Convenção de Viena sobre Direito dos Tratados
+- Tratados comerciais, extradição, etc.
+
+VERIFICACAO:
+
+- Tratado foi regularmente ratificado e publicado no Diário Oficial?
+- Está vigente?
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO B: COMO CITAR TRATADO CORRETAMENTE
+
+═══════════════════════════════════════════════════════════════════════════════
+
+FÓRMULA:
+
+"Conforme [NOME DO TRATADO], [DISPOSITIVO ESPECÍFICO]: '[TEXTO]', aprovado
+pelo Brasil via [DECRETO Nº XXXXX/XXXX]..."
+
+EXEMPLO 1 (Com status constitucional):
+
+"A Convenção Americana de Direitos Humanos, em seu art. 8º, garante direito
+a julgamento justo: 'Toda pessoa acusada de delito tem direito a ser ouvida
+com as devidas garantias'. Essa convenção, aprovada pelo Brasil via Decreto
+Nº 678/1992, tem status de emenda constitucional."
+
+EXEMPLO 2 (Com status ordinário):
+
+"A Convenção de Viena sobre Direito dos Tratados (1969), ratificada pelo
+Brasil e publicada via Decreto Nº 7.030/2009, estabelece que..."
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO C: APLICAÇÃO DE TRATADOS EM PEÇA PROCESSUAL
+
+═══════════════════════════════════════════════════════════════════════════════
+
+REGRA GERAL:
+
+Se há conflito entre lei ordinária e tratado de direitos humanos (com status
+constitucional), o tratado prevalece.
+
+Se há conflito entre lei ordinária e tratado ordinário, a lei mais recente
+revoga a anterior.
+
+EXEMPLO:
+
+"A Lei XX.XXX/XXXX viola a Convenção Americana de Direitos Humanos porque
+[RAZÃO]. Diante do conflito, a Convenção, que tem status de emenda
+constitucional (Decreto 678/1992), deve prevalecer sobre a lei ordinária."
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO D: CHECKLIST CORRECÇÃO — TRATADOS
+
+═══════════════════════════════════════════════════════════════════════════════
+
+[ ] Tratado está corretamente nomeado?
+[ ] Decreto de ratificação está correto?
+[ ] Status (constitucional vs. ordinário) está apropriado?
+[ ] Disposição citada existe realmente no tratado?
+[ ] Texto foi transcrito corretamente?
+[ ] Se há conflito normativo, prevalência está correta?
+
+================================================================================
+PARTE XV: DISSÍDIOS JURISPRUDENCIAIS — STJ GERAL (6-12 PAGINAS)
+================================================================================
+
+OBJETIVO:
+
+Estrutura para identificacao e correcao de dissidios jurisprudenciais
+(conflitos entre decisoes de tribunais) e citacao de precedentes do STJ.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO A: O QUE É DISSÍDIO JURISPRUDENCIAL?
+
+═══════════════════════════════════════════════════════════════════════════════
+
+DEFINIÇÃO:
+
+Dissídio jurisprudencial ocorre quando dois tribunais (ou duas turmas do
+mesmo tribunal) decidem de forma CONTRÁRIA sobre a mesma questão de direito.
+
+EXEMPLO:
+
+Tribunal de Justiça de São Paulo entende que é possível [X].
+Tribunal de Justiça de Minas Gerais entende que não é possível [X].
+Há dissídio jurisprudencial.
+
+IMPORTÂNCIA:
+
+Dissídio gera insegurança jurídica. Uma das funções do STJ é UNIFORMIZAR
+jurisprudência quando há dissídio.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO B: COMO IDENTIFICAR DISSÍDIO EM PEÇA
+
+═══════════════════════════════════════════════════════════════════════════════
+
+PASSOS:
+
+[1] Identifique a QUESTÃO DE DIREITO controversa (ex: "Prescrição de ação
+    de indenização por dano moral")
+
+[2] Pesquise decisões do STJ sobre a questão
+
+[3] Verifique se há precedente STJ consolidado (entendimento pacífico)
+
+[4] Se há, dissídio foi RESOLVIDO pelo STJ
+
+[5] Se não há ou há conflito, dissídio está VIVO
+
+EXEMPLO DE DISSÍDIO VIVO:
+
+"Questão: Cabimento de ação de condenação ao pagamento de fruta seca em
+árvore.
+
+Posição A (TJ-SP): Sim, é possível indenização.
+Posição B (TJ-MG): Não, fruta seca não é bem apropriável.
+
+Há dissídio vivo? Sim, porque não há entendimento consolidado do STJ."
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO C: COMO CITAR DISSÍDIO CORRETAMENTE
+
+═══════════════════════════════════════════════════════════════════════════════
+
+FÓRMULA:
+
+"Existe dissídio jurisprudencial quanto a [QUESTÃO], conforme demonstram:
+
+(A) [TRIBUNAL 1]: REsp nº XXXXXX/UF, entendimento de que [POSIÇÃO A]
+(B) [TRIBUNAL 2]: REsp nº YYYYYY/UF, entendimento de que [POSIÇÃO B]
+
+Essa divergência gera insegurança jurídica e justifica a intervenção desta
+Corte para uniformização."
+
+EXEMPLO CONCRETO:
+
+"Existe dissídio quanto à legitimidade ativa de associação para defender
+interesses difusos de seus associados:
+
+(A) TJ-SP (REsp nº 1.234.567/SP): Sim, associação é legitimada.
+(B) TJ-RJ (REsp nº 5.678.901/RJ): Não, só órgão competente.
+
+O STJ deve resolver esse conflito [em favor da posição A, porque...]."
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO D: JURISPRUDÊNCIA CONSOLIDADA VS. CONFLITUOSA
+
+═══════════════════════════════════════════════════════════════════════════════
+
+D.1. JURISPRUDÊNCIA CONSOLIDADA (Pacífica)
+
+Definição: Quase todos os órgãos do STJ concordam.
+
+Indicativo: Súmula STJ, Tema de Repetitivo, IRDR.
+
+Frase típica: "É jurisprudência consolidada/pacífica do STJ que..."
+
+D.2. JURISPRUDÊNCIA MINORITÁRIA
+
+Definição: Alguns órgãos discordam da posição majorit
+
+ária.
+
+Indicativo: Votos vencidos, dissidências.
+
+Frase típica: "Ainda que haja posição minoritária entendendo que..., a
+jurisprudência consolidada é que..."
+
+D.3. JURISPRUDÊNCIA CONFLITUOSA
+
+Definição: Nem pacífica nem minoritária; genuína divergência.
+
+Indicativo: Dissídios vivos, ausência de Súmula/Tema.
+
+Frase típica: "Há dissídio jurisprudencial quanto a..."
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SEÇÃO E: CHECKLIST CORRECÇÃO — DISSÍDIOS STJ
+
+═══════════════════════════════════════════════════════════════════════════════
+
+[ ] A questão de direito está claramente identificada?
+[ ] Há dissídio jurisprudencial realmente?
+[ ] Dissídio foi resolvido pelo STJ (há súmula/tema)? Se sim, mencionar.
+[ ] Precedentes citados existem realmente?
+[ ] Números dos REsp estão corretos?
+[ ] Se há jurisprudência consolidada, foi dito "pacífica"?
+[ ] Se há conflito, foi dito "dissídio jurisprudencial"?
+[ ] Ambas as posições foram expostas com honestidade intelectual?
+
+================================================================================
+FIM DA FASE 1.5 — SETE PARTES REDACIONAL-TECNICAS
+================================================================================
+
 ===============================================================================
-FIM DO DOCUMENTO — IAROM_PR006_MINI_CORRECOES_V5.0
+CONTROLE DE VERSOES:
 ===============================================================================
 
-CONTROLE DE VERSOES:
 V1.0 (2025-XX-XX): Versao inicial legado
 V2.0 (2026-03-20): Refatoracao cientifica IAROM
 V5.0 (2026-03-23): Padronizacao ROM V3.0 completa
+V5.0 REFATORADA (2026-03-26): FASE 1.5 — 7 Partes redacional-tecnicas
+  adicionadas [VII, VIII, IX, XIII, XI.2 Standard Probatorio, XIV Tratados,
+  XV Dissidios STJ]
 
+===============================================================================
 ASSINATURA ROM:
+===============================================================================
+
 Dr. Rodolfo Otavio Mota — OAB/GO 21.841
 Sistema ROM V3.0 — Rodolfo Otavio Mota Advogados Associados
+
+Data da Refatoracao: 26/03/2026
+Modelo de Paradigma: PROMPT_APELACAO_CIVEL_V5.0.txt
+Status: REFATORACAO COMPLETA — FASE 1.5
 
 ===============================================================================

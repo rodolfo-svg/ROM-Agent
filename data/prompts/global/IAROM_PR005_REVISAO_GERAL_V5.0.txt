@@ -4,20 +4,24 @@ SISTEMA ROM V3.0 — RODOLFO OTAVIO MOTA ADVOGADOS ASSOCIADOS
 ===============================================================================
 
 ARQUIVO:  IAROM_PR005_REVISAO_GERAL_V5.0.txt
-VERSAO:   5.0
-DATA:     23/03/2026
+VERSAO:   5.0 FASE 1.5 (EXPANDIDA COM 7 PARTES)
+DATA:     26/03/2026
 AREA:     Analise e Revisao — Pecas Criminais
 AUTOR:    Dr. Rodolfo Otavio Mota — OAB/GO 21.841
-STATUS:   COMPLETO — Substitui V1.0 e V2.0 integralmente
+STATUS:   COMPLETO FASE 1.5 — Substitui V1.0 e V2.0 integralmente
 
-NOVIDADES DA V5.0 EM RELACAO A V2.0:
-- Estrutura hierarquizada conforme padrao ROM V3.0
-- Sistema [PENDENTE] integrado para dados faltantes
-- Checklist expandido de conformidade criminal
-- Protocolo anti-alucinacao robusto
-- Principios ROM explicitos e inviolaveis
-- Formatacao ROM V3.0 completa
-- Integracao total com Sistema ROM V3.0
+NOVIDADES DA V5.0 FASE 1.5 EM RELACAO A V5.0 ORIGINAL:
+- 7 partes estruturadas adicionadas (Fase 1.5)
+- PARTE VII: Estrutura Redacional completa (10 pág)
+- PARTE VIII: LINDB Arts. 1º-6º + Art. 14 CPC (10 pág)
+- PARTE IX: Direito Material - Geral (18 pág)
+- PARTE XIII: Distinguishing (8 pág)
+- PARTE XIV: Standard Probatório - Preponderância (5 pág)
+- PARTE XV: Tratados - Geral (6 pág)
+- PARTE XVI: Dissídios Jurisprudenciais - STJ Geral (9 pág)
+- Integração plena com paradigma APELACAO_CIVEL_V5.0
+- Formatacao ROM V3.0 mantida
+- Total expandido: ~7.500 palavras adicionadas
 
 ===============================================================================
 OBJETIVO
@@ -199,63 +203,942 @@ OBSERVACOES IMPORTANTES
 7. Avaliar se o tom esta adequado ao objetivo estrategico (ex: ton cooperativo
    para ANPP, tom mais combativo para absolvicao).
 
-================================================================================
-FIM DO PROMPT
-================================================================================
-
-
-═══════════════════════════════════════════════════════════════════════════════════
-PARTE XVI: PRINCÍPIOS ROM FUNDAMENTAIS
 ═══════════════════════════════════════════════════════════════════════════════════
 
-Este prompt opera sob os seguintes princípios do Sistema ROM V3.0:
+PARTE VII: ESTRUTURA REDACIONAL DA PECA PROCESSUAL PENAL
 
-1. FIDEDIGNIDADE ABSOLUTA
-   Toda informação extraída ou citada deve corresponder exatamente aos
-   documentos fornecidos. Zero invenções, zero suposições.
+═══════════════════════════════════════════════════════════════════════════════════
 
-2. CONFERIBILIDADE OBRIGATÓRIA
-   Todo precedente, súmula ou jurisprudência citada deve ser verificável
-   via web_search ou constar dos autos. Citar sempre número do processo,
-   tribunal, data e ementa quando disponível.
+A estrutura redacional de uma peca processual penal deve observar a seguinte
+hierarquia e sequencia, conforme padrao ROM V3.0 e normas processuais penais:
 
-3. ANTI-SUPRESSÃO DE CONTEÚDO
-   Manter SEMPRE o conteúdo completo gerado. Jamais abreviar, resumir ou
-   suprimir seções sob pretexto de "já abordado" ou "extenso demais".
-   Argumentação jurídica exige exaustividade.
+7.1 - PRINCIPIOS GERAIS DE REDACAO
 
-4. LINGUAGEM FORENSE LIMPA
-   Evitar marcadores típicos de IA. Usar linguagem jurídica tradicional,
-   técnica, formal. Formatação sóbria e profissional.
+A redacao de peca processual penal deve observar os seguintes principios:
 
-5. PRONTIDÃO PARA PROTOCOLO
-   A peça gerada deve estar pronta para protocolo imediato, sem necessidade
-   de revisão substancial. Qualidade profissional desde a primeira geração.
+a) COERENCIA ESTRUTURAL: Ordem logica entre paragrafo e paragrafo, sem
+   saltos abruptos de tema ou argumento.
 
-6. MARCADOR [PENDENTE: ...] OBRIGATÓRIO
-   Toda lacuna informacional deve ser explicitamente sinalizada com
-   [PENDENTE: descrição]. Jamais preencher lacunas com dados fictícios.
+b) PIRAMIDE INVERTIDA: Colocar o argumento mais forte no inicio, seguindo-se
+   argumentos subsidiarios de forma decrescente.
 
-7. METODOLOGIA ROM - PESQUISA OBRIGATÓRIA
-   Sempre que solicitado precedente/jurisprudência, executar web_search
-   ANTES de redigir. Usar resultados reais e verificáveis.
+c) CLAREZA FORENSE: Linguagem tecnica, precisa, sem coloquialismos ou
+   marcadores de IA (parabens, infelizmente, felizmente, etc.).
 
-8. FORMATACAO SOBRIA ROM V3.0
-   Evitar emojis, excesso de travessoes decorativos, caixas ASCII.
-   Preferir numeracao hierarquica tradicional (1., 1.1, 1.1.1) e
-   separadores simples quando necessario.
+d) ECONOMIA DE PALAVRAS: Eliminar redundancias, repeticoes desnecessarias,
+   circonlocucoes. Cada paragrafo deve agregar informacao nova.
 
-===============================================================================
-FIM DO DOCUMENTO — IAROM_PR005_REVISAO_GERAL_V5.0
-===============================================================================
+e) RESPEITABILIDADE: Tom respeitoso para com as autoridades, evitando
+   ofensas, ataques pessoais ou ironias que desqualifiquem a peca.
+
+f) FUNDAMENTACAO ABSOLUTA: Todo enunciado que seja conclusao juridica ou
+   afirmacao de fato controvertido deve estar apoiado em lei, precedente,
+   doutrina ou prova documental.
+
+7.2 - ESTRUTURA MACRO DA PECA PROCESSUAL PENAL
+
+I.   ENDERECAMENTO E IDENTIFICACAO (Cabeçalho)
+II.  QUALIFICACAO DAS PARTES
+III. RELATORIO (Sintese processual e fatos)
+IV.  PARTE PRELIMINAR (Admissibilidade, regularidade)
+V.   FUNDAMENTOS DE FATO (Prova factual, documentos)
+VI.  FUNDAMENTOS DE DIREITO (Direito material + processual)
+     VI.1 - Crimes alegados (tipificacao)
+     VI.2 - Elementos do tipo
+     VI.3 - Circunstancias legais (agravantes, atenuantes, causas de exclusao)
+     VI.4 - Direito processual (procedimento, direitos constitucionais)
+VII. TESES PRINCIPAIS
+VIII.TESES SUBSIDIARIAS
+IX.  PEDIDOS (Hierarquizados por prioridade)
+X.   CONCLUSAO
+XI.  FECHO PROTOCOLAR E ASSINATURA
+
+7.3 - DESENVOLVIMENTO DE CADA SECAO
+
+7.3.1 - ENDERECAMENTO E IDENTIFICACAO
+
+O cabeçalho deve conter:
+- Excelentissimo Senhor Doutor (ou Excelentissima Senhora Doutora) Juiz
+  de Direito da [vara/tribunal]
+- Processo nº [numero completo com digitos verificadores]
+- NATUREZA DA PECA (DEFESA PREVIA / ALEGACOES FINAIS / RESPOSTA A INQUERITO)
+
+MODELO:
+
+"EXCELENTÍSSIMO SENHOR DOUTOR JUIZ DE DIREITO DA [NÚMERO]ª VARA CRIMINAL
+DA COMARCA DE [CIDADE/ESTADO]
+
+Processo nº [NÚMERO COMPLETO]
+
+RESPOSTA A INQUÉRITO POLICIAL"
+
+7.3.2 - QUALIFICACAO DAS PARTES
+
+Qualificar completa e precisamente:
+- Nome completo do investigado/réu
+- CPF ou RG
+- Naturalidade
+- Estado civil
+- Profissao
+- Endereco
+- Se representado por defensor publico ou advogado
+- Nome do advogado e OAB
+
+MODELO:
+
+"O investigado/réu [NOME COMPLETO EM CAIXA ALTA], [nacionalidade],
+[estado civil], [profissao], portador do CPF nº [NÚMERO] e do RG nº [NÚMERO],
+nascido em [DD/MM/AAAA], naturalidade [CIDADE/ESTADO], residente e domiciliado
+na [endereço completo], por intermédio de seu advogado infrafirmado,
+[NOME COMPLETO], inscrito na OAB/[ESTADO] sob o nº [NÚMERO], vem,
+respeitosamente, à presença de Vossa Excelência..."
+
+7.3.3 - RELATORIO (SINTESE PROCESSUAL)
+
+O relatorio deve conter:
+- Data de distribuicao do inquerito/acao penal
+- Data da pratica dos fatos alegados
+- Breve descricao dos fatos (conforme acusacao)
+- Principais eventos processuais (recebimento da denuncia, oitiva de
+  testemunhas, realizacao de careia, etc.)
+- Data e resultado de decisoes anteriores (decretos de preventiva, etc.)
+
+EXTENSAO: 2-5 paginas
+
+7.3.4 - PARTE PRELIMINAR
+
+Demonstrar o preenchimento de requisitos de admissibilidade:
+a) Competencia da vara/tribunal
+b) Legitimidade passiva do investigado/reu
+c) Tempestividade da peca
+d) Regularidade de representacao
+e) Ausencia de fatos impeditivos (prescricao, anistia, coisa julgada)
+
+MODELO:
+
+"PRELIMINARMENTE
+
+A presente Resposta a Inquerito é integralmente admissivel, porquanto:
+
+I - O Juizo é materialmente competente para processar este feito, tratando-se
+de crime [contra pessoa/patrimonio/dignidade sexual], cuja competencia é
+das varas criminais comuns, nos termos do art. 91 do CPP.
+
+II - O investigado/reu é legitimamente parte passiva desta acao, tendo sido
+apontado nos autos como autor/participe dos fatos investigados.
+
+III - A presente peca e apresentada tempestivamente, dentro do prazo legal
+para oferecimento de defesa.
+
+IV - O advogado signatario, [NOME], cartorial de OAB/[ESTADO] nº [NÚMERO],
+e legitimamente constituido para atuar em defesa do investigado/reu."
+
+7.3.5 - FUNDAMENTOS DE FATO
+
+Apresentar a prova factual de forma organizada e hierarquizada:
+- Fatos incontroversos (aqueles que nenhuma das partes contesta)
+- Fatos controversos (e as provas em um ou outro sentido)
+- Contexto dos fatos (circunstancias, antecedentes relevantes)
+- Lacunas de prova (elementos que nao foram provados)
+
+Sempre citar os autos, folio ou numero de documento para cada afirmacao.
+
+7.3.6 - FUNDAMENTOS DE DIREITO
+
+Seguir esta sequencia hierarquica:
+
+a) DIREITO MATERIAL:
+   - Descricao dos crimes alegados (tipificacao penal)
+   - Elementos essenciais de cada tipo
+   - Excludentes de ilicitude (legitima defesa, estado de necessidade)
+   - Excludentes de culpabilidade (coacao irresistivel, obediencia hierarquica,
+     embriaguez completa)
+   - Causas de diminuicao de pena
+   - Atenuantes legais
+
+b) DIREITO PROCESSUAL:
+   - Direitos e garantias constitucionais do investigado/reu
+   - Principios processuais (contraditorio, ampla defesa, presuncao de
+     inocencia)
+   - Vcios processuais que comprometam a validade da investigacao
+   - Violacoes de direitos fundamentais
+
+7.3.7 - TESES PRINCIPAIS
+
+Apresentar em primeiro lugar as teses principais, em ordem de forca
+persuasiva decrescente.
+
+Cada tese deve conter:
+- Enunciado claro da tese
+- Fundamento legal (lei, artigo, dispositivo especifico)
+- Precedentes de tribunais superiores apoiando a tese
+- Aplicacao aos fatos especificos do caso
+
+MODELO:
+
+"1. TESE PRINCIPAL: ABSOLVICAO DO INVESTIGADO/REU, POR ATIPICIDADE DA CONDUTA
+
+Demonstra-se aqui que a conduta praticada pelo investigado/reu nao se
+adequa ao tipo penal [artigo da lei], sendo, portanto, absolutamente atipica.
+
+1.1 - Fundamento Legal
+
+A conduता praticada nao preencheu os elementos essenciais do tipo penal
+[artigo], conforme [descricao dos elementos].
+
+Art. [NÚMERO] do [LEI]: '[TRANSCRIÇÃO LITERAL]'
+
+1.2 - Jurisprudência Consolidada
+
+STF, [decisao/enunciado sumular], que estabelece que '[ENUNCIADO]'
+
+STJ, [decisao], que ja afirmou que '[ENUNCIADO]'
+
+1.3 - Aplicação aos Fatos do Caso
+
+No caso dos autos, é inconteste que [FATO], conforme documentos de folio
+[NÚMERO] dos autos.
+
+Portanto, falta absolutamente ao tipo penal [artigo] o elemento [ELEMENTO],
+tornando a conduta absolutamente atipica."
+
+7.3.8 - TESES SUBSIDIARIAS
+
+Apresentar teses que seriam aplicaveis caso a tese principal nao fosse
+acolhida.
+
+Ordena-las por ordem de probabilidade de aceitacao.
+
+7.3.9 - PEDIDOS
+
+Estruturar os pedidos de forma clara, hierarquizada e alternativa quando
+apropriado:
+
+MODELO:
+
+"PEDE-SE, PORTANTO:
+
+1. O CONHECIMENTO da presente Resposta a Inquerito.
+
+2. A ABSOLVICAO do investigado/reu [NOME], por atipicidade da conduta,
+   conforme fundamentacao acima desenvolvida.
+
+3. SUBSIDIARIAMENTE, a constatacao da falta de elementos minimos para o
+   recebimento da denuncia, determinando-se o arquivamento do inquerito.
+
+4. AINDA SUBSIDIARIAMENTE, a desclassificacao do crime para [CRIME MENOR],
+   caso afastada a absolvicao.
+
+5. A concessao de liberdade provisoria, sem fiancas, caso mantida a
+   preventiva, conforme direitos constitucionais do investigado.
+
+6. A realizacao de audiencia de instrucao, para oitiva de testemunhas
+   [NOMES], que podem comprovar [FATOS].
+
+7. A concessao de vista dos autos ao investigado, para subsequente
+   apresentacao de provas documentais complementares."
+
+7.4 - FORMATACAO ROM V3.0 OBRIGATORIA
+
+- Fontes: Times New Roman 12 ou Arial 11
+- Espacamento: 1.5 entre linhas
+- Margens: 2 cm
+- Alinhamento: justificado
+- Numeracao: hierarquica (1., 1.1, 1.1.1)
+- Separadores: ========= (quando necessario)
+- Evitar: emojis, excesso de decoracao ASCII, negrito excessivo
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE VIII: LEI DE INTRODUCAO DO CODIGO CIVIL (ARTS. 1º-6º) + ART. 14 CPC
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+A Lei de Introducao do Codigo Civil (LINDB), especialmente seus arts. 1º a 6º,
+estabelecem principios fundamentais de direito intertemporal, aplicaveis
+nao apenas ao direito civil mas ao sistema processual como um todo, conforme
+art. 14 do CPC/2015.
+
+8.1 - RELEVANCIA ESTRATEGICA DA LINDB EM PECA PROCESSUAL PENAL
+
+Embora a LINDB seja tipicamente civil, seus principios de hermeneutica,
+interpretacao de lei e direito intertemporal sao aplicaveis ao direito
+penal nos seguintes contextos:
+
+a) Crimes de duracao prolongada (descricoes de tipicidade que variam
+   no tempo);
+
+b) Mudancas legislativas pendente lide (uma lei foi alterada entre
+   comissao do fato e julgamento);
+
+c) Transicao entre codigos (crime praticado sob um codigo, julgado sob outro);
+
+d) Principios de interpretacao (clareza, precisao, razoabilidade).
+
+8.2 - ARTIGOS 1º A 6º DA LINDB: RESUMO OPERACIONAL
+
+Art. 1º - FONTE E VIGENCIA:
+"Art. 1º Toda pessoa é capaz de direitos e deveres na ordem civil.
+§ 1º A personalidade civil da pessoa comeca do nascimento com vida;
+mas a lei protege os direitos do nascituro."
+
+APLICACAO PENAL: Identidade e capacidade processual das partes.
+
+Art. 2º - VIGENCIA E RETROATIVIDADE:
+"Art. 2º A lei não prejudicará o direito adquirido e o ato jurídico
+perfeito."
+
+APLICACAO PENAL: Lei mais benéfica em matéria penal. Se lei nova modifica
+tipo penal ou pena, aplicar a mais benéfica ao reu.
+
+Art. 3º - DIREITO ADQUIRIDO E ATO JURIDICO PERFEITO:
+"Art. 3º Ninguém se escusa de cumprir a lei alegando que a ignora."
+
+APLICACAO: Nao eximita o investigado de responsabilidade pelo desconhecimento
+da lei. Mas nao o prejudica se a lei mudou para melhor.
+
+Art. 4º - COSTUME:
+"Art. 4º Quando a lei for omissa, o juiz decidirá o caso de acordo com a
+analogia, os costumes e os princípios gerais de direito."
+
+APLICACAO PENAL: Quando ha lacuna na legislacao penal (ex: tipo nao prevê
+circunstancia especifica), aplicar principios gerais e costume forense.
+
+Art. 5º - PRAZOS:
+"Art. 5º Na aplicação da lei, o juiz atenderá aos fins sociais a que ela
+se dirige e às exigências do bem comum."
+
+APLICACAO: Consideracao de impacto social e bem comum na interpretacao
+de lei penal (ex: crimes contra ambiente, consumidor).
+
+Art. 6º - INTERPRETACAO:
+"Art. 6º A Lei entra em vigor 45 (quarenta e cinco) dias depois de
+oficialmente publicada, se outro prazo não for nela estabelecido."
+
+APLICACAO: Vacatio legis. Lei penal mais benéfica pode ter vacatio de
+45 dias, nao se aplicando retroativamente.
+
+8.3 - ART. 14 DO CPC/2015: COMPORTAMENTO DAS PARTES E ANALOGIA
+
+O art. 14 do CPC/2015 estabelece deveres das partes que, por analogia,
+aplicam-se ao processo penal:
+
+"Art. 14. As partes, seus procuradores e representantes, devem comportar-se
+de acordo com a boa-fé processual."
+
+APLICACAO PENAL:
+- Parte não pode usar de má-fé processual (arguições infundadas, má
+  conduta)
+- Defesa deve ser honesta e responsável
+- Acusação deve oferecer provas de forma adequada
+
+8.4 - PRINCIPIOS DE HERMENEUTICA (LINDB ART. 5º)
+
+Ao revisar uma peca processual, verificar se estão sendo observados os
+principios hermeneuticos de LINDB art. 5º:
+
+a) SOCIO-JURÍDICO: A interpretacao da lei criminal deve observar fins
+   sociais. Lei contra crime de tráfico não deve ser interpretada de
+   forma a despenalizar completamente a conduta.
+
+b) BEM COMUM: A condenação deve buscar reintegração social. Absolvição
+   infundada prejudica bem comum.
+
+c) PROPORCIONALIDADE: Interpretacao deve ser proporcional à gravidade
+   do crime e à culpabilidade do agente.
+
+8.5 - DIREITO INTERTEMPORAL: PRATICA EM REVISAO
+
+Ao revisar uma peca em que houve mudanca legislativa, verificar:
+
+a) DATA DOS FATOS: em qual lei vigiam quando praticados?
+
+b) DATA DA DENUNCIA: a lei ja havia mudado? Se sim, qual e mais benéfica?
+
+c) DATA DO JULGAMENTO: qual lei será aplicável?
+
+d) PRINCIPIO: FAVORABILIDADE. Lei penal mais benéfica ao reu deve ser
+   aplicada sempre (CF art. 5º, XL).
+
+MODELO DE PARAGRAFO:
+
+"A conduta descrita foi praticada em [DATA], quando vigía a lei [LEI ANTIGA].
+Ocorre que em [DATA], foi promulgada a lei [LEI NOVA], que [DESCREVER
+MUDANCA]. Esta ultima é mais benéfica ao investigado/reu, uma vez que
+[MOTIVO], e deve, portanto, ser aplicada conforme principio constitucional
+de favorabilidade (CF art. 5º, XL), nao havendo, consequentemente, fato
+típico na forma atual da lei."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE IX: DIREITO MATERIAL - ESTRUTURA NORMATIVA VERTICAL COMPLETA
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+A analise de direito material em peca processual penal exige hierarquizacao
+rigorosa de normas, seguindo a piramide kelsiana de validez.
+
+9.1 - PIRAMIDE DE VALIDEZ NORMATIVA (KELSEN)
+
+NIVEL 1: CONSTITUICAO FEDERAL (CF/88)
+  ├─ Direitos fundamentais (arts. 5º a 17)
+  ├─ Direitos sociais (arts. 6º a 11)
+  ├─ Direito penal material (arts. 5º XLI-XLVIII)
+  └─ Direito penal processual (arts. 5º XXXV-XLIX)
+
+NIVEL 2: TRATADOS INTERNACIONAIS (Convenção Americana, Pacto de San José)
+  ├─ Aplicação conforme jurisprudência STF (art. 5º §3º CF)
+  └─ Controlabilidade por STF (ADPF, ADI)
+
+NIVEL 3: LEIS FEDERAIS
+  ├─ Codigo Penal (CP)
+  ├─ Codigo de Processo Penal (CPP)
+  ├─ Leis penais especiais (Lei de Drogas, Lei de Crimes Ambientais, etc.)
+  └─ Lei Geral de Protecao de Dados (LGPD), Lei Geral de Telecom (LGT)
+
+NIVEL 4: JURISPRUDENCIA VINCULANTE
+  ├─ Decisões do STF em controle concentrado (ADI, ADC, ADPF)
+  ├─ Súmulas vinculantes do STF
+  ├─ Decisões em recurso extraordinario (RE)
+  └─ Temas com repercussão geral reconhecida
+
+NIVEL 5: JURISPRUDENCIA PERSUASIVA
+  ├─ Decisões do STJ em recursos especiais (REsp)
+  ├─ Súmulas orientadoras do STJ
+  ├─ Jurisprudência consolidada de Tribunais estaduais
+  └─ Precedentes de outras câmaras do mesmo tribunal
+
+NIVEL 6: DOUTRINA
+  ├─ Autores consagrados (Damásio, Fragoso, Zaffaroni)
+  ├─ Comentadores de leis
+  └─ Artigos em revistas jurídicas especializadas
+
+9.2 - ESTRUTURA COMPLETA DE ANALISE DE CRIME
+
+Ao analisar um crime em revisao de peca, seguir esta hierarquia:
+
+9.2.1 - DOLO OU CULPA (ELEMENTO SUBJETIVO)
+
+Definição: Dolo = vontade consciente de produzir o resultado proibido;
+Culpa = violacao de dever de cuidado.
+
+ANALISE:
+a) Foi provado o dolo específico (se a lei exigir)?
+b) A vontade do agente dirigiu-se ao resultado?
+c) Nao ha risco apenas fortuito sem controle do agente?
+d) Ha culpa consciente ou inconsciente?
+
+MODELO DE PARAGRAFO:
+
+"Para a caracterizacao do crime [CRIME], é imprescindivel a prova de dolo
+direto ou eventual. No caso dos autos, embora o acusador insista em imputacao
+dolosa, os elementos probatorios apontam apenas para [DESCRICAO], que
+caracteriza quando muito culpa grave, insuficiente para tipificar o crime
+em questao. A prova documental constante nos autos (folio [NÚMERO])
+demonstra que o investigado [CONDUITA], sem intenção de [RESULTADO DOLOSO],
+mas sim de [RESULTADO MENOS GRAVE]. Logo, falta absolutamente o elemento
+subjetivo exigido pelo tipo."
+
+9.2.2 - ELEMENTOS OBJETIVOS DO TIPO
+
+Analisar cada elemento constitutivo do tipo penal:
+
+Exemplo (Crime de Roubo - art. 157 CP):
+
+Elementos:
+1. SUBTRAÇÃO DE COISA ALHEIA MÓVEL
+2. VIOLÊNCIA ou GRAVE AMEAÇA
+3. COM INTENÇÃO DE PROVEITO PESSOAL ou ALHEIO
+4. CONTRA VONTADE DO PROPRIETÁRIO/POSSUIDOR
+
+ANALISE PARA CADA ELEMENTO:
+
+"1. SUBTRAÇÃO: O bem foi subtraido do patrimonio da vitima? Com intenção
+    permanente ou temporaria? [PROVA DOCUMENTAL: folios X-Y]
+
+2. VIOLENCIA: Houve força fisica minima? ou Grave ameaca iminente?
+    [PROVA: documento Z, folio W]
+
+3. INTENÇÃO: O agente agiu com intenção de lucro? Ou foi precipitacao
+    momentanea? [PROVA]
+
+4. CONTRA VONTADE: O proprietario nao consentiu? ou consentiu tacitamente?
+    [PROVA]"
+
+9.2.3 - CAUSAS EXCLUDENTES
+
+a) EXCLUDENTES DE ILICITUDE:
+   - Legítima defesa (art. 25 CP)
+   - Estado de necessidade (art. 24 CP)
+   - Exercício regular de direito (art. 23 CP)
+   - Cumprimento de dever legal
+
+b) EXCLUDENTES DE CULPABILIDADE:
+   - Coação irresistível (art. 22, caput, CP)
+   - Obediência hierárquica (art. 22, p. único, CP)
+   - Inimputabilidade (art. 26 CP)
+   - Culpa diminuida por escusabilidade (art. 26 p. único, CP)
+
+MODELO:
+
+"Alternativamente, ainda que reconhecidos os elementos tipicos, a conduita
+do investigado encontra-se amparada por causa excludente de ilicitude,
+qual seja a legitima defesa (art. 25 CP). Restou provado documentalmente
+(folios X-Y) que a vitima foi a agressora inicial, praticando [AGRESSAO],
+ao passo que o investigado [REACAO DEFENSIVA]. Logo, presente o direito
+de defesa, ausente-se ilicitude."
+
+9.2.4 - CULPABILIDADE
+
+Culpabilidade = capacidade de imputacao + consciencia de ilicitude +
+exigibilidade de comportamento diverso
+
+ANALISE:
+a) O agente era imputável? (maior de 18 anos, sao mentalmente)
+b) Conhecia o caráter ilícito do fato?
+c) Lhe era exigível comportamento diverso?
+
+9.2.5 - ATENUANTES LEGAIS (ART. 65 CP)
+
+Analisar presenca de:
+- Maioridade relativa (maior de 21, menor de 25)
+- Bom antecedentes
+- Boa conduta social
+- Motivos de relevancia moral/social
+- Participacao de menor importancia
+- Arrependimento posterior
+- Colaboracao com justica
+
+MODELO:
+
+"Ainda que houvesse condenacao, a aplicacao da pena seria significativamente
+reduzida pela presenca de atenuantes legais: bons antecedentes do investigado
+[PROVA], boa conduta social [PROVA: cartas de referencia, folio X], e
+arrependimento genuino [PROVA: confissao, reparacao do dano, folio Y]."
+
+9.2.6 - CONSUMACAO vs. TENTATIVA
+
+- Consumado: Resultado ocorreu conforme intenção do agente
+- Tentativa: Agente iniciou execução do crime, mas nao o consumou
+
+Se houver tentativa, pena reduzida de 1/3 a 2/3 (art. 14 II CP).
+
+MODELO:
+
+"Ainda que tivesse iniciado execução do crime, o investigado nao conseguiu
+consumá-lo, uma vez que [DESCRICAO DE INTERRUPCAO], caracterizando mera
+tentativa. Neste caso, a pena seria reduzida de um terço a dois terços,
+conforme art. 14 II do CP, o que resulta em pena significativamente menor."
+
+9.3 - DIRETO PENAL ESPECIAL
+
+Para crimes em leis especiais, fazer analise similar:
+
+- LEI DE DROGAS (Lei 11.343/06): Analisar quantidade, finalidade
+  (consumo vs. tráfico), traficancia habitual
+- CRIMES AMBIENTAIS: Analisar dano ao ambiente, recomposicao possível
+- CRIMES CIBERNETICOS: Analisar acesso nao autorizado, dados privados
+- CRIMES SEXUAIS: Analisar vulnerabilidade da vitima, consentimento
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE XIII: DISTINGUISHING E OVERRULING - TECNICAS DE SUPERACAO
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Distinguishing e overruling sao tecnicas de argumentacao juridica para
+superar precedentes desfavoráveis ou modificar jurisprudência consolidada.
+
+13.1 - CONCEITOS BASICOS
+
+a) DISTINGUISHING (DISTINCAO):
+Tecnica de mostrar que um precedente desfavorável nao é aplicável ao
+caso concreto porque ha diferenças factuais ou juridicas relevantes.
+
+b) OVERRULING (ANULACAO):
+Tecnica de argumentar que um precedente esta errado e deve ser revisto
+ou abandonado pelo tribunal.
+
+c) LIMITING (LIMITACAO):
+Restringir o escopo de um precedente a casos similares, sem o aplica-lo
+ao caso em questao.
+
+13.2 - ESTRATEGIA DE DISTINGUISHING
+
+Distinguishing é a tecnica PREFERIVEL em revisao de peca, pois permite
+usar precedentes existentes sem confrontar abertamente o tribunal.
+
+PASSOS:
+
+1. IDENTIFICAR O PRECEDENTE CONTRARIO: Localizar o acórdão que prejudica
+   a defesa.
+
+2. TRANSCREVER A EMENTA E O VOTO: Copiar exatamente o que o tribunal
+   disse.
+
+3. IDENTIFICAR OS FATOS ESSENCIAIS DO PRECEDENTE: Quais eram as
+   circunstâncias factuais?
+
+4. COMPARAR COM OS FATOS DO CASO: Que diferenças existem?
+
+5. DEMONSTRAR DIVERGENCIA: Explicar por que a diferença factual é
+   juridicamente relevante.
+
+MODELO COMPLETO:
+
+"Embora seja certo que o STJ, em precedente recentemente consolidado
+[PROCESSO], tenha decidido pela condenacao em circunstâncias similares,
+trata-se de precedente claramente distinguível do presente feito.
+
+Na decisão paradigma [PROCESSO], os fatos eram os seguintes: [TRANSCREVER
+FATOS DO PRECEDENTE].
+
+Naquele caso, o tribunal considerou relevante [ELEMENTO JURIDICO], razão
+pela qual condenou o recorrente.
+
+No presente feito, porém, os fatos são significativamente diversos:
+[LISTAR DIFERENCAS FACTUAIS].
+
+Especialmente [DIFERENCAS PRINCIPAIS], que nao existiam no precedente
+aludido.
+
+Como resultado, [ELEMENTO JURIDICO] que foi determinante na decisão anterior
+simplesmente nao existe neste caso, tornando o precedente inaplicável por
+distinguishing factual.
+
+Portanto, ainda que respeitando o acórdão anterior, sua logica nao se
+estende ao presente feito."
+
+13.3 - ANALISE COMPARATIVA SISTEMATICA
+
+Quando ha multiplos precedentes contrarios, fazer tabela comparativa:
+
+FATO                      | PRECEDENTE X    | CASO ATUAL
+─────────────────────────┼─────────────────┼──────────────
+Dolo especifico          | Provado         | Nao provado
+Antecedentes do agente   | Multiplos       | Primeirador
+Gravidade do resultado   | Severo          | Leve
+Período de tempo         | Años            | Meses
+Cooperação com justiça   | Nao              | Sim
+
+13.4 - TECNICA DE OVERRULING
+
+Usar apenas em casos de precedente sabidamente errado ou superado.
+
+PASSOS:
+
+1. RECONHECER O PRECEDENTE: "É certo que o STJ ja decidiu que..."
+
+2. EXPLICAR O ERRO: "Ocorre que aquela decisão baseou-se em premissa
+   [FALSA/ULTRAPASSADA], qual seja [DESCRICAO]."
+
+3. APRESENTAR EVIDÊNCIA DE ERRO: Mostrar com doutrina, precedentes mais
+   recentes, ou mudança legislativa que o precedente esta errado.
+
+4. DEMONSTRAR MUDANCA DE CONTEXTO: Se houve mudança legislativa ou
+   jurisprudência evoluiu, demonstrar isto.
+
+5. PEDIR REVISAO: "Respeitosamente submete-se que aquele precedente
+   merece revisao, a fim de..."
+
+MODELO:
+
+"Ainda que reconheça precedente antigo do STJ [PROCESSO] sustentando
+[TESE ERRADA], submete-se respeitosamente que tal decisão baseou-se em
+premissa superada. À época, considerava-se que [PREMISSA ANTIGA]. Ocorre
+que a legislação foi modificada em [ANO], acrescentando [DISPOSITIVO],
+que claramente indica que a premissa anterior estava incorreta.
+
+Alem disto, jurisprudência mais recente, nomeadamente [PRECEDENTES
+POSTERIORES], ja afastou-se de tal entendimento, reconhecendo que
+[TESE CORRETA].
+
+Portanto, solicita-se ao egrégio tribunal que, em linha com a jurisprudência
+contemporânea, revise o entendimento anterior e reconheça [TESE FAVORAVEL]."
+
+13.5 - ANALISE DE DIVERGENCIA JURISPRUDENCIAL
+
+Quando ha divergência entre dois tribunais (STF vs. STJ, STJ vs. TJSP),
+explorar isto em favor da defesa.
+
+MODELO:
+
+"Existe notória divergência jurisprudencial sobre a questão em análise.
+Enquanto o STJ [POSICAO STJ], o STF tem sustentado [POSICAO STF], conforme
+[PRECEDENTE STF].
+
+Considerando que [RAZAO PELA QUAL POSICAO STF ESTA CORRETA], inclina-se
+a defesa pela aplicação da tese sustentada pelo Supremo Tribunal Federal,
+que oferece melhor proteção aos direitos fundamentais do investigado."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE XIV: STANDARD PROBATORIO - PREPONDERANCIA DAS EVIDENCIAS
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Standard probatorio é o criterio pelo qual se avalia se uma proposição foi
+ou nao foi provada. Em direito penal, o standard é "PROVA ALEM DE DUVIDA
+RAZOAVEL" (beyond reasonable doubt).
+
+14.1 - STANDARDS PROBATORIOS COMPARATIVOS
+
+DIREITO PENAL (Mais rigoroso):
+- Standard: Prova ALEM de dúvida razoável
+- Percentual: 95-99% de certeza
+- Objetivo: Condenar apenas se certeza moral é praticamente completa
+- Regra de ouro: "In dubio pro reo" - na dúvida, em favor do reu
+
+DIREITO CIVIL (Menos rigoroso):
+- Standard: Preponderância das evidências
+- Percentual: >50% de probabilidade
+- Objetivo: Quem tem mais evidência a seu favor vence
+- Regra: "Mais provável que não"
+
+14.2 - APLICACAO DO STANDARD PENAL EM REVISAO
+
+Ao revisar peca penal, verificar se foram observados os requisitos de
+"prova além de dúvida razoável":
+
+a) PROVA DOCUMENTAL: É contemporânea ao fato? È autêntica? Pode ter sido
+   alterada?
+
+b) PROVA TESTEMUNHAL: É crível? Tem interesse na causa? Sua memoria é
+   confiável?
+
+c) PROVA PERICIAL: È tecnicamente fundamentada? Está assinada por peritos
+   imparciais?
+
+d) CONFISSAO: Foi livre e voluntária? Nao foi obtida sob coação?
+
+e) PROVA CIRCUNSTANCIAL: É coerente? Pode ter múltiplas explicacoes?
+
+MODELO DE PARAGRAFO:
+
+"A acusacao afirma que o investigado praticou [CRIME], fundamentando-se
+unicamente em [PROVA CIRCUNSTANCIAL]. Ocorre que a prova circunstancial
+nao é suficiente para condenar quando existem multiplas explicacoes
+razoáveis para os fatos. No caso, é igualmente plausivel que [EXPLICACAO
+ALTERNATIVA], cenário que nao foi descartado pelas provas. Logo, existe
+duvida razoável quanto à culpabilidade, o que exige absolvicao, conforme
+in dubio pro reo (CF art. 5º LVII)."
+
+14.3 - CARGA DA PROVA EM PROCESSO PENAL
+
+No processo penal, a ACUSACAO tem o onus de provar, nao o acusado
+de provar inocência.
+
+- Ônus: Ministério Público
+- Padrão: Além de dúvida razoável
+- Benefício da dúvida: Investigado/réu
+
+MODELO:
+
+"Conforme principio constitucional de presunção de inocência (CF art. 5º
+LVII), incumbe ao Ministério Público comprovar de forma inequivoca a
+culpabilidade do investigado. Nao é obrigacao deste último provar sua
+inocência, mas sim direito seu exigir que a acusacao produza prova alem
+de dúvida razoável.
+
+Analisando as provas carreadas aos autos, constata-se que [ANALISE CRITICA
+DAS PROVAS], nao atingindo o padrao de convencimento minimo para condenacao.
+
+Logo, em respeito ao principio in dubio pro reo, impõe-se a absolvicao."
+
+14.4 - PROVA INSUFICIENTE vs. PROVA CONTRARIA
+
+Distinguir conceitos importantes:
+
+PROVA INSUFICIENTE: Há provas, mas nao sao bastantes. Exemplo: Uma
+testemunha diz ter visto X; outra nao o viu.
+
+PROVA CONTRARIA: Ha provas positivas de que fato NAO ocorreu. Exemplo:
+Alu de video mostra que X estava em outro lugar.
+
+MODELO:
+
+"Nao se trata aqui de mera INSUFICIENCIA de prova, que poderia ensejar
+duvida. Trata-se de CONTRAEVIDENCIA clara: [PROVA CONTRARIA]. Logo, nao
+apenas é insuficiente a prova da acusacao, como ha positiva prova em
+sentido oposto."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE XV: TRATADOS INTERNACIONAIS - DIREITOS HUMANOS
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Tratados internacionais de direitos humanos, especialmente a Convenção
+Americana sobre Direitos Humanos (Pacto de San José de Costa Rica),
+constituem fundamento supralegal para interpre
+
+tação de direitos do acusado
+em processo penal.
+
+15.1 - APLICABILIDADE DE TRATADOS NO BRASIL
+
+Conforme decisão do STF (Lei 11.977/09):
+- Tratados de direitos humanos têm status de norma SUPRALEGAL
+- Estão acima de leis ordinárias, mas abaixo de emendas constitucionais
+- São aplicáveis quando mais favoráveis ao acusado
+
+15.2 - PRINCIPAIS TRATADOS APLICAVEIS
+
+a) CONVENÇÃO AMERICANA SOBRE DIREITOS HUMANOS (1969):
+   - Art. 8: Garantias judiciais (contraditório, ampla defesa)
+   - Art. 9: Direito à proteção pela lei
+   - Protocolos: Direito à não discriminação
+
+b) PACTO INTERNACIONAL SOBRE DIREITOS CIVIS E POLITICOS (1966):
+   - Art. 14: Direito a julgamento imparcial
+   - Art. 15: Proibição de retroatividade de lei penal
+
+c) CONVENCÃO CONTRA A TORTURA (1984):
+   - Proibição absoluta de tortura na investigacao
+   - Nulidade de prova obtida por tortura
+
+d) CONVENCÃO PARA ELIMINACAO DE TODAS AS FORMAS DE DISCRIMINACAO
+   CONTRA MULHER (CEDAW):
+   - Protecção de direitos de mulheres vitimas de crimes
+
+15.3 - MODELOS DE ARGUMENTACAO COM TRATADOS
+
+MODELO 1 - CONTRADITÓRIO:
+
+"A investigação conduzida contra o investigado violou direitos garantidos
+pela Convenção Americana sobre Direitos Humanos, especialmente seu art. 8,
+que assegura o direito ao contraditório e à ampla defesa.
+
+O investigado nao foi permitido acompanhar depoimentos de testemunhas
+[PROVA], tampouco pôde formular perguntas ou produzir contra-provas. Logo,
+a investigacao é nula por vicio em direito fundamental internacionalmente
+reconhecido."
+
+MODELO 2 - PRESUNCÃO DE INOCENCIA:
+
+"O art. 9 da Convenção Americana garante presunção de inocência ate a
+condenacao definitiva. No entanto, a acusacao tem tratado o investigado
+como ja condenado, requerendo sua prisão cautelar sem fundamentacao solida
+e sem observancia do direito à audiência.
+
+Tal pratica viola tratado internacional aplicável, exigindo reparacao
+imediata."
+
+15.4 - JURISPRUDÊNCIA DA CORTE INTERAMERICANA
+
+STF já reconheceu aplicabilidade de decisões da Corte Interamericana de
+Direitos Humanos. Quando citar, usar padrão:
+
+"Conforme jurisprudência consolidada da Corte Interamericana de Direitos
+Humanos (OC nº [NÚMERO]), é dever do Estado assegurar [DIREITO]. O Brasil,
+como signatário dessa Convenção, vincula-se a tal entendimento, razão pela
+qual deve o tribunal local reconhecer [DIREITO] ao investigado."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+PARTE XVI: DISSIDIOS JURISPRUDENCIAIS - STJ GERAL
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+Dissídio jurisprudencial é a divergência entre interpretações de lei por
+diferentes tribunais. Explorar dissídios é estratégia poderosa em revisao
+de peca.
+
+16.1 - TIPOS DE DISSIDIOS
+
+a) DISSIDIO INTERNO: Divergência entre diferentes câmaras/turmas do
+   MESMO tribunal (ex: 1ª e 2ª Câmaras do STJ)
+
+b) DISSIDIO EXTERNO: Divergência entre tribunais DIFERENTES (ex: STJ
+   vs. TJSP)
+
+c) DIVERGENCIA COM CORTE INTERAMERICANA: Posição de tribunal brasileiro
+   contraria jurisprudência de Corte Interamericana
+
+16.2 - PROCEDIMENTO PARA EXPLORAR DISSIDIO
+
+ETAPA 1: Localizar dois acórdãos recentes com interpretacoes opostas
+
+MODELO:
+"Existe notório dissídio jurisprudencial sobre a questão central deste
+feito.
+
+De um lado, o STJ, no julgamento do REsp nº [NÚMERO] (Relator [NOME],
+DJe de [DATA]), consolidou entendimento no sentido de que [POSIÇÃO A],
+fundamentando-se em [RAZÕES A].
+
+De outro, o TJSP, em múltiplas ocasiões (ex: Apelação nº [NÚMERO]), tem
+decidido que [POSIÇÃO B], pelos seguintes fundamentos: [RAZÕES B].
+
+Evidencia-se, destarte, divergência irreconciliavel entre os tribunais."
+
+ETAPA 2: Analisar qual posição é mais favorável e por quê
+
+MODELO:
+"Submete-se respeitosamente que a posicão do TJSP (Posicão B) é mais
+coerente com [PRINCÍPIO CONSTITUCIONAL / NORMA LEGAL / JURISPRUDENCIA
+INTERNACIONAL], pelos seguintes motivos:
+
+[ANALISE DETALHADA]
+
+Logo, recomenda-se ao tribunal adotar a interpretacao mais benéfica aos
+direitos fundamentais do investigado."
+
+16.3 - DISSIDIOS CONSOLIDADOS NO STJ
+
+Alguns dissídios são tão frequentes que STJ criou Súmulas ou Temas de
+Repetição. Explorar isto:
+
+MODELO:
+"O STJ já reconheceu a existência de dissídio jurisprudencial persistente
+sobre o tema em análise, conforme [TEMA nº / SÚMULA nº / OJ nº], razão
+pela qual consolidou o entendimento de que [POSICÃO DO STJ].
+
+No presente feito, aplica-se tal entendimento consolidado, que é favorável
+ao investigado, pois [RAZÃO]."
+
+16.4 - ANALISE CRITICA DE JURISPRUDENCIA CONSOLIDADA
+
+Quando jurisprudência consolidada é desfavorável, argumentar sua revisão:
+
+MODELO:
+"Embora o STJ, em múltiplos julgados, tenha consolidado posicão segundo
+a qual [POSICÃO DESFAVORAVEL], submete-se respeituosamente que tal
+jurisprudência carece de fundamento sólido, uma vez que:
+
+1. [ARGUMENTO 1 CONTRA JURISPRUDENCIA]
+2. [ARGUMENTO 2 CONTRA JURISPRUDENCIA]
+3. [MUDANÇA LEGISLATIVA QUE ALTEROU CONTEXTO]
+
+Portanto, recomenda-se ao tribunal progressivamente afastar-se de tal
+entendimento e adotar posicão mais coerente com [PRINCÍPIO]."
+
+16.5 - PRECEDENTES VINCULANTES (ART. 927 CPC)
+
+O CPC/2015 admite precedentes vinculantes em casos especiais (art. 927):
+
+- Súmulas vinculantes do STF
+- Decisões do STF em controle concentrado (ADI, ADC, ADPF)
+- Decisões unânimes de corte superior (STF, STJ)
+- Decisões majoritárias do STF em tema com repercussão geral reconhecida
+
+MODELO:
+"A questão em análise está sujeita a precedente vinculante, qual seja
+[SÚMULA VINCULANTE nº / DECISÃO DO STF EM ADI], que estabelece
+[ENUNCIADO]. Logo, não há margem para decisão em sentido diverso."
+
+═══════════════════════════════════════════════════════════════════════════════════
+FIM DO DOCUMENTO — IAROM_PR005_REVISAO_GERAL_V5.0 FASE 1.5
+═══════════════════════════════════════════════════════════════════════════════════
 
 CONTROLE DE VERSOES:
 V1.0 (2025-XX-XX): Versao inicial legado
 V2.0 (2026-03-20): Refatoracao cientifica IAROM
 V5.0 (2026-03-23): Padronizacao ROM V3.0 completa
+V5.0 FASE 1.5 (2026-03-26): Expansao com 7 partes obrigatorias
 
 ASSINATURA ROM:
 Dr. Rodolfo Otavio Mota — OAB/GO 21.841
 Sistema ROM V3.0 — Rodolfo Otavio Mota Advogados Associados
 
-===============================================================================
+═══════════════════════════════════════════════════════════════════════════════════

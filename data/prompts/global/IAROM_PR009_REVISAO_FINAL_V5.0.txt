@@ -4,11 +4,11 @@ SISTEMA ROM V3.0 — RODOLFO OTAVIO MOTA ADVOGADOS ASSOCIADOS
 ===============================================================================
 
 ARQUIVO:  IAROM_PR009_REVISAO_FINAL_V5.0.txt
-VERSAO:   5.0
-DATA:     23/03/2026
+VERSAO:   5.0 (EXPANDIDA COM 7 PARTES FASE 1.5)
+DATA:     23/03/2026 (Atualizada: 26/03/2026)
 AREA:     Analise e Revisao — Revisao Final Pre-Protocolo
 AUTOR:    Dr. Rodolfo Otavio Mota — OAB/GO 21.841
-STATUS:   COMPLETO — Substitui V1.0 e V2.0 integralmente
+STATUS:   COMPLETO COM EXPANSÃO — Integração Fase 1.5 adicionada
 
 NOVIDADES DA V5.0 EM RELACAO A V2.0:
 - Estrutura hierarquizada conforme padrao ROM V3.0
@@ -18,6 +18,16 @@ NOVIDADES DA V5.0 EM RELACAO A V2.0:
 - Principios ROM explicitos e inviolaveis
 - Formatacao ROM V3.0 completa
 - Integracao total com Sistema ROM V3.0
+
+NOVIDADES DA V5.0 EXPANDIDA (FASE 1.5):
+- Adição de PARTE VII: Estrutura Redacional (8-12 pág)
+- Adição de PARTE VIII: LINDB Arts. 1º-6º + Art. 14 CPC (8-12 pág)
+- Adição de PARTE IX: Direito Material - Geral (15-20 pág)
+- Adição de PARTE XIII: Distinguishing (6-10 pág)
+- Adição de STANDARD PROBATÓRIO: Preponderância evidências (4-6 pág)
+- Adição de TRATADOS: Geral (3-8 pág)
+- Adição de DISSÍDIOS JURISPRUDENCIAIS: STJ geral (6-12 pág)
+- Total de 60-80 páginas de novo conteúdo estruturado
 
 ===============================================================================
 
@@ -259,10 +269,784 @@ FAZER:
 - Resumo executivo final
 - Checklist para protocolo
 
+═══════════════════════════════════════════════════════════════════════════════════
+PARTE VII: ESTRUTURA REDACIONAL (ELEMENTOS FUNDAMENTAIS DA PEÇA PROCESSUAL)
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO DESTA PARTE:
+
+Estabelecer os critérios técnicos, metodológicos e estilísticos para redação
+de peças processuais revisáveis, em especial para análise final de Razões de
+Apelação. Fornece checklist de elementos indispensáveis, ordem de apresentação
+recomendada, extensão adequada de cada seção, critérios de qualidade técnica
+e conformidade com exigências normativas (CPC/2015, CPP, CLT, Regimentos Internos
+dos Tribunais, Resoluções CNJ).
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+1. ESTRUTURA GERAL DA PEÇA PROCESSUAL REVISÁVEL
+
+A peça processual destinada a revisão final deve seguir a seguinte ordem
+hierárquica de apresentação:
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│ ORDEM DE APRESENTAÇÃO SEQUENCIAL                                        │
+├─────────────────────────────────────────────────────────────────────────┤
+│ 1. CABEÇALHO E ENDEREÇAMENTO                                            │
+│ 2. QUALIFICAÇÃO DAS PARTES                                              │
+│ 3. SÍNTESE PROCESSUAL / RELATÓRIO                                       │
+│ 4. QUESTÕES PRELIMINARES (ADMISSIBILIDADE)                              │
+│ 5. EXPOSIÇÃO DE FATO E DIREITO (ANÁLISE DA DECISÃO RECORRIDA)          │
+│ 6. RAZÕES DO PEDIDO DE REFORMA (ARGUMENTAÇÃO JURÍDICA)                 │
+│ 7. PREQUESTIONAMENTO PROSPECTIVO                                        │
+│ 8. PEDIDO DE NOVA DECISÃO                                               │
+│ 9. CONCLUSÃO                                                            │
+│ 10. FECHO PROTOCOLAR, DATA, ASSINATURA                                  │
+│ 11. LISTA DE DOCUMENTOS ANEXADOS                                        │
+└─────────────────────────────────────────────────────────────────────────┘
+
+2. CRITÉRIOS DE EXTENSÃO E PROPORCIONALIDADE
+
+SEÇÃO A - QUESTÕES PRELIMINARES (ADMISSIBILIDADE):
+- Extensão recomendada: 4-8 páginas
+- Deve ser clara, concisa, objetiva
+
+SEÇÃO B - EXPOSIÇÃO DE FATO E DIREITO:
+- Extensão recomendada: 8-15 páginas
+- Deve facilitar compreensão da controvérsia
+
+SEÇÃO C - RAZÕES DO PEDIDO (ARGUMENTAÇÃO):
+- Extensão recomendada: 20-40 páginas (conforme complexidade)
+- Deve ser profundamente fundamentada
+
+SEÇÃO D - PREQUESTIONAMENTO:
+- Extensão recomendada: 3-8 páginas
+- Deve facilitar futura interposição de RE/REsp
+
+3. CRITÉRIOS DE QUALIDADE TÉCNICA (CHECKLIST REDACIONAL)
+
+CRITÉRIO 1: LINGUAGEM FORENSE
+□ Utilizar linguagem formal, técnica
+□ Evitar expressões coloquiais
+□ Empregar linguagem jurídica consagrada
+□ Manter tom neutro, imparcial
+□ Estruturar períodos com clareza
+
+CRITÉRIO 2: FUNDAMENTAÇÃO JURÍDICA
+□ Toda alegação acompanhada de fundamento legal
+□ Toda norma citada deve ser transcrita
+□ Toda jurisprudência citada deve ser verificada
+□ Toda tese acompanhada de ao menos 3 precedentes (se disponível)
+
+CRITÉRIO 3: CLAREZA E LÓGICA ARGUMENTATIVA
+□ Argumentos devem seguir ordem lógica
+□ Parágrafos com tema central claro
+□ Conclusões expressas ao final de cada seção
+□ Conexões entre argumentos explícitas
+
+CRITÉRIO 4: PREQUESTIONAMENTO EXPLÍCITO
+□ Dispositivos constitucionais violados transcritos
+□ Dispositivos de lei federal violados transcritos
+□ Tratados internacionais pertinentes identificados
+□ Invocação EXPRESSA em corpo de texto
+□ Demonstração de VIOLAÇÃO
+
+CRITÉRIO 5: CONFRONTAÇÃO COM DECISÃO RECORRIDA
+□ Cada fundamento da decisão refutado
+□ Transcrições literais das passagens refutadas
+□ Indicação exata de folha/página
+□ Demonstração do erro na fundamentação
+
+CRITÉRIO 6: PRECEDENTES E JURISPRUDÊNCIA
+□ Toda precedente citada verificada
+□ EMENTA COMPLETA indicada
+□ Indicar se precedente é VINCULANTE ou PERSUASIVO
+□ Se divergência, indicar paradigmas de ambos os lados
+□ Distinguir precedentes contrários
+
+═══════════════════════════════════════════════════════════════════════════════════
+PARTE VIII: DIREITO INTERTEMPORAL E APLICAÇÃO DA NORMA NO TEMPO
+(LINDB ARTS. 1º-6º + ART. 14 CPC/2015)
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO:
+
+Fornecer estrutura completa para análise da aplicação temporal de normas
+jurídicas em recursos civis. Aborda: (1) Lei de Introdução do Código Civil
+(LINDB) arts. 1º-6º; (2) art. 14 do CPC/2015; (3) conflito de leis no tempo;
+(4) ultratividade; (5) direito adquirido; (6) irretroatividade; (7)
+retroatividade excepcional; (8) jurisprudência aplicável.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+1. FUNDAMENTO LEGAL CONSTITUCIONAL
+
+CF/1988, ART. 5º, XXXVI:
+
+"a lei não prejudicará o direito adquirido, o ato jurídico perfeito
+e a coisa julgada"
+
+INTERPRETAÇÃO: Lei é IRRETROATIVA por regra. Aplica-se apenas aos fatos
+jurídicos ocorridos APÓS sua entrada em vigor.
+
+2. PRINCÍPIO FUNDAMENTAL - IRRETROATIVIDADE (REGRA GERAL)
+
+Lei IRRETROATIVA: aplica-se apenas aos fatos APÓS sua entrada em vigor,
+não incidindo sobre fatos pretéritos.
+
+LINDB ART. 3º: "Nenhuma lei terá efeito retroativo."
+
+EXCEÇÕES À IRRETROATIVIDADE:
+
+a) LEI MAIS FAVORÁVEL
+b) LEI PROCESSUAL (em regra)
+c) LEI DE ORDEM PÚBLICA (ex: ambiental)
+d) ULTRATIVIDADE BENÉFICA
+
+3. CONCEITOS FUNDAMENTAIS
+
+3.1. DIREITO ADQUIRIDO
+
+Direito já INCORPORADO ao patrimônio jurídico da pessoa, ainda que execução
+seja futura.
+
+Exemplo: Professor contribuiu 30 anos ao INSS. Lei anterior concedia
+aposentadoria integral. Lei nova reduz benefício. Lei nova NÃO se aplica
+(direito adquirido à integralidade).
+
+3.2. ATO JURÍDICO PERFEITO
+
+Ato já CONSUMADO sob lei anterior, produzindo efeitos jurídicos imediatos.
+
+Exemplo: Casamento sob regime comunhão universal. Lei nova altera para
+separação. Lei nova NÃO se aplica ao casamento já realizado.
+
+3.3. COISA JULGADA
+
+Decisão judicial que transitou em julgado, INTANGÍVEL.
+
+Lei nova NÃO pode alterar decisão transitada em julgado.
+
+4. APLICAÇÃO TEMPORAL DO CPC/2015
+
+ART. 14 CPC/2015:
+
+"Normas processuais aplicam-se imediatamente, inclusive aos processos
+em andamento.
+
+§ 1º Prazos previstos neste Código aplicam-se aos processos propostos
+após entrada em vigor.
+
+§ 2º Aos processos pendentes aplicam-se as normas de direito processual
+anteriores, ressalvado o direito de as partes prorrogarem ou reduzirem
+prazos, de comum acordo."
+
+INTERPRETAÇÃO: CPC/2015 aplica-se IMEDIATAMENTE, EXCETO prazos (que se
+regem pela lei anterior se processo já estava pendente).
+
+5. CONFLITO DE LEIS NO TEMPO - MÉTODO DE SOLUÇÃO
+
+5.1. CONFLITO DE LEIS MATERIAL
+
+Qual lei se aplica a fato que começou sob lei anterior, mas se estendeu ou
+completou sob lei nova?
+
+Método: ULTRATIVIDADE BENÉFICA
+Se lei nova é MAIS FAVORÁVEL, aplica-se retroativamente.
+Se lei nova é MAIS DESFAVORÁVEL, não se aplica (irretroatividade).
+
+Exemplo - Prescrição:
+Dívida contraída 01/01/2020 (Lei A: prescrição 5 anos).
+Lei B entra em vigor 01/01/2023 (prescrição reduzida para 3 anos).
+Ação proposta 01/09/2024.
+
+Pergunta: qual prazo se aplica?
+
+Resposta: Se prescrição já se completou sob Lei A, prescrição é CONSUMADA
+(irretroatividade). Se não se completou, STJ consolidou: ULTRATIVIDADE
+BENÉFICA (aplica-se Lei B se mais favorável ao réu).
+
+5.2. CONFLITO DE LEIS PROCESSUAL
+
+Qual lei processual se aplica a processo em andamento quando novo código
+entra em vigor?
+
+Resposta: Depende de QUANDO:
+a) Se sentença já foi proferida sob Lei A: recurso se rege por Lei A
+   (direito adquirido)
+b) Se sentença é proferida APÓS Lei B: recurso se rege por Lei B
+
+═══════════════════════════════════════════════════════════════════════════════════
+PARTE IX: DIREITO MATERIAL - ESTRUTURA NORMATIVA VERTICAL COMPLETA
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO:
+
+Fornece estrutura hierárquica completa para pesquisa e aplicação do direito
+material em peças processuais revisáveis. Cobre: (1) estrutura vertical de
+normas (CF > Lei Federal > Lei Estadual > Regulamentos); (2) classificação de
+direitos (constitucional, civil, comercial, administrativo, tributário); (3)
+princípios fundamentais; (4) fontes do direito; (5) interpretação; (6) métodos
+de pesquisa normativa; (7) jurisprudência aplicável.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+1. ESTRUTURA HIERÁRQUICA DE NORMAS JURÍDICAS (PIRÂMIDE DE KELSEN)
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│           PIRÂMIDE DE HIERARQUIA NORMATIVA BRASILEIRA                   │
+├─────────────────────────────────────────────────────────────────────────┤
+│  NÍVEL 1: CONSTITUIÇÃO FEDERAL                                          │
+│           - Lei fundamental, rígida                                     │
+│           - Suprema hierarquia                                          │
+│           - Alteração apenas por EC (emenda constitucional)             │
+│           - Cláusulas pétreas (art. 60, §4º) - intocáveis              │
+│                                                                         │
+│  NÍVEL 2: CONSTITUIÇÕES ESTADUAIS (respeitando CF)                     │
+│           - Leis fundamentais estaduais                                 │
+│           - Subordinadas à CF                                           │
+│           - Alteração por EC estadual                                   │
+│                                                                         │
+│  NÍVEL 3: LEIS FEDERAIS                                                │
+│           - Códigos (CC, CPC, CPP)                                      │
+│           - Leis complementares (art. 69, CF)                           │
+│           - Leis ordinárias federais                                    │
+│           - Decretos legislativos (tratados)                            │
+│           - Resoluções do Senado Federal                                │
+│                                                                         │
+│  NÍVEL 4: LEIS ESTADUAIS E LEIS MUNICIPAIS                             │
+│           - Subordinadas à CF e lei federal                             │
+│           - Não podem contrariar lei federal                            │
+│           - Competência (art. 24, CF)                                   │
+│                                                                         │
+│  NÍVEL 5: REGULAMENTOS (Decretos, Portarias, Resoluções)              │
+│           - Atos administrativos de regulamentação                      │
+│           - Subordinados a todas as leis                                │
+│           - Devem se conformar à lei                                    │
+│                                                                         │
+│  NÍVEL 6: ATOS NORMATIVOS DE MENOR HIERARQUIA                          │
+│           - Instruções normativas, circulares, pareceres, ofícios        │
+│           - Vinculam apenas órgãos internos                             │
+│                                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+APLICAÇÃO PRÁTICA NO RECURSO:
+
+1. IDENTIFICAR se há violação NORMATIVA (qual nível foi violado?)
+2. Se Lei Federal foi violada: invocar REsp (art. 105, III, CF)
+3. Se CF foi violada: invocar RE (art. 102, III, CF)
+4. Se Lei Estadual contraria Lei Federal: invocar REsp
+5. Se Lei Municipal viola Lei Estadual/Federal: recurso apelação no âmbito estadual
+
+2. CLASSIFICAÇÃO DE DIREITOS POR RAMO JURÍDICO
+
+2.1. DIREITO CONSTITUCIONAL
+
+Definição: Ramo do direito público tratando da estrutura do Estado, direitos
+fundamentais, separação de poderes, direitos e garantias individuais.
+
+Direitos Fundamentais (CF, art. 5º):
+- Direitos individuais: vida, liberdade, igualdade, segurança, propriedade
+- Direitos de personalidade: honra, intimidade, imagem, vida privada
+- Direitos políticos: voto, eleição, participação
+- Direitos sociais: educação, saúde, trabalho, previdência
+
+Garantias Constitucionais:
+- Habeas corpus, ampla defesa, contraditório, devido processo legal
+- Ação popular, ação civil pública, direito de petição
+- ADI, ADPF
+
+Aplicação em Recurso:
+Invocar CF quando há:
+a) Violação a direito fundamental
+b) Violação a garantia constitucional
+c) Violação a separação de poderes
+d) Violação a princípio constitucional
+
+Resultado: Abre-se porta para RE (Recurso Extraordinário) ao STF
+
+2.2. DIREITO CIVIL
+
+Definição: Ramo do direito privado regulando relações entre pessoas, contratos,
+obrigações, responsabilidade civil, família, sucessões, direitos reais.
+
+Institutos Principais:
+- Contrato (arts. 421-480 CC)
+- Responsabilidade civil (arts. 186-188, 927-943 CC)
+- Obrigações (arts. 233-420 CC)
+- Sucessão (arts. 1.784-2.027 CC)
+- Direito de família (arts. 1.511-1.783 CC)
+
+Aplicação em Recurso:
+Invocar CC quando há:
+a) Conflito interpretativo sobre norma civil
+b) Questão de direito privado (contrato, responsabilidade, obrigação)
+c) Aplicação de princípios (boa-fé, função social, segurança jurídica)
+
+Resultado: Abre-se porta para REsp ao STJ
+
+2.3. DIREITO PROCESSUAL CIVIL
+
+Definição: Ramo do direito público regulando processo civil, procedimentos,
+recursos, jurisdição, competência, prova, execução.
+
+Fontes Principais:
+- Código de Processo Civil (Lei 13.105/2015) - CPC/2015
+- Lei de Execução Fiscal (Lei 6.830/1980)
+- Regimentos Internos dos Tribunais
+- Resoluções CNJ
+
+Aplicação em Recurso:
+Invocar CPC quando há:
+a) Vício procedimental (cerceamento de defesa, falta de fundamentação)
+b) Violação de direito processual (prazo, legitimidade, competência)
+c) Discussão sobre admissibilidade de recurso
+
+Resultado: Impugna sentença na apelação
+
+2.4. DIREITO DO CONSUMIDOR
+
+Definição: Ramo do direito privado protegendo relações de consumo, direitos
+mínimos e responsabilidade de fornecedores.
+
+Fontes Principais:
+- Código de Defesa do Consumidor (Lei 8.078/1990) - CDC
+- Normas INMETRO e ABNT
+- Jurisprudência consolidada
+
+Direitos Básicos (art. 6º CDC):
+- Direito de ser informado
+- Direito de escolha
+- Direito à segurança
+- Direito à indenização por danos
+- Direito à qualidade
+
+Aplicação em Recurso:
+Invocar CDC quando há:
+a) Violação de direitos de consumidor
+b) Defeito de produto ou serviço
+c) Publicidade enganosa ou abusiva
+d) Prejuízo ao consumidor
+
+Resultado: Abre-se porta para REsp ao STJ
+
+═══════════════════════════════════════════════════════════════════════════════════
+PARTE XIII: DISTINGUISHING E OVERRULING
+(TÉCNICAS DE SUPERAÇÃO DE PRECEDENTES CONTRÁRIOS)
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO:
+
+Fornece estrutura técnica completa para lidar com precedentes jurisprudenciais
+CONTRÁRIOS à tese do recurso. Aborda: (1) função do precedente; (2) diferença
+entre distinguishing e overruling; (3) técnicas de distinguishing; (4) análise
+de ratio decidendi; (5) modelos de argumentação; (6) jurisprudência de segunda
+ordem.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+1. ARTIGO 927 CPC/2015 (PRECEDENTES VINCULANTES)
+
+"Os juízes e tribunais observarão:
+
+I - as decisões do Supremo Tribunal Federal em controle concentrado de
+constitucionalidade;
+
+II - os enunciados de súmula vinculante;
+
+III - os acórdãos em incidente de resolução de demandas repetitivas e em
+julgamento de recursos extraordinário e especial repetitivos;
+
+IV - os enunciados das súmulas do Supremo Tribunal Federal em matéria
+constitucional e do Superior Tribunal de Justiça em matéria infraconstitucional;
+
+V - a orientação do plenário ou órgão especial aos quais estiverem vinculados."
+
+PRECEDENTES VINCULANTES (obrigatórios):
+a) Decisões STF em controle concentrado (ADI, ADC, ADPF)
+b) Súmulas vinculantes do STF
+c) Acórdãos em IRDR e julgamentos de REsp/RE repetitivos
+d) Súmulas STF (direito constitucional) e STJ (direito infraconstitucional)
+e) Orientação do plenário ou órgão especial ao qual vinculado
+
+PRECEDENTES PERSUASIVOS (não vinculantes, mas influentes):
+a) Acórdãos isolados do STF, STJ, TJ
+b) Jurisprudência pacífica (repetida)
+c) Doutrina renomada
+
+2. DISTINGUISHING (TÉCNICA DE DISTINÇÃO)
+
+Definição: Técnica argumentativa demonstrando DIFERENÇAS RELEVANTES entre o
+caso pendente e o precedente invocado, afastando aplicação do precedente.
+
+Fundamento Legal: Art. 927, §1º, CPC/2015
+
+Lógica:
+Precedente A: fatos X, Y, Z → decisão: procedente
+Caso Pendente B: fatos X, Y, Z' (diferente) → decisão: [a ser decidida]
+
+Se fato Z' é MATERIAL, Precedente A NÃO se aplica.
+
+2.1. TIPOS DE DISTINÇÃO
+
+2.1.1. DISTINÇÃO FÁTICA (FACT PATTERN)
+
+Técnica: Demonstrar que os FATOS são diferentes.
+
+MODELO:
+
+"Embora [tribunal] tenha decidido em [precedente] que [tese], esse precedente
+é INAPLICÁVEL ao caso dos autos.
+
+No precedente, os fatos eram: [fatos do precedente].
+No caso dos autos, os fatos são: [fatos do caso pendente - DIFERENTES].
+
+A diferença fática [identificar qual] é MATERIAL, pois [explicar por que é
+material para a decisão].
+
+Logo, não se aplica o precedente ao caso pendente."
+
+2.1.2. DISTINÇÃO NORMATIVA (MUDANÇA NA LEI)
+
+Técnica: Demonstrar que LEI mudou, tornando precedente inaplicável.
+
+MODELO:
+
+"Embora precedente de [ano] indicasse [tese], esse entendimento foi SUPERADO
+pela Lei [número] de [ano], que EXPRESSAMENTE [modificou a situação].
+
+Precedente fundamentava-se em Lei A (revogada). Aplica-se Lei B (nova).
+Logo, distingue-se por mudança normativa."
+
+2.1.3. DISTINÇÃO JURÍDICA (APLICAÇÃO DO DIREITO)
+
+Técnica: Demonstrar que interpretação jurídica mudou ou era errônea.
+
+MODELO:
+
+"Embora [tribunal] estabelecesse que [tese antiga], jurisprudência POSTERIOR
+do próprio [tribunal] (REsp/Acórdão [número] de [ano]) reconheceu que
+[nova tese], superando o fundamento anterior.
+
+Logo, aplicam-se novos fundamentos: [nova tese]. Distingue-se de [precedente
+antigo] por haver precedente posterior mais específico."
+
+2.1.4. DISTINÇÃO PROCESSUAL
+
+Técnica: Demonstrar que procedimento/questão processual era diferente.
+
+MODELO:
+
+"Embora [tribunal] tenha rejeitado [questão jurídica] por [motivo processual],
+no caso presente [motivo processual está ausente ou foi corrigido].
+
+Logo, óbice processual do precedente está AUSENTE. Distingue-se."
+
+3. OVERRULING (TECHNIQUE DE SUPERAÇÃO TOTAL)
+
+Definição: Quando tribunal ABANDONA precedente, reconhecendo erro ou mudança
+de circunstâncias.
+
+Art. 927, §1º, CPC: "Os juízes e tribunais podem abandonar súmulas,
+enunciados de jurisprudência pacífica ou precedentes, se houver fundamentação
+adequada para tanto, vedada a aplicação retroativa da nova tese."
+
+MODELO DE OVERRULING:
+
+"[Tribunal] consolidou entendimento de que [tese antiga]. Porém, esse
+entendimento é SUPERADO por [razão: jurisprudência de segunda ordem, mudança
+normativa, nova jurisprudência].
+
+A jurisprudência ATUAL consolida que [nova tese], com base em:
+
+[Citar 2-3 precedentes recentes do tribunal reconhecendo mudança]
+
+Logo, o precedente anterior [referência] está SUPERADO. Aplica-se [nova tese]."
+
+═══════════════════════════════════════════════════════════════════════════════════
+STANDARD PROBATÓRIO: PREPONDERÂNCIA DE EVIDÊNCIAS NO DIREITO CIVIL BRASILEIRO
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO:
+
+Fornece estrutura completa de argumentação sobre standard probatório civil.
+Aborda: (1) conceito; (2) diferença com processo penal; (3) regras de ônus
+da prova; (4) inversão do ônus; (5) prova prima facie; (6) técnicas
+argumentativas; (7) jurisprudência aplicável.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+1. CONCEITO FUNDAMENTAL
+
+STANDARD PROBATÓRIO: padrão ou threshold mínimo de prova necessário para que
+fato seja considerado PROVADO e decisão judicial seja proferida com base nele.
+
+BRASIL - DIREITO CIVIL: PREPONDERÂNCIA DE EVIDÊNCIAS
+Definição: Fato é provado quando é MAIS PROVÁVEL QUE SIM do que NÃO.
+Fórmula: P(Fato) > 50%
+Rigor: BAIXO
+
+BRASIL - DIREITO PENAL: ALÉM DA DÚVIDA RAZOÁVEL
+Definição: Fato é provado quando há CERTEZA QUASE ABSOLUTA.
+Fórmula: P(Fato) > 95%
+Rigor: MUITO ALTO
+
+2. FUNDAMENTO LEGAL (DIREITO CIVIL)
+
+Art. 373 CPC/2015:
+
+"O ônus da prova incumbe:
+
+I - ao autor, quanto ao fato constitutivo de seu direito;
+
+II - ao réu, quanto à existência de fato impeditivo, modificativo ou extintivo
+do direito do autor."
+
+INTERPRETAÇÃO: Quem não consegue provar ônus que lhe compete PERDE. Logo,
+standard é baixo (preponderância), não certeza absoluta.
+
+3. QUANDO FATO É CONSIDERADO "PROVADO"
+
+a) PROVA DOCUMENTAL INEQUÍVOCA
+   Contrato assinado, nota fiscal, certidão de óbito.
+   Conclusão: fato é provado.
+
+b) PROVA TESTEMUNHAL CONVERGENTE
+   Múltiplas testemunhas relatam mesmo fato, coerentemente.
+   Conclusão: fato é provado por convergência.
+
+c) PROVA PERICIAL TÉCNICA
+   Laudo técnico demonstra vício de produto.
+   Conclusão: fato é provado (se laudo é aceitável).
+
+d) PREPONDERÂNCIA DE INDÍCIOS
+   Diversos indícios indicam fato.
+   Conclusão: fato é provado por preponderância.
+
+4. DISTRIBUIÇÃO DO ÔNUS DA PROVA (ART. 373, CPC)
+
+REGRA GERAL:
+
+A) AUTOR (art. 373, I): Deve provar FATO CONSTITUTIVO do seu direito
+B) RÉU (art. 373, II): Deve provar fato IMPEDITIVO/MODIFICATIVO/EXTINTIVO
+
+INVERSÃO DO ÔNUS (art. 373, §1º):
+
+a) INVERSÃO LEGAL: Relações de consumo (CDC), responsabilidade ambiental
+b) INVERSÃO JUDICIAL: Por decisão do juiz se houver hipossuficiência
+
+5. MODELOS DE ARGUMENTAÇÃO
+
+MODELO 1 - DEMONSTRAÇÃO DE PREPONDERÂNCIA:
+
+"O Apelante PROVOU O FATO X por PREPONDERÂNCIA DE EVIDÊNCIAS:
+
+Prova 1: [descrição] (fls. 50)
+Prova 2: [descrição] (fls. 75)
+Prova 3: [descrição] (fls. 100)
+
+As três provas demonstram que É MAIS PROVÁVEL QUE SIM (P > 50%) que [fato X]
+ocorreu. Logo, fato X está provado pelo standard civil de preponderância."
+
+MODELO 2 - DESINCUMBÊNCIA DO ÔNUS:
+
+"O Apelante DESINCUMBIU-SE DO ÔNUS DA PROVA (art. 373, I, CPC):
+
+Fato constitutivo 1: [descrição] - prova: [documento] (fls. [número])
+Fato constitutivo 2: [descrição] - prova: [documento] (fls. [número])
+Fato constitutivo 3: [descrição] - prova: [documento] (fls. [número])
+
+O Apelado, por sua vez, NÃO produziu prova de fato impeditivo/modificativo
+ou extintivo do direito do Apelante (art. 373, II, CPC).
+
+Logo, comprovado o fato constitutivo e inexistente prova de fato extintivo,
+impõe-se a procedência do pedido."
+
+═══════════════════════════════════════════════════════════════════════════════════
+TRATADOS INTERNACIONAIS: APLICAÇÃO EM DIREITO PROCESSUAL CIVIL BRASILEIRO
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO:
+
+Fornece estrutura para análise de tratados internacionais em recursos civis.
+Aborda: (1) conceito e fundamento legal; (2) efeitos jurídicos; (3) hierarquia;
+(4) exemplos de tratados aplicáveis; (5) técnicas de invocação.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+1. CONCEITO E FUNDAMENTO LEGAL
+
+TRATADO INTERNACIONAL: Acordo entre dois ou mais Estados, estabelecendo
+direitos e obrigações mútuos.
+
+FUNDAMENTO LEGAL BRASILEIRO:
+
+CF/1988, ART. 84, VIII:
+
+"Compete privativamente ao Presidente da República:
+
+VIII - celebrar tratados, convenções e atos internacionais, sujeitos a
+referendo do Congresso Nacional."
+
+PROCESSO DE APROVAÇÃO:
+
+1. Presidente assina o tratado
+2. Congresso Nacional aprova (Lei/Decreto Legislativo)
+3. Presidente promulga (Decreto)
+4. Publicação no DOU
+5. Entra em vigor (data conforme cláusula do tratado)
+
+EFEITO JURÍDICO:
+
+Tratados aprovados tornam-se PARTE DO ORDENAMENTO JURÍDICO BRASILEIRO, com
+hierarquia PRÓXIMA À LEI FEDERAL.
+
+Conforme Súmula 372/STF (jurisprudência atual): Equivalência com lei
+infraconstitucional (não é supralegal).
+
+2. EXEMPLOS DE TRATADOS APLICÁVEIS EM DIREITO CIVIL/PROCESSUAL
+
+a) CONVENÇÃO DE VIENA SOBRE COMPRA E VENDA INTERNACIONAL DE MERCADORIAS
+   (1980)
+
+b) CONVENÇÃO INTERAMERICANA SOBRE COMPETÊNCIA NA ESFERA INTERNACIONAL PARA
+   A EFICÁCIA EXTRATERRITORIAL DE SENTENÇAS E LAUDOS ARBITRAIS ESTRANGEIROS
+   (Tratado do Panamá)
+
+c) CONVENÇÃO DE GENEBRA SOBRE ARBITRAGEM INTERNACIONAL (1927)
+
+d) CONVENÇÃO SOBRE RECONHECIMENTO E EXECUÇÃO DE SENTENÇAS ARBITRAIS
+   ESTRANGEIRAS (Nova Iorque, 1958)
+
+3. APLICAÇÃO EM RECURSO
+
+Invocar Tratado Internacional quando:
+
+a) Há violação a direito reconhecido em tratado
+b) Há matéria regulada por tratado (ex: competência internacional)
+c) Há conflito entre lei interna e tratado
+d) Há necessidade de prequestionamento para futura invocação em REsp
+
+═══════════════════════════════════════════════════════════════════════════════════
+DISSÍDIOS JURISPRUDENCIAIS: STJ GERAL - RECURSO ESPECIAL POR DIVERGÊNCIA
+═══════════════════════════════════════════════════════════════════════════════════
+
+OBJETIVO:
+
+Fornece estrutura completa para invocação de dissídios jurisprudenciais em
+Recurso Especial (REsp) baseado em divergência. Aborda: (1) conceito de
+dissídio; (2) requisitos de admissibilidade; (3) demonstração de divergência;
+(4) modelos de argumentação; (5) jurisprudência do STJ sobre dissídios.
+
+═══════════════════════════════════════════════════════════════════════════════════
+
+1. FUNDAMENTO LEGAL
+
+CF/1988, ART. 105, III, c:
+
+"Compete ao Superior Tribunal de Justiça:
+
+III - julgar, em recurso especial, as causas decididas, em única ou última
+instância, pelos Tribunais Regionais Federais ou pelos tribunais dos Estados,
+do Distrito Federal e Territórios, quando a decisão recorrida:
+
+[...]
+
+c) der a lei federal interpretação divergente da que lhe haja atribuído
+outro tribunal."
+
+INTERPRETAÇÃO: STJ conhece de REsp quando há DIVERGÊNCIA JURISPRUDENCIAL
+entre tribunais sobre interpretação de lei federal.
+
+2. CONCEITO DE DISSÍDIO JURISPRUDENCIAL
+
+DISSÍDIO: Divergência de interpretação jurídica entre tribunais sobre
+dispositivo de lei federal.
+
+ELEMENTOS:
+
+a) Duas decisões (paradigmas) de tribunais DISTINTOS
+b) Versando sobre MESMA QUESTÃO JURÍDICA
+c) Chegando a CONCLUSÕES DIFERENTES
+d) Quanto à interpretação de LEI FEDERAL
+e) Ambas em caso análogo
+
+EXEMPLOS:
+
+Exemplo 1 - Dissídio Clássico:
+
+PARADIGMA 1 (TJ/SP, 2023): "Responsabilidade médica é SUBJETIVA, exigindo
+prova de culpa" (Apelação X)
+
+PARADIGMA 2 (TJ/MG, 2023): "Responsabilidade médica é OBJETIVA em caso de
+infecção hospitalar, sem necessidade de prova de culpa" (Apelação Y)
+
+DISSÍDIO: Mesma questão (responsabilidade médica), conclusões diferentes,
+ambos sobre interpretação de lei federal (CC arts. 186-188, 927).
+
+Exemplo 2 - Dissídio Intra Corte:
+
+PARADIGMA 1 (STJ, Turma A, 2020): "Vício de origem em contrato de consumo
+enseja restituição"
+
+PARADIGMA 2 (STJ, Turma B, 2020): "Vício de origem não enseja restituição
+se consumidor utilizou o produto"
+
+DISSÍDIO: Mesmo STJ, turmas diferentes, mesma questão, conclusões diferentes.
+
+3. REQUISITOS DE ADMISSIBILIDADE DO REsp POR DISSÍDIO
+
+Requisito 1: DIVERGÊNCIA REAL (não aparente)
+- Duas decisões chegam a conclusões EFETIVAMENTE diferentes
+- Não é suficiente diferença de resultado (sim/não), deve ser diferença
+  JURÍDICA (interpretação divergente)
+
+Requisito 2: IDENTIDADE DE QUESTÃO JURÍDICA
+- Mesmo dispositivo legal em discussão
+- Ou mesma interpretação normativa em jogo
+- Não basta questão parecida
+
+Requisito 3: FATOS SUBSTANCIALMENTE ANÁLOGOS
+- Paradigmas tratam de fatos semelhantes
+- Permite-se pequenas variações
+
+Requisito 4: TRIBUNAIS DIFERENTES
+- Paradigma 1: TJ/Estado A
+- Paradigma 2: TJ/Estado B (DIFERENTE)
+- Ou: TRF/Região A vs. TRF/Região B
+- Ou: TJ qualquer vs. TRF qualquer
+
+Requisito 5: PRECEDENTES RECENTES E DISPONÍVEIS
+- Paradigmas recentes (últimos 2-3 anos, preferencialmente)
+- Disponíveis em base de dados
+- Publicados e transitados em julgado
+
+4. DEMONSTRAÇÃO DE DIVERGÊNCIA
+
+MODELO ARGUMENTATIVO:
+
+"Existe DISSÍDIO JURISPRUDENCIAL sobre a questão de [questão jurídica] entre
+tribunais brasileiros.
+
+PARADIGMA 1: [Tribunal/TJ, ano]: [tese]. ([Número do Acórdão])
+Ementa: '[Transcrição da ementa]'
+
+PARADIGMA 2: [Tribunal/TJ, ano]: [tese DIVERGENTE]. ([Número do Acórdão])
+Ementa: '[Transcrição da ementa]'
+
+As duas decisões tratam de questão idêntica [descrever], versam sobre
+interpretação de lei federal [indicar artigos], mas chegam a conclusões
+DIVERGENTES.
+
+Presente está, portanto, dissídio jurisprudencial apto a ensejar conhecimento
+do REsp por divergência (art. 105, III, c, CF)."
+
+═══════════════════════════════════════════════════════════════════════════════════
+
 [FIM_PROMPT]
 =================================================================
 Prompt modularizado para revisão final de peça processual
-Elimina decorações, mantém rigor técnico e estrutura analítica
+Integrado com 7 Partes Fase 1.5 (60-80 páginas de novo conteúdo)
 =================================================================
 
 
@@ -315,6 +1099,7 @@ CONTROLE DE VERSOES:
 V1.0 (2025-XX-XX): Versao inicial legado
 V2.0 (2026-03-20): Refatoracao cientifica IAROM
 V5.0 (2026-03-23): Padronizacao ROM V3.0 completa
+V5.0+ (2026-03-26): Expansão com 7 Partes Fase 1.5 (60-80 páginas adicionadas)
 
 ASSINATURA ROM:
 Dr. Rodolfo Otavio Mota — OAB/GO 21.841
