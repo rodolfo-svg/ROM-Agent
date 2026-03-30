@@ -431,9 +431,14 @@ export const extratorPDF = {
     const outputPrefix = path.join(dir, baseName);
 
     try {
-      // Reportar início da conversão
+      // Reportar início da conversão (suporta AMBOS os formatos)
       if (onProgress) {
-        onProgress({ status: 'Convertendo PDF para imagens...', percent: 0 });
+        // Tentar formato objeto primeiro, fallback para string
+        try {
+          onProgress('Convertendo PDF para imagens...', 0);
+        } catch (e) {
+          onProgress({ status: 'Convertendo PDF para imagens...', percent: 0 });
+        }
       }
 
       console.log(`🔄 Iniciando conversão: pdftoppm -png -r ${dpi}`);
@@ -457,7 +462,12 @@ export const extratorPDF = {
       console.log(`✅ ${imagens.length} imagens geradas`);
 
       if (onProgress) {
-        onProgress({ status: `${imagens.length} imagens geradas`, percent: 10 });
+        // Tentar formato objeto primeiro, fallback para string
+        try {
+          onProgress(`${imagens.length} imagens geradas, iniciando OCR...`, 5);
+        } catch (e) {
+          onProgress({ status: `${imagens.length} imagens geradas`, percent: 10 });
+        }
       }
 
       return {
@@ -490,15 +500,29 @@ export const extratorPDF = {
     console.log('🔄 Convertendo PDF para imagens...');
 
     // Wrapper para mapear progresso da conversão (0-10%)
-    const conversionProgress = onProgress ? (data) => {
-      onProgress({
-        status: data.status || 'Convertendo PDF...',
-        percent: Math.floor(data.percent || 0), // 0-10%
-        batch: 0,
-        totalBatches: 0,
-        pagesProcessed: 0,
-        totalPages: 0
-      });
+    // IMPORTANTE: Suporta AMBOS os formatos: (string, number) E (object)
+    const conversionProgress = onProgress ? (statusOrData, percentOrUndefined) => {
+      // Se receber string (formato antigo do extractor-pipeline)
+      if (typeof statusOrData === 'string') {
+        onProgress({
+          status: statusOrData,
+          percent: Math.floor(percentOrUndefined || 0),
+          batch: 0,
+          totalBatches: 0,
+          pagesProcessed: 0,
+          totalPages: 0
+        });
+      } else {
+        // Já é objeto (formato novo do pdfParaImagens)
+        onProgress({
+          status: statusOrData.status || 'Convertendo PDF...',
+          percent: Math.floor(statusOrData.percent || 0),
+          batch: 0,
+          totalBatches: 0,
+          pagesProcessed: 0,
+          totalPages: 0
+        });
+      }
     } : null;
 
     const conversao = await this.pdfParaImagens(pdfPath, null, dpi, conversionProgress);
@@ -514,13 +538,28 @@ export const extratorPDF = {
     console.log(`🔍 Executando OCR em ${conversao.imagens.length} páginas...`);
 
     // Wrapper para mapear progresso do OCR (10-100%)
-    const ocrProgress = onProgress ? (data) => {
-      const ocrPercent = data.percent || 0; // 0-100%
-      const mappedPercent = 10 + Math.floor(ocrPercent * 0.9); // Mapear para 10-100%
-      onProgress({
-        ...data,
-        percent: mappedPercent
-      });
+    // IMPORTANTE: Suporta AMBOS os formatos: (string, number) E (object)
+    const ocrProgress = onProgress ? (statusOrData, percentOrUndefined) => {
+      // Se receber string (formato antigo)
+      if (typeof statusOrData === 'string') {
+        const mappedPercent = 10 + Math.floor((percentOrUndefined || 0) * 0.9);
+        onProgress({
+          status: statusOrData,
+          percent: mappedPercent,
+          batch: 0,
+          totalBatches: 0,
+          pagesProcessed: 0,
+          totalPages: 0
+        });
+      } else {
+        // Já é objeto (formato do OCR engine)
+        const ocrPercent = statusOrData.percent || 0;
+        const mappedPercent = 10 + Math.floor(ocrPercent * 0.9);
+        onProgress({
+          ...statusOrData,
+          percent: mappedPercent
+        });
+      }
     } : null;
 
     const resultado = await ocrEngine.executarOCRMultiplo(conversao.imagens, { preprocessar, onProgress: ocrProgress });
