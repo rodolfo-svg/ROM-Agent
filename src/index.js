@@ -62,8 +62,8 @@ const CONFIG = {
   nome: 'ROM',
   versao: packageJson.version, // Versão dinâmica do package.json
   descricao: 'Redator de Obras Magistrais - Agente de IA para Redação de Peças Jurídicas com Excelência',
-  modelo: 'claude-sonnet-4-20250514',
-  maxTokens: 200000, // Limite padrão (dinâmico via getMaxTokens) - Sonnet 4.5 completo
+  modelo: 'us.anthropic.claude-haiku-4-5-20251001-v1:0', // ✅ OTIMIZADO: Haiku por padrão (66% mais barato que Sonnet)
+  maxTokens: 200000, // Limite padrão (dinâmico via getMaxTokens) - Haiku 4.5 suporta 200k
   maxTokensDinamico: true, // Sistema inteligente ativo (2-8x superior ao Claude.ai)
   temperatura: 0.7,
 

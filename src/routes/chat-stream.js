@@ -26,6 +26,7 @@ import { getSSEConnectionManager } from '../utils/sse-connection-manager.js';
 import conversationMemoryService from '../services/conversation-memory-service.js';
 import * as ConversationRepository from '../repositories/conversation-repository.js';
 import { estimateTokens, getSafeContextLimit, extractRelevantSections } from '../utils/context-manager.js';
+import { selectOptimalModel } from '../utils/model-selector.js'; // ✅ OTIMIZAÇÃO: Seleção automática de modelo
 
 const router = express.Router();
 const sseManager = getSSEConnectionManager();
@@ -133,9 +134,30 @@ router.post('/stream', async (req, res) => {
     // ✅ SUPERIOR AO CLAUDE.AI: Limitar para últimas 100 mensagens (vs 30 anterior, vs ~40 claude.ai)
     const limitedHistory = conversationHistory.slice(-100);
 
-    // Usar model ou modelo e mapear para ID completo do Bedrock
+    // ✅ OTIMIZAÇÃO DE CUSTO: Seleção automática de modelo baseado na complexidade
     const modelInput = model || modelo;
-    const selectedModel = MODEL_MAPPING[modelInput] || modelInput;
+    let selectedModel;
+
+    if (modelInput) {
+      // Se usuário especificou modelo, usar ele
+      selectedModel = MODEL_MAPPING[modelInput] || modelInput;
+    } else {
+      // ✅ NOVO: Seleção inteligente automática (pode economizar 66-97% vs Sonnet)
+      const modelSelection = selectOptimalModel(message, {
+        maxTokens,
+        systemPrompt: systemPrompt || '',
+        kbContext: kbContext || ''
+      });
+      selectedModel = modelSelection.modelId;
+
+      // Log da seleção automática para análise
+      logger.info(`[${requestId}] Modelo selecionado automaticamente`, {
+        model: modelSelection.modelName,
+        reasoning: modelSelection.reasoning,
+        estimatedCost: `$${modelSelection.cost}/1M tokens`,
+        savings: modelSelection.modelName !== 'sonnet' ? `${Math.round((1 - modelSelection.cost / 3.0) * 100)}% vs Sonnet` : 'baseline'
+      });
+    }
 
     // Debug logging removido para producao - use LOG_LEVEL=debug se necessario
 
