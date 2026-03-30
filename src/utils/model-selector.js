@@ -41,7 +41,21 @@ const MODEL_IDS = {
 function classifyTask(prompt, context = {}) {
   const promptLower = prompt.toLowerCase();
 
+  // 🔧 FIX CRÍTICO: Verificar se tools são necessárias
+  // KB, jurisprudência, legislação precisam de tool use
+  // Nova Micro e Nova Lite NÃO suportam tool use!
+  const requiresTools = context.requiresTools ||
+    context.kbContext ||
+    promptLower.includes('busca') ||
+    promptLower.includes('consulta') ||
+    promptLower.includes('knowledge base') ||
+    promptLower.includes('kb') ||
+    promptLower.includes('jurisprudência') ||
+    promptLower.includes('legislação') ||
+    promptLower.includes('súmula');
+
   // 🟢 NOVA MICRO - Tarefas ultra-simples (97% economia vs Sonnet)
+  // ⚠️ NÃO suporta tool use - NUNCA usar quando tools são necessárias
   const novaMicroKeywords = [
     'extraia apenas', 'liste', 'enumere',
     'qual o', 'identifique o nome',
@@ -50,6 +64,7 @@ function classifyTask(prompt, context = {}) {
   ];
 
   // 🟢 HAIKU - Tarefas estruturadas/simples (66% economia vs Sonnet)
+  // ✅ Suporta tool use - Mínimo seguro para KB/jurisprudência
   const haikuKeywords = [
     'extraia', 'parse', 'json', 'estruture',
     'classifique', 'categorize',
@@ -61,6 +76,7 @@ function classifyTask(prompt, context = {}) {
   ];
 
   // 🔴 OPUS - Tarefas densas/criativas (5x Sonnet)
+  // ✅ Suporta tool use
   const opusKeywords = [
     'redija', 'elabore peça', 'escreva petição',
     'fundamente', 'argumente', 'defenda',
@@ -69,6 +85,7 @@ function classifyTask(prompt, context = {}) {
   ];
 
   // 🟣 DEEPSEEK - Raciocínio multi-etapa (50% economia vs Haiku)
+  // ⚠️ NÃO suporta tool use - NUNCA usar quando tools são necessárias
   const deepseekKeywords = [
     'passo a passo', 'raciocine', 'deduza',
     'prove', 'demonstre logicamente',
@@ -82,14 +99,22 @@ function classifyTask(prompt, context = {}) {
     }
   }
 
+  // 🔧 FIX: DeepSeek NÃO suporta tool use - downgrade para Haiku se tools necessárias
   for (const keyword of deepseekKeywords) {
     if (promptLower.includes(keyword)) {
+      if (requiresTools) {
+        return { type: 'reasoning+tools', model: 'haiku', confidence: 0.75 };
+      }
       return { type: 'reasoning', model: 'deepseek-r1', confidence: 0.85 };
     }
   }
 
+  // 🔧 FIX: Nova Micro NÃO suporta tool use - upgrade para Haiku se tools necessárias
   for (const keyword of novaMicroKeywords) {
     if (promptLower.includes(keyword)) {
+      if (requiresTools) {
+        return { type: 'simple+tools', model: 'haiku', confidence: 0.7 };
+      }
       return { type: 'ultra-simple', model: 'nova-micro', confidence: 0.8 };
     }
   }
@@ -98,6 +123,11 @@ function classifyTask(prompt, context = {}) {
     if (promptLower.includes(keyword)) {
       return { type: 'simple', model: 'haiku', confidence: 0.8 };
     }
+  }
+
+  // 🔧 FIX: Se tools são necessárias, NUNCA usar modelos sem tool use
+  if (requiresTools) {
+    return { type: 'medium+tools', model: 'haiku', confidence: 0.65 };
   }
 
   // Análise por tamanho esperado
