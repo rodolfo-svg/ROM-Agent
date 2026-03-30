@@ -524,7 +524,10 @@ app.use('/api', csrfProtection.protection({
     // FILE UPLOADS & KNOWLEDGE BASE
     // ═══════════════════════════════════════════════════════════════
     '/upload*',                 // ✅ ADICIONADO: Upload e gerenciamento (wildcard)
-    '/kb/*',                    // ✅ ADICIONADO: Knowledge Base (upload, documents, delete)
+    '/kb',                      // ✅ FIX: KB base path
+    '/kb/upload',               // ✅ FIX: Upload específico (wildcard quebrado)
+    '/kb/process-uploaded',     // ✅ FIX: Processamento pós-upload
+    '/kb/*',                    // ✅ ADICIONADO: Knowledge Base (outros endpoints)
 
     // ═══════════════════════════════════════════════════════════════
     // CONTENT MANAGEMENT

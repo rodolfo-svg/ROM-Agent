@@ -8,6 +8,22 @@ import { initOfflineManager } from '@/utils/offline-manager'
 // Initialize offline manager
 initOfflineManager().catch(console.error)
 
+// CRITICAL: Unregister old service workers to fix "Failed to fetch" upload issues
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    if (registrations.length > 0) {
+      console.warn('[PWA] 🧹 Limpando', registrations.length, 'Service Workers antigos...')
+      registrations.forEach(registration => {
+        registration.unregister().then(() => {
+          console.log('[PWA] ✅ Service Worker desregistrado:', registration.scope)
+        })
+      })
+    }
+  }).catch(err => {
+    console.error('[PWA] Erro ao desregistrar Service Workers:', err)
+  })
+}
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <BrowserRouter>
