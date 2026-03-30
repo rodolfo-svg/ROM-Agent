@@ -795,6 +795,20 @@ export async function executeTool(toolName, toolInput, context = {}) {
             };
           }
 
+          // 🔥 FIX CRÍTICO: Filtrar documentos do userId atual
+          // Sem isso, o chat mostra documentos de TODOS os usuários
+          const userId = context.userId;
+          const userDocs = userId ? allDocs.filter(doc => doc.userId === userId) : allDocs;
+
+          console.log(`📚 [KB] Total docs: ${allDocs.length}, do usuário ${userId}: ${userDocs.length}`);
+
+          if (userDocs.length === 0) {
+            return {
+              success: false,
+              content: 'Nenhum documento encontrado na sua Knowledge Base. Faça upload de documentos primeiro.'
+            };
+          }
+
           // Buscar documentos relevantes (busca por palavras individuais)
           // ✅ MELHORADO: Divide query em palavras e procura cada uma
           const queryLower = query.toLowerCase();
@@ -803,7 +817,7 @@ export async function executeTool(toolName, toolInput, context = {}) {
             .filter(word => word.length > 3); // Ignora palavras muito curtas (de, da, os, etc)
 
           // 🚨 FIX: Filtrar apenas documentos principais (não fichamentos, não extraction packages)
-          const mainDocs = allDocs.filter(doc =>
+          const mainDocs = userDocs.filter(doc =>
             !doc.metadata?.isStructuredDocument &&
             !doc.metadata?.isExtractionPackage &&
             !doc.name?.includes('FICHAMENTO') &&
