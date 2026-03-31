@@ -138,6 +138,15 @@ router.post('/stream', async (req, res) => {
     const modelInput = model || modelo;
     let selectedModel;
 
+    // 🐛 DEBUG: Log para diagnosticar valor de modelInput
+    logger.info(`[${requestId}] Model selection debug`, {
+      model,
+      modelo,
+      modelInput,
+      modelInputType: typeof modelInput,
+      modelInputIsAuto: modelInput === 'auto'
+    });
+
     // 🔧 FIX: Tratar 'auto' como ausência de modelo (permite seleção automática)
     if (modelInput && modelInput !== 'auto') {
       // Se usuário especificou modelo, usar ele
