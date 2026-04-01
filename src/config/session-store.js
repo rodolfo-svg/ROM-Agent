@@ -32,7 +32,7 @@ function createRedisSessionStore() {
     const store = new RedisStore({
       client: redisClient,
       prefix: 'sess:',
-      ttl: 86400, // 24 hours in seconds
+      ttl: 604800, // ✅ FIX: 7 days in seconds (aligned with cookie maxAge)
       disableTouch: false, // Update TTL on access
       serializer: {
         stringify: JSON.stringify,

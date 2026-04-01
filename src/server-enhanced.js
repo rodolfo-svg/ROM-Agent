@@ -61,6 +61,7 @@ import romCaseProcessorService from './services/processors/rom-case-processor-se
 import caseProcessorRouter from './routes/case-processor.js';
 import caseProcessorSSE from './routes/case-processor-sse.js';
 import chatStreamRoutes from './routes/chat-stream.js';
+import { selectOptimalModel } from './utils/model-selector.js'; // ✅ OTIMIZAÇÃO: Seleção automática de modelo
 import diagnosticBedrockRoutes from './routes/diagnostic-bedrock.js';
 import diagnosticUsersRoutes from './routes/diagnostic-users.js';
 import diagnosticModelsRoutes from './routes/diagnostic-models.js';
@@ -592,7 +593,8 @@ app.use('/api/custom-instructions', requireAuth, customInstructionsRoutes);
 
 // Rotas de KB Analyze V2 (Análise Direta de Documentos - Bypass LLM)
 app.use('/api/kb/analyze-v2', requireAuth, kbAnalyzeV2Routes);
-app.use('/api/kb/merge-volumes', requireAuth, generalLimiter, kbMergeVolumesRoutes);
+// ✅ FIX: Removido requireAuth duplicado (já está dentro do router)
+app.use('/api/kb/merge-volumes', generalLimiter, kbMergeVolumesRoutes);
 
 // Rotas de Emergência do KB (quando kb-documents.json está corrompido)
 app.use('/api/kb/emergency', requireAuth, kbEmergencyRoutes);
@@ -2111,7 +2113,18 @@ Enquanto isso, pode continuar usando o sistema normalmente.
     console.log(`   - Docs Relevantes: ${relevantDocs.length}`);
     console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
 
-    selectedModel = selectIntelligentModel(message, metadata, relevantDocs); // ✅ Atribuição (já declarado acima)
+    // ✅ OTIMIZAÇÃO DE CUSTO: Usar selectOptimalModel (pode economizar 66-97% vs Sonnet)
+    const modelSelection = selectOptimalModel(message, {
+      systemPrompt: '', // Será definido depois
+      kbContext: relevantDocs.length > 0 ? 'has_kb_docs' : ''
+    });
+    selectedModel = modelSelection.modelId;
+
+    logger.info('Model selecionado automaticamente', {
+      modelName: modelSelection.modelName,
+      reasoning: modelSelection.reasoning,
+      cost: modelSelection.cost
+    });
 
     console.log(`\n🎯 [DEBUG] MODELO SELECIONADO: ${selectedModel}`);
 

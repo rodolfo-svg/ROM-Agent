@@ -27,16 +27,14 @@ router.get('/:uploadId/progress', (req, res) => {
   res.setHeader('Connection', 'keep-alive');
   res.setHeader('X-Accel-Buffering', 'no'); // Render/Nginx: Desabilita buffering
 
-  // ✨ FIX: Bypass Cloudflare buffering
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.flushHeaders(); // Force immediate header flush
-
-  // ✨ CORS para SSE: Configuração global em server-enhanced.js já define
-  // Access-Control-Allow-Origin e Access-Control-Allow-Credentials
-  // Headers abaixo são redundantes mas garantem compatibilidade
+  // ✨ CORS para SSE: Deve vir ANTES de flushHeaders()
   const origin = req.headers.origin || 'https://iarom.com.br';
   res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+  // ✨ FIX: Bypass Cloudflare buffering
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.flushHeaders(); // ✅ FIX: Force flush AFTER all headers are set
 
   // Adicionar conexão ao gerenciador
   sseManager.addConnection(connectionId, res, { uploadId });

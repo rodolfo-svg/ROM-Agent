@@ -77,6 +77,10 @@ const upload = multer({
  * }
  */
 router.post('/', requireAuth, upload.array('files', 10), async (req, res) => {
+  // ✅ FIX: Aumentar timeout para 10 minutos (merge de PDFs grandes pode demorar)
+  req.setTimeout(600000); // 10 minutos
+  res.setTimeout(600000);
+
   const uploadedFiles = req.files || [];
   const tempFiles = [];
 
@@ -316,6 +320,10 @@ function formatBytes(bytes) {
  * }
  */
 router.post('/from-paths', requireAuth, async (req, res) => {
+  // ✅ FIX: Aumentar timeout para 10 minutos (merge de PDFs grandes pode demorar)
+  req.setTimeout(600000); // 10 minutos
+  res.setTimeout(600000);
+
   try {
     const { paths, processName = 'Processo' } = req.body;
 
