@@ -1,7 +1,7 @@
 {
   "name": "rom-agent-v4",
-  "version": "4.0.1",
-  "description": "ROM Agent - Interface estilo Claude.ai com Artifacts",
+  "version": "4.0.2",
+  "description": "ROM Agent - Interface estilo Claude.ai com Artifacts + JWT Upload Tokens",
   "type": "module",
   "scripts": {
     "dev": "vite",
