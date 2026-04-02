@@ -67,8 +67,8 @@ export function VolumeUploader({ onUploadComplete }: { onUploadComplete?: () => 
       if (hasLargeFile || totalSize > CHUNKED_THRESHOLD) {
         console.log(`[VolumeUploader] Arquivos grandes detectados (${(totalSize / 1024 / 1024).toFixed(1)} MB), usando CHUNKED UPLOAD`)
 
-        // ✅ FASE 0: Obter token de upload para autenticação cross-origin
-        console.log('🎫 [VolumeUploader] Obtendo token de upload...')
+        // ✅ FASE 0: Obter token de upload para autenticação cross-origin (v4.0.2)
+        console.log('🎫 [VolumeUploader v4.0.2] Obtendo token de upload...')
         const tokenResponse = await fetch('/api/upload/get-upload-token', {
           method: 'GET',
           credentials: 'include', // Usa session cookie normal
