@@ -7,6 +7,9 @@ interface VolumeFile {
   volumeNumber: number
 }
 
+// ✅ FIX: Usar backend direto para chunked uploads (bypass Cloudflare HTTP/2 issues)
+const CHUNKED_UPLOAD_BASE_URL = 'https://rom-agent-ia.onrender.com'
+
 export function VolumeUploader({ onUploadComplete }: { onUploadComplete?: () => void }) {
   const [files, setFiles] = useState<VolumeFile[]>([])
   const [merging, setMerging] = useState(false)
@@ -74,7 +77,7 @@ export function VolumeUploader({ onUploadComplete }: { onUploadComplete?: () => 
           const CHUNK_SIZE = 40 * 1024 * 1024 // 40MB
           const totalChunks = Math.ceil(file.size / CHUNK_SIZE)
 
-          const initResponse = await fetch('/api/upload/chunked/init', {
+          const initResponse = await fetch(`${CHUNKED_UPLOAD_BASE_URL}/api/upload/chunked/init`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -99,7 +102,7 @@ export function VolumeUploader({ onUploadComplete }: { onUploadComplete?: () => 
 
             console.log(`   📤 Chunk ${chunkIndex + 1}/${totalChunks}`)
 
-            const chunkResponse = await fetch(`/api/upload/chunked/${uploadId}/chunk/${chunkIndex}`, {
+            const chunkResponse = await fetch(`${CHUNKED_UPLOAD_BASE_URL}/api/upload/chunked/${uploadId}/chunk/${chunkIndex}`, {
               method: 'POST',
               body: chunk,
               credentials: 'include',
@@ -111,7 +114,7 @@ export function VolumeUploader({ onUploadComplete }: { onUploadComplete?: () => 
           }
 
           // Finalizar
-          const finalizeResponse = await fetch(`/api/upload/chunked/${uploadId}/finalize`, {
+          const finalizeResponse = await fetch(`${CHUNKED_UPLOAD_BASE_URL}/api/upload/chunked/${uploadId}/finalize`, {
             method: 'POST',
             credentials: 'include',
           })
