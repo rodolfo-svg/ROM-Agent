@@ -12,9 +12,14 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 
-// ✅ Secret para assinar tokens (em produção, usar variável de ambiente)
+// ✅ Secret para assinar tokens JWT
+// IMPORTANTE: Usa SESSION_SECRET como base para garantir consistência entre workers
+// Se UPLOAD_TOKEN_SECRET não estiver definido, deriva do SESSION_SECRET
 const UPLOAD_TOKEN_SECRET = process.env.UPLOAD_TOKEN_SECRET ||
-  crypto.randomBytes(32).toString('hex');
+  (process.env.SESSION_SECRET
+    ? crypto.createHash('sha256').update(process.env.SESSION_SECRET + '-upload').digest('hex')
+    : (() => { throw new Error('SESSION_SECRET is required for upload tokens'); })()
+  );
 
 const TOKEN_EXPIRY = '1h'; // Tokens expiram em 1 hora
 
