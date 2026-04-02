@@ -7,7 +7,7 @@ export const securityHeaders = helmet({
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://static.cloudflareinsights.com"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://static.cloudflareinsights.com"],
+      connectSrc: ["'self'", "https://static.cloudflareinsights.com", "https://rom-agent-ia.onrender.com"],
       fontSrc: ["'self'"],
       objectSrc: ["'none'"],
       mediaSrc: ["'self'"],
