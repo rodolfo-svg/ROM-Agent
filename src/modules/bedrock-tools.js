@@ -798,6 +798,9 @@ export async function executeTool(toolName, toolInput, context = {}) {
           // 🔥 FIX CRÍTICO: Filtrar documentos do userId atual
           // Sem isso, o chat mostra documentos de TODOS os usuários
           const userId = context.userId;
+          console.log(`🔍 [KB DEBUG] context.userId: ${userId}`);
+          console.log(`🔍 [KB DEBUG] Primeiros 3 docs no cache:`, allDocs.slice(0, 3).map(d => ({ id: d.id, name: d.name, userId: d.userId })));
+
           const userDocs = userId ? allDocs.filter(doc => doc.userId === userId) : allDocs;
 
           console.log(`📚 [KB] Total docs: ${allDocs.length}, do usuário ${userId}: ${userDocs.length}`);
