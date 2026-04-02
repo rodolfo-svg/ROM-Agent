@@ -40,8 +40,22 @@ export function ExtractionProgressBar({
   const fetchJobStatus = useCallback(async () => {
     try {
       const response = await fetch(`/api/extraction-jobs/${jobId}`, {
-        credentials: 'include'
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json'
+        }
       })
+
+      // Detectar sessão expirada (302 redirect ou 401)
+      if (response.status === 302 || response.redirected || response.status === 401) {
+        const errorMsg = 'Sessão expirada. Redirecionando para login...'
+        setError(errorMsg)
+        onError?.(errorMsg)
+        setTimeout(() => {
+          window.location.href = '/login'
+        }, 3000)
+        return
+      }
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`)
