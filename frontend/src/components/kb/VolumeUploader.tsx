@@ -67,6 +67,20 @@ export function VolumeUploader({ onUploadComplete }: { onUploadComplete?: () => 
       if (hasLargeFile || totalSize > CHUNKED_THRESHOLD) {
         console.log(`[VolumeUploader] Arquivos grandes detectados (${(totalSize / 1024 / 1024).toFixed(1)} MB), usando CHUNKED UPLOAD`)
 
+        // ✅ FASE 0: Obter token de upload para autenticação cross-origin
+        console.log('🎫 [VolumeUploader] Obtendo token de upload...')
+        const tokenResponse = await fetch('/api/upload/get-upload-token', {
+          method: 'GET',
+          credentials: 'include', // Usa session cookie normal
+        })
+
+        if (!tokenResponse.ok) {
+          throw new Error(`Falha ao obter token de upload: ${tokenResponse.status}`)
+        }
+
+        const { token: uploadToken } = await tokenResponse.json()
+        console.log('✅ [VolumeUploader] Token de upload obtido')
+
         // ✅ FASE 1: Upload de cada arquivo via chunked
         const uploadedPaths: string[] = []
 
@@ -79,8 +93,10 @@ export function VolumeUploader({ onUploadComplete }: { onUploadComplete?: () => 
 
           const initResponse = await fetch(`${CHUNKED_UPLOAD_BASE_URL}/api/upload/chunked/init`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${uploadToken}`, // ✅ Usa token JWT
+            },
             body: JSON.stringify({
               filename: file.name,
               fileSize: file.size,
@@ -104,8 +120,10 @@ export function VolumeUploader({ onUploadComplete }: { onUploadComplete?: () => 
 
             const chunkResponse = await fetch(`${CHUNKED_UPLOAD_BASE_URL}/api/upload/chunked/${uploadId}/chunk/${chunkIndex}`, {
               method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${uploadToken}`, // ✅ Usa token JWT
+              },
               body: chunk,
-              credentials: 'include',
             })
 
             if (!chunkResponse.ok) {
@@ -116,7 +134,9 @@ export function VolumeUploader({ onUploadComplete }: { onUploadComplete?: () => 
           // Finalizar
           const finalizeResponse = await fetch(`${CHUNKED_UPLOAD_BASE_URL}/api/upload/chunked/${uploadId}/finalize`, {
             method: 'POST',
-            credentials: 'include',
+            headers: {
+              'Authorization': `Bearer ${uploadToken}`, // ✅ Usa token JWT
+            },
           })
 
           if (!finalizeResponse.ok) {

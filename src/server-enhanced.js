@@ -87,6 +87,7 @@ import authRoutes from './routes/auth.js';
 import conversationsRoutes from './routes/conversations.js';
 import usersRoutes from './routes/users.js';
 import { requireAuth } from './middleware/auth.js';
+import { generateUploadToken, requireUploadToken } from './middleware/upload-token.js';
 import { ACTIVE_PATHS, STORAGE_INFO, ensureStorageStructure } from '../lib/storage-config.js';
 import extractionService from './services/extraction-service.js';
 import extractionProgressService from './services/extraction-progress.js';
@@ -3302,6 +3303,55 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
 });
 
 // ============================================================================
+// API - UPLOAD TOKEN (Para autenticação cross-origin em chunked uploads)
+// ============================================================================
+
+/**
+ * Gera um token JWT temporário para upload chunked cross-origin
+ * GET /api/upload/get-upload-token
+ *
+ * Resolve o problema de cookies de sessão não funcionarem entre domínios:
+ * - Frontend em iarom.com.br (com session cookie)
+ * - Backend em rom-agent-ia.onrender.com (sem acesso ao cookie)
+ *
+ * Fluxo:
+ * 1. Frontend faz requisição para este endpoint (com session cookie normal)
+ * 2. Backend retorna token JWT válido por 1 hora
+ * 3. Frontend usa o token nas requisições chunked diretas ao backend
+ */
+app.get('/api/upload/get-upload-token', requireAuth, generalLimiter, (req, res) => {
+  try {
+    if (!req.session?.user) {
+      return res.status(401).json({
+        success: false,
+        error: 'Usuário não autenticado',
+        message: 'Faça login antes de solicitar um token de upload'
+      });
+    }
+
+    const token = generateUploadToken(req.session.user);
+
+    res.json({
+      success: true,
+      token,
+      expiresIn: '1h',
+      user: {
+        id: req.session.user.id,
+        email: req.session.user.email,
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ [UploadToken] Erro ao gerar token:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Erro ao gerar token de upload',
+      message: error.message
+    });
+  }
+});
+
+// ============================================================================
 // API - UPLOAD CHUNKED PARA ARQUIVOS GRANDES (SEM LIMITE)
 // ============================================================================
 
@@ -3309,8 +3359,9 @@ app.post('/api/upload', upload.single('file'), async (req, res) => {
  * Iniciar sessão de upload chunked
  * POST /api/upload/chunked/init
  * Body: { filename, fileSize, contentType }
+ * Auth: Bearer token (via header Authorization)
  */
-app.post('/api/upload/chunked/init', requireAuth, uploadLimiter, async (req, res) => {
+app.post('/api/upload/chunked/init', requireUploadToken, uploadLimiter, async (req, res) => {
   try {
     const { filename, fileSize, contentType } = req.body;
 
@@ -3321,7 +3372,7 @@ app.post('/api/upload/chunked/init', requireAuth, uploadLimiter, async (req, res
     console.log('🚀 [Chunked Init]', {
       filename,
       fileSize: `${(fileSize / 1024 / 1024).toFixed(2)} MB`,
-      user: req.session?.user?.email || 'unknown'
+      user: req.user?.email || 'unknown'
     });
 
     const session = await chunkedUpload.initSession(filename, fileSize, contentType || 'application/octet-stream');
@@ -3348,8 +3399,9 @@ app.post('/api/upload/chunked/init', requireAuth, uploadLimiter, async (req, res
  * Upload de um chunk
  * POST /api/upload/chunked/:uploadId/chunk/:chunkIndex
  * Body: binary data (chunk)
+ * Auth: Bearer token (via header Authorization)
  */
-app.post('/api/upload/chunked/:uploadId/chunk/:chunkIndex', requireAuth, uploadLimiter, async (req, res) => {
+app.post('/api/upload/chunked/:uploadId/chunk/:chunkIndex', requireUploadToken, uploadLimiter, async (req, res) => {
   try {
     const { uploadId, chunkIndex } = req.params;
     const chunks = [];
@@ -3425,8 +3477,9 @@ app.post('/api/upload/chunked/:uploadId/chunk/:chunkIndex', requireAuth, uploadL
 /**
  * Finalizar upload chunked
  * POST /api/upload/chunked/:uploadId/finalize
+ * Auth: Bearer token (via header Authorization)
  */
-app.post('/api/upload/chunked/:uploadId/finalize', requireAuth, uploadLimiter, async (req, res) => {
+app.post('/api/upload/chunked/:uploadId/finalize', requireUploadToken, uploadLimiter, async (req, res) => {
   try {
     const { uploadId } = req.params;
 
