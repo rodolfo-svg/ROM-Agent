@@ -16,7 +16,8 @@ services:
     branch: main
 
     # ═══ BUILD ═══
-    buildCommand: npm ci && cd frontend && npm ci && npm run build && cd ..
+    # IMPORTANTE: Limpar dist para evitar cache de builds anteriores
+    buildCommand: npm ci && cd frontend && rm -rf dist && npm ci && npm run build && cd ..
 
     # ═══ START ═══
     # CRÍTICO: Iniciar servidor IMEDIATAMENTE para evitar port scan timeout
@@ -166,7 +167,8 @@ services:
     branch: staging
 
     # ═══ BUILD ═══
-    buildCommand: npm ci && cd frontend && npm ci && npm run build && cd ..
+    # IMPORTANTE: Limpar dist para evitar cache de builds anteriores
+    buildCommand: npm ci && cd frontend && rm -rf dist && npm ci && npm run build && cd ..
 
     # ═══ START ═══
     # CRÍTICO: Iniciar servidor IMEDIATAMENTE para evitar port scan timeout
