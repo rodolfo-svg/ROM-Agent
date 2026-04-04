@@ -152,6 +152,50 @@ connectSrc: [
 
 ---
 
+### 5. NEVER: Usar `req.accepts('html')` sem check adicional para APIs
+
+**❌ ERRO COMETIDO:**
+- Middleware de auth usava `req.accepts('html')` para decidir se redireciona ou retorna JSON
+- `req.accepts('html')` retorna `true` para `Accept: */*` (padrão de curl e alguns clients)
+- Mesmo com check `if (req.path.startsWith('/api/'))` antes, rotas API retornavam 302
+- Diagnósticos via curl falhavam: `/api/kb/documents` retornava 302 ao invés de 401 JSON
+
+**✅ SOLUÇÃO:**
+```javascript
+// ❌ NUNCA FAZER:
+if (req.path.startsWith('/api/')) {
+  return res.status(401).json({...});
+}
+if (req.accepts('html')) {  // Problema: true para Accept: */*
+  return res.redirect('/login.html');
+}
+
+// ✅ SEMPRE FAZER:
+if (req.path.startsWith('/api/')) {
+  return res.status(401).json({...});
+}
+// Apenas redirecionar se Accept header PREFERE HTML sobre JSON
+const acceptHeader = req.get('Accept') || '';
+const prefersHtml = acceptHeader.includes('text/html') && !acceptHeader.includes('application/json');
+if (prefersHtml) {
+  return res.redirect('/login.html');
+}
+// Fallback para JSON
+return res.status(401).json({...});
+```
+
+**📋 VALIDAÇÃO:**
+- Testar com `curl` sem headers: deve retornar 401 JSON, não 302
+- Testar com `curl -H "Accept: text/html"`: pode retornar 302
+- Testar com `curl -H "Accept: application/json"`: deve retornar 401 JSON
+- Scripts de diagnóstico devem funcionar sem adicionar headers
+
+**📅 Data do erro:** Identificado em 04/04/2026 23:06
+**🔗 Commit da correção:** (pendente)
+**📝 Observação:** Bug descoberto durante validação exaustiva do fluxo Upload → Chat
+
+---
+
 ## ✅ CHECKLIST PRÉ-DEPLOY
 
 Use este checklist ANTES de cada deploy:

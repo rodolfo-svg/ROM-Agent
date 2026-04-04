@@ -31,7 +31,12 @@ export function requireAuth(req, res, next) {
   }
 
   // Se for requisição HTML (páginas), redirecionar para login
-  if (req.accepts('html')) {
+  // ⚠️ ATENÇÃO: req.accepts('html') retorna true para Accept: */*
+  // Apenas redirecionar se Accept header indica preferência por HTML sobre JSON
+  const acceptHeader = req.get('Accept') || '';
+  const prefersHtml = acceptHeader.includes('text/html') && !acceptHeader.includes('application/json');
+
+  if (prefersHtml) {
     return res.redirect('/login.html');
   }
 
