@@ -215,9 +215,13 @@ if (!req.isAuthenticated()) {
 
 ## ❌ PROBLEMAS AINDA NÃO RESOLVIDOS
 
-### BUG #1: userId divergente entre upload e chat
+### BUG #1: userId divergente entre upload e chat ✅ CORRIGIDO
 
-**Situação:**
+**STATUS:** ✅ **CORRIGIDO** em 04/04/2026 23:15
+**SOLUÇÃO:** Opção A - Force Login Before Upload
+**COMMIT:** (pendente deploy)
+
+**Situação (ANTES DO FIX):**
 - Usuário faz upload SEM login → `userId = 'web-upload'`
 - Usuário abre chat SEM login → `userId = 'anonymous'`
 - Chat filtra documentos por 'anonymous'
@@ -225,6 +229,32 @@ if (!req.isAuthenticated()) {
 - **RESULTADO:** Zero documentos encontrados
 
 **Impacto:** CRÍTICO
+
+**FIX IMPLEMENTADO:**
+```javascript
+// src/server-enhanced.js linha 3688
+app.post('/api/upload-documents', requireAuth, upload.array('files', 20), ...
+
+// src/server-enhanced.js linha 3196
+app.post('/api/upload/base64', requireAuth, express.json({ limit: '550mb' }), ...
+
+// src/server-enhanced.js linha 3260
+app.post('/api/upload', requireAuth, upload.single('file'), ...
+```
+
+**Resultado após fix:**
+- ✅ Todas rotas de upload requerem `requireAuth`
+- ✅ userId sempre será ID válido de usuário logado
+- ✅ Chat SEMPRE encontrará documentos (userId consistency garantida)
+- ✅ Mais seguro: apenas usuários autenticados podem fazer upload
+
+**Impacto da mudança:**
+- ⚠️ Usuários anônimos NÃO podem mais fazer upload (by design - mais seguro)
+- ✅ Sistema agora requer login, garantindo privacidade e rastreabilidade
+
+---
+
+**OPÇÕES CONSIDERADAS (mas não implementadas):**
 
 **Soluções Possíveis:**
 

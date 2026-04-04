@@ -191,8 +191,46 @@ return res.status(401).json({...});
 - Scripts de diagnóstico devem funcionar sem adicionar headers
 
 **📅 Data do erro:** Identificado em 04/04/2026 23:06
-**🔗 Commit da correção:** (pendente)
+**🔗 Commit da correção:** a553da8
 **📝 Observação:** Bug descoberto durante validação exaustiva do fluxo Upload → Chat
+
+---
+
+### 6. NEVER: Permitir upload sem autenticação (userId divergence)
+
+**❌ ERRO COMETIDO:**
+- Upload permitido sem login criava documentos com `userId = 'web-upload'`
+- Chat sem login buscava com `userId = 'anonymous'`
+- Filtro `allDocs.filter(doc => doc.userId === userId)` retornava zero docs
+- Chat não conseguia acessar documentos que foram uploaded sem login
+
+**✅ SOLUÇÃO:**
+```javascript
+// ❌ NUNCA FAZER:
+app.post('/api/upload-documents', upload.array('files', 20), async (req, res) => {
+  // ... aceita upload sem autenticação
+  userId: req.session?.user?.id || 'web-upload'  // Problema!
+});
+
+// ✅ SEMPRE FAZER:
+app.post('/api/upload-documents', requireAuth, upload.array('files', 20), async (req, res) => {
+  // requireAuth garante req.session.user.id existe
+  userId: req.session.user.id  // Sempre ID válido
+});
+```
+
+**📋 VALIDAÇÃO:**
+- Todas rotas de upload devem ter `requireAuth`:
+  - `/api/upload-documents`
+  - `/api/upload`
+  - `/api/upload/base64`
+- Rotas chunked já usam `requireUploadToken`
+- userId em documentos do KB sempre será ID real de usuário
+- Chat sempre encontrará documentos do mesmo usuário
+
+**📅 Data do erro:** Identificado em 04/04/2026 23:00
+**🔗 Commit da correção:** (pendente)
+**📝 Observação:** Bug CRÍTICO descoberto em investigação forense completa do fluxo Upload → KB → Chat
 
 ---
 
