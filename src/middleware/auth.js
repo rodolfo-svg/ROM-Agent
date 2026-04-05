@@ -22,12 +22,29 @@ export function requireAuth(req, res, next) {
     ip: req.ip
   });
 
-  // Se for requisição HTML, redirecionar para login
-  if (req.accepts('html')) {
+  // Rotas /api/* SEMPRE retornam JSON (401), nunca redirect
+  // ⚠️ IMPORTANTE: req.path pode não incluir /api quando router é montado com app.use('/api', router)
+  // Então verificamos tanto req.path quanto req.originalUrl
+  const isApiRoute = req.path.startsWith('/api/') || req.originalUrl.startsWith('/api/');
+
+  if (isApiRoute) {
+    return res.status(401).json({
+      error: 'Não autenticado',
+      message: 'Você precisa fazer login para acessar este recurso'
+    });
+  }
+
+  // Se for requisição HTML (páginas), redirecionar para login
+  // ⚠️ ATENÇÃO: req.accepts('html') retorna true para Accept: */*
+  // Apenas redirecionar se Accept header indica preferência por HTML sobre JSON
+  const acceptHeader = req.get('Accept') || '';
+  const prefersHtml = acceptHeader.includes('text/html') && !acceptHeader.includes('application/json');
+
+  if (prefersHtml) {
     return res.redirect('/login.html');
   }
 
-  // Se for requisição API, retornar 401
+  // Fallback: retornar 401 JSON
   return res.status(401).json({
     error: 'Não autenticado',
     message: 'Você precisa fazer login para acessar este recurso'

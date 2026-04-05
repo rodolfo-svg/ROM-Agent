@@ -3193,7 +3193,8 @@ app.post('/api/chat/stream', loadStructuredFilesFromKB, async (req, res) => {
 
 // API - Upload de arquivo
 // API - Upload de arquivo via Base64 (contorna scanner de conteúdo)
-app.post('/api/upload/base64', express.json({ limit: '550mb' }), async (req, res) => {
+// 🔒 FIX BUG #1: Requer autenticação para evitar userId divergence
+app.post('/api/upload/base64', requireAuth, express.json({ limit: '550mb' }), async (req, res) => {
   const startTime = Date.now();
   console.log('📤 [/api/upload/base64] Request received');
 
@@ -3257,7 +3258,8 @@ app.post('/api/upload/base64', express.json({ limit: '550mb' }), async (req, res
 
 // API - Upload de arquivo simples (para chat/dashboard)
 // ✅ FIX: Não requer agent, apenas salva o arquivo
-app.post('/api/upload', upload.single('file'), async (req, res) => {
+// 🔒 FIX BUG #1: Requer autenticação para evitar userId divergence
+app.post('/api/upload', requireAuth, upload.single('file'), async (req, res) => {
   const startTime = Date.now();
   console.log('📤 [/api/upload] Request received');
 
@@ -3685,7 +3687,8 @@ logger.info('✅ Extraction API endpoints configured');
 // ============================================================================
 
 // API - Upload múltiplos documentos com extração automática (91 ferramentas)
-app.post('/api/upload-documents', upload.array('files', 20), async (req, res) => {
+// 🔒 FIX BUG #1: Requer autenticação para evitar userId divergence
+app.post('/api/upload-documents', requireAuth, upload.array('files', 20), async (req, res) => {
   try {
     // Estender timeout para 10 minutos (arquivos grandes podem demorar)
     req.setTimeout(600000); // 10 minutos
