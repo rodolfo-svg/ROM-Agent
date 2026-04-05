@@ -23,7 +23,11 @@ export function requireAuth(req, res, next) {
   });
 
   // Rotas /api/* SEMPRE retornam JSON (401), nunca redirect
-  if (req.path.startsWith('/api/')) {
+  // ⚠️ IMPORTANTE: req.path pode não incluir /api quando router é montado com app.use('/api', router)
+  // Então verificamos tanto req.path quanto req.originalUrl
+  const isApiRoute = req.path.startsWith('/api/') || req.originalUrl.startsWith('/api/');
+
+  if (isApiRoute) {
     return res.status(401).json({
       error: 'Não autenticado',
       message: 'Você precisa fazer login para acessar este recurso'

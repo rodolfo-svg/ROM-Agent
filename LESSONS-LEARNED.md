@@ -229,8 +229,45 @@ app.post('/api/upload-documents', requireAuth, upload.array('files', 20), async 
 - Chat sempre encontrará documentos do mesmo usuário
 
 **📅 Data do erro:** Identificado em 04/04/2026 23:00
-**🔗 Commit da correção:** (pendente)
+**🔗 Commit da correção:** 74dfbbe
 **📝 Observação:** Bug CRÍTICO descoberto em investigação forense completa do fluxo Upload → KB → Chat
+
+---
+
+### 7. NEVER: Checar apenas `req.path` em middlewares de rotas montadas
+
+**❌ ERRO COMETIDO:**
+- Middleware `requireAuth` verificava `req.path.startsWith('/api/')` para decidir se retorna JSON ou redirect
+- Quando router é montado com `app.use('/api', router)`, o `req.path` DENTRO do router NÃO inclui o prefixo `/api`
+- Exemplo: `/api/extraction-jobs/123` tem `req.path = '/extraction-jobs/123'` (sem `/api`)
+- Check `req.path.startsWith('/api/')` retornava `false`, causando redirect 302 em vez de 401 JSON
+- Frontend fazia polling em `/api/extraction-jobs/:id`, recebia 302 redirect → erro 502
+
+**✅ SOLUÇÃO:**
+```javascript
+// ❌ NUNCA FAZER:
+if (req.path.startsWith('/api/')) {
+  return res.status(401).json({...});
+}
+// Falha quando router é montado com app.use('/api', router)
+
+// ✅ SEMPRE FAZER:
+const isApiRoute = req.path.startsWith('/api/') || req.originalUrl.startsWith('/api/');
+if (isApiRoute) {
+  return res.status(401).json({...});
+}
+// req.originalUrl sempre contém o path completo, incluindo prefixos de routers montados
+```
+
+**📋 VALIDAÇÃO:**
+- Sempre usar `req.originalUrl` quando precisar do path completo
+- `req.path` pode ser diferente quando router é montado com prefixo
+- Testar endpoints de routers montados: `curl /api/extraction-jobs/123` deve retornar 401 JSON, não 302
+- Verificar logs de frontend: não deve reportar "502 Bad Gateway" para endpoints autenticados
+
+**📅 Data do erro:** Identificado em 05/04/2026 00:09
+**🔗 Commit da correção:** (em andamento)
+**📝 Observação:** Bug causava "502 errors" falsos em polling de status de extração. Cliente reportou erro durante upload ativo.
 
 ---
 
