@@ -209,28 +209,28 @@ router.post('/register', authLimiter, async (req, res) => {
  */
 router.post('/login', authLimiter, async (req, res) => {
   const { email, password } = req.body;
-  console.log('[DEBUG-LOGIN] 1. Iniciando login para:', email);
+  console.error('[DEBUG-LOGIN] 1. Iniciando login para:', email);
 
   // Validação básica
   if (!email || !password) {
-    console.log('[DEBUG-LOGIN] 2. Falha validação básica');
+    console.error('[DEBUG-LOGIN] 2. Falha validação básica');
     return res.status(400).json({
       success: false,
       error: 'Email e senha são obrigatórios'
     });
   }
 
-  console.log('[DEBUG-LOGIN] 3. Extraindo IP...');
+  console.error('[DEBUG-LOGIN] 3. Extraindo IP...');
   const ipAddress = auditService.extractIpAddress(req);
-  console.log('[DEBUG-LOGIN] 4. IP extraído:', ipAddress);
+  console.error('[DEBUG-LOGIN] 4. IP extraído:', ipAddress);
 
   try {
-    console.log('[DEBUG-LOGIN] 5. Obtendo pool PostgreSQL...');
+    console.error('[DEBUG-LOGIN] 5. Obtendo pool PostgreSQL...');
     const pool = getPostgresPool();
-    console.log('[DEBUG-LOGIN] 6. Pool obtido:', pool ? 'SIM' : 'NULL');
+    console.error('[DEBUG-LOGIN] 6. Pool obtido:', pool ? 'SIM' : 'NULL');
 
     if (!pool) {
-      console.log('[DEBUG-LOGIN] 7. Pool NULL - PostgreSQL indisponível');
+      console.error('[DEBUG-LOGIN] 7. Pool NULL - PostgreSQL indisponível');
       logger.error('PostgreSQL não disponível para autenticação');
       return res.status(503).json({
         success: false,
@@ -239,7 +239,7 @@ router.post('/login', authLimiter, async (req, res) => {
     }
 
     // 1. Buscar usuário
-    console.log('[DEBUG-LOGIN] 8. Consultando banco para email:', email.toLowerCase().trim());
+    console.error('[DEBUG-LOGIN] 8. Consultando banco para email:', email.toLowerCase().trim());
     const result = await pool.query(
       `SELECT id, email, password_hash, name, role, oab,
               password_expires_at, force_password_change, account_locked_until
@@ -247,7 +247,7 @@ router.post('/login', authLimiter, async (req, res) => {
        WHERE email = $1`,
       [email.toLowerCase().trim()]
     );
-    console.log('[DEBUG-LOGIN] 9. Query executada, rows encontrados:', result.rows.length);
+    console.error('[DEBUG-LOGIN] 9. Query executada, rows encontrados:', result.rows.length);
 
     if (result.rows.length === 0) {
       // Audit log (falha - usuário não existe)
@@ -433,10 +433,10 @@ router.post('/login', authLimiter, async (req, res) => {
     });
 
   } catch (error) {
-    console.log('[DEBUG-LOGIN] CATCH BLOCK - Erro capturado');
-    console.log('[DEBUG-LOGIN] Tipo do erro:', error.constructor.name);
-    console.log('[DEBUG-LOGIN] Mensagem:', error.message);
-    console.log('[DEBUG-LOGIN] Stack:', error.stack);
+    console.error('[DEBUG-LOGIN] ❌ CATCH BLOCK - Erro capturado');
+    console.error('[DEBUG-LOGIN] Tipo do erro:', error.constructor.name);
+    console.error('[DEBUG-LOGIN] Mensagem:', error.message);
+    console.error('[DEBUG-LOGIN] Stack:', error.stack);
 
     logger.error('Erro ao autenticar usuário', {
       error: error.message,
