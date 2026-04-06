@@ -132,6 +132,7 @@ class BruteForceService {
 
     let accountLocked = false;
     let ipBlocked = false;
+    let failedAttempts = 0;
 
     // 1. Incrementar contador de falhas do usuário (se userId existe)
     if (userId) {
@@ -143,7 +144,7 @@ class BruteForceService {
         [userId]
       );
 
-      const failedAttempts = result.rows[0]?.failed_login_attempts || 0;
+      failedAttempts = result.rows[0]?.failed_login_attempts || 0;
 
       console.log(`⚠️ [BRUTE-FORCE] User ${userId.substring(0, 8)} - ${failedAttempts}/${this.config.maxFailedAttempts} tentativas`);
 
