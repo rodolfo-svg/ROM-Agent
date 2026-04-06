@@ -443,9 +443,15 @@ router.post('/login', authLimiter, async (req, res) => {
       email
     });
 
+    // TEMPORARY DEBUG: Expose error details
     res.status(500).json({
       success: false,
-      error: 'Erro ao processar login'
+      error: 'Erro ao processar login',
+      debug: {
+        message: error.message,
+        type: error.constructor.name,
+        stack: error.stack
+      }
     });
   }
 });
