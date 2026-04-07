@@ -1,0 +1,14 @@
+--- a/src/routes/rom-project.js
++++ b/src/routes/rom-project.js
+@@ -56,7 +56,10 @@ const storage = multer.diskStorage({
+ const upload = multer({
+   storage: storage,
+   limits: {
+-    fileSize: 100 * 1024 * 1024 // 100MB limite
++    // ✅ FIX UPLOAD-002: Padronizado para 500MB (consistente com outros endpoints)
++    // Antes: 100MB
++    // Agora: 500MB (mesmo limite de server-enhanced.js e kb-merge-volumes.js)
++    fileSize: 500 * 1024 * 1024 // 500MB limite
+   }
+ });
+

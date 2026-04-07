@@ -1,0 +1,10 @@
+{
+  "audit_id": "audit_2026-04-07_00-54-32",
+  "timestamp": "2026-04-07T03:54:33Z",
+  "agents": {
+    "upload": { "status": "pending", "pid": null, "result": null },
+    "extraction": { "status": "pending", "pid": null, "result": null },
+    "kb_integration": { "status": "pending", "pid": null, "result": null },
+    "env_aws": { "status": "pending", "pid": null, "result": null }
+  }
+}
