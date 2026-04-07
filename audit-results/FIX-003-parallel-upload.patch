@@ -1,0 +1,168 @@
+--- a/frontend/src/pages/upload/UploadPage.tsx
++++ b/frontend/src/pages/upload/UploadPage.tsx
+@@ -172,29 +172,75 @@ const UploadPage = () => {
+         setChunkedStage('Preparando upload...')
+
+         // Upload cada arquivo via chunked upload
+         const uploadedFiles: Array<{ originalName: string; uploadedPath: string }> = []
++
++        // ✅ FIX UPLOAD-004: Upload PARALELO ao invés de sequencial
++        // Limitar a 3 uploads simultâneos para não sobrecarregar servidor
++        const MAX_CONCURRENT = 3
++        const largeFiles = selectedFiles.filter(f => f.size > CHUNKED_THRESHOLD)
++        const smallFiles = selectedFiles.filter(f => f.size <= CHUNKED_THRESHOLD)
++
++        console.log(`📊 [UploadPage] ${largeFiles.length} arquivo(s) grande(s), ${smallFiles.length} arquivo(s) pequeno(s)`)
+
+-        for (const file of selectedFiles) {
+-          if (file.size > CHUNKED_THRESHOLD) {
+-            console.log(`📦 [UploadPage] Chunked upload: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`)
+-
+-            // 1. Iniciar sessão chunked
+-            setChunkedStage(`Iniciando upload: ${file.name}`)
++        // Função helper para upload chunked de um arquivo
++        const uploadSingleFileChunked = async (file: File) => {
++          console.log(`📦 [UploadPage] Chunked upload: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`)
++
++          setChunkedStage(`Iniciando upload: ${file.name}`)
+
+-            const CHUNK_SIZE = 40 * 1024 * 1024 // 40MB
+-            const totalChunks = Math.ceil(file.size / CHUNK_SIZE)
++          const CHUNK_SIZE = 40 * 1024 * 1024 // 40MB
++          const totalChunks = Math.ceil(file.size / CHUNK_SIZE)
+
+-            const initResponse = await fetch('/api/upload/chunked/init', {
+-              method: 'POST',
+-              headers: {
+-                'Content-Type': 'application/json',
+-                'x-csrf-token': csrfToken
+-              },
+-              credentials: 'include',
+-              body: JSON.stringify({
+-                filename: file.name,
+-                fileSize: file.size,
+-                contentType: file.type,
+-              }),
+-            })
++          const initResponse = await fetch('/api/upload/chunked/init', {
++            method: 'POST',
++            headers: {
++              'Content-Type': 'application/json',
++              'x-csrf-token': csrfToken
++            },
++            credentials: 'include',
++            body: JSON.stringify({
++              filename: file.name,
++              fileSize: file.size,
++              contentType: file.type,
++            }),
++          })
++
++          if (!initResponse.ok) {
++            throw new Error(`Falha ao iniciar chunked upload: ${initResponse.status}`)
++          }
++
++          const { uploadId } = await initResponse.json()
++
++          // Upload chunks sequencialmente (para mesmo arquivo)
++          for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
++            const start = chunkIndex * CHUNK_SIZE
++            const end = Math.min(start + CHUNK_SIZE, file.size)
++            const chunk = file.slice(start, end)
++
++            const progress = Math.round(((chunkIndex + 1) / totalChunks) * 100)
++
++            setChunkedProgress(progress)
++            setChunkedStage(`Enviando ${file.name} - chunk ${chunkIndex + 1}/${totalChunks}`)
++
++            console.log(`   📤 ${file.name} - Chunk ${chunkIndex + 1}/${totalChunks} (${progress}%)`)
++
++            const chunkResponse = await fetch(`/api/upload/chunked/${uploadId}/chunk/${chunkIndex}`, {
++              method: 'POST',
++              body: chunk,
++              credentials: 'include',
++            })
++
++            if (!chunkResponse.ok) {
++              throw new Error(`Falha no chunk ${chunkIndex}: ${chunkResponse.status}`)
++            }
++          }
++
++          // Finalizar
++          setChunkedStage(`Finalizando ${file.name}...`)
++          setChunkedProgress(100)
++
++          const finalizeResponse = await fetch(`/api/upload/chunked/${uploadId}/finalize`, {
++            method: 'POST',
++            credentials: 'include',
++          })
+
+           if (!finalizeResponse.ok) {
+             throw new Error(`Falha ao finalizar chunked upload: ${finalizeResponse.status}`)
+@@ -202,50 +248,39 @@ const UploadPage = () => {
+
+           const finalResult = await finalizeResponse.json()
+-            uploadedFiles.push({
+-              originalName: file.name,
+-              uploadedPath: finalResult.path || finalResult.filePath
+-            })
++
++          console.log(`   ✅ Chunked upload completo: ${file.name}`)
++
++          return {
++            originalName: file.name,
++            uploadedPath: finalResult.path || finalResult.filePath
++          }
++        }
+
+-            console.log(`   ✅ Chunked upload completo: ${file.name}`)
+-          } else {
+-            // Arquivo pequeno - pode usar FormData normal
+-            const formData = new FormData()
+-            formData.append('files', file)
+-
+-            const response = await fetch('/api/kb/upload', {
+-              method: 'POST',
+-              body: formData,
+-              credentials: 'include',
+-              headers: {
+-                'x-csrf-token': csrfToken
+-              }
+-            })
+-
+-            if (!response.ok) {
+-              throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+-            }
+-
+-            const data = await response.json()
+-            if (data.success && data.uploadId) {
+-              setCurrentUploadId(data.uploadId)
++        // ✅ UPLOAD PARALELO (máximo 3 simultâneos)
++        if (largeFiles.length > 0) {
++          console.log(`🚀 [UploadPage] Iniciando upload PARALELO de ${largeFiles.length} arquivo(s)`)
++
++          // Upload em batches de 3
++          for (let i = 0; i < largeFiles.length; i += MAX_CONCURRENT) {
++            const batch = largeFiles.slice(i, i + MAX_CONCURRENT)
++            console.log(`   📦 Batch ${Math.floor(i / MAX_CONCURRENT) + 1}: ${batch.length} arquivo(s)`)
++
++            const batchResults = await Promise.all(
++              batch.map(file => uploadSingleFileChunked(file))
++            )
++
++            uploadedFiles.push(...batchResults)
+           }
+-            return // Upload normal já inicia SSE tracking
+-          }
+         }
+
+         // Após todos os uploads chunked, iniciar processamento KB
+         console.log(`[UploadPage] Iniciando processamento KB para ${uploadedFiles.length} arquivo(s)`)
+
++        setChunkedStage('Iniciando processamento IA...')
++
++        // ... resto do código permanece igual
++
+       } else {
+         // ✅ UPLOAD NORMAL (arquivos <80MB)
+         console.log(`[UploadPage] Enviando ${selectedFiles.length} arquivo(s) para /api/kb/upload (upload normal)`)
