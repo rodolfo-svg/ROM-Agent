@@ -69,6 +69,7 @@ import exportRoutes from './routes/export.js';
 import uploadProgressRoutes from './routes/upload-progress.js';
 console.log('🔍 [IMPORT] uploadProgressRoutes carregado:', typeof uploadProgressRoutes);
 import cacheStatsRoutes from './routes/cache-stats.js';
+import adminPasswordFixRoutes from './routes/admin-password-fix.js';
 import progressEmitter from './utils/progress-emitter.js';
 import certidoesDJEService from './services/certidoes-dje-service.js';
 import multiAgentPipelineService from './services/multi-agent-pipeline-service.js';
@@ -627,6 +628,10 @@ console.log('✅ [ROUTES] /api/upload-progress registrado:', typeof uploadProgre
 // Rotas de Cache Stats (Fase 3: Otimização)
 app.use('/api/cache', cacheStatsRoutes);
 logger.info('✅ [ROUTES] /api/cache registrado');
+
+// Rotas de Admin Password Fix (TEMPORÁRIO - Diagnóstico de senha)
+app.use('/api/admin/password-fix', adminPasswordFixRoutes);
+logger.info('✅ [ROUTES] /api/admin/password-fix registrado');
 
 // Rotas de Extraction Jobs (V2 API)
 app.use('/api', extractionJobsRoutes);
