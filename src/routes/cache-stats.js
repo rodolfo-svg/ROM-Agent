@@ -273,4 +273,85 @@ router.post('/redis/flush-kb', requireAuth, async (req, res) => {
   }
 });
 
+/**
+ * POST /api/cache/emergency-password-fix
+ * ENDPOINT DE EMERGÊNCIA - Resetar senha sem CSRF
+ * DELETAR APÓS USAR!
+ */
+router.post('/emergency-password-fix', async (req, res) => {
+  try {
+    const { secret } = req.body;
+
+    // Secret key hardcoded
+    if (secret !== 'mota2323kb-emergency-fix-2026') {
+      return res.status(403).json({
+        success: false,
+        error: 'Invalid secret key'
+      });
+    }
+
+    const bcrypt = (await import('bcryptjs')).default;
+    const email = 'rodolfo@rom.adv.br';
+    const newPassword = 'Mota@2323';
+
+    console.log('🚨 [EMERGENCY] Reset senha para:', email);
+
+    // Verificar usuário
+    const { pool } = await import('../config/database.js');
+    const userCheck = await pool.query(
+      'SELECT id, email, name FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (userCheck.rows.length === 0) {
+      return res.status(404).json({ success: false, error: 'User not found' });
+    }
+
+    const user = userCheck.rows[0];
+
+    // Hash senha
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+
+    // Calcular expiração (90 dias)
+    const now = new Date();
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 90);
+
+    // Atualizar
+    await pool.query(
+      `UPDATE users
+       SET password_hash = $1,
+           password_changed_at = $2,
+           password_expires_at = $3,
+           force_password_change = false,
+           account_locked = false,
+           account_locked_until = NULL,
+           updated_at = NOW()
+       WHERE id = $4`,
+      [passwordHash, now, expiresAt, user.id]
+    );
+
+    console.log('✅ [EMERGENCY] Senha resetada!');
+
+    res.json({
+      success: true,
+      message: 'Password reset successfully',
+      user: { id: user.id, email: user.email, name: user.name },
+      passwordInfo: {
+        changedAt: now.toISOString(),
+        expiresAt: expiresAt.toISOString(),
+        daysUntilExpiry: 90
+      }
+    });
+
+  } catch (error) {
+    console.error('❌ [EMERGENCY] Error:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to reset password',
+      message: error.message
+    });
+  }
+});
+
 export default router;
