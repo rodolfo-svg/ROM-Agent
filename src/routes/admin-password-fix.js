@@ -7,7 +7,7 @@
 
 import { Router } from 'express';
 import { requireAuth } from '../middleware/auth.js';
-import { pool } from '../config/database.js';
+import { getPostgresPool } from '../config/database.js';
 import bcrypt from 'bcryptjs';
 
 const router = Router();
@@ -18,6 +18,8 @@ const router = Router();
  */
 router.post('/diagnose', requireAuth, async (req, res) => {
   try {
+    const pool = getPostgresPool();
+
     // Verificar se é admin
     if (req.session.user.role !== 'master_admin' && req.session.user.role !== 'admin') {
       return res.status(403).json({
@@ -121,6 +123,8 @@ router.post('/diagnose', requireAuth, async (req, res) => {
  */
 router.post('/reset', requireAuth, async (req, res) => {
   try {
+    const pool = getPostgresPool();
+
     // Verificar se é admin
     if (req.session.user.role !== 'master_admin' && req.session.user.role !== 'admin') {
       return res.status(403).json({
