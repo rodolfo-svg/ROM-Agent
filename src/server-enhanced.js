@@ -102,6 +102,7 @@ import kbMergeVolumesRoutes from './routes/kb-merge-volumes.js';
 import extractionJobsRoutes from './routes/extraction-jobs.js';
 import kbEmergencyRoutes from './routes/kb-emergency.js';
 import healthRoutes from './routes/health.js';
+import analyticsRoutes from './routes/analytics.js'; // Analytics de usabilidade
 
 // ═══════════════════════════════════════════════════════════════════════
 // PROMPT OPTIMIZATION v3.0 - Modular prompt builder with 79% token reduction
@@ -580,6 +581,7 @@ app.use('/api', jurisprudenciaRoutes);
 app.use('/api', documentsRoutes);
 app.use('/api', pipelineRoutes);
 app.use('/api', healthRoutes); // Health check endpoint
+app.use('/api/analytics', analyticsRoutes); // Analytics de usabilidade
 app.use('/api/datajud', datajudRoutes);
 app.use('/api/rom-project', romProjectRouter);
 app.use('/api/system-prompts', requireAuth, systemPromptsRouter); // ✅ Adicionar auth
