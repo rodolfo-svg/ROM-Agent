@@ -17,7 +17,7 @@ import autoUpdateRoutes from '../lib/api-routes-auto-update.js';
 const autoUpdateSystem = require('../lib/auto-update-system.cjs');
 import datajudService from './services/datajud-service.js';
 import { buscarJusBrasil } from './modules/webSearch.js';
-import { obterTribunal } from './modules/tribunais.js';
+// obterTribunal removido - usar datajudService.obterTribunal() que já está importado
 import * as extractionService from './services/extraction-service.js';
 import * as documentExtractionService from './services/document-extraction-service.js';
 import romProjectRouter from './routes/rom-project.js';
@@ -472,7 +472,7 @@ app.get('/api/jurisprudencia/buscar', async (req, res) => {
     if (fonte === 'websearch' || fonte === 'todas') {
       try {
         if (tribunal) {
-          const tribunalInfo = obterTribunal(tribunal);
+          const tribunalInfo = datajudService.obterTribunal(tribunal);
           if (tribunalInfo) {
             resultados.fontes.push({
               fonte: 'WebSearch Oficial',
@@ -546,7 +546,7 @@ app.get('/api/jurisprudencia/tribunais', (req, res) => {
     const tribunais = Object.entries(datajudService.TRIBUNAIS_DATAJUD).map(([sigla, codigo]) => ({
       sigla,
       codigo,
-      nome: obterTribunal(sigla)?.nome || sigla
+      nome: datajudService.obterTribunal(sigla)?.nome || sigla
     }));
 
     res.json({

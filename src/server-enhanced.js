@@ -100,6 +100,7 @@ import kbAnalyzeV2Routes from './routes/kb-analyze-v2.js';
 import kbMergeVolumesRoutes from './routes/kb-merge-volumes.js';
 import extractionJobsRoutes from './routes/extraction-jobs.js';
 import kbEmergencyRoutes from './routes/kb-emergency.js';
+import healthRoutes from './routes/health.js';
 
 // ═══════════════════════════════════════════════════════════════════════
 // PROMPT OPTIMIZATION v3.0 - Modular prompt builder with 79% token reduction
@@ -577,6 +578,7 @@ app.use('/api', logsRoutes);
 app.use('/api', jurisprudenciaRoutes);
 app.use('/api', documentsRoutes);
 app.use('/api', pipelineRoutes);
+app.use('/api', healthRoutes); // Health check endpoint
 app.use('/api/datajud', datajudRoutes);
 app.use('/api/rom-project', romProjectRouter);
 app.use('/api/system-prompts', requireAuth, systemPromptsRouter); // ✅ Adicionar auth
@@ -12276,6 +12278,60 @@ app.post('/api/admin/cleanup-all', requireAuth, generalLimiter, async (req, res)
   }
 });
 
+/**
+ * GET /api/admin/system-status
+ * 📊 STATUS DO SISTEMA: Retorna informações de diagnóstico
+ */
+app.get('/api/admin/system-status', requireAuth, async (req, res) => {
+  try {
+    const memUsage = process.memoryUsage();
+    const uptime = process.uptime();
+
+    // Verificar conexão com banco
+    let dbStatus = 'unknown';
+    try {
+      const pool = getPostgresPool();
+      if (pool) {
+        await pool.query('SELECT 1');
+        dbStatus = 'connected';
+      } else {
+        dbStatus = 'not_configured';
+      }
+    } catch (e) {
+      dbStatus = 'error: ' + e.message;
+    }
+
+    // Verificar Redis
+    let redisStatus = 'disabled';
+    if (process.env.DISABLE_REDIS !== 'true' && process.env.REDIS_URL) {
+      redisStatus = 'configured';
+    }
+
+    res.json({
+      success: true,
+      status: 'operational',
+      timestamp: new Date().toISOString(),
+      uptime: {
+        seconds: Math.floor(uptime),
+        formatted: `${Math.floor(uptime / 3600)}h ${Math.floor((uptime % 3600) / 60)}m ${Math.floor(uptime % 60)}s`
+      },
+      memory: {
+        heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024) + ' MB',
+        heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024) + ' MB',
+        rss: Math.round(memUsage.rss / 1024 / 1024) + ' MB'
+      },
+      database: dbStatus,
+      redis: redisStatus,
+      environment: process.env.NODE_ENV || 'development',
+      version: process.env.npm_package_version || '2.8.0',
+      node: process.version
+    });
+  } catch (error) {
+    logger.error('Erro ao obter status do sistema', { error: error.message });
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // ═══════════════════════════════════════════════════════════════════════
 // ERROR HANDLERS v2.8.0 - Devem vir APÓS todas as rotas
 // ═══════════════════════════════════════════════════════════════════════
@@ -12298,6 +12354,26 @@ app.use((err, req, res, next) => {
   }
 
   // Se não for erro do Multer, passar para o próximo handler
+  next(err);
+});
+
+// JSON Parse Error Handler (captura erros de JSON malformado)
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    logger.warn('JSON malformado recebido:', {
+      message: err.message,
+      url: req.url,
+      method: req.method,
+      ip: req.ip
+    });
+
+    return res.status(400).json({
+      success: false,
+      error: 'JSON inválido no corpo da requisição',
+      details: err.message,
+      hint: 'Verifique se o JSON está bem formatado e os caracteres especiais estão escapados corretamente'
+    });
+  }
   next(err);
 });
 
