@@ -25,19 +25,39 @@ const IA_TERMS = [
 
 /**
  * Markdown patterns excessivos para limpar
+ * IMPORTANTE: Ordem importa - patterns mais específicos primeiro
  */
 const MARKDOWN_PATTERNS = [
-  { pattern: /\*\*\*(.+?)\*\*\*/g, replacement: '$1' }, // ***bold italic*** -> text
-  { pattern: /\*\*(.+?)\*\*/g, replacement: '$1' }, // **bold** -> text
-  { pattern: /\*(.+?)\*/g, replacement: '$1' }, // *italic* -> text
-  { pattern: /_{2}(.+?)_{2}/g, replacement: '$1' }, // __underline__ -> text
-  { pattern: /_(.+?)_/g, replacement: '$1' }, // _italic_ -> text
-  { pattern: /~~(.+?)~~/g, replacement: '$1' }, // ~~strikethrough~~ -> text
-  { pattern: /^#+\s*/gm, replacement: '' }, // # headers -> text
-  { pattern: /^\s*[-*+]\s+/gm, replacement: '- ' }, // Normaliza listas
-  { pattern: /^\s*\d+\.\s+/gm, replacement: '' }, // Remove numeracao de listas
-  { pattern: /`{3}[\s\S]*?`{3}/g, replacement: '' }, // Remove code blocks
+  // Separadores horizontais (---, ***, ___)
+  { pattern: /^[-*_]{3,}\s*$/gm, replacement: '' }, // --- ou *** ou ___ em linha própria
+  { pattern: /\n[-*_]{3,}\n/g, replacement: '\n\n' }, // --- entre parágrafos
+
+  // Bold/Italic com multiline
+  { pattern: /\*\*\*([^*]+)\*\*\*/g, replacement: '$1' }, // ***bold italic***
+  { pattern: /\*\*([^*]+)\*\*/g, replacement: '$1' }, // **bold** -> text
+  { pattern: /(?<!\*)\*([^*\n]+)\*(?!\*)/g, replacement: '$1' }, // *italic* (não **) -> text
+
+  // Underline
+  { pattern: /__([^_]+)__/g, replacement: '$1' }, // __underline__
+  { pattern: /(?<!_)_([^_\n]+)_(?!_)/g, replacement: '$1' }, // _italic_ (não __)
+
+  // Strikethrough
+  { pattern: /~~([^~]+)~~/g, replacement: '$1' }, // ~~strikethrough~~
+
+  // Headers - remover # mas manter texto
+  { pattern: /^#{1,6}\s*/gm, replacement: '' }, // # headers -> text
+
+  // Listas - normalizar
+  { pattern: /^\s*[-*+]\s+/gm, replacement: '- ' }, // Normaliza marcadores
+  { pattern: /^\s*\d+\.\s+/gm, replacement: '' }, // Remove numeração
+
+  // Code blocks e inline
+  { pattern: /```[\s\S]*?```/g, replacement: '' }, // Remove code blocks
   { pattern: /`([^`]+)`/g, replacement: '$1' }, // Remove inline code
+
+  // Asteriscos soltos (limpeza final)
+  { pattern: /\*{2,}/g, replacement: '' }, // Remove ** soltos
+  { pattern: /^\*\s/gm, replacement: '' }, // Remove * no início de linha
 ];
 
 /**
@@ -178,14 +198,18 @@ function validateOutput(text, options = {}) {
 }
 
 /**
- * Versao leve do validador - apenas remove emojis e mencoes a IA
- * Util para respostas em streaming onde performance e critica
+ * Versao leve do validador - remove emojis, IA e markdown
+ * Otimizada para streaming: aplica todas as limpezas essenciais
  * @param {string} text - Texto para limpar
  * @returns {string} Texto limpo
  */
 function validateOutputLight(text) {
   if (!text) return '';
-  return normalizeWhitespace(removeAITerms(removeEmojis(text)));
+  // Ordem: emojis -> markdown -> IA -> whitespace
+  let result = removeEmojis(text);
+  result = removeExcessiveMarkdown(result);
+  result = removeAITerms(result);
+  return normalizeWhitespace(result);
 }
 
 /**

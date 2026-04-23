@@ -27,6 +27,7 @@ import conversationMemoryService from '../services/conversation-memory-service.j
 import * as ConversationRepository from '../repositories/conversation-repository.js';
 import { estimateTokens, getSafeContextLimit, extractRelevantSections } from '../utils/context-manager.js';
 import { selectOptimalModel } from '../utils/model-selector.js'; // ✅ OTIMIZAÇÃO: Seleção automática de modelo
+import { validateOutputLight } from '../services/output-validator-service.js'; // ✅ Validador: remove emojis, IA, markdown
 
 const router = express.Router();
 const sseManager = getSSEConnectionManager();
@@ -351,7 +352,10 @@ router.post('/stream', async (req, res) => {
         sseManager.recordLatency(ttft);
       }
 
-      fullResponse += chunk;
+      // ✅ VALIDADOR: Limpar chunk antes de acumular e enviar
+      const cleanChunk = validateOutputLight(chunk);
+
+      fullResponse += cleanChunk;
       chunkCount++;
 
       // SEGURANCA: Verificar se conexao ainda esta viva antes de escrever
@@ -359,10 +363,10 @@ router.post('/stream', async (req, res) => {
         return;
       }
 
-      // Enviar chunk via SSE usando write queue
+      // Enviar chunk via SSE usando write queue (já validado)
       safeWrite(`data: ${JSON.stringify({
         type: 'chunk',
-        content: chunk,
+        content: cleanChunk,
         chunkIndex: chunkCount
       })}\n\n`).catch(err => {
         logger.error(`[${requestId}] Chunk write failed:`, err.message);
