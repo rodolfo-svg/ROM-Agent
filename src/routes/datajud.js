@@ -38,6 +38,42 @@ router.get('/health', async (req, res) => {
 });
 
 /**
+ * GET /api/datajud/status
+ * Retorna status detalhado da API DataJud (alias para /health com mais detalhes)
+ */
+router.get('/status', async (req, res) => {
+  try {
+    const apiKey = process.env.DATAJUD_API_KEY || process.env.CNJ_DATAJUD_API_KEY;
+    const baseUrl = process.env.DATAJUD_BASE_URL || 'https://api-publica.datajud.cnj.jus.br';
+    const tribunais = Object.keys(datajudService.TRIBUNAL_ALIASES);
+
+    res.json({
+      status: apiKey ? 'operational' : 'not_configured',
+      timestamp: new Date().toISOString(),
+      api: {
+        configured: !!apiKey,
+        baseUrl: baseUrl,
+        enabled: process.env.DATAJUD_ENABLED === 'true'
+      },
+      tribunais: {
+        total: tribunais.length,
+        superiores: tribunais.filter(t => ['STF', 'STJ', 'STM', 'TSE', 'TST'].includes(t)).length,
+        federais: tribunais.filter(t => t.startsWith('TRF')).length,
+        estaduais: tribunais.filter(t => t.startsWith('TJ')).length
+      },
+      version: '1.0.0'
+    });
+  } catch (error) {
+    logger.error('[DataJud API] Status check error:', error);
+    res.status(500).json({
+      status: 'error',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+/**
  * GET /api/datajud/tribunais
  * Lista todos os tribunais disponíveis
  */

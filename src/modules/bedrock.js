@@ -32,6 +32,9 @@ import contextManager from '../utils/context-manager.js';
 // Loop Guardrails para prevenção de loops infinitos
 import { loopGuardrails } from '../utils/loop-guardrails.js';
 
+// UUID para geração de IDs válidos
+import { randomUUID } from 'crypto';
+
 // Retry logic with exponential backoff
 import { retryAwsCommand } from '../utils/retry-with-backoff.js';
 
@@ -377,7 +380,7 @@ export async function conversar(prompt, options = {}) {
     // ═══════════════════════════════════════════════════════════
     // LOOP DE TOOL USE
     // ═══════════════════════════════════════════════════════════
-    const conversationId = `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const conversationId = randomUUID(); // UUID válido para tracking
 
     // Inicializar guardrails para esta conversação
     loopGuardrails.initConversation(conversationId);
@@ -444,7 +447,7 @@ export async function conversar(prompt, options = {}) {
       const response = await resilientInvoke(client, command, {
         modelId: commandParams.modelId,
         operation: 'converse',
-        requestId: options.conversationId || `conv_${Date.now()}`,
+        requestId: options.conversationId || randomUUID(),
         loopIteration: loopCount,
         enableFallback: true,
         enableCircuitBreaker: true
