@@ -295,10 +295,11 @@ router.post('/stream', async (req, res) => {
 
         // 🎨 CHUNK: Conteúdo progressivo do artifact
         if (chunk.__artifact_chunk) {
+          // ✅ VALIDADOR: Limpar chunk do artifact progressivo
           safeWrite(`data: ${JSON.stringify({
             type: 'artifact_chunk',
             id: chunk.__artifact_chunk.id,
-            content: chunk.__artifact_chunk.content
+            content: validateOutputLight(chunk.__artifact_chunk.content || '')
           })}\n\n`).catch(err => {
             logger.error(`[${requestId}] Artifact chunk write failed:`, err.message);
           });
@@ -310,9 +311,15 @@ router.post('/stream', async (req, res) => {
         if (chunk.__artifact_complete) {
           logger.info(`[${requestId}] Artifact COMPLETE:`, chunk.__artifact_complete.title, `(${chunk.__artifact_complete.content?.length || 0} chars)`);
 
+          // ✅ VALIDADOR: Limpar conteúdo do artifact antes de enviar
+          const cleanedArtifact = {
+            ...chunk.__artifact_complete,
+            content: validateOutputLight(chunk.__artifact_complete.content || '')
+          };
+
           safeWrite(`data: ${JSON.stringify({
             type: 'artifact_complete',
-            artifact: chunk.__artifact_complete
+            artifact: cleanedArtifact
           })}\n\n`).catch(err => {
             logger.error(`[${requestId}] Artifact complete write failed:`, err.message);
           });
@@ -324,9 +331,15 @@ router.post('/stream', async (req, res) => {
         if (chunk.__artifact) {
           logger.info(`[${requestId}] Artifact detected (legacy):`, chunk.__artifact.title);
 
+          // ✅ VALIDADOR: Limpar conteúdo do artifact legado antes de enviar
+          const cleanedArtifact = {
+            ...chunk.__artifact,
+            content: validateOutputLight(chunk.__artifact.content || '')
+          };
+
           safeWrite(`data: ${JSON.stringify({
             type: 'artifact',
-            artifact: chunk.__artifact
+            artifact: cleanedArtifact
           })}\n\n`).catch(err => {
             logger.error(`[${requestId}] Artifact write failed:`, err.message);
           });
