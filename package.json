@@ -46,7 +46,13 @@
     "setup:linux": "bash scripts/setup-extracao-v2-linux.sh",
     "kb:clean": "node scripts/limpar-kb-fantasmas.js",
     "monitor": "node monitor-site.js",
-    "monitor:once": "node monitor-site.js --once"
+    "monitor:once": "node monitor-site.js --once",
+    "update:deps": "npm update --save && npm audit fix --force || true",
+    "update:check": "npm outdated || true",
+    "audit": "npm audit",
+    "audit:fix": "npm audit fix",
+    "audit:fix:force": "npm audit fix --force",
+    "deps:report": "npm outdated --json > deps-report.json && npm audit --json > audit-report.json && echo 'Reports generated: deps-report.json, audit-report.json'"
   },
   "keywords": [
     "juridico",

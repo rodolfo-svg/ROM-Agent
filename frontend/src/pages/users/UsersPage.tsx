@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Sidebar } from '@/components/layout'
-import { Users as UsersIcon, Search, Plus, Edit, Trash2, Shield, Mail } from 'lucide-react'
+import { Users as UsersIcon, Search, Plus, Edit, Trash2, Shield, Mail, Building2 } from 'lucide-react'
 import { Button, Avatar } from '@/components/ui'
 import { apiFetch } from '@/services/api'
 
@@ -8,14 +8,24 @@ interface User {
   id: string
   name: string
   email: string
-  role: 'admin' | 'user' | 'viewer'
+  role: 'admin' | 'user' | 'viewer' | 'partner_admin'
   oab?: string
+  partnerId?: string
+  partnerName?: string
   createdAt: string
   lastLoginAt?: string
 }
 
+interface Partner {
+  id: string
+  name: string
+  subdomain?: string
+  isActive?: boolean
+}
+
 export function UsersPage() {
   const [users, setUsers] = useState<User[]>([])
+  const [partners, setPartners] = useState<Partner[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
   const [showModal, setShowModal] = useState(false)
@@ -26,10 +36,12 @@ export function UsersPage() {
     role: 'user' as User['role'],
     oab: '',
     password: '',
+    partnerId: '',
   })
 
   useEffect(() => {
     fetchUsers()
+    fetchPartners()
   }, [])
 
   const fetchUsers = async () => {
@@ -42,6 +54,17 @@ export function UsersPage() {
       console.error('Failed to fetch users:', error)
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchPartners = async () => {
+    try {
+      const response = await apiFetch<{ partners: Partner[] }>('/partners')
+      if (response.success && response.data) {
+        setPartners(response.data.partners || [])
+      }
+    } catch (error) {
+      console.error('Failed to fetch partners:', error)
     }
   }
 
@@ -60,7 +83,7 @@ export function UsersPage() {
       if (response.success) {
         setShowModal(false)
         setEditingUser(null)
-        setFormData({ name: '', email: '', role: 'user', oab: '', password: '' })
+        setFormData({ name: '', email: '', role: 'user', oab: '', password: '', partnerId: '' })
         await fetchUsers()
       }
     } catch (error) {
@@ -76,6 +99,7 @@ export function UsersPage() {
       role: user.role,
       oab: user.oab || '',
       password: '',
+      partnerId: user.partnerId || '',
     })
     setShowModal(true)
   }
@@ -99,10 +123,27 @@ export function UsersPage() {
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case 'admin': return 'bg-red-100 text-red-700'
+      case 'partner_admin': return 'bg-purple-100 text-purple-700'
       case 'user': return 'bg-blue-100 text-blue-700'
       case 'viewer': return 'bg-gray-100 text-gray-700'
       default: return 'bg-stone-100 text-stone-700'
     }
+  }
+
+  const getRoleLabel = (role: string) => {
+    switch (role) {
+      case 'admin': return 'Administrador'
+      case 'partner_admin': return 'Admin Parceiro'
+      case 'user': return 'Usuário'
+      case 'viewer': return 'Visualizador'
+      default: return role
+    }
+  }
+
+  const getPartnerName = (partnerId: string | undefined) => {
+    if (!partnerId) return null
+    const partner = partners.find(p => p.id === partnerId)
+    return partner?.name || partnerId
   }
 
   return (
@@ -117,7 +158,7 @@ export function UsersPage() {
               <h1 className="text-2xl font-semibold text-stone-800 mb-2">Gerenciamento de Usuários</h1>
               <p className="text-stone-500">Gerencie usuários e permissões do sistema</p>
             </div>
-            <Button onClick={() => { setEditingUser(null); setFormData({ name: '', email: '', role: 'user', oab: '', password: '' }); setShowModal(true) }} className="gap-2">
+            <Button onClick={() => { setEditingUser(null); setFormData({ name: '', email: '', role: 'user', oab: '', password: '', partnerId: '' }); setShowModal(true) }} className="gap-2">
               <Plus className="w-4 h-4" />
               Novo Usuário
             </Button>
@@ -167,7 +208,7 @@ export function UsersPage() {
                         <div className="flex items-center gap-2 mb-1">
                           <h3 className="font-semibold text-stone-800">{user.name}</h3>
                           <span className={`px-2 py-0.5 text-xs rounded-full ${getRoleBadgeColor(user.role)}`}>
-                            {user.role}
+                            {getRoleLabel(user.role)}
                           </span>
                         </div>
                         <div className="flex items-center gap-3 text-sm text-stone-500">
@@ -179,6 +220,12 @@ export function UsersPage() {
                             <span className="flex items-center gap-1">
                               <Shield className="w-4 h-4" />
                               {user.oab}
+                            </span>
+                          )}
+                          {user.partnerId && (
+                            <span className="flex items-center gap-1">
+                              <Building2 className="w-4 h-4" />
+                              {getPartnerName(user.partnerId)}
                             </span>
                           )}
                         </div>
@@ -238,7 +285,7 @@ export function UsersPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-2">Função</label>
+                <label className="block text-sm font-medium text-stone-700 mb-2">Funcao</label>
                 <select
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value as User['role'] })}
@@ -246,9 +293,27 @@ export function UsersPage() {
                   required
                 >
                   <option value="viewer">Visualizador</option>
-                  <option value="user">Usuário</option>
+                  <option value="user">Usuario</option>
+                  <option value="partner_admin">Admin Parceiro</option>
                   <option value="admin">Administrador</option>
                 </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-stone-700 mb-2">Escritorio Parceiro (opcional)</label>
+                <select
+                  value={formData.partnerId}
+                  onChange={(e) => setFormData({ ...formData, partnerId: e.target.value })}
+                  className="w-full h-11 px-4 bg-stone-50 border border-stone-200 rounded-xl text-stone-700 focus:outline-none focus:ring-2 focus:ring-bronze-400/30"
+                >
+                  <option value="">Nenhum (Equipe ROM)</option>
+                  {partners.map((partner) => (
+                    <option key={partner.id} value={partner.id}>
+                      {partner.name}
+                    </option>
+                  ))}
+                </select>
+                <p className="text-xs text-stone-500 mt-1">Associe o usuario a um escritorio parceiro</p>
               </div>
 
               <div>

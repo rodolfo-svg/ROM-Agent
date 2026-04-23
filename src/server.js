@@ -42,6 +42,9 @@ import datajudRoutes from './routes/datajud.js';
 // Prompts V5.0 Sync routes
 import { setupSyncPromptsRoutes } from '../lib/api-routes-sync-prompts.js';
 
+// Usability Analytics routes
+import analyticsRoutes from './routes/analytics.js';
+
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
@@ -90,6 +93,9 @@ app.use('/api/datajud', datajudRoutes);
 
 // Rotas de Sincronização de Prompts V5.0 (Admin)
 setupSyncPromptsRoutes(app);
+
+// Rotas de Analytics de Usabilidade
+app.use('/api/analytics', analyticsRoutes);
 
 // Instância do agente
 let agent = null;

@@ -1,0 +1,243 @@
+/**
+ * ROM Agent - Analytics Feedback Styles
+ * Styles for feedback buttons and analytics UI components
+ */
+
+/* Feedback Buttons Container */
+.analytics-feedback-buttons {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  margin-top: 8px;
+}
+
+.analytics-feedback-buttons .feedback-label {
+  font-size: 12px;
+  color: var(--text-secondary, #A0A4A8);
+  margin-right: 4px;
+}
+
+.analytics-feedback-buttons .feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border, #3A3F4A);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary, #A0A4A8);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.analytics-feedback-buttons .feedback-btn:hover {
+  background: var(--bg-3, #383E4A);
+  color: var(--text-primary, #E8EAED);
+  border-color: var(--text-tertiary, #6E7278);
+}
+
+.analytics-feedback-buttons .feedback-btn:active {
+  transform: scale(0.95);
+}
+
+/* Selected states */
+.analytics-feedback-buttons .feedback-btn.selected {
+  background: var(--bg-3, #383E4A);
+  border-color: var(--accent, #C9975B);
+}
+
+.analytics-feedback-buttons .feedback-thumbs-up.selected {
+  color: #4ade80; /* Green for positive */
+}
+
+.analytics-feedback-buttons .feedback-thumbs-down.selected {
+  color: #f87171; /* Red for negative */
+}
+
+/* Disabled state */
+.analytics-feedback-buttons .feedback-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Feedback inline with message */
+.message-feedback {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.message-wrapper:hover .message-feedback,
+.message-feedback.visible {
+  opacity: 1;
+}
+
+/* Toast notification for feedback */
+.feedback-toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--bg-2, #2D3139);
+  color: var(--text-primary, #E8EAED);
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.feedback-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.feedback-toast.success {
+  border-left: 3px solid #4ade80;
+}
+
+.feedback-toast.error {
+  border-left: 3px solid #f87171;
+}
+
+/* Rating stars (for 5-star rating) */
+.analytics-rating {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.analytics-rating .star {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  color: var(--text-tertiary, #6E7278);
+  transition: color 0.15s ease;
+}
+
+.analytics-rating .star:hover,
+.analytics-rating .star.active {
+  color: var(--accent, #C9975B);
+}
+
+.analytics-rating .star.hovered {
+  color: var(--accent-hover, #D4A76F);
+}
+
+/* Comment feedback modal */
+.feedback-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease;
+}
+
+.feedback-modal-overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.feedback-modal {
+  background: var(--bg-1, #22262E);
+  border: 1px solid var(--border, #3A3F4A);
+  border-radius: 12px;
+  padding: 24px;
+  width: 90%;
+  max-width: 400px;
+  transform: scale(0.95);
+  transition: transform 0.2s ease;
+}
+
+.feedback-modal-overlay.show .feedback-modal {
+  transform: scale(1);
+}
+
+.feedback-modal h3 {
+  color: var(--text-primary, #E8EAED);
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.feedback-modal textarea {
+  width: 100%;
+  height: 120px;
+  padding: 12px;
+  background: var(--bg-2, #2D3139);
+  border: 1px solid var(--border, #3A3F4A);
+  border-radius: 8px;
+  color: var(--text-primary, #E8EAED);
+  font-size: 14px;
+  resize: vertical;
+  margin-bottom: 16px;
+}
+
+.feedback-modal textarea:focus {
+  outline: none;
+  border-color: var(--accent, #C9975B);
+}
+
+.feedback-modal textarea::placeholder {
+  color: var(--text-tertiary, #6E7278);
+}
+
+.feedback-modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.feedback-modal-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.feedback-modal-btn.cancel {
+  background: transparent;
+  border: 1px solid var(--border, #3A3F4A);
+  color: var(--text-secondary, #A0A4A8);
+}
+
+.feedback-modal-btn.cancel:hover {
+  background: var(--bg-3, #383E4A);
+  color: var(--text-primary, #E8EAED);
+}
+
+.feedback-modal-btn.submit {
+  background: var(--accent, #C9975B);
+  border: none;
+  color: #fff;
+}
+
+.feedback-modal-btn.submit:hover {
+  background: var(--accent-hover, #D4A76F);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .analytics-feedback-buttons {
+    flex-wrap: wrap;
+  }
+
+  .analytics-feedback-buttons .feedback-label {
+    width: 100%;
+    margin-bottom: 4px;
+  }
+}

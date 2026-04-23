@@ -1,0 +1,89 @@
+# Dependabot configuration for ROM-Agent
+# Atualiza dependencias automaticamente para manter seguranca e evitar obsolescencia
+# Docs: https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+
+version: 2
+
+updates:
+  # NPM dependencies (package.json)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Sao_Paulo"
+
+    # Limitar numero de PRs abertas simultaneamente
+    open-pull-requests-limit: 10
+
+    # Prefixo para commits e PRs
+    commit-message:
+      prefix: "deps"
+      prefix-development: "deps-dev"
+      include: "scope"
+
+    # Labels para PRs
+    labels:
+      - "dependencies"
+      - "automated"
+
+    # Assignees e reviewers
+    # assignees:
+    #   - "rodolfo-svg"
+
+    # Agrupar atualizacoes menores por tipo
+    groups:
+      # Atualizacoes de producao - patches e minor juntos
+      production-minor-patch:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # AWS SDK updates agrupados
+      aws-sdk:
+        patterns:
+          - "@aws-sdk/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Anthropic SDK updates
+      anthropic:
+        patterns:
+          - "@anthropic-ai/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+      # Testing and linting tools
+      dev-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+
+    # Ignorar major updates que podem quebrar (requerem revisao manual)
+    ignore:
+      # Major versions - podem ter breaking changes
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+      # Dependencias que sabemos ter breaking changes frequentes
+      # Adicione aqui conforme necessario
+      # - dependency-name: "some-problematic-package"
+      #   versions: [">=2.0.0"]
+
+  # GitHub Actions (se houver workflows no futuro)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Sao_Paulo"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "github-actions"

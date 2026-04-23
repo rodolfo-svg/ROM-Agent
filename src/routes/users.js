@@ -45,6 +45,7 @@ router.get('/users', requireAuth, requireAdmin, async (req, res) => {
         name,
         role,
         oab,
+        partner_id as "partnerId",
         created_at as "createdAt",
         last_login_at as "lastLoginAt"
        FROM users
@@ -75,13 +76,13 @@ router.get('/users', requireAuth, requireAdmin, async (req, res) => {
  * Cria novo usuário (apenas admin)
  */
 router.post('/users', requireAuth, requireAdmin, async (req, res) => {
-  const { email, password, name, role, oab } = req.body;
+  const { email, password, name, role, oab, partnerId } = req.body;
 
-  // 1. Validação básica
+  // 1. Validacao basica
   if (!email || !password || !name || !role) {
     return res.status(400).json({
       success: false,
-      error: 'Email, senha, nome e função são obrigatórios'
+      error: 'Email, senha, nome e funcao sao obrigatorios'
     });
   }
 
@@ -90,15 +91,15 @@ router.post('/users', requireAuth, requireAdmin, async (req, res) => {
   if (!emailRegex.test(email)) {
     return res.status(400).json({
       success: false,
-      error: 'Email inválido'
+      error: 'Email invalido'
     });
   }
 
   // 3. Validar role
-  if (!['admin', 'user', 'viewer'].includes(role)) {
+  if (!['admin', 'user', 'viewer', 'partner_admin', 'master_admin'].includes(role)) {
     return res.status(400).json({
       success: false,
-      error: 'Função inválida'
+      error: 'Funcao invalida. Valores permitidos: admin, user, viewer, partner_admin, master_admin'
     });
   }
 
@@ -142,18 +143,19 @@ router.post('/users', requireAuth, requireAdmin, async (req, res) => {
     const passwordChangedAt = new Date();
     const passwordExpiresAt = passwordPolicyService.calculatePasswordExpiry(passwordChangedAt);
 
-    // 8. Criar usuário
+    // 8. Criar usuario
     const result = await pool.query(
       `INSERT INTO users
-       (email, password_hash, name, oab, role, password_changed_at, password_expires_at, created_at, updated_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
-       RETURNING id, email, name, role, oab, created_at as "createdAt"`,
+       (email, password_hash, name, oab, role, partner_id, password_changed_at, password_expires_at, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
+       RETURNING id, email, name, role, oab, partner_id as "partnerId", created_at as "createdAt"`,
       [
         email.toLowerCase().trim(),
         passwordHash,
         name.trim(),
         oab || null,
         role,
+        partnerId || null,
         passwordChangedAt,
         passwordExpiresAt
       ]
@@ -211,21 +213,21 @@ router.post('/users', requireAuth, requireAdmin, async (req, res) => {
  */
 router.put('/users/:id', requireAuth, requireAdmin, async (req, res) => {
   const { id } = req.params;
-  const { email, password, name, role, oab } = req.body;
+  const { email, password, name, role, oab, partnerId } = req.body;
 
-  // 1. Validação básica
+  // 1. Validacao basica
   if (!email || !name || !role) {
     return res.status(400).json({
       success: false,
-      error: 'Email, nome e função são obrigatórios'
+      error: 'Email, nome e funcao sao obrigatorios'
     });
   }
 
   // 2. Validar role
-  if (!['admin', 'user', 'viewer'].includes(role)) {
+  if (!['admin', 'user', 'viewer', 'partner_admin', 'master_admin'].includes(role)) {
     return res.status(400).json({
       success: false,
-      error: 'Função inválida'
+      error: 'Funcao invalida. Valores permitidos: admin, user, viewer, partner_admin, master_admin'
     });
   }
 
@@ -278,13 +280,13 @@ router.put('/users/:id', requireAuth, requireAdmin, async (req, res) => {
       }
     }
 
-    // 5. Atualizar dados do usuário
+    // 5. Atualizar dados do usuario
     const result = await pool.query(
       `UPDATE users
-       SET email = $1, name = $2, role = $3, oab = $4, updated_at = NOW()
-       WHERE id = $5
-       RETURNING id, email, name, role, oab, created_at as "createdAt"`,
-      [email.toLowerCase().trim(), name.trim(), role, oab || null, id]
+       SET email = $1, name = $2, role = $3, oab = $4, partner_id = $5, updated_at = NOW()
+       WHERE id = $6
+       RETURNING id, email, name, role, oab, partner_id as "partnerId", created_at as "createdAt"`,
+      [email.toLowerCase().trim(), name.trim(), role, oab || null, partnerId || null, id]
     );
 
     const updatedUser = result.rows[0];
