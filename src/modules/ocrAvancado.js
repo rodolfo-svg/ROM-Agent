@@ -11,18 +11,69 @@ import { existsSync } from 'fs';
 import path from 'path';
 import { exec } from 'child_process';
 import { promisify } from 'util';
+import os from 'os';
 import { getTesseractOCRService, TesseractOCRService } from '../services/tesseract-ocr-service.js';
 
 const execAsync = promisify(exec);
 
 // ============================================================================
-// CONFIGURACAO DO OCR
+// CONFIGURACAO DO OCR COM PARALELIZACAO
 // ============================================================================
+
+/**
+ * Calcula numero otimo de workers baseado em CPU cores
+ * @returns {number} - Numero de workers recomendado
+ */
+function calculateOptimalWorkers() {
+  const cpuCores = os.cpus().length;
+  // Usar env var se disponivel, senao calcular baseado em cores
+  // Padrao: 50% dos cores (minimo 2, maximo 8)
+  const envWorkers = parseInt(process.env.OCR_WORKERS, 10);
+
+  if (!isNaN(envWorkers) && envWorkers > 0) {
+    // Limitar ao numero de cores disponiveis
+    const limited = Math.min(envWorkers, cpuCores);
+    console.log(`[OCR] Usando OCR_WORKERS=${envWorkers} (limitado a ${limited} de ${cpuCores} cores)`);
+    return limited;
+  }
+
+  // Calculo automatico: 50% dos cores, minimo 2, maximo 8
+  const calculated = Math.max(2, Math.min(8, Math.floor(cpuCores * 0.5)));
+  console.log(`[OCR] Workers calculados automaticamente: ${calculated} (de ${cpuCores} cores)`);
+  return calculated;
+}
+
+/**
+ * Calcula tamanho do chunk para processamento paralelo
+ * @param {number} totalPages - Total de paginas
+ * @param {number} workerCount - Numero de workers
+ * @returns {number} - Tamanho do chunk (4-8 paginas)
+ */
+function calculateChunkSize(totalPages, workerCount) {
+  const envChunkSize = parseInt(process.env.OCR_CHUNK_SIZE, 10);
+
+  if (!isNaN(envChunkSize) && envChunkSize >= 2 && envChunkSize <= 16) {
+    return envChunkSize;
+  }
+
+  // Chunk size otimo: entre 4-8 paginas
+  // Para poucos workers, usar chunks maiores
+  // Para muitos workers, usar chunks menores
+  if (workerCount <= 2) return 8;
+  if (workerCount <= 4) return 6;
+  return 4;
+}
+
+const OCR_WORKERS = calculateOptimalWorkers();
+const OCR_CHUNK_SIZE = parseInt(process.env.OCR_CHUNK_SIZE, 10) || 6;
 
 const OCR_CONFIG = {
   lang: 'por',  // Portugues
-  workerCount: 4,
-  confidenceThreshold: 70
+  workerCount: OCR_WORKERS,
+  confidenceThreshold: 70,
+  chunkSize: OCR_CHUNK_SIZE,
+  enableParallel: process.env.OCR_PARALLEL !== 'false', // Padrao: true
+  fallbackToSequential: true // Se paralelo falhar, usar sequencial
 };
 
 // ============================================================================
@@ -260,67 +311,256 @@ export const ocrEngine = {
   },
 
   /**
-   * OCR em multiplas imagens
+   * OCR em multiplas imagens com processamento paralelo otimizado
+   * Usa chunks de 4-8 paginas e workers configurados via OCR_WORKERS
    */
   async executarOCRMultiplo(imagePaths, opcoes = {}) {
     await this.inicializar();
 
-    const { onProgress, ...ocrOptions } = opcoes; // Extrair callback de progresso
+    const { onProgress, ...ocrOptions } = opcoes;
+    const totalPages = imagePaths.length;
+
+    // Calcular chunk size otimo baseado no numero de workers
+    const chunkSize = calculateChunkSize(totalPages, OCR_CONFIG.workerCount);
+    const totalChunks = Math.ceil(totalPages / chunkSize);
+
+    // Performance tracking
+    const perfStats = {
+      startTime: Date.now(),
+      chunkTimes: [],
+      method: OCR_CONFIG.enableParallel ? 'parallel' : 'sequential',
+      workers: OCR_CONFIG.workerCount,
+      chunkSize
+    };
+
+    console.log(`\n${'═'.repeat(60)}`);
+    console.log(`🚀 OCR PARALELO INICIADO`);
+    console.log(`${'═'.repeat(60)}`);
+    console.log(`   📊 Total de páginas: ${totalPages}`);
+    console.log(`   👷 Workers ativos: ${OCR_CONFIG.workerCount}`);
+    console.log(`   📦 Tamanho do chunk: ${chunkSize} páginas`);
+    console.log(`   🔢 Total de chunks: ${totalChunks}`);
+    console.log(`   ⚙️  Modo: ${perfStats.method.toUpperCase()}`);
+    console.log(`${'═'.repeat(60)}\n`);
 
     const resultados = [];
-    const BATCH_SIZE = 16; // Processar 16 páginas em paralelo (4 por worker com 4 workers)
-    const totalPages = imagePaths.length;
-    const totalBatches = Math.ceil(totalPages / BATCH_SIZE);
 
-    console.log(`\n🚀 Processamento paralelo: ${totalPages} páginas em ${totalBatches} batches de ${BATCH_SIZE}`);
-
-    for (let batchIndex = 0; batchIndex < totalBatches; batchIndex++) {
-      const startIdx = batchIndex * BATCH_SIZE;
-      const endIdx = Math.min(startIdx + BATCH_SIZE, totalPages);
-      const batch = imagePaths.slice(startIdx, endIdx);
-
-      const batchNumber = batchIndex + 1;
-      const progress = ((batchIndex / totalBatches) * 100).toFixed(1);
-      console.log(`\n📊 Batch ${batchNumber}/${totalBatches} (${progress}%): Processando páginas ${startIdx + 1}-${endIdx} simultaneamente...`);
-
-      // Processar batch em paralelo
-      const batchResults = await Promise.all(
-        batch.map(async (imagePath, idx) => {
-          const pageNum = startIdx + idx + 1;
-          const resultado = await this.executarOCR(imagePath, ocrOptions);
-          return {
-            arquivo: imagePath,
-            pagina: pageNum,
-            ...resultado
-          };
-        })
-      );
-
-      resultados.push(...batchResults);
-
-      // Log de progresso
-      const pagesProcessed = Math.min((batchIndex + 1) * BATCH_SIZE, totalPages);
-      const actualProgress = ((pagesProcessed / totalPages) * 100).toFixed(1);
-      console.log(`   ✅ Batch ${batchNumber} concluído - ${pagesProcessed}/${totalPages} páginas (${actualProgress}%)`);
-
-      // Callback de progresso (se fornecido)
-      if (onProgress && typeof onProgress === 'function') {
-        onProgress({
-          phase: 'ocr',
-          batch: batchNumber,
-          totalBatches,
-          pagesProcessed,
-          totalPages,
-          percent: parseFloat(actualProgress)
+    // Tentar processamento paralelo
+    if (OCR_CONFIG.enableParallel) {
+      try {
+        const parallelResult = await this._processarParalelo(imagePaths, {
+          chunkSize,
+          totalChunks,
+          onProgress,
+          ocrOptions,
+          perfStats
         });
+        resultados.push(...parallelResult);
+      } catch (parallelError) {
+        console.error(`\n❌ ERRO no processamento paralelo: ${parallelError.message}`);
+
+        if (OCR_CONFIG.fallbackToSequential) {
+          console.log(`\n🔄 Ativando FALLBACK para processamento sequencial...\n`);
+          perfStats.method = 'sequential-fallback';
+          perfStats.parallelError = parallelError.message;
+
+          const sequentialResult = await this._processarSequencial(imagePaths, {
+            onProgress,
+            ocrOptions,
+            perfStats
+          });
+          resultados.push(...sequentialResult);
+        } else {
+          throw parallelError;
+        }
       }
+    } else {
+      // Processamento sequencial forcado
+      const sequentialResult = await this._processarSequencial(imagePaths, {
+        onProgress,
+        ocrOptions,
+        perfStats
+      });
+      resultados.push(...sequentialResult);
     }
+
+    // Calcular estatisticas finais
+    const totalTime = Date.now() - perfStats.startTime;
+    const avgTimePerPage = totalTime / totalPages;
+    const avgChunkTime = perfStats.chunkTimes.length > 0
+      ? perfStats.chunkTimes.reduce((a, b) => a + b, 0) / perfStats.chunkTimes.length
+      : 0;
+
+    // Log de performance
+    console.log(`\n${'═'.repeat(60)}`);
+    console.log(`✅ OCR CONCLUÍDO - RELATÓRIO DE PERFORMANCE`);
+    console.log(`${'═'.repeat(60)}`);
+    console.log(`   🕐 Tempo total: ${(totalTime / 1000).toFixed(2)}s`);
+    console.log(`   📄 Páginas processadas: ${resultados.length}/${totalPages}`);
+    console.log(`   ⏱️  Média por página: ${(avgTimePerPage / 1000).toFixed(3)}s`);
+    console.log(`   📦 Média por chunk: ${(avgChunkTime / 1000).toFixed(3)}s`);
+    console.log(`   ⚙️  Método utilizado: ${perfStats.method}`);
+    console.log(`   👷 Workers utilizados: ${OCR_CONFIG.workerCount}`);
+    if (perfStats.parallelError) {
+      console.log(`   ⚠️  Fallback ativado por: ${perfStats.parallelError}`);
+    }
+    console.log(`${'═'.repeat(60)}\n`);
 
     return {
       resultados,
       textoCompleto: resultados.map(r => r.texto).join('\n\n--- PAGINA ---\n\n'),
-      confiancaMedia: resultados.reduce((acc, r) => acc + r.confianca, 0) / resultados.length
+      confiancaMedia: resultados.reduce((acc, r) => acc + (r.confianca || 0), 0) / resultados.length,
+      performance: {
+        totalTimeMs: totalTime,
+        avgTimePerPageMs: avgTimePerPage,
+        avgChunkTimeMs: avgChunkTime,
+        method: perfStats.method,
+        workers: OCR_CONFIG.workerCount,
+        chunkSize
+      }
     };
+  },
+
+  /**
+   * Processamento paralelo usando Promise.all com chunks
+   * @private
+   */
+  async _processarParalelo(imagePaths, config) {
+    const { chunkSize, totalChunks, onProgress, ocrOptions, perfStats } = config;
+    const totalPages = imagePaths.length;
+    const resultados = [];
+
+    for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
+      const chunkStartTime = Date.now();
+      const startIdx = chunkIndex * chunkSize;
+      const endIdx = Math.min(startIdx + chunkSize, totalPages);
+      const chunk = imagePaths.slice(startIdx, endIdx);
+
+      const chunkNumber = chunkIndex + 1;
+      const progressPercent = ((chunkIndex / totalChunks) * 100).toFixed(1);
+
+      console.log(`\n📊 Chunk ${chunkNumber}/${totalChunks} (${progressPercent}%): Páginas ${startIdx + 1}-${endIdx}`);
+      console.log(`   ⚡ Processando ${chunk.length} páginas em paralelo...`);
+
+      // Processar chunk inteiro em paralelo usando Promise.all
+      const chunkResults = await Promise.all(
+        chunk.map(async (imagePath, idx) => {
+          const pageNum = startIdx + idx + 1;
+          const pageStartTime = Date.now();
+
+          try {
+            const resultado = await this.executarOCR(imagePath, ocrOptions);
+            const pageTime = Date.now() - pageStartTime;
+
+            return {
+              arquivo: imagePath,
+              pagina: pageNum,
+              tempoProcessamentoMs: pageTime,
+              ...resultado
+            };
+          } catch (error) {
+            console.error(`   ❌ Erro na página ${pageNum}: ${error.message}`);
+            return {
+              arquivo: imagePath,
+              pagina: pageNum,
+              texto: '',
+              confianca: 0,
+              erro: error.message
+            };
+          }
+        })
+      );
+
+      // Ordenar resultados pela pagina (para manter ordem correta)
+      chunkResults.sort((a, b) => a.pagina - b.pagina);
+      resultados.push(...chunkResults);
+
+      // Calcular tempo do chunk
+      const chunkTime = Date.now() - chunkStartTime;
+      perfStats.chunkTimes.push(chunkTime);
+
+      // Log de progresso do chunk
+      const pagesProcessed = Math.min(endIdx, totalPages);
+      const actualProgress = ((pagesProcessed / totalPages) * 100).toFixed(1);
+      const successCount = chunkResults.filter(r => !r.erro).length;
+
+      console.log(`   ✅ Chunk ${chunkNumber} concluído em ${(chunkTime / 1000).toFixed(2)}s`);
+      console.log(`      📄 ${successCount}/${chunk.length} páginas com sucesso`);
+      console.log(`      📈 Progresso: ${pagesProcessed}/${totalPages} páginas (${actualProgress}%)`);
+
+      // Callback de progresso
+      if (onProgress && typeof onProgress === 'function') {
+        onProgress({
+          phase: 'ocr',
+          batch: chunkNumber,
+          totalBatches: totalChunks,
+          pagesProcessed,
+          totalPages,
+          percent: parseFloat(actualProgress),
+          chunkTimeMs: chunkTime,
+          method: 'parallel'
+        });
+      }
+    }
+
+    return resultados;
+  },
+
+  /**
+   * Processamento sequencial (fallback)
+   * @private
+   */
+  async _processarSequencial(imagePaths, config) {
+    const { onProgress, ocrOptions, perfStats } = config;
+    const totalPages = imagePaths.length;
+    const resultados = [];
+
+    console.log(`\n🐢 Processando ${totalPages} páginas SEQUENCIALMENTE (fallback)...\n`);
+
+    for (let i = 0; i < totalPages; i++) {
+      const pageStartTime = Date.now();
+      const imagePath = imagePaths[i];
+      const pageNum = i + 1;
+
+      try {
+        const resultado = await this.executarOCR(imagePath, ocrOptions);
+        const pageTime = Date.now() - pageStartTime;
+
+        resultados.push({
+          arquivo: imagePath,
+          pagina: pageNum,
+          tempoProcessamentoMs: pageTime,
+          ...resultado
+        });
+
+        console.log(`   ✅ Página ${pageNum}/${totalPages} processada em ${(pageTime / 1000).toFixed(2)}s`);
+      } catch (error) {
+        console.error(`   ❌ Erro na página ${pageNum}: ${error.message}`);
+        resultados.push({
+          arquivo: imagePath,
+          pagina: pageNum,
+          texto: '',
+          confianca: 0,
+          erro: error.message
+        });
+      }
+
+      // Callback de progresso
+      if (onProgress && typeof onProgress === 'function') {
+        const progress = ((pageNum / totalPages) * 100).toFixed(1);
+        onProgress({
+          phase: 'ocr',
+          batch: pageNum,
+          totalBatches: totalPages,
+          pagesProcessed: pageNum,
+          totalPages,
+          percent: parseFloat(progress),
+          method: 'sequential'
+        });
+      }
+    }
+
+    return resultados;
   },
 
   /**
