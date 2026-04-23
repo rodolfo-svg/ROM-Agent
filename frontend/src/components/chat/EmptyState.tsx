@@ -1,4 +1,4 @@
-import { Sparkles } from 'lucide-react'
+import { Scale } from 'lucide-react'
 
 interface EmptyStateProps {
   onSuggestionClick?: (message: string) => void
@@ -9,7 +9,7 @@ export function EmptyState({ onSuggestionClick }: EmptyStateProps) {
     <div className="h-full flex flex-col items-center justify-center px-4 animate-fade-in">
       {/* Logo */}
       <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-bronze-400 to-bronze-600 flex items-center justify-center mb-8 shadow-lg">
-        <Sparkles className="w-10 h-10 text-white" />
+        <Scale className="w-10 h-10 text-white" />
       </div>
 
       {/* Title */}

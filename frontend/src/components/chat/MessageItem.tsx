@@ -13,7 +13,7 @@ import {
   Table,
   BarChart3,
   Eye,
-  Sparkles,
+  Scale,
   Paperclip
 } from 'lucide-react'
 import type { Message, Artifact } from '@/types'
@@ -94,7 +94,7 @@ export const MessageItem = memo(function MessageItem({
     <div className="flex gap-3 mb-6 animate-fade-in">
       {/* Avatar */}
       <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-bronze-400 to-bronze-600 flex items-center justify-center flex-shrink-0">
-        <Sparkles className="w-4 h-4 text-white" />
+        <Scale className="w-4 h-4 text-white" />
       </div>
 
       {/* Content */}

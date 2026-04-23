@@ -317,7 +317,7 @@ export const IntegrationDashboard: React.FC = () => {
                     backgroundColor: '#e3f2fd'
                   }}
                 >
-                  <Typography variant="h3">🤖</Typography>
+                  <Loop style={{ fontSize: 40, color: '#1976d2' }} />
                   <Typography variant="body1" fontWeight="bold">
                     {agentId}
                   </Typography>

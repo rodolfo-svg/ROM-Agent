@@ -78,6 +78,7 @@ import './utils/bedrock-helper.js';
 import autoPipelineService from './services/auto-pipeline-service.js';
 import { DocumentDeduplicator } from '../lib/document-deduplicator.js';
 import kbCache from '../lib/kb-cache.js';  // 🚀 Cache em memória para kb-documents.json
+import { validateOutput } from './services/output-validator-service.js'; // Validador de output (remove emojis, IA, markdown)
 
 // 🔥 FIX: Exportar kbCache como global para que tools possam acessá-lo
 global.kbCache = kbCache;
@@ -1820,13 +1821,13 @@ function getAgent(sessionId, modelId = null, forceNew = false) {
   return agents.get(agentKey);
 }
 
-// Obter histórico de conversa (limitado às últimas 10 mensagens para performance)
+// Obter histórico de conversa (aumentado para 50 mensagens para contexto adequado)
 function getHistory(sessionId) {
   if (!conversationHistory.has(sessionId)) {
     conversationHistory.set(sessionId, []);
   }
-  // OTIMIZAÇÃO: Limitar histórico a 10 mensagens (-10% tokens, mais rápido)
-  return conversationHistory.get(sessionId).slice(-10);
+  // MELHORIA: Aumentar histórico para 50 mensagens (melhor contexto de conversa)
+  return conversationHistory.get(sessionId).slice(-50);
 }
 
 // Rota principal - Interface melhorada
@@ -2557,7 +2558,7 @@ app.post('/api/chat-with-tools', async (req, res) => {
 Quando precisar de jurisprudência ou precedentes judiciais para fundamentar sua resposta, use a ferramenta pesquisar_jurisprudencia automaticamente.
 
 Sempre cite as fontes corretamente e formate as referências em ABNT.`,
-      historico: history.slice(-5) // Últimas 5 mensagens (reduzido para evitar overflow de contexto)
+      historico: history.slice(-20) // Últimas 20 mensagens (contexto adequado sem overflow)
     });
 
     if (!resultado.sucesso) {
@@ -2571,9 +2572,12 @@ Sempre cite as fontes corretamente e formate as referências em ABNT.`,
       timestamp: new Date()
     });
 
+    // Aplicar validacao de output (remove emojis, mencoes a IA, markdown excessivo)
+    const respostaValidada = validateOutput(resultado.resposta);
+
     history.push({
       role: 'assistant',
-      content: resultado.resposta,
+      content: respostaValidada,
       toolsUsadas: resultado.toolsUsadas || [],
       modelo: resultado.modelo,
       estrategia: resultado.estrategia,
@@ -2581,7 +2585,7 @@ Sempre cite as fontes corretamente e formate as referências em ABNT.`,
     });
 
     res.json({
-      response: resultado.resposta,
+      response: respostaValidada,
       toolsUsadas: resultado.toolsUsadas || [],
       modelo: resultado.modelo,
       estrategia: resultado.estrategia,
@@ -8787,6 +8791,9 @@ app.post('/api/chat/cascade', async (req, res) => {
 
     const result = await cascadeStrategy(message, '', conversar);
 
+    // Aplicar validacao de output
+    const respostaValidada = validateOutput(result.response.resposta);
+
     // Adicionar ao histórico
     history.push({
       role: 'user',
@@ -8796,7 +8803,7 @@ app.post('/api/chat/cascade', async (req, res) => {
 
     history.push({
       role: 'assistant',
-      content: result.response.resposta,
+      content: respostaValidada,
       strategy: result.strategy,
       model: result.routing.model,
       confidence: result.confidence,
@@ -8804,7 +8811,7 @@ app.post('/api/chat/cascade', async (req, res) => {
     });
 
     res.json({
-      response: result.response.resposta,
+      response: respostaValidada,
       strategy: result.strategy,
       model: result.routing.model,
       confidence: result.confidence,
@@ -8833,6 +8840,9 @@ app.post('/api/chat/voting', async (req, res) => {
 
     const result = await votingStrategy(message, '', conversar, numModels);
 
+    // Aplicar validacao de output
+    const respostaValidada = validateOutput(result.winner.response.resposta);
+
     // Adicionar ao histórico
     history.push({
       role: 'user',
@@ -8842,7 +8852,7 @@ app.post('/api/chat/voting', async (req, res) => {
 
     history.push({
       role: 'assistant',
-      content: result.winner.response.resposta,
+      content: respostaValidada,
       strategy: result.strategy,
       model: result.winner.model,
       score: result.winner.score,
@@ -8854,7 +8864,7 @@ app.post('/api/chat/voting', async (req, res) => {
     });
 
     res.json({
-      response: result.winner.response.resposta,
+      response: respostaValidada,
       strategy: result.strategy,
       model: result.winner.model,
       score: result.winner.score,
@@ -8891,7 +8901,7 @@ app.post('/api/chat/best-of-n', async (req, res) => {
       Array(n).fill(null).map(() =>
         conversar(message, {
           modelo,
-          historico: history.slice(-10),
+          historico: history.slice(-30),
           maxTokens: 4096,
           temperature: 0.7
         })
@@ -8910,6 +8920,9 @@ app.post('/api/chat/best-of-n', async (req, res) => {
 
     const winner = scored[0];
 
+    // Aplicar validacao de output
+    const respostaValidada = validateOutput(winner.response.resposta);
+
     // Adicionar ao histórico
     history.push({
       role: 'user',
@@ -8919,7 +8932,7 @@ app.post('/api/chat/best-of-n', async (req, res) => {
 
     history.push({
       role: 'assistant',
-      content: winner.response.resposta,
+      content: respostaValidada,
       strategy: 'best-of-n',
       model: modelo,
       score: winner.score,
@@ -8931,7 +8944,7 @@ app.post('/api/chat/best-of-n', async (req, res) => {
     });
 
     res.json({
-      response: winner.response.resposta,
+      response: respostaValidada,
       strategy: 'best-of-n',
       model: modelo,
       score: winner.score,

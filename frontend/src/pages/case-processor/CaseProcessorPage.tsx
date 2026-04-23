@@ -21,7 +21,6 @@ import {
   User,
   AlertCircle,
   Loader2,
-  Brain,
   CheckCircle,
   Trash2,
   RefreshCw,
@@ -347,8 +346,8 @@ export function CaseProcessorPage() {
       case 'processing':
         return (
           <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-yellow-100 text-yellow-700 text-xs rounded-full">
-            <Brain className="w-3 h-3 animate-pulse" />
-            Processando IA
+            <Layers className="w-3 h-3 animate-pulse" />
+            Processando
           </span>
         )
       case 'completed':
@@ -465,7 +464,7 @@ export function CaseProcessorPage() {
                       </p>
                       {processingLayer > 0 && (
                         <p className="text-xs text-bronze-600">
-                          <Brain className="w-3 h-3 inline mr-1" />
+                          <Layers className="w-3 h-3 inline mr-1" />
                           Layer {processingLayer}: {getLayerName(processingLayer)}
                         </p>
                       )}
@@ -562,21 +561,21 @@ export function CaseProcessorPage() {
 
               {/* SSE Updates Log */}
               {sseUpdates.length > 0 && (
-                <div className="mt-4 p-4 bg-stone-900 rounded-lg max-h-40 overflow-y-auto">
-                  <h3 className="text-xs font-medium text-stone-400 mb-2">Log de Processamento:</h3>
+                <div className="mt-4 p-4 bg-stone-100 border border-stone-200 rounded-lg max-h-40 overflow-y-auto">
+                  <h3 className="text-xs font-medium text-stone-600 mb-2">Log de Processamento:</h3>
                   <div className="space-y-1 font-mono text-xs">
                     {sseUpdates.map((update, index) => (
                       <div
                         key={index}
                         className={`${
-                          update.type === 'error' ? 'text-red-400' :
-                          update.type === 'success' ? 'text-green-400' :
-                          update.type === 'warning' ? 'text-yellow-400' :
-                          update.type === 'layer' ? 'text-purple-400' :
-                          'text-stone-300'
+                          update.type === 'error' ? 'text-red-600' :
+                          update.type === 'success' ? 'text-green-600' :
+                          update.type === 'warning' ? 'text-yellow-600' :
+                          update.type === 'layer' ? 'text-purple-600' :
+                          'text-stone-700'
                         }`}
                       >
-                        {update.layer && <span className="text-purple-500">[L{update.layer}] </span>}
+                        {update.layer && <span className="text-purple-700">[L{update.layer}] </span>}
                         {update.message}
                       </div>
                     ))}
@@ -697,7 +696,7 @@ export function CaseProcessorPage() {
                                 )}
                                 {caseItem.metadata?.structuredDocs && (
                                   <div className="flex items-center gap-2 text-stone-600">
-                                    <Brain className="w-4 h-4" />
+                                    <FileText className="w-4 h-4" />
                                     <span>{caseItem.metadata.structuredDocs} docs estruturados</span>
                                   </div>
                                 )}
@@ -715,7 +714,7 @@ export function CaseProcessorPage() {
                                   Ver Analise
                                 </Button>
                                 <Button variant="secondary" size="sm">
-                                  <Brain className="w-4 h-4" />
+                                  <FileText className="w-4 h-4" />
                                   Gerar Documento
                                 </Button>
                               </div>
