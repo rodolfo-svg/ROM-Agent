@@ -78,7 +78,7 @@ import './utils/bedrock-helper.js';
 import autoPipelineService from './services/auto-pipeline-service.js';
 import { DocumentDeduplicator } from '../lib/document-deduplicator.js';
 import kbCache from '../lib/kb-cache.js';  // 🚀 Cache em memória para kb-documents.json
-import { validateOutput } from './services/output-validator-service.js'; // Validador de output (remove emojis, IA, markdown)
+import { validateOutput, validateOutputLight } from './services/output-validator-service.js'; // Validador de output (remove emojis, IA, markdown)
 
 // 🔥 FIX: Exportar kbCache como global para que tools possam acessá-lo
 global.kbCache = kbCache;
@@ -2941,30 +2941,38 @@ app.post('/api/chat/stream', loadStructuredFilesFromKB, async (req, res) => {
               throw new Error('Conexão SSE perdida');
             }
           } else if (typeof chunk === 'object' && chunk.__artifact_chunk) {
-            // Chunk de artifact - enviar progressivamente
+            // Chunk de artifact - enviar progressivamente (com validador)
             const sent = sendSSE({
               type: 'artifact_chunk',
               id: chunk.__artifact_chunk.id,
-              content: chunk.__artifact_chunk.content
+              content: validateOutputLight(chunk.__artifact_chunk.content || '')
             });
             if (!sent) {
               throw new Error('Conexão SSE perdida');
             }
           } else if (typeof chunk === 'object' && chunk.__artifact_complete) {
-            // Artifact completo - salvar no store
+            // Artifact completo - salvar no store (com validador)
             logger.info(`🎨 [Artifact Complete] ${chunk.__artifact_complete.title} (${chunk.__artifact_complete.content?.length} chars)`);
+            const cleanedArtifact = {
+              ...chunk.__artifact_complete,
+              content: validateOutputLight(chunk.__artifact_complete.content || '')
+            };
             const sent = sendSSE({
               type: 'artifact_complete',
-              artifact: chunk.__artifact_complete
+              artifact: cleanedArtifact
             });
             if (!sent) {
               throw new Error('Conexão SSE perdida');
             }
           } else if (typeof chunk === 'object' && chunk.__artifact) {
-            // Artifact legado (via create_artifact tool)
+            // Artifact legado (via create_artifact tool) (com validador)
+            const cleanedArtifact = {
+              ...chunk.__artifact,
+              content: validateOutputLight(chunk.__artifact.content || '')
+            };
             const sent = sendSSE({
               type: 'artifact',
-              artifact: chunk.__artifact
+              artifact: cleanedArtifact
             });
             if (!sent) {
               throw new Error('Conexão SSE perdida');
