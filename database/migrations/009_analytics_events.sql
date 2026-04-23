@@ -2,6 +2,7 @@
 -- Version: 009
 -- Description: Tables for usability analytics and AI learning
 -- Created: 2026-04-23
+-- Fixed: UUID user_id, removed generated column
 
 -- ============================================================================
 -- ANALYTICS EVENTS TABLE
@@ -15,8 +16,8 @@ CREATE TABLE IF NOT EXISTS analytics_events (
   event_type VARCHAR(100) NOT NULL,
   event_category VARCHAR(50) NOT NULL DEFAULT 'general',
 
-  -- User context
-  user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  -- User context (UUID to match users table)
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
   session_id VARCHAR(255),
 
   -- Event data
@@ -35,8 +36,8 @@ CREATE TABLE IF NOT EXISTS analytics_events (
   -- Timestamps
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 
-  -- Partitioning support
-  event_date DATE GENERATED ALWAYS AS (DATE(created_at)) STORED
+  -- Date for partitioning (computed at insert, not generated)
+  event_date DATE DEFAULT CURRENT_DATE
 );
 
 -- Indexes for common queries
@@ -62,8 +63,8 @@ CREATE TABLE IF NOT EXISTS analytics_feedback (
   -- Reference to the event being rated
   event_id INTEGER REFERENCES analytics_events(id) ON DELETE CASCADE,
 
-  -- User context
-  user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  -- User context (UUID to match users table)
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
   session_id VARCHAR(255),
 
   -- Feedback data
@@ -104,7 +105,7 @@ CREATE TABLE IF NOT EXISTS analytics_daily_aggregates (
   event_type VARCHAR(100),
   document_type VARCHAR(100),
   area_direito VARCHAR(100),
-  user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
 
   -- Metrics
   event_count INTEGER DEFAULT 0,
@@ -159,8 +160,8 @@ CREATE TABLE IF NOT EXISTS analytics_errors (
   error_message TEXT,
   stack_trace TEXT,
 
-  -- Context
-  user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  -- Context (UUID to match users table)
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
   session_id VARCHAR(255),
   request_path VARCHAR(500),
   request_method VARCHAR(10),
@@ -198,7 +199,7 @@ CREATE TABLE IF NOT EXISTS analytics_sessions (
 
   -- Session identification
   session_id VARCHAR(255) NOT NULL UNIQUE,
-  user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+  user_id UUID REFERENCES users(id) ON DELETE SET NULL,
 
   -- Session timing
   started_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
@@ -292,7 +293,7 @@ DECLARE
   v_event_type VARCHAR(100);
   v_document_type VARCHAR(100);
   v_area_direito VARCHAR(100);
-  v_user_id INTEGER;
+  v_user_id UUID;
 BEGIN
   -- Get event details
   SELECT DATE(e.created_at), e.event_type, e.document_type, e.area_direito, e.user_id
@@ -388,12 +389,8 @@ GROUP BY DATE(created_at), error_type, error_code
 ORDER BY date DESC, error_count DESC;
 
 -- ============================================================================
--- GRANT PERMISSIONS (adjust as needed for your setup)
+-- TABLE COMMENTS
 -- ============================================================================
-
--- Grant permissions for application user (if exists)
--- GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA public TO rom_app;
--- GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO rom_app;
 
 COMMENT ON TABLE analytics_events IS 'Main analytics events table for tracking user interactions';
 COMMENT ON TABLE analytics_feedback IS 'User feedback on generated content (thumbs up/down, ratings)';
