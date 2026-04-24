@@ -973,5 +973,28 @@
     "createdAt": "2026-02-10T08:10:28.063Z",
     "updatedAt": "2026-02-10T08:10:35.721Z",
     "messageCount": 2
+  },
+  "09c6b52d-f359-4e94-8c50-caf39148307c": {
+    "id": "09c6b52d-f359-4e94-8c50-caf39148307c",
+    "userId": "5361740d-2bc5-4b85-b983-08e8ae2411c8",
+    "sessionId": "awznT0l9itT_RoiyfTET4PbBlFLcyaom",
+    "projectId": null,
+    "title": "teste",
+    "titleGenerated": true,
+    "messages": [
+      {
+        "role": "user",
+        "content": "teste",
+        "timestamp": "2026-04-23T21:53:11.254Z"
+      },
+      {
+        "role": "assistant",
+        "content": "Olá! Sou o **ROM Agent**, seu assistente jurídico especializado.\n\nComo posso ajudá-lo hoje? Estou preparado para:\n\n📝 **Redação de Peças Processuais**\n- Petições iniciais, contestações, recursos\n- Embargos, agravos, réplicas\n- Memoriais e pareceres\n\n📄 **Documentos Extrajudiciais**\n- Contratos (compra e venda, prestação de serviços, locação)\n- Alterações contratuais e atos societários (DNRC)\n- Procurações e substabelecimentos\n\n⚖️ **Análise Jurídica**\n- Jurisprudência de todos os tribunais brasileiros\n- Súmulas e teses jurisprudenciais\n- Doutrina e artigos especializados\n\n⏱️ **Cálculo de Prazos Processuais**\n- Análise de publicações DJe/DJEN\n- Verificação de preclusão, prescrição e decadência\n- Consideração de prazos em dobro\n\n📋 **Análise de Documentos**\n- Fichamentos técnicos profissionais\n- Análise de processos e contratos\n- Cronologias e resumos executivos\n\nPor favor, descreva sua necessidade ou envie o documento que precisa analisar!",
+        "timestamp": "2026-04-23T21:53:20.384Z"
+      }
+    ],
+    "createdAt": "2026-04-23T21:53:10.425Z",
+    "updatedAt": "2026-04-23T21:53:20.384Z",
+    "messageCount": 2
   }
 }
