@@ -79,19 +79,22 @@ router.get('/summary', async (req, res) => {
     else if (period === '24h') days = 1;
     else if (period === '90d') days = 90;
 
-    // Se usuário autenticado, buscar stats personalizadas
-    if (userId) {
-      const userStats = await usabilityAnalytics.getUserStats(userId, days);
+    // Buscar overview geral (método que existe no service)
+    const overview = await usabilityAnalytics.getOverview(days);
 
+    // Se usuário autenticado, incluir userId na resposta
+    if (userId) {
       return res.json({
         success: true,
         period: `${days}d`,
         userId,
-        stats: userStats || {
-          totalEvents: 0,
-          documentsGenerated: 0,
-          chatMessages: 0,
-          avgResponseTime: 0
+        stats: {
+          totalEvents: overview.summary?.totalEvents || 0,
+          uniqueUsers: overview.summary?.uniqueUsers || 0,
+          uniqueSessions: overview.summary?.uniqueSessions || 0,
+          topDocuments: overview.topDocuments || [],
+          feedback: overview.feedback || {},
+          dailyActivity: overview.dailyActivity || []
         }
       });
     }
