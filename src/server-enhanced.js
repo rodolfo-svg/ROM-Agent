@@ -6490,7 +6490,7 @@ app.get('/api/kb/documents', requireAuth, (req, res) => {
     res.set('Pragma', 'no-cache');
     res.set('Expires', '0');
 
-    res.json({ documents });
+    res.json({ success: true, documents });
   } catch (error) {
     console.error('❌ Erro ao listar documentos KB:', error);
     res.status(500).json({ error: error.message });
