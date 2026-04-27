@@ -28,54 +28,46 @@ const PROCESSO_REGEX = /\d{7}-\d{2}\.\d{4}\.\d\.\d{2}\.\d{4}/g;
 
 /**
  * Buscar documentos no KB que contenham o número do processo
- * Como metadata não tem campo processNumber, busca no conteúdo dos arquivos .txt
+ * CORRIGIDO V2: Usa kbCache global e busca no conteúdo dos documentos
  */
 async function searchDocumentsByProcessNumber(partnerId, processNumber) {
   try {
-    const kbDir = path.join(ACTIVE_PATHS.data, 'knowledge-base', 'documents');
+    logger.info(`🔍 [KB Loader] Buscando processo: ${processNumber}`);
 
-    // Verificar se diretório existe
-    try {
-      await fs.access(kbDir);
-    } catch {
+    // 🚀 USAR kbCache GLOBAL
+    const kbCache = global.kbCache;
+    if (!kbCache) {
+      logger.warn(`⚠️ [KB Loader] kbCache não disponível`);
       return [];
     }
 
-    // Listar todos os arquivos .txt
-    const files = await fs.readdir(kbDir);
-    const txtFiles = files.filter(f => f.endsWith('.txt'));
+    const allDocs = kbCache.getAll();
+    if (allDocs.length === 0) {
+      return [];
+    }
 
+    // Filtrar apenas documentos principais
+    const mainDocs = allDocs.filter(doc => !doc.metadata?.isStructuredDocument && !doc.metadata?.parentDocument);
     const matchingDocs = [];
 
-    // Buscar processo em cada arquivo .txt
-    for (const txtFile of txtFiles) {
+    // Buscar processo em cada documento
+    for (const doc of mainDocs) {
       try {
-        const txtPath = path.join(kbDir, txtFile);
-        const content = await fs.readFile(txtPath, 'utf-8');
+        const docPath = doc.path;
+        if (!docPath) continue;
+
+        const content = await fs.readFile(docPath, 'utf-8');
 
         // Verificar se o conteúdo contém o número do processo
         if (content.includes(processNumber)) {
-          // Buscar metadata correspondente
-          const baseName = txtFile.replace('.txt', '');
-          const metadataPath = path.join(kbDir, `${baseName}.metadata.json`);
-
-          try {
-            const metadataContent = await fs.readFile(metadataPath, 'utf-8');
-            const metadata = JSON.parse(metadataContent);
-
-            // Adicionar aos resultados
-            matchingDocs.push({
-              ...metadata,
-              txtFile,
-              txtPath,
-              processNumber
-            });
-          } catch (metaErr) {
-            logger.debug(`   Metadata não encontrado para ${txtFile}`);
-          }
+          matchingDocs.push({
+            ...doc,
+            processNumber
+          });
+          logger.info(`   ✅ Processo encontrado em: ${doc.name}`);
         }
       } catch (readErr) {
-        logger.debug(`   Erro ao ler ${txtFile}:`, readErr.message);
+        logger.debug(`   Erro ao ler ${doc.name}:`, readErr.message);
       }
     }
 
@@ -88,148 +80,97 @@ async function searchDocumentsByProcessNumber(partnerId, processNumber) {
 
 /**
  * Busca genérica nos documentos da KB usando palavras da mensagem
- * CORRIGIDO: Busca dinâmica ao invés de keywords hardcoded
+ * CORRIGIDO V2: Usa kbCache global ao invés de procurar arquivos .metadata.json
  */
 async function searchDocumentsByKeywords(partnerId, message) {
   try {
-    const kbDir = path.join(ACTIVE_PATHS.data, 'knowledge-base', 'documents');
-
-    try {
-      await fs.access(kbDir);
-    } catch {
-      return [];
-    }
-
     // Extrair palavras significativas da mensagem (mínimo 3 caracteres)
     const messageLower = message.toLowerCase();
+    const stopWords = ['que', 'para', 'com', 'por', 'uma', 'dos', 'das', 'nos', 'nas', 'não', 'sim', 'sobre', 'como', 'esse', 'essa', 'isso', 'este', 'esta', 'aqui', 'ele', 'ela', 'eles', 'elas', 'você', 'qual', 'quando', 'onde', 'fazer', 'quero', 'preciso', 'gerar', 'elaborar', 'criar'];
     const words = messageLower
       .replace(/[^\w\sáàâãéèêíìîóòôõúùûç]/g, ' ')
       .split(/\s+/)
       .filter(w => w.length >= 3)
-      .filter(w => !['que', 'para', 'com', 'por', 'uma', 'dos', 'das', 'nos', 'nas', 'não', 'sim', 'sobre', 'como', 'esse', 'essa', 'isso', 'este', 'esta', 'aqui', 'ele', 'ela', 'eles', 'elas', 'você', 'qual', 'quando', 'onde'].includes(w));
+      .filter(w => !stopWords.includes(w));
 
     if (words.length === 0) {
+      logger.info(`🔍 [KB Loader] Nenhuma palavra significativa na mensagem`);
       return [];
     }
 
     logger.info(`🔍 [KB Loader] Busca dinâmica com palavras: ${words.slice(0, 5).join(', ')}`);
 
-    // Listar todos os arquivos .txt e .md
-    const files = await fs.readdir(kbDir);
-    const textFiles = files.filter(f => f.endsWith('.txt') || f.endsWith('.md'));
+    // 🚀 USAR kbCache GLOBAL (definido em server-enhanced.js linha 84)
+    const kbCache = global.kbCache;
+    if (!kbCache) {
+      logger.warn(`⚠️ [KB Loader] kbCache não disponível`);
+      return [];
+    }
+
+    const allDocs = kbCache.getAll();
+    logger.info(`   📚 Total documentos no cache: ${allDocs.length}`);
+
+    if (allDocs.length === 0) {
+      return [];
+    }
+
+    // Filtrar apenas documentos principais (não estruturados filhos)
+    const mainDocs = allDocs.filter(doc => !doc.metadata?.isStructuredDocument && !doc.metadata?.parentDocument);
+    logger.info(`   📄 Documentos principais: ${mainDocs.length}`);
 
     const matchingDocs = [];
-    const processedParents = new Set();
+    const kbDir = path.join(ACTIVE_PATHS.data, 'knowledge-base', 'documents');
 
     // Buscar documentos que contenham as palavras da mensagem
-    for (const txtFile of textFiles) {
+    for (const doc of mainDocs) {
       try {
-        const txtPath = path.join(kbDir, txtFile);
-        const content = await fs.readFile(txtPath, 'utf-8');
+        // Ler conteúdo do documento
+        const docPath = doc.path;
+        if (!docPath) continue;
+
+        const content = await fs.readFile(docPath, 'utf-8');
         const contentLower = content.toLowerCase();
 
         // Verificar se o conteúdo contém alguma palavra significativa
         const matchCount = words.filter(w => contentLower.includes(w)).length;
 
         if (matchCount >= 1) {
-          // Buscar metadata correspondente
-          const baseName = txtFile.replace(/\.(txt|md)$/, '');
-          const metadataPath = path.join(kbDir, `${baseName}.metadata.json`);
-
-          try {
-            const metadataContent = await fs.readFile(metadataPath, 'utf-8');
-            const metadata = JSON.parse(metadataContent);
-
-            // Se é documento estruturado, pegar o documento pai
-            if (metadata.parentDocument && !processedParents.has(metadata.parentDocument)) {
-              processedParents.add(metadata.parentDocument);
-
-              // Buscar metadata do documento pai
-              const parentMetaPath = path.join(kbDir, `${metadata.parentDocument}.metadata.json`);
-              try {
-                const parentMetaContent = await fs.readFile(parentMetaPath, 'utf-8');
-                const parentMeta = JSON.parse(parentMetaContent);
-                matchingDocs.push({
-                  ...parentMeta,
-                  txtFile: `${metadata.parentDocument}.txt`,
-                  txtPath: path.join(kbDir, `${metadata.parentDocument}.txt`),
-                  matchedBy: 'content',
-                  matchCount
-                });
-                logger.info(`   ✅ Match via conteúdo estruturado: ${parentMeta.name || metadata.parentDocument}`);
-              } catch {
-                // Documento pai não encontrado, usar o atual
-                matchingDocs.push({
-                  ...metadata,
-                  txtFile,
-                  txtPath,
-                  matchedBy: 'content',
-                  matchCount
-                });
-              }
-            } else if (!metadata.parentDocument) {
-              matchingDocs.push({
-                ...metadata,
-                txtFile,
-                txtPath,
-                matchedBy: 'content',
-                matchCount
-              });
-              logger.info(`   ✅ Match via conteúdo: ${metadata.name || txtFile}`);
-            }
-          } catch (metaErr) {
-            logger.debug(`   Metadata não encontrado para ${txtFile}`);
-          }
+          matchingDocs.push({
+            ...doc,
+            matchedBy: 'content',
+            matchCount
+          });
+          logger.info(`   ✅ Match (${matchCount} palavras): ${doc.name}`);
         }
       } catch (readErr) {
-        logger.debug(`   Erro ao ler ${txtFile}:`, readErr.message);
+        logger.debug(`   Erro ao ler ${doc.name}:`, readErr.message);
       }
     }
 
-    // Se não encontrou nada, buscar nos últimos documentos estruturados
+    // Se não encontrou nada, usar fallback para últimos documentos com estruturados
     if (matchingDocs.length === 0) {
-      logger.info(`   Buscando últimos documentos estruturados como fallback`);
+      logger.info(`   🔄 Fallback: buscando últimos documentos com estruturados`);
 
-      // Buscar metadata de documentos com estruturados
-      const metaFiles = files.filter(f => f.endsWith('.metadata.json'));
+      const docsWithStructured = mainDocs.filter(doc =>
+        doc.metadata?.structuredDocsInKB && doc.metadata.structuredDocsInKB.length > 0
+      );
 
-      for (const metaFile of metaFiles.slice(-10)) {
-        try {
-          const metaPath = path.join(kbDir, metaFile);
-          const metadataContent = await fs.readFile(metaPath, 'utf-8');
-          const metadata = JSON.parse(metadataContent);
+      // Pegar os 3 mais recentes
+      const recentDocs = docsWithStructured
+        .sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt))
+        .slice(0, 3);
 
-          // Apenas documentos que tenham ficheiros estruturados e não são filhos
-          if (metadata.structuredDocsInKB && metadata.structuredDocsInKB.length > 0 && !metadata.parentDocument) {
-            const baseName = metaFile.replace('.metadata.json', '');
-            matchingDocs.push({
-              ...metadata,
-              txtFile: `${baseName}.txt`,
-              txtPath: path.join(kbDir, `${baseName}.txt`),
-              matchedBy: 'recent'
-            });
-            logger.info(`   📄 Fallback: ${metadata.name || baseName}`);
-          }
-        } catch (err) {
-          // Ignorar erros
-        }
+      for (const doc of recentDocs) {
+        matchingDocs.push({
+          ...doc,
+          matchedBy: 'recent'
+        });
+        logger.info(`   📄 Fallback: ${doc.name}`);
       }
     }
 
-    // Ordenar por quantidade de matches e remover duplicatas
-    const uniqueDocs = [];
-    const seenIds = new Set();
-    matchingDocs
-      .sort((a, b) => (b.matchCount || 0) - (a.matchCount || 0))
-      .forEach(doc => {
-        const docId = doc.id || doc.name || doc.txtFile;
-        if (!seenIds.has(docId)) {
-          seenIds.add(docId);
-          uniqueDocs.push(doc);
-        }
-      });
-
-    return uniqueDocs;
+    // Ordenar por quantidade de matches
+    return matchingDocs.sort((a, b) => (b.matchCount || 0) - (a.matchCount || 0));
   } catch (error) {
     logger.error(`❌ [KB Search] Erro na busca genérica:`, error.message);
     return [];

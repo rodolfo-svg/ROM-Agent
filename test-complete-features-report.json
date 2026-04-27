@@ -1,32 +1,28 @@
 {
   "summary": {
-    "total": 41,
-    "passed": 31,
-    "failed": 10,
+    "total": 31,
+    "passed": 19,
+    "failed": 12,
     "warnings": 0,
-    "successRate": 75.6,
-    "duration": 0.09,
-    "timestamp": "2026-02-10T05:00:32.908Z"
+    "successRate": 61.3,
+    "duration": 0.03,
+    "timestamp": "2026-04-24T05:00:33.667Z"
   },
   "tests": [
     {
       "name": "Health Check (/api/info)",
-      "passed": {
-        "status": "healthy",
-        "uptime": "7h 58m",
-        "uptimeSeconds": 28715
-      },
-      "details": "Status: 200, Version: 2.8.0, Health: healthy, Bedrock: connected"
+      "passed": false,
+      "details": "Error: "
     },
     {
       "name": "Estatísticas do Sistema (/api/stats)",
-      "passed": true,
-      "details": "Status: 200"
+      "passed": false,
+      "details": "Error: "
     },
     {
-      "name": "Upload e Extração de TXT (/api/upload-documents)",
-      "passed": true,
-      "details": "Status: 200, Arquivos: 1, Extrações: 1, Metadados: Sim"
+      "name": "Upload e Extração de TXT",
+      "passed": false,
+      "details": "Error: "
     },
     {
       "name": "Suporte a Múltiplas Extensões",
@@ -34,19 +30,19 @@
       "details": "Extensões suportadas: PDF, DOCX, DOC, TXT, MD"
     },
     {
-      "name": "Criar Projeto com Custom Instructions (/api/projects/create)",
+      "name": "Criar Projeto com Custom Instructions",
       "passed": false,
-      "details": "Status: 403, ID: null, KB: undefinedMB, Custom Instructions: Não"
+      "details": "Error: "
     },
     {
-      "name": "Listar Projetos (/api/projects/list)",
+      "name": "Listar Projetos",
       "passed": false,
-      "details": "Status: 404, Projetos: 0"
+      "details": "Error: "
     },
     {
-      "name": "Status do Knowledge Base (/api/kb/status)",
-      "passed": true,
-      "details": "Status: 200, Documentos: 4"
+      "name": "Status do Knowledge Base",
+      "passed": false,
+      "details": "Error: "
     },
     {
       "name": "Suporte a Export TXT",
@@ -74,64 +70,14 @@
       "details": "Formato HTML suportado no sistema"
     },
     {
-      "name": "Listar Conversas para Export (/api/conversations/organized)",
+      "name": "Listar Conversas para Export",
       "passed": false,
-      "details": "Status: 500"
+      "details": "Error: "
     },
     {
-      "name": "Página Principal HTML (/)",
-      "passed": true,
-      "details": "Status: 200"
-    },
-    {
-      "name": "Meta Viewport Mobile",
-      "passed": true,
-      "details": "Configurado"
-    },
-    {
-      "name": "Suporte iOS (Apple)",
-      "passed": true,
-      "details": "Configurado"
-    },
-    {
-      "name": "Suporte Android",
-      "passed": true,
-      "details": "Configurado"
-    },
-    {
-      "name": "Botão \"Novo Projeto\"",
+      "name": "Frontend",
       "passed": false,
-      "details": "Ausente"
-    },
-    {
-      "name": "Botão Upload de Arquivo",
-      "passed": false,
-      "details": "Ausente"
-    },
-    {
-      "name": "Touch Optimization (44px)",
-      "passed": true,
-      "details": "Configurado"
-    },
-    {
-      "name": "Safe Area (Notch iPhone)",
-      "passed": false,
-      "details": "Ausente"
-    },
-    {
-      "name": "Modal de Novo Projeto",
-      "passed": false,
-      "details": "Ausente"
-    },
-    {
-      "name": "Campo Custom Instructions",
-      "passed": false,
-      "details": "Ausente"
-    },
-    {
-      "name": "Seletor de Tamanho de KB",
-      "passed": false,
-      "details": "Ausente"
+      "details": "Error: "
     },
     {
       "name": "Custom Instructions por Projeto",
@@ -199,24 +145,24 @@
       "details": "✓ Implementado (Vantagem ROM)"
     },
     {
-      "name": "Busca Semântica (/api/semantic-search)",
+      "name": "Busca Semântica",
       "passed": false,
-      "details": "Status: 403"
+      "details": "Error: "
     },
     {
-      "name": "Listar Templates (/api/templates/list)",
-      "passed": true,
-      "details": "Status: 200, Templates: 0"
+      "name": "Listar Templates",
+      "passed": false,
+      "details": "Error: "
     },
     {
-      "name": "Status de Backups (/api/backup/status)",
-      "passed": true,
-      "details": "Status: 200, Backups: 7"
+      "name": "Status de Backups",
+      "passed": false,
+      "details": "Error: "
     },
     {
-      "name": "Estatísticas de Cache (/api/cache/statistics)",
-      "passed": true,
-      "details": "Status: 200"
+      "name": "Estatísticas de Cache",
+      "passed": false,
+      "details": "Error: "
     }
   ]
 }

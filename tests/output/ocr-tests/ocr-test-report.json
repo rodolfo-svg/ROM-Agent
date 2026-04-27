@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-10T08:11:23.991Z",
+  "timestamp": "2026-04-24T05:10:26.206Z",
   "environment": {
     "nodeVersion": "v25.2.1",
     "platform": "darwin",
@@ -9,8 +9,8 @@
     "timeout": 120000,
     "performanceTargetPerPage": 5000,
     "minConfidence": 50,
-    "testImagesDir": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/tests/fixtures/images",
-    "testOutputDir": "/Users/rodolfootaviopereiradamotaoliveira/ROM-Agent/tests/output/ocr-tests"
+    "testImagesDir": "/Users/rodolfootaviopereiradamotaoliveira/Desktop/ROM-Agent/tests/fixtures/images",
+    "testOutputDir": "/Users/rodolfootaviopereiradamotaoliveira/Desktop/ROM-Agent/tests/output/ocr-tests"
   },
   "status": "completed"
 }
