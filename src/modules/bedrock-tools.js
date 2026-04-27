@@ -819,62 +819,78 @@ export async function executeTool(toolName, toolInput, context = {}) {
             .split(/\s+/)
             .filter(word => word.length > 3); // Ignora palavras muito curtas (de, da, os, etc)
 
-          // 🚨 FIX: Filtrar apenas documentos principais (não fichamentos, não extraction packages)
-          const mainDocs = userDocs.filter(doc =>
-            !doc.metadata?.isStructuredDocument &&
+          // 🔧 FIX V2: Incluir documentos principais E ficheiros estruturados úteis
+          // Filtrar extraction packages e outros temporários, mas MANTER FICHAMENTO
+          const searchableDocs = userDocs.filter(doc =>
             !doc.metadata?.isExtractionPackage &&
-            !doc.name?.includes('FICHAMENTO') &&
-            !doc.name?.includes('CRONOLOGIA')
+            !doc.name?.includes('_TEMP') &&
+            !doc.name?.includes('_BACKUP')
           );
 
-          console.log(`📚 [KB] Total docs após filtro de principais: ${mainDocs.length}`);
+          console.log(`📚 [KB] Total docs pesquisáveis: ${searchableDocs.length}`);
 
-          const relevantDocs = mainDocs
-            .filter(doc => {
-              const docName = doc.name.toLowerCase();
-              const docOriginalName = doc.originalName?.toLowerCase() || '';
-              const docText = doc.extractedText?.toLowerCase() || '';
-              const docType = doc.metadata?.documentType?.toLowerCase() || '';
-              const combinedText = `${docName} ${docOriginalName} ${docText} ${docType}`;
+          // 🔧 FIX V2: Ler conteúdo dos arquivos para busca (se disponível)
+          const relevantDocsPromises = searchableDocs.map(async (doc) => {
+            const docName = doc.name.toLowerCase();
+            const docOriginalName = doc.originalName?.toLowerCase() || '';
+            const docType = doc.metadata?.documentType?.toLowerCase() || '';
 
-              // 🔥 FIX 1: Busca por nome EXATO (prioridade máxima)
-              // Se query for exatamente o nome do arquivo, retornar true imediatamente
-              if (docName === queryLower || docOriginalName === queryLower) {
-                return true;
+            // Tentar ler snippet do conteúdo do arquivo para busca
+            let docText = '';
+            if (doc.path && fs.existsSync(doc.path)) {
+              try {
+                // Ler apenas os primeiros 10k chars para busca eficiente
+                const fd = fs.openSync(doc.path, 'r');
+                const buffer = Buffer.alloc(10000);
+                fs.readSync(fd, buffer, 0, 10000, 0);
+                fs.closeSync(fd);
+                docText = buffer.toString('utf-8').toLowerCase();
+              } catch (readErr) {
+                // Ignorar erros de leitura
               }
+            }
 
-              // 🔥 FIX 2: Busca por substring no nome (ex: "Report" encontra "Report01772467189156.pdf")
-              if (docName.includes(queryLower) || docOriginalName.includes(queryLower)) {
-                return true;
+            const combinedText = `${docName} ${docOriginalName} ${docText} ${docType}`;
+
+            // Busca por nome EXATO
+            if (docName === queryLower || docOriginalName === queryLower) {
+              return { ...doc, matchScore: 100, docText };
+            }
+
+            // Busca por substring no nome
+            if (docName.includes(queryLower) || docOriginalName.includes(queryLower)) {
+              return { ...doc, matchScore: 80, docText };
+            }
+
+            // Busca por palavras no conteúdo
+            if (queryWords.length > 0) {
+              const matchCount = queryWords.filter(word => combinedText.includes(word)).length;
+              if (matchCount > 0) {
+                return { ...doc, matchScore: matchCount * 10, docText };
               }
+            }
 
-              // 🔥 FIX 3: Priorizar busca no NOME antes de buscar no texto completo
-              // Se query tem palavras, procura PRIMEIRO no nome, depois no texto
-              if (queryWords.length > 0) {
-                const nameText = `${docName} ${docOriginalName}`;
-                const hasMatchInName = queryWords.some(word => nameText.includes(word));
-                if (hasMatchInName) {
-                  return true;
-                }
-                // Só buscar no texto se não encontrou no nome
-                return queryWords.some(word => combinedText.includes(word));
-              }
+            // Busca string completa como fallback
+            if (combinedText.includes(queryLower)) {
+              return { ...doc, matchScore: 5, docText };
+            }
 
-              // Se query é muito curta, busca string completa (fallback)
-              return combinedText.includes(queryLower);
-            })
+            return null;
+          });
+
+          const relevantDocsResults = await Promise.all(relevantDocsPromises);
+          const relevantDocs = relevantDocsResults
+            .filter(doc => doc !== null)
             .sort((a, b) => {
-              // ⭐ PRIORIDADE 1: Match exato ou substring no nome principal
-              const queryInNameA = a.name?.toLowerCase().includes(queryLower) || a.originalName?.toLowerCase().includes(queryLower);
-              const queryInNameB = b.name?.toLowerCase().includes(queryLower) || b.originalName?.toLowerCase().includes(queryLower);
-
-              if (queryInNameA && !queryInNameB) return -1;
-              if (!queryInNameA && queryInNameB) return 1;
+              // ⭐ PRIORIDADE 1: Match score (calculado acima)
+              if (a.matchScore !== b.matchScore) {
+                return b.matchScore - a.matchScore;
+              }
 
               // ⭐ PRIORIDADE 2: Data mais recente
               const dateA = new Date(a.uploadedAt || 0).getTime();
               const dateB = new Date(b.uploadedAt || 0).getTime();
-              return dateB - dateA; // Decrescente (mais recente primeiro)
+              return dateB - dateA;
             })
             .slice(0, limite);
 
@@ -903,22 +919,30 @@ export async function executeTool(toolName, toolInput, context = {}) {
           // Formatar resultado
           let respostaFormatada = `\n📚 **Knowledge Base - "${query}"** (${relevantDocs.length} documento(s) encontrado(s))\n\n`;
 
-          relevantDocs.forEach((doc, idx) => {
+          for (const doc of relevantDocs) {
+            const idx = relevantDocs.indexOf(doc);
             respostaFormatada += `**[${idx + 1}] ${doc.name}**\n`;
-            respostaFormatada += `Tipo: ${doc.metadata?.documentType || 'Não identificado'}\n`;
-            respostaFormatada += `Tamanho: ${Math.round(doc.textLength / 1000)}k caracteres\n`;
+            respostaFormatada += `Tipo: ${doc.metadata?.documentType || doc.metadata?.isStructuredDocument ? 'Ficheiro Estruturado' : 'Documento'}\n`;
+            respostaFormatada += `Tamanho: ${Math.round((doc.textLength || doc.size || 0) / 1000)}k caracteres\n`;
             respostaFormatada += `Upload: ${new Date(doc.uploadedAt).toLocaleDateString('pt-BR')}\n`;
 
-            // Extrair texto COMPLETO (sem limitação!)
-            if (doc.extractedText) {
-              // CORREÇÃO CRÍTICA: Retornar texto completo sempre
-              // Sonnet 4.5 suporta 200k tokens de saída
-              const textoCompleto = doc.extractedText.trim();
-
-              respostaFormatada += `\nConteúdo COMPLETO do documento (${Math.round(doc.textLength/1000)}k caracteres):\n${textoCompleto}\n`;
-
-              // Informar tamanho do documento
-              respostaFormatada += `\n✅ Documento carregado integralmente (${Math.round(doc.textLength/1000)}k caracteres, ${Math.round(doc.textLength/4)} tokens aproximadamente)\n`;
+            // 🔧 FIX V2: Ler conteúdo do arquivo se disponível
+            let textoCompleto = '';
+            if (doc.path && fs.existsSync(doc.path)) {
+              try {
+                textoCompleto = fs.readFileSync(doc.path, 'utf-8').trim();
+                // Limitar a 50k caracteres para não sobrecarregar
+                if (textoCompleto.length > 50000) {
+                  textoCompleto = textoCompleto.substring(0, 50000) + '\n\n[... conteúdo truncado - documento muito grande ...]';
+                }
+                respostaFormatada += `\n📄 **Conteúdo do documento:**\n${textoCompleto}\n`;
+                respostaFormatada += `\n✅ Documento carregado (${Math.round(textoCompleto.length/1000)}k caracteres)\n`;
+              } catch (readErr) {
+                respostaFormatada += `\n⚠️ Não foi possível ler o conteúdo do arquivo\n`;
+              }
+            } else if (doc.docText && doc.docText.length > 100) {
+              // Usar o texto já lido durante a busca
+              respostaFormatada += `\n📄 **Preview do documento:**\n${doc.docText.substring(0, 5000)}...\n`;
             }
 
             if (doc.metadata?.processNumber) {
@@ -929,7 +953,7 @@ export async function executeTool(toolName, toolInput, context = {}) {
             }
 
             respostaFormatada += '\n---\n\n';
-          });
+          }
 
           respostaFormatada += `✅ **Total de documentos na KB**: ${allDocs.length}\n`;
 
