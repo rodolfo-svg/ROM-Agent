@@ -24,6 +24,64 @@ import { requireAuth, requireAdmin } from '../middleware/permissions.js';
 const router = express.Router();
 
 /**
+ * GET /api/users/me
+ * Retorna dados do usuário autenticado atual
+ */
+router.get('/users/me', requireAuth, async (req, res) => {
+  try {
+    const user = req.session?.user;
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        error: 'Usuário não autenticado'
+      });
+    }
+
+    // Buscar dados atualizados do banco
+    const pool = getPostgresPool();
+
+    if (pool) {
+      const result = await pool.query(
+        `SELECT
+          id, email, name, role, oab,
+          partner_id as "partnerId",
+          created_at as "createdAt",
+          last_login_at as "lastLoginAt"
+         FROM users
+         WHERE id = $1`,
+        [user.id]
+      );
+
+      if (result.rows.length > 0) {
+        return res.json({
+          success: true,
+          ...result.rows[0]
+        });
+      }
+    }
+
+    // Fallback: retornar dados da sessão
+    res.json({
+      success: true,
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      oab: user.oab,
+      partnerId: user.partnerId
+    });
+
+  } catch (error) {
+    logger.error('Erro ao buscar usuário atual', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: 'Erro ao buscar dados do usuário'
+    });
+  }
+});
+
+/**
  * GET /api/users
  * Lista todos os usuários (apenas admin)
  */

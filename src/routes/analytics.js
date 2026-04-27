@@ -60,6 +60,62 @@ const extractContext = (req) => {
 };
 
 // ============================================================================
+// PUBLIC ENDPOINTS - User Analytics
+// ============================================================================
+
+/**
+ * GET /api/analytics/summary
+ * Get analytics summary for current authenticated user
+ * Returns basic stats without requiring admin token
+ */
+router.get('/summary', async (req, res) => {
+  try {
+    const userId = req.session?.user?.id;
+    const period = req.query.period || '7d'; // Default: last 7 days
+
+    // Calcular período
+    let days = 7;
+    if (period === '30d') days = 30;
+    else if (period === '24h') days = 1;
+    else if (period === '90d') days = 90;
+
+    // Se usuário autenticado, buscar stats personalizadas
+    if (userId) {
+      const userStats = await usabilityAnalytics.getUserStats(userId, days);
+
+      return res.json({
+        success: true,
+        period: `${days}d`,
+        userId,
+        stats: userStats || {
+          totalEvents: 0,
+          documentsGenerated: 0,
+          chatMessages: 0,
+          avgResponseTime: 0
+        }
+      });
+    }
+
+    // Para usuários não autenticados, retornar stats gerais (limitadas)
+    res.json({
+      success: true,
+      period: `${days}d`,
+      message: 'Faça login para ver estatísticas detalhadas',
+      stats: {
+        available: false
+      }
+    });
+
+  } catch (error) {
+    logger.error('Failed to get analytics summary', { error: error.message });
+    res.status(500).json({
+      success: false,
+      error: 'Failed to get analytics summary'
+    });
+  }
+});
+
+// ============================================================================
 // PUBLIC ENDPOINTS - Event Tracking
 // ============================================================================
 
