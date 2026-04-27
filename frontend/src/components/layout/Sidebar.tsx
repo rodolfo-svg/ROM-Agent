@@ -144,7 +144,7 @@ export function Sidebar() {
       {/* Mobile backdrop */}
       {!sidebarCollapsed && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-slate-900/30 backdrop-blur-sm z-40 md:hidden"
           onClick={toggleSidebarCollapse}
         />
       )}
