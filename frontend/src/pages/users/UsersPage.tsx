@@ -38,6 +38,8 @@ export function UsersPage() {
     password: '',
     partnerId: '',
   })
+  const [formError, setFormError] = useState<string | null>(null)
+  const [formLoading, setFormLoading] = useState(false)
 
   useEffect(() => {
     fetchUsers()
@@ -70,6 +72,8 @@ export function UsersPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setFormError(null)
+    setFormLoading(true)
 
     try {
       const url = editingUser ? `/users/${editingUser.id}` : '/users'
@@ -85,9 +89,14 @@ export function UsersPage() {
         setEditingUser(null)
         setFormData({ name: '', email: '', role: 'user', oab: '', password: '', partnerId: '' })
         await fetchUsers()
+      } else {
+        setFormError(response.error || 'Erro ao salvar usuário')
       }
     } catch (error) {
       console.error('Save error:', error)
+      setFormError('Erro de conexão ao salvar usuário')
+    } finally {
+      setFormLoading(false)
     }
   }
 
@@ -101,6 +110,7 @@ export function UsersPage() {
       password: '',
       partnerId: user.partnerId || '',
     })
+    setFormError(null)
     setShowModal(true)
   }
 
@@ -158,7 +168,7 @@ export function UsersPage() {
               <h1 className="text-2xl font-semibold text-stone-800 mb-2">Gerenciamento de Usuários</h1>
               <p className="text-stone-500">Gerencie usuários e permissões do sistema</p>
             </div>
-            <Button onClick={() => { setEditingUser(null); setFormData({ name: '', email: '', role: 'user', oab: '', password: '', partnerId: '' }); setShowModal(true) }} className="gap-2">
+            <Button onClick={() => { setEditingUser(null); setFormData({ name: '', email: '', role: 'user', oab: '', password: '', partnerId: '' }); setFormError(null); setShowModal(true) }} className="gap-2">
               <Plus className="w-4 h-4" />
               Novo Usuário
             </Button>
@@ -262,6 +272,11 @@ export function UsersPage() {
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
+              {formError && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                  {formError}
+                </div>
+              )}
               <div>
                 <label className="block text-sm font-medium text-stone-700 mb-2">Nome</label>
                 <input
@@ -340,11 +355,11 @@ export function UsersPage() {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <Button type="button" variant="secondary" onClick={() => setShowModal(false)} className="flex-1">
+                <Button type="button" variant="secondary" onClick={() => setShowModal(false)} className="flex-1" disabled={formLoading}>
                   Cancelar
                 </Button>
-                <Button type="submit" className="flex-1">
-                  {editingUser ? 'Salvar' : 'Criar'}
+                <Button type="submit" className="flex-1" disabled={formLoading}>
+                  {formLoading ? 'Salvando...' : (editingUser ? 'Salvar' : 'Criar')}
                 </Button>
               </div>
             </form>
