@@ -207,14 +207,14 @@ export const INFERENCE_PROFILES = {
 let runtimeClient = new BedrockRuntimeClient({
   region: CONFIG.region,
   requestHandler: {
-    requestTimeout: 300000  // 300 segundos (5 min) - necessário para peças muito grandes (25-30 páginas)
+    requestTimeout: 600000  // 600 segundos (10 min) - necessário para documentos muito grandes (700+ páginas)
   }
 });
 
 let managementClient = new BedrockClient({
   region: CONFIG.region,
   requestHandler: {
-    requestTimeout: 300000  // 300 segundos (5 min) - necessário para peças muito grandes (25-30 páginas)
+    requestTimeout: 600000  // 600 segundos (10 min) - necessário para documentos muito grandes (700+ páginas)
   }
 });
 
@@ -1269,18 +1269,29 @@ export async function conversarStream(prompt, onChunk, options = {}) {
                             `⏳ Executando ${tool.name}...`;
         onChunk(toolStartMsg);
 
-        // 🔥 FIX: Para tools longas (analisar_documento_kb), enviar heartbeat a cada 30s
+        // 🔥 FIX V2: Para TODAS tools longas, enviar heartbeat a cada 20s
         // Isso mantém conexão SSE viva e evita timeout do proxy (Render = 60s)
+        // Lista de tools que podem demorar muito
+        const longRunningTools = [
+          'analisar_documento_kb',
+          'consultar_kb',
+          'create_artifact',
+          'pesquisar_jurisprudencia',
+          'pesquisar_sumulas',
+          'pesquisar_doutrina',
+          'consultar_cnj_datajud',
+          'consultar_legislacao'
+        ];
         let heartbeatInterval = null;
-        if (tool.name === 'analisar_documento_kb') {
+        if (longRunningTools.includes(tool.name)) {
           let elapsed = 0;
           heartbeatInterval = setInterval(() => {
-            elapsed += 30;
+            elapsed += 20;
             const minutes = Math.floor(elapsed / 60);
             const seconds = elapsed % 60;
             const timeStr = minutes > 0 ? `${minutes}min ${seconds}s` : `${seconds}s`;
             onChunk(`\n⏳ Processando... ${timeStr}\n`);
-          }, 30000);  // Heartbeat a cada 30 segundos
+          }, 20000);  // Heartbeat a cada 20 segundos (reduzido de 30s)
         }
 
         try {
