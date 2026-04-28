@@ -324,17 +324,32 @@ export function UploadPage() {
         })
 
         if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+          // ✅ FIX: Capturar corpo do erro para diagnóstico
+          let errorBody = ''
+          try {
+            errorBody = await response.text()
+          } catch {
+            errorBody = 'Não foi possível ler corpo do erro'
+          }
+          console.error(`[UploadPage] HTTP Error ${response.status}:`, errorBody)
+          throw new Error(`Erro HTTP ${response.status}: ${response.statusText || errorBody.slice(0, 100)}`)
         }
 
-        const data = await response.json()
+        // ✅ FIX: Tratar JSON parse com try-catch para respostas corrompidas
+        let data
+        try {
+          data = await response.json()
+        } catch (parseError) {
+          console.error('[UploadPage] Erro ao parsear resposta JSON:', parseError)
+          throw new Error('Resposta inválida do servidor (não é JSON)')
+        }
 
         if (data.success && data.uploadId) {
-          console.log(`[UploadPage] Upload iniciado: ${data.uploadId}`)
+          console.log(`[UploadPage] Upload iniciado com sucesso: ${data.uploadId}`)
           setCurrentUploadId(data.uploadId)
         } else {
-          console.error('[UploadPage] Resposta sem uploadId:', data)
-          throw new Error(data.error || 'Falha ao iniciar upload')
+          console.error('[UploadPage] Resposta sem uploadId ou sem sucesso:', data)
+          throw new Error(data.error || 'Falha ao iniciar upload - resposta incompleta')
         }
       }
 
@@ -342,7 +357,8 @@ export function UploadPage() {
       console.error('[UploadPage] Erro no upload:', error)
       alert(`Erro no upload: ${error instanceof Error ? error.message : 'Erro desconhecido'}`)
 
-      // ✅ Resetar estados de chunked em caso de erro
+      // ✅ FIX: Resetar TODOS os estados em caso de erro para evitar polling órfão
+      setCurrentUploadId(null)  // CRÍTICO: Impede polling para sessão inexistente
       setIsChunkedUploading(false)
       setChunkedProgress(0)
       setChunkedStage('')
