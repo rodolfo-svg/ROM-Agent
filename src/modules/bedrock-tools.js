@@ -754,7 +754,8 @@ export async function executeTool(toolName, toolInput, context = {}) {
       }
 
       case 'consultar_kb': {
-        const { query, limite = 10 } = toolInput; // ⬆️ AUMENTADO DE 3 PARA 10
+        // 🔥 FIX TOKEN LIMIT: Reduzido de 10 para 5 documentos para evitar estouro de contexto
+        const { query, limite = 5 } = toolInput;
 
         console.log(`📚 [KB] Consultando documentos: "${query}"`);
 
@@ -927,22 +928,24 @@ export async function executeTool(toolName, toolInput, context = {}) {
             respostaFormatada += `Upload: ${new Date(doc.uploadedAt).toLocaleDateString('pt-BR')}\n`;
 
             // 🔧 FIX V2: Ler conteúdo do arquivo se disponível
+            // 🔥 FIX TOKEN LIMIT: Reduzido de 50k para 20k caracteres por documento
             let textoCompleto = '';
+            const MAX_DOC_CHARS = 20000; // 20k chars ~= 5k tokens
             if (doc.path && fs.existsSync(doc.path)) {
               try {
                 textoCompleto = fs.readFileSync(doc.path, 'utf-8').trim();
-                // Limitar a 50k caracteres para não sobrecarregar
-                if (textoCompleto.length > 50000) {
-                  textoCompleto = textoCompleto.substring(0, 50000) + '\n\n[... conteúdo truncado - documento muito grande ...]';
+                const originalLength = textoCompleto.length;
+                if (textoCompleto.length > MAX_DOC_CHARS) {
+                  textoCompleto = textoCompleto.substring(0, MAX_DOC_CHARS) + `\n\n[... documento truncado de ${Math.round(originalLength/1000)}k para ${Math.round(MAX_DOC_CHARS/1000)}k caracteres ...]`;
                 }
                 respostaFormatada += `\n📄 **Conteúdo do documento:**\n${textoCompleto}\n`;
-                respostaFormatada += `\n✅ Documento carregado (${Math.round(textoCompleto.length/1000)}k caracteres)\n`;
+                respostaFormatada += `\n✅ Documento carregado (${Math.round(textoCompleto.length/1000)}k de ${Math.round(originalLength/1000)}k caracteres)\n`;
               } catch (readErr) {
                 respostaFormatada += `\n⚠️ Não foi possível ler o conteúdo do arquivo\n`;
               }
             } else if (doc.docText && doc.docText.length > 100) {
               // Usar o texto já lido durante a busca
-              respostaFormatada += `\n📄 **Preview do documento:**\n${doc.docText.substring(0, 5000)}...\n`;
+              respostaFormatada += `\n📄 **Preview do documento:**\n${doc.docText.substring(0, 3000)}...\n`;
             }
 
             if (doc.metadata?.processNumber) {
@@ -957,7 +960,17 @@ export async function executeTool(toolName, toolInput, context = {}) {
 
           respostaFormatada += `✅ **Total de documentos na KB**: ${allDocs.length}\n`;
 
-          console.log(`✅ [KB] ${relevantDocs.length} documento(s) encontrado(s)`);
+          // 🔥 FIX TOKEN LIMIT: Truncar resposta total se exceder 100k caracteres (~25k tokens)
+          const MAX_TOTAL_RESPONSE = 100000;
+          if (respostaFormatada.length > MAX_TOTAL_RESPONSE) {
+            const originalLength = respostaFormatada.length;
+            respostaFormatada = respostaFormatada.substring(0, MAX_TOTAL_RESPONSE);
+            respostaFormatada += `\n\n⚠️ **RESPOSTA TRUNCADA**: ${Math.round(originalLength/1000)}k → ${Math.round(MAX_TOTAL_RESPONSE/1000)}k caracteres para evitar estouro de contexto.`;
+            respostaFormatada += `\n💡 **Dica**: Faça consultas mais específicas para obter documentos menores.`;
+            console.log(`⚠️ [KB] Resposta truncada de ${Math.round(originalLength/1000)}k para ${Math.round(MAX_TOTAL_RESPONSE/1000)}k chars`);
+          }
+
+          console.log(`✅ [KB] ${relevantDocs.length} documento(s) encontrado(s) (${Math.round(respostaFormatada.length/1000)}k chars)`);
 
           return {
             success: true,
@@ -965,7 +978,8 @@ export async function executeTool(toolName, toolInput, context = {}) {
             metadata: {
               query,
               totalEncontrados: relevantDocs.length,
-              totalNaKB: allDocs.length
+              totalNaKB: allDocs.length,
+              responseChars: respostaFormatada.length
             }
           };
 
